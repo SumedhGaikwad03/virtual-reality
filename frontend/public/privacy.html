@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link href="styles.css" rel="stylesheet">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Virtual Reality</title>
+ 
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- ✅ Navbar Component -->
+<nav class="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Left: Logo + Tagline -->
+      <div class="flex items-center space-x-3">
+        <div class="bg-white text-blue-900 font-bold px-3 py-1 rounded-lg">VR</div>
+        <div>
+          <span class="font-bold text-lg">Virtual Reality</span>
+          <p class="text-xs text-blue-200">Home • Happiness • Honesty</p>
+        </div>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Right: Desktop Links -->
+      <div class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:text-blue-300">Home</a>
+        <a href="about.html" class="hover:text-blue-300">About</a>
+        <a href="enquiry.html" class="hover:text-blue-300">Enquiry</a>
+        <a href="privacy.html" class="hover:text-blue-300 font-semibold underline">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-blue-300">Terms and Conditions</a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button id="menu-btn" class="focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Links -->
+  <div id="mobile-menu" class="hidden md:hidden bg-blue-800 px-4 py-3 space-y-2">
+    <a href="index.html" class="block hover:text-blue-300">Home</a>
+    <a href="about.html" class="block hover:text-blue-300">About</a>
+    <a href="enquiry.html" class="block hover:text-blue-300">Enquiry</a>
+    <a href="privacy.html" class="block hover:text-blue-300 font-semibold underline">Privacy Policy</a>
+    <a href="terms.html" class="block hover:text-blue-300">Terms and Conditions</a>
+  </div>
+</nav>
+
+<script>
+  // Toggle mobile menu
+  const btn = document.getElementById("menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Virtual Reality</h1>
+      <span class="italic">Home • Happiness • Honesty</span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto bg-white p-8 shadow-md rounded-lg my-10">
+    <h2 class="text-3xl font-semibold text-blue-700 mb-6">Privacy Policy</h2>
+
+    <section class="space-y-6">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700">1. Information Collection</h3>
+        <p>
+          We collect personal information such as your name, email, phone number, and preferences when you interact with us.  
+          Non-personal data, like IP addresses and browser details, may also be collected.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700">2. Use of Information – Communication</h3>
+        <p>
+          We may use your information to:
+        </p>
+        <ul class="list-disc list-inside">
+          <li>Respond to your inquiries and provide customer service support.</li>
+          <li>Send you important updates regarding our services.</li>
+          <li>Communicate marketing offers, promotions, and recommendations via SMS, Email, WhatsApp, and Voice.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700">3. Information Sharing</h3>
+        <p>
+          We do not sell or rent your personal data to third parties.  
+          Data may be shared with service providers or partners solely for service facilitation, with your privacy safeguarded.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700">4. Data Security</h3>
+        <p>
+          We employ reasonable measures to protect your data from unauthorized access or breaches.  
+          However, no method of electronic transmission or storage is 100% secure.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700">5. Your Rights</h3>
+        <p>
+          You can request access to, correction of, or deletion of your personal data.  
+          You may opt out of promotional communications at any time.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700">6. Changes to the Privacy Policy</h3>
+        <p>
+          This Privacy Policy may be updated periodically. We encourage you to review it regularly to stay informed.
+        </p>
+      </div>
+
+      <div>
+        <p>
+          By using <strong>Virtual Reality</strong>’s services, you agree to the terms outlined in our Terms and Conditions and Privacy Policy.  
+          If you have any questions, feel free to <a href="enquiry.html" class="text-blue-600 underline">contact us</a> for clarification.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 mt-10">
+    <div class="max-w-6xl mx-auto text-center">
+      <p>&copy; 2025 Virtual Reality. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <link href="styles.css" rel="stylesheet">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Virtual Reality — Home • Happiness • Honesty</title>
+  <!-- Tailwind CSS (built) -->
+  
+  <meta name="description" content="Virtual Reality Real Estate — Home • Happiness • Honesty. Explore properties in Pune, Mumbai, and smart investment homes." />
+  <style>
+    /* Optional: smooth fade for modal/backdrop */
+    .fade-enter { opacity: 0; transform: translateY(6px); }
+    .fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity .15s ease, transform .15s ease; }
+    .fade-exit { opacity: 1; transform: translateY(0); }
+    .fade-exit-active { opacity: 0; transform: translateY(6px); transition: opacity .12s ease, transform .12s ease; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 text-slate-50">
+<!-- ✅ Navbar Component -->
+<nav class="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Left: Logo + Tagline -->
+      <div class="flex items-center space-x-3">
+        <div class="bg-white text-blue-900 font-bold px-3 py-1 rounded-lg">VR</div>
+        <div>
+          <span class="font-bold text-lg">Virtual Reality</span>
+          <p class="text-xs text-blue-200">Home • Happiness • Honesty</p>
+        </div>
+      </div>
+
+      <!-- Spacer pushes links to the right -->
+      <div class="flex-1"></div>
+
+      <!-- Right: Desktop Links -->
+      <div class="hidden md:flex space-x-6">
+        <a href="index.html" class="hover:text-blue-300">Home</a>
+        <a href="about.html" class="hover:text-blue-300">About</a>
+        <a href="enquiry.html" class="hover:text-blue-300">Enquiry</a>
+         <a href="privacy.html" class="hover:text-blue-300">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-blue-300">Terms and Conditions</a>
+      </div>
+
+      <!-- Right: Email placeholder (blank for now) -->
+      <div class="hidden md:block">
+        <p class="text-sm italic text-blue-200"></p>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button id="menu-btn" class="focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Links -->
+  <div id="mobile-menu" class="hidden md:hidden bg-blue-800 px-4 py-3 space-y-2">
+    <a href="index.html" class="block hover:text-blue-300">Home</a>
+    <a href="about.html" class="block hover:text-blue-300">About</a>
+    <a href="enquiry.html" class="block hover:text-blue-300">Enquiry</a>
+    <a href="privacy.html" class="block hover:text-blue-300">Privacy Policy</a>
+    <a href="terms.html" class="block hover:text-blue-300">Terms and Conditions</a>
+  </div>
+</nav>
+
+<script>
+  // Toggle mobile menu
+  const btn = document.getElementById("menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
+
+
+  <!-- Top bar / Header -->
+  <header class="w-full">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5">
+      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <!-- Left: Banner -->
+        <div class="flex items-start gap-4">
+          <!-- Simple logo badge -->
+          <div class="shrink-0 rounded-xl bg-white/10 backdrop-blur p-3 ring-1 ring-white/15">
+            <!-- VR monogram -->
+            <span class="block font-bold text-xl leading-none">VR</span>
+          </div>
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Virtual Reality</h1>
+            <p class="text-sm sm:text-base text-blue-100/90">Home • Happiness • Honesty</p>
+          </div>
+        </div>
+
+        <!-- Right: Address (formal tone) -->
+        <address class="not-italic text-sm sm:text-base bg-white/5 rounded-xl p-4 ring-1 ring-white/10">
+          <div class="font-semibold uppercase tracking-wide text-blue-100/90 mb-1">Office Address</div>
+          <div>Office No. 202, 2nd Floor</div>
+          <div>Mspace Mall, Near Mahindra Antheia</div>
+          <div>Pimpri, Pune 411018</div>
+        </address>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero / Intro -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 sm:p-8">
+      <h2 class="text-xl sm:text-2xl font-bold">Find your next home with Virtual Reality</h2>
+      <p class="mt-2 text-blue-100/90">
+"Explore a wide range of curated properties across the city, from premium residences to smart investment opportunities designed to match your lifestyle and goals."
+      </p>
+      <div class="mt-4">
+        <button
+          class="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-white text-blue-900 font-semibold shadow hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/40"
+          data-open-modal
+          aria-haspopup="dialog"
+        >
+          Contact Now
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Cards -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Card: Pune -->
+      <article class="group rounded-2xl overflow-hidden bg-gradient-to-b from-white/10 to-white/5 ring-1 ring-white/10 hover:ring-white/30 transition">
+        <img src="images/pune.jpg" alt="Pune properties" class="w-full h-48 object-cover">
+
+        <div class="p-6">
+          <div class="h-12 w-12 rounded-lg bg-white/15 ring-1 ring-white/20 flex items-center justify-center mb-4">
+            <!-- City icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M4 21V8a1 1 0 011-1h3V5a1 1 0 011-1h6l3 3v14"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h2v2H9zM13 13h2v2h-2zM13 9h2v2h-2z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold">Explore Pune</h3>
+          <p class="mt-1 text-blue-100/90">Apartments, gated communities, and premium neighborhoods across Pimpri–Chinchwad and Pune city.</p>
+          <a href="enquiry.html"
+  class="mt-4 block w-full text-center rounded-lg px-4 py-2 bg-white text-blue-900 font-semibold shadow hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/40">
+  Enquire Now
+</a>
+
+        </div>
+      </article>
+
+      <!-- Card: Mumbai -->
+      <article class="group rounded-2xl overflow-hidden bg-gradient-to-b from-white/10 to-white/5 ring-1 ring-white/10 hover:ring-white/30 transition">
+        <img src="images/mumbai.jpg" alt="Mumbai properties" class="w-full h-48 object-cover">
+        <div class="p-6">
+          <div class="h-12 w-12 rounded-lg bg-white/15 ring-1 ring-white/20 flex items-center justify-center mb-4">
+            <!-- Skyline icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-width="1.5" d="M3 20h18M5 20V9h3v11M10 20V4h4v16M16 20v-7h3v7"/>
+              <path stroke-width="1.5" d="M12 6h.01M12 9h.01M12 12h.01M12 15h.01"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold">Explore Mumbai</h3>
+          <p class="mt-1 text-blue-100/90">From Western suburbs to Navi Mumbai—find homes close to business hubs and transit.</p>
+          <a href="enquiry.html"
+  class="mt-4 block w-full text-center rounded-lg px-4 py-2 bg-white text-blue-900 font-semibold shadow hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/40">
+  Enquire Now
+</a>
+
+        </div>
+      </article>
+
+      <!-- Card: Investment Homes -->
+      <article class="group rounded-2xl overflow-hidden bg-gradient-to-b from-white/10 to-white/5 ring-1 ring-white/10 hover:ring-white/30 transition">
+        <img src="images/hoilday-homes.jpg" alt="Investment homes" class="w-full h-48 object-cover">
+        <div class="p-6">
+          <div class="h-12 w-12 rounded-lg bg-white/15 ring-1 ring-white/20 flex items-center justify-center mb-4">
+            <!-- Growth/rupee icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-width="1.5" d="M4 12l4-4 4 4 6-6"/>
+              <path stroke-width="1.5" d="M10 8h8M10 12h4M10 16c2 2 5 2 8 0"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold">Holiday Homes</h3>
+          <p class="mt-1 text-blue-100/90">High‑yield projects, pre‑launch opportunities, and long‑term value picks, investments 
+            that cant be missed.</p>
+          </p>
+          <a href="enquiry.html"
+  class="mt-4 block w-full text-center rounded-lg px-4 py-2 bg-white text-blue-900 font-semibold shadow hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-white/40">
+  Enquire Now
+</a>
+
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- Modal Backdrop -->
+  <div id="contact-backdrop"
+       class="fixed inset-0 hidden items-end sm:items-center justify-center bg-black/50 z-50"
+       aria-hidden="true">
+    <!-- Modal -->
+    <div id="contact-modal"
+         class="fade-enter sm:max-w-md w-full sm:w-auto bg-white text-slate-800 rounded-t-2xl sm:rounded-2xl shadow-2xl">
+      <div class="p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-bold">Contact</h3>
+            <p class="text-slate-600">Get in touch with us now.</p>
+          </div>
+          <button class="p-2 rounded-md hover:bg-slate-100" data-close-modal aria-label="Close">
+            <!-- X icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-2">
+          <div class="font-semibold text-slate-900">DIPANKAR JAGTAP</div>
+          <div class="text-slate-700">
+            <a class="underline decoration-slate-300 hover:decoration-slate-700" href="tel:+918999643665">+91 89996 43665</a>
+          </div>
+          <div class="text-slate-700">
+  <a class="underline decoration-slate-300 hover:decoration-slate-700" href="mailto:myconnectvr@gmail.com">myconnectvr@gmail.com</a>
+ </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <a href="tel:+918999643665"
+             class="inline-flex items-center justify-center rounded-lg px-4 py-2 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+            Call
+          </a>
+          <a href="https://wa.me/918999643665"
+             class="inline-flex items-center justify-center rounded-lg px-4 py-2 bg-green-600 text-white font-semibold hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+             target="_blank" rel="noopener">
+            WhatsApp
+          </a>
+          <button id="copyBtn"
+             class="inline-flex items-center justify-center rounded-lg px-4 py-2 bg-slate-900 text-white font-semibold hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-400">
+            Copy Number
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <!-- Footer -->
+<footer class="bg-gradient-to-r from-blue-600 to-blue-800 text-white mt-10">
+  <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+    
+    <!-- Profile Section -->
+    <div class="flex items-center space-x-4">
+      <img src="images/profile-pic.png" alt="Dipankar Jagtap" class="w-20 h-20 rounded-full border-2 border-white object-cover">
+      <div>
+        <h3 class="text-xl font-bold">DIPANKAR JAGTAP</h3>
+        <p class="text-sm">Founder of Virtual Reality</p>
+        <p class="text-sm">20+ years of experience in the real estate industry</p>
+      </div>
+    </div>
+
+    <!-- Company Info -->
+    <div class="text-sm md:col-span-2">
+      <p class="mb-3">
+        Virtual Reality is one of the fastest-growing and most trusted real estate firms, dedicated to helping clients find their dream homes and secure smart investments. 
+        We pride ourselves on honesty, transparency, and delivering the best possible deals in the market.
+      </p>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bg-blue-900 text-center text-xs py-4">
+    &copy; 2025 Virtual Reality. All rights reserved.
+  </div>
+
+
+
+  <!-- Minimal JS for modal + a11y + copy -->
+  <script>
+    const openers = document.querySelectorAll('[data-open-modal]');
+    const backdrop = document.getElementById('contact-backdrop');
+    const modal = document.getElementById('contact-modal');
+    const closer = document.querySelector('[data-close-modal]');
+    const copyBtn = document.getElementById('copyBtn');
+    const phoneRaw = '+918999643665';
+
+    function showModal() {
+      backdrop.classList.remove('hidden');
+      // enter animation
+      modal.classList.remove('fade-exit','fade-exit-active');
+      modal.classList.add('fade-enter');
+      requestAnimationFrame(() => modal.classList.add('fade-enter-active'));
+      // focus trap start
+      closer.focus();
+      document.addEventListener('keydown', onKey);
+    }
+
+    function hideModal() {
+      modal.classList.remove('fade-enter','fade-enter-active');
+      modal.classList.add('fade-exit');
+      requestAnimationFrame(() => {
+        modal.classList.add('fade-exit-active');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+          document.removeEventListener('keydown', onKey);
+        }, 140);
+      });
+    }
+
+    function onKey(e) {
+      if (e.key === 'Escape') hideModal();
+    }
+
+    openers.forEach(btn => btn.addEventListener('click', showModal));
+    closer.addEventListener('click', hideModal);
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) hideModal();
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(phoneRaw);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy Number', 1200);
+      } catch {
+        alert('Number: ' + phoneRaw);
+      }
+    });
+
+    // year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+  </script>
+  
+
+</body>
+</html>
