@@ -19,7 +19,7 @@ const auth = new google.auth.GoogleAuth({
 const sheets = google.sheets({ version: "v4", auth });
 
 export const addToGoogleSheet = async (data) => {
-  const spreadsheetId = process.env.GOOGLE_SHEET_ID; // from env
+ const spreadsheetId = process.env.SPREADSHEET_ID;// from env
   const range = "Enquiries!A:D";
 
   await sheets.spreadsheets.values.append({
