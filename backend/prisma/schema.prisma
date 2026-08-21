@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  LIMITED
+  SOLD_OUT
+}
+
+enum ProjectStatus {
+  UPCOMING
+  ONGOING
+  READY_TO_MOVE
+  COMPLETED
+  SOLD_OUT
+}
+
+enum MediaType {
+  IMAGE
+  DOCUMENT
+  VIDEO
+}
+
+enum MediaCategory {
+  HERO
+  HERO_CAROUSEL
+  GALLERY
+  AMENITY
+  EXTERIOR
+  INTERIOR
+  LOCATION
+  CONSTRUCTION
+  FLOOR_PLAN
+  BROCHURE
+  PROJECT_VIDEO
+}
+
+enum MediaSource {
+  MANUAL
+  SCRAPED
+  IMPORTED
+}
+
+model Developer {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  logoUrl     String?
+  websiteUrl  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  projects    Project[]
+}
+
+model Configuration {
+  id                String           @id @default(uuid())
+  name              String
+  bhk               Int
+  carpetArea        Int
+  builtUpArea       Int?
+  superBuiltUpArea  Int?
+  priceFrom         BigInt
+  availabilityStatus AvailabilityStatus
+  projectId         String
+  project           Project          @relation(fields: [projectId], references: [id])
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  media             Media[]
+}
+
+model Project {
+  id             String        @id @default(uuid())
+  developerId    String
+  developer      Developer     @relation(fields: [developerId], references: [id])
+  name           String
+  slug           String        @unique
+  description    String?
+  locationName   String
+  address        String
+  mapsUrl        String?
+  status         ProjectStatus
+  featured       Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  configurations Configuration[]
+  media          Media[]
+}
+
+model Media {
+  id              String         @id @default(uuid())
+  projectId       String?
+  project         Project?       @relation(fields: [projectId], references: [id])
+  configurationId String?
+  configuration   Configuration? @relation(fields: [configurationId], references: [id])
+  type            MediaType
+  category        MediaCategory
+  title           String?
+  url             String
+  thumbnailUrl    String?
+  altText         String?
+  sortOrder       Int            @default(0)
+  isPrimary       Boolean        @default(false)
+  isActive        Boolean        @default(true)
+  source          MediaSource
+  sourceUrl       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
