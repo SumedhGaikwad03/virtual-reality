@@ -696,6 +696,29 @@ A feature is done when:
 
 ---
 
+## Execution-Only Mode
+
+The human developer determines:
+
+- Architecture
+- Technology choices
+- Database design
+- Feature scope
+- File creation order
+- Business rules
+
+The AI coding agent should execute explicit instructions.
+
+Do not independently redesign the architecture.
+Do not independently choose technologies.
+Do not expand the scope of a task.
+Do not implement future roadmap items.
+Do not create files that were not requested unless they are strictly necessary to complete the requested task.
+
+When the human provides a file specification, implement that specification.
+
+If the requested implementation is impossible or technically inconsistent, explain the specific blocker before changing the design.
+
 # 26. Final Rule
 
 When in doubt:
