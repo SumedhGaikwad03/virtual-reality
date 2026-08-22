@@ -52,6 +52,12 @@ enum MediaSource {
   IMPORTED
 }
 
+enum LeadStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+}
+
 model Developer {
   id          String   @id @default(uuid())
   name        String
@@ -78,6 +84,7 @@ model Configuration {
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   media             Media[]
+  leads             Lead[]
 }
 
 model Project {
@@ -88,6 +95,7 @@ model Project {
   slug           String        @unique
   description    String?
   locationName   String
+  locationSlug   String
   address        String
   mapsUrl        String?
   status         ProjectStatus
@@ -96,6 +104,7 @@ model Project {
   updatedAt      DateTime      @updatedAt
   configurations Configuration[]
   media          Media[]
+  leads          Lead[]
 }
 
 model Media {
@@ -117,4 +126,41 @@ model Media {
   sourceUrl       String?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+}
+
+model Lead {
+  id              String        @id @default(uuid())
+  name            String
+  phone           String
+  email           String?
+  projectId       String?
+  project         Project?      @relation(fields: [projectId], references: [id])
+  configurationId String?
+  configuration   Configuration? @relation(fields: [configurationId], references: [id])
+  message         String?
+  status          LeadStatus    @default(NEW)
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Admin {
+  id                  String              @id @default(uuid())
+  email               String              @unique
+  passwordHash        String
+  name                String?
+  isActive            Boolean             @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  passwordResetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  adminId   String
+  admin     Admin     @relation(fields: [adminId], references: [id])
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 }

@@ -1,0 +1,511 @@
+:root {
+  font-family: Arial, sans-serif;
+  color: #172033;
+  background: #f7f9fc;
+}
+
+body {
+  margin: 0;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #172f68;
+}
+
+nav a {
+  color: white;
+}
+
+main,
+h1 {
+  margin: 2rem;
+}
+
+.project-page {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.project-header,
+.project-page section,
+.configuration-item,
+.media-item {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.project-hero-image {
+  display: block;
+  width: 100%;
+  max-height: 28rem;
+  object-fit: cover;
+}
+
+.configuration-list,
+.media-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.media-item img,
+.media-item video {
+  display: block;
+  width: 100%;
+  max-height: 18rem;
+  object-fit: contain;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+  max-width: 36rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+input,
+select,
+textarea,
+button {
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.6rem;
+}
+
+textarea {
+  min-height: 6rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+.developer-page {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.developer-header,
+.developer-page section,
+.developer-project-card {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.developer-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.developer-header img,
+.developer-logo-fallback {
+  width: 5rem;
+  height: 5rem;
+  object-fit: contain;
+}
+
+.developer-logo-fallback {
+  display: grid;
+  place-items: center;
+  background: #e8eef9;
+  color: #172f68;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.developer-project-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.developer-project-card img,
+.project-image-fallback {
+  display: block;
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+}
+
+.project-image-fallback {
+  display: grid;
+  place-items: center;
+  background: #eef2f7;
+  color: #526176;
+}
+
+.home-page {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.firm-hero,
+.home-page section,
+.featured-project-card {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.firm-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.firm-hero img,
+.firm-logo-fallback {
+  width: 5rem;
+  height: 5rem;
+  object-fit: contain;
+}
+
+.firm-logo-fallback {
+  display: grid;
+  place-items: center;
+  background: #e8eef9;
+  color: #172f68;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.featured-project-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.featured-project-card img {
+  display: block;
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+}
+
+.home-page section a {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.search-page {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.property-search-form {
+  max-width: 42rem;
+}
+
+.property-search-results {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.property-search-result {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.admin-login-page {
+  display: grid;
+  min-height: calc(100vh - 4rem);
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+.admin-login-form {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 24rem);
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.admin-layout {
+  display: grid;
+  min-height: calc(100vh - 4rem);
+  grid-template-columns: 12rem 1fr;
+}
+
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: #172f68;
+  color: white;
+}
+
+.admin-sidebar a,
+.admin-sidebar button {
+  color: white;
+}
+
+.admin-sidebar nav {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  background: transparent;
+}
+
+.admin-nav-placeholder {
+  color: #dbe7ff;
+}
+
+.admin-sidebar button {
+  margin-top: auto;
+  background: transparent;
+  border: 1px solid #dbe7ff;
+}
+
+.admin-content {
+  padding: 2rem;
+}
+
+.admin-page-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-card {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.admin-developer-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-developer-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-developer-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-developer-row h2,
+.admin-developer-row p {
+  margin: 0;
+}
+
+.admin-developer-logo {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.admin-developer-logo-fallback {
+  display: grid;
+  place-items: center;
+  background: #e8eef9;
+  color: #172f68;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.admin-developer-form {
+  max-width: 36rem;
+}
+
+.admin-project-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-project-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-project-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-project-row h2,
+.admin-project-row p {
+  margin: 0;
+}
+
+.admin-project-form {
+  max-width: 42rem;
+}
+
+.admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-configuration-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-configuration-row {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-configuration-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-configuration-row h2,
+.admin-configuration-row p {
+  margin: 0;
+}
+
+.admin-configuration-form {
+  max-width: 36rem;
+}
+
+.admin-lead-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-lead-row {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(4, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-lead-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-lead-row h2,
+.admin-lead-row p {
+  margin: 0;
+}
+
+.admin-lead-details,
+.admin-lead-update-form {
+  max-width: 42rem;
+  margin-top: 1rem;
+}
+
+.admin-import-url-form,
+.admin-import-preview {
+  max-width: 52rem;
+}
+
+.admin-import-preview {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.admin-import-configuration {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dbe2ef;
+}
+
+.admin-media-upload-form,
+.admin-media-edit-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-media-upload-form {
+  max-width: 42rem;
+  margin: 1rem 0;
+}
+
+.admin-media-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.admin-media-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-media-card img,
+.admin-media-card video {
+  display: block;
+  width: 100%;
+  max-height: 16rem;
+  object-fit: contain;
+  background: #eef2f7;
+}
+
+.admin-media-card h2,
+.admin-media-card p {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    min-height: auto;
+  }
+
+  .admin-sidebar button {
+    margin-top: 0;
+  }
+}
