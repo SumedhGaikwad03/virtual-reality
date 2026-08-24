@@ -1,9 +1,12 @@
 import { FormEvent, useState } from "react";
+import type { RefObject } from "react";
 import { createLead, LeadApiError } from "../../api/lead";
 import type { Configuration, Project } from "../../types/project";
 
 type LeadSectionProps = {
   project: Project;
+  selectedConfigurationId?: string | null;
+  contactRef?: RefObject<HTMLFormElement | null>;
 };
 
 type LeadFormState = {
@@ -22,18 +25,29 @@ const initialForm: LeadFormState = {
   message: "",
 };
 
-export function LeadSection({ project }: LeadSectionProps) {
-  const [form, setForm] = useState(initialForm);
+export function LeadSection({
+  project,
+  selectedConfigurationId,
+  contactRef,
+}: LeadSectionProps) {
+  const [form, setForm] = useState<LeadFormState>({
+    ...initialForm,
+    configurationId: selectedConfigurationId ?? "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function updateField(field: keyof LeadFormState, value: string) {
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
     setError(null);
     setSubmitted(false);
 
@@ -55,6 +69,7 @@ export function LeadSection({ project }: LeadSectionProps) {
           : {}),
         ...(form.message.trim() ? { message: form.message.trim() } : {}),
       });
+
       setForm(initialForm);
       setSubmitted(true);
     } catch (submitError) {
@@ -71,33 +86,49 @@ export function LeadSection({ project }: LeadSectionProps) {
   return (
     <section>
       <h2>Enquire about this project</h2>
-      {submitted && <p role="status">Your enquiry has been submitted.</p>}
+
+      {submitted && (
+        <p role="status">
+          Your enquiry has been submitted.
+        </p>
+      )}
+
       {error && <p role="alert">{error}</p>}
-      <form onSubmit={handleSubmit}>
+
+      <form ref={contactRef} onSubmit={handleSubmit}>
         <label>
           Name
           <input
             required
             value={form.name}
-            onChange={(event) => updateField("name", event.target.value)}
+            onChange={(event) =>
+              updateField("name", event.target.value)
+            }
           />
         </label>
+
         <label>
           Phone
           <input
             required
             value={form.phone}
-            onChange={(event) => updateField("phone", event.target.value)}
+            onChange={(event) =>
+              updateField("phone", event.target.value)
+            }
           />
         </label>
+
         <label>
           Email
           <input
             type="email"
             value={form.email}
-            onChange={(event) => updateField("email", event.target.value)}
+            onChange={(event) =>
+              updateField("email", event.target.value)
+            }
           />
         </label>
+
         {project.configurations.length > 0 && (
           <label>
             Configuration
@@ -108,21 +139,31 @@ export function LeadSection({ project }: LeadSectionProps) {
               }
             >
               <option value="">Any configuration</option>
-              {project.configurations.map((configuration: Configuration) => (
-                <option key={configuration.id} value={configuration.id}>
-                  {configuration.name}
-                </option>
-              ))}
+
+              {project.configurations.map(
+                (configuration: Configuration) => (
+                  <option
+                    key={configuration.id}
+                    value={configuration.id}
+                  >
+                    {configuration.name}
+                  </option>
+                ),
+              )}
             </select>
           </label>
         )}
+
         <label>
           Message
           <textarea
             value={form.message}
-            onChange={(event) => updateField("message", event.target.value)}
+            onChange={(event) =>
+              updateField("message", event.target.value)
+            }
           />
         </label>
+
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit enquiry"}
         </button>

@@ -20,6 +20,7 @@ const app = express();
 app.use("/api/developers", projectRoutes);
 app.use("/api/developers", developerRoutes);
 app.use("/api/search", searchRoutes);
+//console.log("SEARCH ROUTES REGISTERED");
 app.use("/api/site", siteRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/admin/auth", authRoutes);

@@ -1,3 +1,4 @@
+/*
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -76,6 +77,7 @@ export function SearchPage() {
         <h1>Search properties</h1>
         <p>Find properties by location, BHK, price, or project.</p>
       </header>
+
       <SearchInput
         value={input}
         isSearching={isSearching}
@@ -86,6 +88,7 @@ export function SearchPage() {
         }}
         onSubmit={handleSubmit}
       />
+
       <SearchResults
         query={queryFromUrl}
         results={results}
@@ -93,6 +96,22 @@ export function SearchPage() {
         hasError={hasError}
         validationError={validationError}
       />
+    </main>
+  );
+}
+*/
+
+import { PropertySearchBuilder } from "../components/search/PropertySearchBuilder";
+
+export function SearchPage() {
+  return (
+    <main className="search-page">
+      <header>
+        <h1>Find Your Property</h1>
+        <p>Tell us what you're looking for.</p>
+      </header>
+
+      <PropertySearchBuilder />
     </main>
   );
 }

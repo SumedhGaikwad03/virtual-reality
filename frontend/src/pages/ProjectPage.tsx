@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import { getProject, ProjectApiError } from "../api/project";
 import { ConfigurationSection } from "../components/project/ConfigurationSection";
 import { HeroSection } from "../components/project/HeroSection";
@@ -15,6 +15,12 @@ export function ProjectPage() {
     locationSlug: string;
     projectSlug: string;
   }>();
+
+  const [searchParams] = useSearchParams();
+  const configurationId = searchParams.get("configuration");
+
+  const contactRef = useRef<HTMLFormElement | null>(null);
+
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<"not-found" | "error" | null>(
@@ -27,6 +33,7 @@ export function ProjectPage() {
     if (!developerSlug || !locationSlug || !projectSlug) {
       setIsLoading(false);
       setLoadError("error");
+
       return () => controller.abort();
     }
 
@@ -34,7 +41,12 @@ export function ProjectPage() {
     setLoadError(null);
     setProject(null);
 
-    getProject(developerSlug, locationSlug, projectSlug, controller.signal)
+    getProject(
+      developerSlug,
+      locationSlug,
+      projectSlug,
+      controller.signal,
+    )
       .then(setProject)
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError") {
@@ -56,6 +68,15 @@ export function ProjectPage() {
     return () => controller.abort();
   }, [developerSlug, locationSlug, projectSlug]);
 
+  function handleContactClick() {
+    contactRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    contactRef.current?.querySelector<HTMLInputElement>("input")?.focus();
+  }
+
   if (isLoading) {
     return <p>Loading project...</p>;
   }
@@ -71,11 +92,27 @@ export function ProjectPage() {
   return (
     <main className="project-page">
       <ProjectHeader project={project} />
+
+      <button type="button" onClick={handleContactClick}>
+        Contact Now
+      </button>
+
       <HeroSection media={project.media} />
+
       <ProjectOverview project={project} />
-      <ConfigurationSection configurations={project.configurations} />
+
+      <ConfigurationSection
+        configurations={project.configurations}
+        selectedConfigurationId={configurationId}
+      />
+
       <MediaSection media={project.media} />
-      <LeadSection project={project} />
+
+      <LeadSection
+        project={project}
+        selectedConfigurationId={configurationId}
+        contactRef={contactRef}
+      />
     </main>
   );
 }

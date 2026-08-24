@@ -2,10 +2,12 @@ import type { Configuration } from "../../types/project";
 
 type ConfigurationSectionProps = {
   configurations: Configuration[];
+  selectedConfigurationId?: string | null;
 };
 
 export function ConfigurationSection({
   configurations,
+  selectedConfigurationId,
 }: ConfigurationSectionProps) {
   return (
     <section>
@@ -15,7 +17,14 @@ export function ConfigurationSection({
       ) : (
         <div className="configuration-list">
           {configurations.map((configuration) => (
-            <article key={configuration.id} className="configuration-item">
+           <article
+  key={configuration.id}
+  className={
+    configuration.id === selectedConfigurationId
+      ? "configuration-item selected"
+      : "configuration-item"
+  }
+>
               <h3>{configuration.name}</h3>
               <p>BHK: {configuration.bhk}</p>
               <p>Carpet area: {configuration.carpetArea} sq ft</p>
