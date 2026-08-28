@@ -1,0 +1,136 @@
+/*
+ * PURPOSE:
+ * Owns public Project-domain presentation styles.
+ *
+ * FLOW:
+ * ProjectPage -> Project sections/components -> Project-specific styles.
+ *
+ * RESPONSIBILITY:
+ * Define Project page structure, showcase carousel controls/stages, and presentation
+ * while Configuration, Media, and shared primitives remain owned by their respective stylesheets.
+ */
+
+.project-page {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.project-header,
+.project-page section {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.project-hero-image {
+  display: block;
+  width: 100%;
+  max-height: 28rem;
+  object-fit: cover;
+}
+
+.project-hero-carousel:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+}
+
+.project-hero-carousel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.project-hero-carousel-header h2 {
+  margin: 0;
+}
+
+.project-hero-carousel-counter {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #526176;
+  background: #eef2f7;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.25rem;
+}
+
+.project-hero-carousel-stage {
+  display: grid;
+  place-items: center;
+}
+
+.project-hero-carousel-item {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.project-hero-carousel-item img,
+.project-hero-carousel-item video {
+  display: block;
+  width: 100%;
+  max-height: 24rem;
+  object-fit: contain;
+}
+
+.project-hero-carousel-caption {
+  margin-top: 0.75rem;
+}
+
+.project-hero-carousel-caption h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #172033;
+}
+
+.project-hero-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #dbe2ef;
+}
+
+.project-hero-carousel-btn {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  background: #172f68;
+  color: white;
+  border: 1px solid #172f68;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.project-hero-carousel-btn:hover {
+  background: #10214a;
+}
+
+.project-hero-carousel-btn:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+}
+
+.project-hero-carousel-counter-mobile {
+  display: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #526176;
+}
+
+@media (max-width: 480px) {
+  .project-hero-carousel-counter {
+    display: none;
+  }
+
+  .project-hero-carousel-counter-mobile {
+    display: inline-block;
+  }
+}

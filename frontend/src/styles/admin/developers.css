@@ -1,0 +1,53 @@
+/*
+ * PURPOSE:
+ * Owns Developer administration visual styles.
+ *
+ * FLOW:
+ * DevelopersPage / DeveloperFormPage -> Developer admin components -> Developer admin selectors.
+ *
+ * RESPONSIBILITY:
+ * Isolate Developer admin list, row, logo fallback, and form presentation rules.
+ */
+
+.admin-developer-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-developer-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-developer-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-developer-row h2,
+.admin-developer-row p {
+  margin: 0;
+}
+
+.admin-developer-logo {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.admin-developer-logo-fallback {
+  display: grid;
+  place-items: center;
+  background: #e8eef9;
+  color: #172f68;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.admin-developer-form {
+  max-width: 36rem;
+}

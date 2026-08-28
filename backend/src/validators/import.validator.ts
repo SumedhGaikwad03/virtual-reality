@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * URL import analysis request validation middleware.
+ *
+ * FLOW:
+ * Admin Project Import Flow
+ *
+ * RESPONSIBILITY:
+ * Validates external URL strings, enforcing valid HTTP and HTTPS protocols before passing to the scraper.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 
 function validationError(message: string) {
@@ -5,6 +16,7 @@ function validationError(message: string) {
   Object.assign(error, { code: "INVALID_IMPORT_REQUEST", statusCode: 400 });
   return error;
 }
+
 
 export type AnalyzeImportBody = { url?: unknown };
 

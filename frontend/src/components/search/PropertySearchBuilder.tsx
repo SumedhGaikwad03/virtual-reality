@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Guided interactive property search builder UI.
+ *
+ * FLOW:
+ * Guided Search Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Renders the multi-turn conversational question-and-answer interface for property discovery,
+ * allowing users to select preference options, view matching properties, undo previous answers, or reset.
+ */
+
 import { useSearchChat } from "../../hooks/useSearchChat";
 import { PropertyResultCard } from "./PropertyResultCard";
 
@@ -25,13 +37,14 @@ export function PropertySearchBuilder() {
     return null;
   }
 
+  // Generates dynamic question options based on remaining candidate properties in the catalog
   const options = state.nextRule
     ? state.nextRule.getOptions(catalog, state.query)
     : [];
 
   return (
     <section className="search-chat">
-      {/* Conversation */}
+      {/* Conversational message history */}
       <div className="search-chat-messages">
         {messages.map((message) => (
           <div
@@ -43,7 +56,7 @@ export function PropertySearchBuilder() {
         ))}
       </div>
 
-      {/* Current question options */}
+      {/* Dynamic options for the current active question rule */}
       {state.nextRule && options.length > 0 && (
         <div className="search-chat-options">
           {options.map((option) => (
@@ -58,7 +71,7 @@ export function PropertySearchBuilder() {
         </div>
       )}
 
-      {/* Results */}
+      {/* Property results displayed when search criteria are sufficiently narrowed or completed */}
       {state.isReady && (
         <section className="search-chat-results">
           <h2>Properties matching your search</h2>
@@ -75,7 +88,7 @@ export function PropertySearchBuilder() {
         </section>
       )}
 
-      {/* Controls */}
+      {/* Navigation and reset controls */}
       <div className="search-chat-controls">
         {messages.length > 1 && (
           <button type="button" onClick={goBack}>

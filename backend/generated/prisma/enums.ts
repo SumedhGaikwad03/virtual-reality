@@ -29,6 +29,14 @@ export const ProjectStatus = {
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
+export const PublishStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type PublishStatus = (typeof PublishStatus)[keyof typeof PublishStatus]
+
+
 export const MediaType = {
   IMAGE: 'IMAGE',
   DOCUMENT: 'DOCUMENT',
@@ -41,6 +49,7 @@ export type MediaType = (typeof MediaType)[keyof typeof MediaType]
 export const MediaCategory = {
   HERO: 'HERO',
   HERO_CAROUSEL: 'HERO_CAROUSEL',
+  CARD: 'CARD',
   GALLERY: 'GALLERY',
   AMENITY: 'AMENITY',
   EXTERIOR: 'EXTERIOR',
@@ -71,3 +80,13 @@ export const LeadStatus = {
 } as const
 
 export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
+
+
+export const MediaContext = {
+  HOME: 'HOME',
+  DEVELOPER: 'DEVELOPER',
+  PROJECT: 'PROJECT',
+  CONFIGURATION: 'CONFIGURATION'
+} as const
+
+export type MediaContext = (typeof MediaContext)[keyof typeof MediaContext]

@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Public developer API client.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Performs GET /api/developers/:developerSlug HTTP requests, validates response shapes,
+ * and provides typed errors.
+ */
+
 import { API_BASE_URL } from "./config";
 import type { PublicDeveloper } from "../types/developer";
 
@@ -26,7 +38,11 @@ export async function getDeveloper(
     if (error instanceof DOMException && error.name === "AbortError") {
       throw error;
     }
-    throw new DeveloperApiError("Developer request failed", null);
+
+    throw new DeveloperApiError(
+      "Developer request failed",
+      null,
+    );
   }
 
   if (!response.ok) {
@@ -41,7 +57,10 @@ export async function getDeveloper(
   const body: unknown = await response.json();
 
   if (!isDeveloperResponse(body)) {
-    throw new DeveloperApiError("Invalid developer response", response.status);
+    throw new DeveloperApiError(
+      "Invalid developer response",
+      response.status,
+    );
   }
 
   return body.data;

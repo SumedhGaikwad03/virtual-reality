@@ -1,3 +1,17 @@
+/*
+ * PURPOSE:
+ * Configuration data access repository.
+ *
+ * FLOW:
+ * Configuration Persistence Flow
+ *
+ * RESPONSIBILITY:
+ * Executes Prisma queries for Configuration persistence:
+ * - Creates configurations with BigInt priceFrom.
+ * - Retrieves configurations by project ID ordered by BHK asc, name asc, id asc.
+ * - Finds and updates configurations by ID.
+ */
+
 import { prisma } from "../lib/prisma.js";
 import type { AvailabilityStatus } from "../../generated/prisma/enums.js";
 
@@ -35,7 +49,10 @@ export class ConfigurationRepository {
   findManyByProjectId(projectId: string) {
     return prisma.configuration.findMany({
       where: { projectId },
+      // Standard ordering: lowest BHK first, then alphabetically by name, then deterministic ID
       orderBy: [{ bhk: "asc" }, { name: "asc" }, { id: "asc" }],
+      // Bounded project configuration limit: Caps unit configurations per project to 50 items
+      take: 50,
       select: configurationSelect,
     });
   }

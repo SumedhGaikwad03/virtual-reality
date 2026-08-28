@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Lead data access repository.
+ *
+ * FLOW:
+ * Lead Capture and Admin Lead Management Flow
+ *
+ * RESPONSIBILITY:
+ * Executes Prisma queries for Lead persistence: create, findMany (bounded), findById, and update.
+ */
+
 import { prisma } from "../lib/prisma.js";
 import type { LeadStatus } from "../../generated/prisma/enums.js";
 
@@ -33,6 +44,8 @@ export class LeadRepository {
   findMany() {
     return prisma.lead.findMany({
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      // Bounded administrative lead limit: Returns the 100 most recent leads to prevent unbounded table reads
+      take: 100,
       select: leadSelect,
     });
   }
@@ -47,3 +60,4 @@ export class LeadRepository {
 }
 
 export const leadRepository = new LeadRepository();
+

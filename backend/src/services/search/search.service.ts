@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Property search application service.
+ *
+ * FLOW:
+ * Natural Language Search Service Flow
+ *
+ * RESPONSIBILITY:
+ * Coordinates property search queries with the repository and transforms configuration entities
+ * into public search result DTOs with BigInt prices serialized to strings.
+ */
+
 import { searchRepository } from "../../repositories/search.repository.js";
 import type { PropertySearchQuery } from "./query-generator.service.js";
 

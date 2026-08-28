@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -26,6 +24,11 @@ enum ProjectStatus {
   SOLD_OUT
 }
 
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+}
+
 enum MediaType {
   IMAGE
   DOCUMENT
@@ -35,6 +38,7 @@ enum MediaType {
 enum MediaCategory {
   HERO
   HERO_CAROUSEL
+  CARD
   GALLERY
   AMENITY
   EXTERIOR
@@ -59,89 +63,162 @@ enum LeadStatus {
 }
 
 model Developer {
-  id          String   @id @default(uuid())
-  name        String
-  slug        String   @unique
-  description String?
-  logoUrl     String?
-  websiteUrl  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  projects    Project[]
+  id            String        @id @default(uuid())
+  name          String
+  slug          String        @unique
+  description   String?
+  logoUrl       String?
+  websiteUrl    String?
+  publishStatus PublishStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projects Project[]
+  media    Media[]
 }
 
 model Configuration {
-  id                String           @id @default(uuid())
-  name              String
-  bhk               Int
-  carpetArea        Int
-  builtUpArea       Int?
-  superBuiltUpArea  Int?
-  priceFrom         BigInt
+  id                 String             @id @default(uuid())
+  name               String
+  bhk                Int
+  carpetArea         Int
+  builtUpArea        Int?
+  superBuiltUpArea   Int?
+  priceFrom          BigInt
   availabilityStatus AvailabilityStatus
-  projectId         String
-  project           Project          @relation(fields: [projectId], references: [id])
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  media             Media[]
-  leads             Lead[]
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media Media[]
+  leads Lead[]
+
+  @@index([projectId])
 }
 
 model Project {
-  id             String        @id @default(uuid())
-  developerId    String
-  developer      Developer     @relation(fields: [developerId], references: [id])
-  name           String
-  slug           String        @unique
-  description    String?
-  locationName   String
-  locationSlug   String
-  address        String
-  mapsUrl        String?
-  status         ProjectStatus
-  featured       Boolean       @default(false)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id            String        @id @default(uuid())
+  developerId   String
+  developer     Developer     @relation(fields: [developerId], references: [id])
+
+  name          String
+  slug          String
+  description   String?
+  locationName  String
+  locationSlug  String
+  address       String
+  mapsUrl       String?
+  status        ProjectStatus
+  featured      Boolean       @default(false)
+  publishStatus PublishStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   configurations Configuration[]
   media          Media[]
+  highlights     ProjectHighlight[]
+  amenities      ProjectAmenity[]
   leads          Lead[]
+
+  @@unique([developerId, slug])
+  @@index([developerId])
+  @@index([publishStatus, featured])
+}
+
+model ProjectHighlight {
+  id        String  @id @default(uuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  text      String
+  sortOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+model ProjectAmenity {
+  id        String  @id @default(uuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  name      String
+  sortOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
 }
 
 model Media {
   id              String         @id @default(uuid())
+
+  developerId     String?
+  developer       Developer?     @relation(fields: [developerId], references: [id], onDelete: SetNull)
+
   projectId       String?
-  project         Project?       @relation(fields: [projectId], references: [id])
+  project         Project?       @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
   configurationId String?
-  configuration   Configuration? @relation(fields: [configurationId], references: [id])
+  configuration   Configuration? @relation(fields: [configurationId], references: [id], onDelete: SetNull)
+
+  context         MediaContext
+  slot            String?
+
   type            MediaType
   category        MediaCategory
+
   title           String?
   url             String
   thumbnailUrl    String?
   altText         String?
+
   sortOrder       Int            @default(0)
   isPrimary       Boolean        @default(false)
   isActive        Boolean        @default(true)
+
   source          MediaSource
   sourceUrl       String?
+
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+
+  @@index([developerId])
+  @@index([projectId])
+  @@index([configurationId])
+  @@index([context, isActive])
 }
 
 model Lead {
-  id              String        @id @default(uuid())
-  name            String
-  phone           String
-  email           String?
-  projectId       String?
-  project         Project?      @relation(fields: [projectId], references: [id])
+  id    String @id @default(uuid())
+  name  String
+  phone String
+  email String?
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
+
   configurationId String?
   configuration   Configuration? @relation(fields: [configurationId], references: [id])
-  message         String?
-  status          LeadStatus    @default(NEW)
-  notes           String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+
+  message String?
+  status  LeadStatus @default(NEW)
+  notes   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([configurationId])
+  @@index([status])
 }
 
 model Admin {
@@ -163,4 +240,13 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+
+  @@index([adminId])
+}
+
+enum MediaContext {
+  HOME
+  DEVELOPER
+  PROJECT
+  CONFIGURATION
 }

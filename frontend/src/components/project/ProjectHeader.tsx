@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Renders the top brand header section for a project on the public project page.
+ *
+ * FLOW:
+ * Public Project Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Displays developer name, project title, location name, and status badge.
+ */
+
 import type { Project } from "../../types/project";
 
 type ProjectHeaderProps = {

@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Text search result card component.
+ *
+ * FLOW:
+ * Natural Language Search Presentation Flow
+ *
+ * RESPONSIBILITY:
+ * Renders an individual property configuration match from direct text search API responses.
+ */
+
 import { Link } from "react-router-dom";
 import type { SearchResult } from "../../types/search";
 

@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Renders the project description and location details section on the public project page.
+ *
+ * FLOW:
+ * Public Project Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Displays project description narrative, street address, locality name, and external Google Maps link.
+ */
+
 import type { Project } from "../../types/project";
 
 type ProjectOverviewProps = {

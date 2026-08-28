@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin configuration HTTP controller.
+ *
+ * FLOW:
+ * Admin Configuration Management Flow
+ *
+ * RESPONSIBILITY:
+ * Handles HTTP requests for creating, listing, retrieving, and updating configurations,
+ * delegating business logic to the configuration service and returning standardized JSON responses.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import type { AvailabilityStatus } from "../../../generated/prisma/enums.js";
 import {

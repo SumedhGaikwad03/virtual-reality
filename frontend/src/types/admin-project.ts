@@ -1,3 +1,16 @@
+/*
+ * PURPOSE:
+ * Admin project domain type definitions.
+ *
+ * FLOW:
+ * Admin Project Management Flow
+ *
+ * RESPONSIBILITY:
+ * Defines TypeScript types for AdminProject entity, input payload, and API responses.
+ */
+
+import type { PublishStatus } from "./admin-developer";
+
 export type ProjectStatus =
   | "UPCOMING"
   | "ONGOING"
@@ -18,6 +31,7 @@ export type AdminProject = {
   mapsUrl: string | null;
   status: ProjectStatus;
   featured: boolean;
+  publishStatus: PublishStatus;
   createdAt: string;
   updatedAt: string;
 };
@@ -33,6 +47,7 @@ export type AdminProjectInput = {
   mapsUrl?: string;
   status: ProjectStatus;
   featured?: boolean;
+  publishStatus?: PublishStatus;
 };
 
 export type AdminProjectResponse = { data: AdminProject };

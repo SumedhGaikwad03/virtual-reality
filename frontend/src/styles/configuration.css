@@ -1,0 +1,24 @@
+/*
+ * PURPOSE:
+ * Owns public Configuration-domain visual styles.
+ *
+ * FLOW:
+ * ProjectPage -> Configuration components -> Configuration selectors.
+ *
+ * RESPONSIBILITY:
+ * Isolate configuration-specific presentation while shared visual
+ * primitives remain in the shared stylesheet.
+ */
+
+.configuration-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.configuration-item {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}

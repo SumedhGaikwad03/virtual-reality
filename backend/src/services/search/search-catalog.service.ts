@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Public search catalog application service.
+ *
+ * FLOW:
+ * Guided Search Catalog Service Flow
+ *
+ * RESPONSIBILITY:
+ * Retrieves published projects and configurations from the catalog repository and formats them
+ * into structured catalog response DTOs for client-side search.
+ */
+
 import { searchCatalogRepository } from "../../repositories/search-catalog.repository.js";
 
 export async function getSearchCatalog() {

@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Property search data access repository.
+ *
+ * FLOW:
+ * Property Search Persistence Flow
+ *
+ * RESPONSIBILITY:
+ * Executes dynamic Prisma queries against published configuration records matching query filters,
+ * strictly enforcing the publication boundary (Project AND Developer must be PUBLISHED).
+ */
+
 import { prisma } from "../lib/prisma.js";
 import type { PropertySearchQuery } from "../services/search/query-generator.service.js";
 
@@ -7,7 +19,10 @@ export class SearchRepository {
 
     return prisma.configuration.findMany({
       where: {
+        // Exact bedroom count matching
         ...(query.bhk === undefined ? {} : { bhk: query.bhk }),
+
+        // Carpet area boundary filter
         ...(query.minCarpetArea === undefined && query.maxCarpetArea === undefined
           ? {}
           : {
@@ -20,16 +35,26 @@ export class SearchRepository {
                   : { lte: query.maxCarpetArea }),
               },
             }),
+
+        // Maximum budget boundary in paise
         ...(query.maxPrice === undefined
           ? {}
           : { priceFrom: { lte: query.maxPrice } }),
+
+        // Availability status filter
         ...(query.availabilityStatus === undefined
           ? {}
           : { availabilityStatus: query.availabilityStatus }),
+
+        // Strict publication boundary: only published projects belonging to published developers are discoverable
         project: {
-          ...(query.developerSlug === undefined
-            ? {}
-            : { developer: { slug: query.developerSlug } }),
+          publishStatus: "PUBLISHED",
+          developer: {
+            publishStatus: "PUBLISHED",
+            ...(query.developerSlug === undefined
+              ? {}
+              : { slug: query.developerSlug }),
+          },
           ...(query.locationSlug === undefined
             ? {}
             : { locationSlug: query.locationSlug }),
@@ -41,6 +66,7 @@ export class SearchRepository {
             : { status: query.projectStatus }),
         },
       },
+      // Deterministic search result ordering
       orderBy: [
         { project: { featured: "desc" } },
         { project: { name: "asc" } },
@@ -48,6 +74,8 @@ export class SearchRepository {
         { name: "asc" },
         { id: "asc" },
       ],
+      // Bounded query limit: Caps search results to top 50 matches to prevent large payload memory spikes
+      take: 50,
       select: {
         id: true,
         name: true,

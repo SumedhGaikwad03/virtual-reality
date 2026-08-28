@@ -1,0 +1,46 @@
+/*
+ * PURPOSE:
+ * Owns Configuration administration visual styles.
+ *
+ * FLOW:
+ * ProjectConfigurationsPage / ConfigurationFormPage -> Configuration admin components -> Configuration admin selectors.
+ *
+ * RESPONSIBILITY:
+ * Isolate Configuration admin list, row grid, form, and import configuration preview styles.
+ */
+
+.admin-configuration-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-configuration-row {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-configuration-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-configuration-row h2,
+.admin-configuration-row p {
+  margin: 0;
+}
+
+.admin-configuration-form {
+  max-width: 36rem;
+}
+
+.admin-import-configuration {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dbe2ef;
+}

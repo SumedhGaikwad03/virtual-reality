@@ -36,6 +36,7 @@ export type ProjectMinAggregateOutputType = {
   mapsUrl: string | null
   status: $Enums.ProjectStatus | null
   featured: boolean | null
+  publishStatus: $Enums.PublishStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +53,7 @@ export type ProjectMaxAggregateOutputType = {
   mapsUrl: string | null
   status: $Enums.ProjectStatus | null
   featured: boolean | null
+  publishStatus: $Enums.PublishStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,6 +70,7 @@ export type ProjectCountAggregateOutputType = {
   mapsUrl: number
   status: number
   featured: number
+  publishStatus: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -86,6 +89,7 @@ export type ProjectMinAggregateInputType = {
   mapsUrl?: true
   status?: true
   featured?: true
+  publishStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -102,6 +106,7 @@ export type ProjectMaxAggregateInputType = {
   mapsUrl?: true
   status?: true
   featured?: true
+  publishStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,6 +123,7 @@ export type ProjectCountAggregateInputType = {
   mapsUrl?: true
   status?: true
   featured?: true
+  publishStatus?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -207,6 +213,7 @@ export type ProjectGroupByOutputType = {
   mapsUrl: string | null
   status: $Enums.ProjectStatus
   featured: boolean
+  publishStatus: $Enums.PublishStatus
   createdAt: Date
   updatedAt: Date
   _count: ProjectCountAggregateOutputType | null
@@ -244,11 +251,14 @@ export type ProjectWhereInput = {
   mapsUrl?: Prisma.StringNullableFilter<"Project"> | string | null
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
   featured?: Prisma.BoolFilter<"Project"> | boolean
+  publishStatus?: Prisma.EnumPublishStatusFilter<"Project"> | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   developer?: Prisma.XOR<Prisma.DeveloperScalarRelationFilter, Prisma.DeveloperWhereInput>
   configurations?: Prisma.ConfigurationListRelationFilter
   media?: Prisma.MediaListRelationFilter
+  highlights?: Prisma.ProjectHighlightListRelationFilter
+  amenities?: Prisma.ProjectAmenityListRelationFilter
   leads?: Prisma.LeadListRelationFilter
 }
 
@@ -264,22 +274,26 @@ export type ProjectOrderByWithRelationInput = {
   mapsUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   featured?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   developer?: Prisma.DeveloperOrderByWithRelationInput
   configurations?: Prisma.ConfigurationOrderByRelationAggregateInput
   media?: Prisma.MediaOrderByRelationAggregateInput
+  highlights?: Prisma.ProjectHighlightOrderByRelationAggregateInput
+  amenities?: Prisma.ProjectAmenityOrderByRelationAggregateInput
   leads?: Prisma.LeadOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  slug?: string
+  developerId_slug?: Prisma.ProjectDeveloperIdSlugCompoundUniqueInput
   AND?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   OR?: Prisma.ProjectWhereInput[]
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   developerId?: Prisma.StringFilter<"Project"> | string
   name?: Prisma.StringFilter<"Project"> | string
+  slug?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
   locationName?: Prisma.StringFilter<"Project"> | string
   locationSlug?: Prisma.StringFilter<"Project"> | string
@@ -287,13 +301,16 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   mapsUrl?: Prisma.StringNullableFilter<"Project"> | string | null
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
   featured?: Prisma.BoolFilter<"Project"> | boolean
+  publishStatus?: Prisma.EnumPublishStatusFilter<"Project"> | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   developer?: Prisma.XOR<Prisma.DeveloperScalarRelationFilter, Prisma.DeveloperWhereInput>
   configurations?: Prisma.ConfigurationListRelationFilter
   media?: Prisma.MediaListRelationFilter
+  highlights?: Prisma.ProjectHighlightListRelationFilter
+  amenities?: Prisma.ProjectAmenityListRelationFilter
   leads?: Prisma.LeadListRelationFilter
-}, "id" | "slug">
+}, "id" | "developerId_slug">
 
 export type ProjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -307,6 +324,7 @@ export type ProjectOrderByWithAggregationInput = {
   mapsUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   featured?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
@@ -329,6 +347,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   mapsUrl?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   status?: Prisma.EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
   featured?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
+  publishStatus?: Prisma.EnumPublishStatusWithAggregatesFilter<"Project"> | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
 }
@@ -344,11 +363,14 @@ export type ProjectCreateInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   developer: Prisma.DeveloperCreateNestedOneWithoutProjectsInput
   configurations?: Prisma.ConfigurationCreateNestedManyWithoutProjectInput
   media?: Prisma.MediaCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadCreateNestedManyWithoutProjectInput
 }
 
@@ -364,10 +386,13 @@ export type ProjectUncheckedCreateInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   configurations?: Prisma.ConfigurationUncheckedCreateNestedManyWithoutProjectInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightUncheckedCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityUncheckedCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -382,11 +407,14 @@ export type ProjectUpdateInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   developer?: Prisma.DeveloperUpdateOneRequiredWithoutProjectsNestedInput
   configurations?: Prisma.ConfigurationUpdateManyWithoutProjectNestedInput
   media?: Prisma.MediaUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUpdateManyWithoutProjectNestedInput
 }
 
@@ -402,10 +430,13 @@ export type ProjectUncheckedUpdateInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   configurations?: Prisma.ConfigurationUncheckedUpdateManyWithoutProjectNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUncheckedUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUncheckedUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -421,6 +452,7 @@ export type ProjectCreateManyInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -436,6 +468,7 @@ export type ProjectUpdateManyMutationInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -452,6 +485,7 @@ export type ProjectUncheckedUpdateManyInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -471,6 +505,11 @@ export type ProjectScalarRelationFilter = {
   isNot?: Prisma.ProjectWhereInput
 }
 
+export type ProjectDeveloperIdSlugCompoundUniqueInput = {
+  developerId: string
+  slug: string
+}
+
 export type ProjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   developerId?: Prisma.SortOrder
@@ -483,6 +522,7 @@ export type ProjectCountOrderByAggregateInput = {
   mapsUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   featured?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -499,6 +539,7 @@ export type ProjectMaxOrderByAggregateInput = {
   mapsUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   featured?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -515,6 +556,7 @@ export type ProjectMinOrderByAggregateInput = {
   mapsUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
   featured?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -588,6 +630,34 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type ProjectCreateNestedOneWithoutHighlightsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutHighlightsInput, Prisma.ProjectUncheckedCreateWithoutHighlightsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutHighlightsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutHighlightsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutHighlightsInput, Prisma.ProjectUncheckedCreateWithoutHighlightsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutHighlightsInput
+  upsert?: Prisma.ProjectUpsertWithoutHighlightsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutHighlightsInput, Prisma.ProjectUpdateWithoutHighlightsInput>, Prisma.ProjectUncheckedUpdateWithoutHighlightsInput>
+}
+
+export type ProjectCreateNestedOneWithoutAmenitiesInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutAmenitiesInput, Prisma.ProjectUncheckedCreateWithoutAmenitiesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutAmenitiesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutAmenitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutAmenitiesInput, Prisma.ProjectUncheckedCreateWithoutAmenitiesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutAmenitiesInput
+  upsert?: Prisma.ProjectUpsertWithoutAmenitiesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutAmenitiesInput, Prisma.ProjectUpdateWithoutAmenitiesInput>, Prisma.ProjectUncheckedUpdateWithoutAmenitiesInput>
+}
+
 export type ProjectCreateNestedOneWithoutMediaInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutMediaInput, Prisma.ProjectUncheckedCreateWithoutMediaInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutMediaInput
@@ -631,10 +701,13 @@ export type ProjectCreateWithoutDeveloperInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   configurations?: Prisma.ConfigurationCreateNestedManyWithoutProjectInput
   media?: Prisma.MediaCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadCreateNestedManyWithoutProjectInput
 }
 
@@ -649,10 +722,13 @@ export type ProjectUncheckedCreateWithoutDeveloperInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   configurations?: Prisma.ConfigurationUncheckedCreateNestedManyWithoutProjectInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightUncheckedCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityUncheckedCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -697,6 +773,7 @@ export type ProjectScalarWhereInput = {
   mapsUrl?: Prisma.StringNullableFilter<"Project"> | string | null
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
   featured?: Prisma.BoolFilter<"Project"> | boolean
+  publishStatus?: Prisma.EnumPublishStatusFilter<"Project"> | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
 }
@@ -712,10 +789,13 @@ export type ProjectCreateWithoutConfigurationsInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   developer: Prisma.DeveloperCreateNestedOneWithoutProjectsInput
   media?: Prisma.MediaCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadCreateNestedManyWithoutProjectInput
 }
 
@@ -731,9 +811,12 @@ export type ProjectUncheckedCreateWithoutConfigurationsInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightUncheckedCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityUncheckedCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -764,10 +847,13 @@ export type ProjectUpdateWithoutConfigurationsInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   developer?: Prisma.DeveloperUpdateOneRequiredWithoutProjectsNestedInput
   media?: Prisma.MediaUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUpdateManyWithoutProjectNestedInput
 }
 
@@ -783,9 +869,212 @@ export type ProjectUncheckedUpdateWithoutConfigurationsInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.MediaUncheckedUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUncheckedUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUncheckedUpdateManyWithoutProjectNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutHighlightsInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  locationName: string
+  locationSlug: string
+  address: string
+  mapsUrl?: string | null
+  status: $Enums.ProjectStatus
+  featured?: boolean
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  developer: Prisma.DeveloperCreateNestedOneWithoutProjectsInput
+  configurations?: Prisma.ConfigurationCreateNestedManyWithoutProjectInput
+  media?: Prisma.MediaCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityCreateNestedManyWithoutProjectInput
+  leads?: Prisma.LeadCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutHighlightsInput = {
+  id?: string
+  developerId: string
+  name: string
+  slug: string
+  description?: string | null
+  locationName: string
+  locationSlug: string
+  address: string
+  mapsUrl?: string | null
+  status: $Enums.ProjectStatus
+  featured?: boolean
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  configurations?: Prisma.ConfigurationUncheckedCreateNestedManyWithoutProjectInput
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityUncheckedCreateNestedManyWithoutProjectInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutHighlightsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutHighlightsInput, Prisma.ProjectUncheckedCreateWithoutHighlightsInput>
+}
+
+export type ProjectUpsertWithoutHighlightsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutHighlightsInput, Prisma.ProjectUncheckedUpdateWithoutHighlightsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutHighlightsInput, Prisma.ProjectUncheckedCreateWithoutHighlightsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutHighlightsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutHighlightsInput, Prisma.ProjectUncheckedUpdateWithoutHighlightsInput>
+}
+
+export type ProjectUpdateWithoutHighlightsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.StringFieldUpdateOperationsInput | string
+  locationSlug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  developer?: Prisma.DeveloperUpdateOneRequiredWithoutProjectsNestedInput
+  configurations?: Prisma.ConfigurationUpdateManyWithoutProjectNestedInput
+  media?: Prisma.MediaUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUpdateManyWithoutProjectNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutHighlightsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  developerId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.StringFieldUpdateOperationsInput | string
+  locationSlug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  configurations?: Prisma.ConfigurationUncheckedUpdateManyWithoutProjectNestedInput
+  media?: Prisma.MediaUncheckedUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUncheckedUpdateManyWithoutProjectNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutAmenitiesInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  locationName: string
+  locationSlug: string
+  address: string
+  mapsUrl?: string | null
+  status: $Enums.ProjectStatus
+  featured?: boolean
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  developer: Prisma.DeveloperCreateNestedOneWithoutProjectsInput
+  configurations?: Prisma.ConfigurationCreateNestedManyWithoutProjectInput
+  media?: Prisma.MediaCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightCreateNestedManyWithoutProjectInput
+  leads?: Prisma.LeadCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutAmenitiesInput = {
+  id?: string
+  developerId: string
+  name: string
+  slug: string
+  description?: string | null
+  locationName: string
+  locationSlug: string
+  address: string
+  mapsUrl?: string | null
+  status: $Enums.ProjectStatus
+  featured?: boolean
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  configurations?: Prisma.ConfigurationUncheckedCreateNestedManyWithoutProjectInput
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightUncheckedCreateNestedManyWithoutProjectInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutAmenitiesInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutAmenitiesInput, Prisma.ProjectUncheckedCreateWithoutAmenitiesInput>
+}
+
+export type ProjectUpsertWithoutAmenitiesInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutAmenitiesInput, Prisma.ProjectUncheckedUpdateWithoutAmenitiesInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutAmenitiesInput, Prisma.ProjectUncheckedCreateWithoutAmenitiesInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutAmenitiesInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutAmenitiesInput, Prisma.ProjectUncheckedUpdateWithoutAmenitiesInput>
+}
+
+export type ProjectUpdateWithoutAmenitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.StringFieldUpdateOperationsInput | string
+  locationSlug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  developer?: Prisma.DeveloperUpdateOneRequiredWithoutProjectsNestedInput
+  configurations?: Prisma.ConfigurationUpdateManyWithoutProjectNestedInput
+  media?: Prisma.MediaUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUpdateManyWithoutProjectNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutAmenitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  developerId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationName?: Prisma.StringFieldUpdateOperationsInput | string
+  locationSlug?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  configurations?: Prisma.ConfigurationUncheckedUpdateManyWithoutProjectNestedInput
+  media?: Prisma.MediaUncheckedUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUncheckedUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -800,10 +1089,13 @@ export type ProjectCreateWithoutMediaInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   developer: Prisma.DeveloperCreateNestedOneWithoutProjectsInput
   configurations?: Prisma.ConfigurationCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadCreateNestedManyWithoutProjectInput
 }
 
@@ -819,9 +1111,12 @@ export type ProjectUncheckedCreateWithoutMediaInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   configurations?: Prisma.ConfigurationUncheckedCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightUncheckedCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityUncheckedCreateNestedManyWithoutProjectInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -852,10 +1147,13 @@ export type ProjectUpdateWithoutMediaInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   developer?: Prisma.DeveloperUpdateOneRequiredWithoutProjectsNestedInput
   configurations?: Prisma.ConfigurationUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUpdateManyWithoutProjectNestedInput
 }
 
@@ -871,9 +1169,12 @@ export type ProjectUncheckedUpdateWithoutMediaInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   configurations?: Prisma.ConfigurationUncheckedUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUncheckedUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUncheckedUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -888,11 +1189,14 @@ export type ProjectCreateWithoutLeadsInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   developer: Prisma.DeveloperCreateNestedOneWithoutProjectsInput
   configurations?: Prisma.ConfigurationCreateNestedManyWithoutProjectInput
   media?: Prisma.MediaCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutLeadsInput = {
@@ -907,10 +1211,13 @@ export type ProjectUncheckedCreateWithoutLeadsInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   configurations?: Prisma.ConfigurationUncheckedCreateNestedManyWithoutProjectInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutProjectInput
+  highlights?: Prisma.ProjectHighlightUncheckedCreateNestedManyWithoutProjectInput
+  amenities?: Prisma.ProjectAmenityUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutLeadsInput = {
@@ -940,11 +1247,14 @@ export type ProjectUpdateWithoutLeadsInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   developer?: Prisma.DeveloperUpdateOneRequiredWithoutProjectsNestedInput
   configurations?: Prisma.ConfigurationUpdateManyWithoutProjectNestedInput
   media?: Prisma.MediaUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutLeadsInput = {
@@ -959,10 +1269,13 @@ export type ProjectUncheckedUpdateWithoutLeadsInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   configurations?: Prisma.ConfigurationUncheckedUpdateManyWithoutProjectNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUncheckedUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyDeveloperInput = {
@@ -976,6 +1289,7 @@ export type ProjectCreateManyDeveloperInput = {
   mapsUrl?: string | null
   status: $Enums.ProjectStatus
   featured?: boolean
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -991,10 +1305,13 @@ export type ProjectUpdateWithoutDeveloperInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   configurations?: Prisma.ConfigurationUpdateManyWithoutProjectNestedInput
   media?: Prisma.MediaUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUpdateManyWithoutProjectNestedInput
 }
 
@@ -1009,10 +1326,13 @@ export type ProjectUncheckedUpdateWithoutDeveloperInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   configurations?: Prisma.ConfigurationUncheckedUpdateManyWithoutProjectNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutProjectNestedInput
+  highlights?: Prisma.ProjectHighlightUncheckedUpdateManyWithoutProjectNestedInput
+  amenities?: Prisma.ProjectAmenityUncheckedUpdateManyWithoutProjectNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -1027,6 +1347,7 @@ export type ProjectUncheckedUpdateManyWithoutDeveloperInput = {
   mapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1039,12 +1360,16 @@ export type ProjectUncheckedUpdateManyWithoutDeveloperInput = {
 export type ProjectCountOutputType = {
   configurations: number
   media: number
+  highlights: number
+  amenities: number
   leads: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   configurations?: boolean | ProjectCountOutputTypeCountConfigurationsArgs
   media?: boolean | ProjectCountOutputTypeCountMediaArgs
+  highlights?: boolean | ProjectCountOutputTypeCountHighlightsArgs
+  amenities?: boolean | ProjectCountOutputTypeCountAmenitiesArgs
   leads?: boolean | ProjectCountOutputTypeCountLeadsArgs
 }
 
@@ -1075,6 +1400,20 @@ export type ProjectCountOutputTypeCountMediaArgs<ExtArgs extends runtime.Types.E
 /**
  * ProjectCountOutputType without action
  */
+export type ProjectCountOutputTypeCountHighlightsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectHighlightWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountAmenitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectAmenityWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
 export type ProjectCountOutputTypeCountLeadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.LeadWhereInput
 }
@@ -1092,11 +1431,14 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   mapsUrl?: boolean
   status?: boolean
   featured?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   developer?: boolean | Prisma.DeveloperDefaultArgs<ExtArgs>
   configurations?: boolean | Prisma.Project$configurationsArgs<ExtArgs>
   media?: boolean | Prisma.Project$mediaArgs<ExtArgs>
+  highlights?: boolean | Prisma.Project$highlightsArgs<ExtArgs>
+  amenities?: boolean | Prisma.Project$amenitiesArgs<ExtArgs>
   leads?: boolean | Prisma.Project$leadsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -1113,6 +1455,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   mapsUrl?: boolean
   status?: boolean
   featured?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   developer?: boolean | Prisma.DeveloperDefaultArgs<ExtArgs>
@@ -1130,6 +1473,7 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   mapsUrl?: boolean
   status?: boolean
   featured?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   developer?: boolean | Prisma.DeveloperDefaultArgs<ExtArgs>
@@ -1147,15 +1491,18 @@ export type ProjectSelectScalar = {
   mapsUrl?: boolean
   status?: boolean
   featured?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "developerId" | "name" | "slug" | "description" | "locationName" | "locationSlug" | "address" | "mapsUrl" | "status" | "featured" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "developerId" | "name" | "slug" | "description" | "locationName" | "locationSlug" | "address" | "mapsUrl" | "status" | "featured" | "publishStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   developer?: boolean | Prisma.DeveloperDefaultArgs<ExtArgs>
   configurations?: boolean | Prisma.Project$configurationsArgs<ExtArgs>
   media?: boolean | Prisma.Project$mediaArgs<ExtArgs>
+  highlights?: boolean | Prisma.Project$highlightsArgs<ExtArgs>
+  amenities?: boolean | Prisma.Project$amenitiesArgs<ExtArgs>
   leads?: boolean | Prisma.Project$leadsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1172,6 +1519,8 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     developer: Prisma.$DeveloperPayload<ExtArgs>
     configurations: Prisma.$ConfigurationPayload<ExtArgs>[]
     media: Prisma.$MediaPayload<ExtArgs>[]
+    highlights: Prisma.$ProjectHighlightPayload<ExtArgs>[]
+    amenities: Prisma.$ProjectAmenityPayload<ExtArgs>[]
     leads: Prisma.$LeadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1186,6 +1535,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     mapsUrl: string | null
     status: $Enums.ProjectStatus
     featured: boolean
+    publishStatus: $Enums.PublishStatus
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["project"]>
@@ -1585,6 +1935,8 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   developer<T extends Prisma.DeveloperDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DeveloperDefaultArgs<ExtArgs>>): Prisma.Prisma__DeveloperClient<runtime.Types.Result.GetResult<Prisma.$DeveloperPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   configurations<T extends Prisma.Project$configurationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$configurationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConfigurationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   media<T extends Prisma.Project$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  highlights<T extends Prisma.Project$highlightsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$highlightsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectHighlightPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  amenities<T extends Prisma.Project$amenitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$amenitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectAmenityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leads<T extends Prisma.Project$leadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1626,6 +1978,7 @@ export interface ProjectFieldRefs {
   readonly mapsUrl: Prisma.FieldRef<"Project", 'String'>
   readonly status: Prisma.FieldRef<"Project", 'ProjectStatus'>
   readonly featured: Prisma.FieldRef<"Project", 'Boolean'>
+  readonly publishStatus: Prisma.FieldRef<"Project", 'PublishStatus'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
 }
@@ -2074,6 +2427,54 @@ export type Project$mediaArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.MediaScalarFieldEnum | Prisma.MediaScalarFieldEnum[]
+}
+
+/**
+ * Project.highlights
+ */
+export type Project$highlightsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectHighlight
+   */
+  select?: Prisma.ProjectHighlightSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectHighlight
+   */
+  omit?: Prisma.ProjectHighlightOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectHighlightInclude<ExtArgs> | null
+  where?: Prisma.ProjectHighlightWhereInput
+  orderBy?: Prisma.ProjectHighlightOrderByWithRelationInput | Prisma.ProjectHighlightOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectHighlightWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectHighlightScalarFieldEnum | Prisma.ProjectHighlightScalarFieldEnum[]
+}
+
+/**
+ * Project.amenities
+ */
+export type Project$amenitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectAmenity
+   */
+  select?: Prisma.ProjectAmenitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectAmenity
+   */
+  omit?: Prisma.ProjectAmenityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectAmenityInclude<ExtArgs> | null
+  where?: Prisma.ProjectAmenityWhereInput
+  orderBy?: Prisma.ProjectAmenityOrderByWithRelationInput | Prisma.ProjectAmenityOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectAmenityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectAmenityScalarFieldEnum | Prisma.ProjectAmenityScalarFieldEnum[]
 }
 
 /**

@@ -1,4 +1,16 @@
-import { FormEvent, useState } from "react";
+/*
+ * PURPOSE:
+ * Renders the project enquiry and lead capture form on the public project page.
+ *
+ * FLOW:
+ * Lead / Enquiry Flow
+ *
+ * RESPONSIBILITY:
+ * Handles consumer contact input, automatically binds project and selected configuration context,
+ * submits enquiry payload via createLead API, and renders submission status.
+ */
+
+import { FormEvent, useEffect, useState } from "react";
 import type { RefObject } from "react";
 import { createLead, LeadApiError } from "../../api/lead";
 import type { Configuration, Project } from "../../types/project";
@@ -37,6 +49,14 @@ export function LeadSection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Synchronize configuration selection from the ProjectPage orchestrator / URL
+  useEffect(() => {
+    setForm((current) => ({
+      ...current,
+      configurationId: selectedConfigurationId ?? "",
+    }));
+  }, [selectedConfigurationId]);
 
   function updateField(field: keyof LeadFormState, value: string) {
     setForm((current) => ({

@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin developer HTTP controller.
+ *
+ * FLOW:
+ * Admin Developer Management Flow
+ *
+ * RESPONSIBILITY:
+ * Handles incoming authenticated admin developer requests (create, list, getById, update),
+ * formats input payloads, and returns corresponding JSON responses.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import {
   createDeveloper,
@@ -11,6 +23,8 @@ import type {
   AdminCreateDeveloperBody,
   AdminUpdateDeveloperBody,
 } from "../../validators/developer.validator.js";
+
+import type { PublishStatus } from "../../../generated/prisma/enums.js";
 
 type DeveloperIdParams = { id: string };
 
@@ -27,6 +41,7 @@ export async function createDeveloperController(
       description: body.description as string | undefined,
       logoUrl: body.logoUrl as string | undefined,
       websiteUrl: body.websiteUrl as string | undefined,
+      publishStatus: body.publishStatus as PublishStatus | undefined,
     } satisfies CreateDeveloperInput);
     res.status(201).json(response);
   } catch (error) {

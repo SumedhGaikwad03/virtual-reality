@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Public project HTTP controller.
+ *
+ * FLOW:
+ * Public Project Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Invokes project service for public project retrieval and returns HTTP response.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import { getPublicProject } from "../../services/project.service.js";
 

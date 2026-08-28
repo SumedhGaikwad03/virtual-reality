@@ -1,0 +1,25 @@
+/*
+ * PURPOSE:
+ * Defines shared, cross-domain reusable component presentation styles.
+ *
+ * FLOW:
+ * Reusable UI components -> shared presentation rules.
+ *
+ * RESPONSIBILITY:
+ * Centralize genuinely reused visual primitives (such as fallback placeholders)
+ * across multiple domain contexts (e.g. Developer and Home project cards).
+ */
+
+.project-image-fallback {
+  display: block;
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+}
+
+.project-image-fallback {
+  display: grid;
+  place-items: center;
+  background: #eef2f7;
+  color: #526176;
+}

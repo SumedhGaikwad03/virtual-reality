@@ -1,3 +1,16 @@
+/*
+ * PURPOSE:
+ * Admin configuration route definitions.
+ *
+ * FLOW:
+ * Admin Configuration Management Flow
+ *
+ * RESPONSIBILITY:
+ * Mounts authenticated admin endpoints for configurations:
+ * - projectRouter (/api/admin/projects/:projectId/configurations): list and create configurations under a project.
+ * - configurationRouter (/api/admin/configurations/:id): get and update a single configuration by ID.
+ */
+
 import express, { Router } from "express";
 import {
   createConfigurationController,

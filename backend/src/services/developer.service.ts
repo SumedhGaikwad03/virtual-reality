@@ -1,4 +1,17 @@
+/*
+ * PURPOSE:
+ * Developer domain service layer.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow & Admin Developer Management Flow
+ *
+ * RESPONSIBILITY:
+ * Encapsulates developer business logic: admin CRUD orchestration, unique constraint error mapping (409 Conflict),
+ * public developer metadata formatting, and project card media resolution.
+ */
+
 import { developerRepository } from "../repositories/developer.repository.js";
+import type { PublishStatus } from "../../generated/prisma/enums.js";
 
 type DeveloperRecord = {
   id: string;
@@ -7,6 +20,7 @@ type DeveloperRecord = {
   description: string | null;
   logoUrl: string | null;
   websiteUrl: string | null;
+  publishStatus: PublishStatus;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -17,6 +31,7 @@ export type CreateDeveloperInput = {
   description?: string;
   logoUrl?: string;
   websiteUrl?: string;
+  publishStatus?: PublishStatus;
 };
 
 export type UpdateDeveloperInput = Partial<CreateDeveloperInput>;
@@ -49,6 +64,7 @@ function toAdminDeveloper(developer: DeveloperRecord) {
     description: developer.description,
     logoUrl: developer.logoUrl,
     websiteUrl: developer.websiteUrl,
+    publishStatus: developer.publishStatus,
     createdAt: developer.createdAt,
     updatedAt: developer.updatedAt,
   };
@@ -118,6 +134,10 @@ export async function updateDeveloper(
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/*                              PUBLIC DEVELOPER API                           */
+/* -------------------------------------------------------------------------- */
+
 function toPublicMedia(media: {
   id: string;
   type: string;
@@ -138,6 +158,27 @@ function toPublicMedia(media: {
     sortOrder: media.sortOrder,
     isPrimary: media.isPrimary,
   };
+}
+
+function selectProjectCardMedia(
+  media: Array<{
+    id: string;
+    type: string;
+    category: string;
+    url: string;
+    thumbnailUrl: string | null;
+    altText: string | null;
+    sortOrder: number;
+    isPrimary: boolean;
+  }>,
+) {
+  return (
+    media.find((item) => item.category === "CARD") ??
+    media.find((item) => item.category === "HERO") ??
+    media.find((item) => item.isPrimary) ??
+    media[0] ??
+    null
+  );
 }
 
 export class DeveloperNotFoundError extends Error {
@@ -165,18 +206,25 @@ export async function getPublicDeveloper(developerSlug: string) {
       description: developer.description,
       logoUrl: developer.logoUrl,
       websiteUrl: developer.websiteUrl,
-      projects: developer.projects.map((project) => ({
-        id: project.id,
-        name: project.name,
-        slug: project.slug,
-        location: {
-          name: project.locationName,
-          slug: project.locationSlug,
-        },
-        status: project.status,
-        featured: project.featured,
-        media: project.media[0] ? toPublicMedia(project.media[0]) : null,
-      })),
+
+      media: developer.media.map(toPublicMedia),
+
+      projects: developer.projects.map((project) => {
+        const cardMedia = selectProjectCardMedia(project.media);
+
+        return {
+          id: project.id,
+          name: project.name,
+          slug: project.slug,
+          location: {
+            name: project.locationName,
+            slug: project.locationSlug,
+          },
+          status: project.status,
+          featured: project.featured,
+          media: cardMedia ? toPublicMedia(cardMedia) : null,
+        };
+      }),
     },
   };
 }

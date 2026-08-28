@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin configuration API client.
+ *
+ * FLOW:
+ * Admin Configuration Management Flow
+ *
+ * RESPONSIBILITY:
+ * Provides CRUD HTTP client functions (getConfigurations, getConfiguration, createConfiguration, updateConfiguration)
+ * targeting the authenticated admin configuration endpoints.
+ */
+
 import { adminRequest } from "./admin-client";
 import type {
   AdminConfigurationInput,

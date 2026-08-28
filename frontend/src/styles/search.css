@@ -1,0 +1,36 @@
+/*
+ * PURPOSE:
+ * Owns public Search-domain visual styles.
+ *
+ * FLOW:
+ * SearchPage -> Search components -> Search-specific selectors.
+ *
+ * RESPONSIBILITY:
+ * Isolate Search presentation while shared visual primitives remain
+ * in the shared stylesheet.
+ */
+
+.search-page {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.property-search-form {
+  max-width: 42rem;
+}
+
+.property-search-results {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.property-search-result {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}

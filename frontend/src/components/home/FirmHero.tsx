@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Renders the top firm branding and identity on the homepage.
+ *
+ * FLOW:
+ * Homepage Content Flow
+ *
+ * RESPONSIBILITY:
+ * Displays the firm logo (or initial fallback), firm name, tagline, and high-level description.
+ */
+
 import type { Site } from "../../types/site";
 
 type FirmHeroProps = {

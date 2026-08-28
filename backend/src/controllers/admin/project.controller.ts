@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Admin project HTTP controller.
+ *
+ * FLOW:
+ * Admin Project Management Flow
+ *
+ * RESPONSIBILITY:
+ * Handles incoming admin HTTP requests for creating, listing, fetching, and updating projects.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import {
   createProject,
@@ -11,7 +22,10 @@ import type {
   AdminCreateProjectBody,
   AdminUpdateProjectBody,
 } from "../../validators/project.validator.js";
-import type { ProjectStatus } from "../../../generated/prisma/enums.js";
+import type {
+  ProjectStatus,
+  PublishStatus,
+} from "../../../generated/prisma/enums.js";
 
 type ProjectIdParams = { id: string };
 
@@ -33,6 +47,7 @@ export async function createProjectController(
       mapsUrl: body.mapsUrl as string | undefined,
       status: body.status as ProjectStatus,
       featured: body.featured as boolean | undefined,
+      publishStatus: body.publishStatus as PublishStatus | undefined,
     } satisfies CreateProjectInput);
     res.status(201).json(response);
   } catch (error) {

@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Renders the high-level firm/company overview section on the homepage.
+ *
+ * FLOW:
+ * Homepage Content Flow
+ *
+ * RESPONSIBILITY:
+ * Displays the firm's about/description text or falls back to the firm name.
+ */
+
 import type { Site } from "../../types/site";
 
 type FirmOverviewProps = {

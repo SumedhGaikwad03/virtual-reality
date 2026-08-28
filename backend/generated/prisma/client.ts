@@ -57,6 +57,16 @@ export type Configuration = Prisma.ConfigurationModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model ProjectHighlight
+ * 
+ */
+export type ProjectHighlight = Prisma.ProjectHighlightModel
+/**
+ * Model ProjectAmenity
+ * 
+ */
+export type ProjectAmenity = Prisma.ProjectAmenityModel
+/**
  * Model Media
  * 
  */

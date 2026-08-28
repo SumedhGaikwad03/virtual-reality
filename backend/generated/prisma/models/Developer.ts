@@ -31,6 +31,7 @@ export type DeveloperMinAggregateOutputType = {
   description: string | null
   logoUrl: string | null
   websiteUrl: string | null
+  publishStatus: $Enums.PublishStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +43,7 @@ export type DeveloperMaxAggregateOutputType = {
   description: string | null
   logoUrl: string | null
   websiteUrl: string | null
+  publishStatus: $Enums.PublishStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,6 +55,7 @@ export type DeveloperCountAggregateOutputType = {
   description: number
   logoUrl: number
   websiteUrl: number
+  publishStatus: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -66,6 +69,7 @@ export type DeveloperMinAggregateInputType = {
   description?: true
   logoUrl?: true
   websiteUrl?: true
+  publishStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +81,7 @@ export type DeveloperMaxAggregateInputType = {
   description?: true
   logoUrl?: true
   websiteUrl?: true
+  publishStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +93,7 @@ export type DeveloperCountAggregateInputType = {
   description?: true
   logoUrl?: true
   websiteUrl?: true
+  publishStatus?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -172,6 +178,7 @@ export type DeveloperGroupByOutputType = {
   description: string | null
   logoUrl: string | null
   websiteUrl: string | null
+  publishStatus: $Enums.PublishStatus
   createdAt: Date
   updatedAt: Date
   _count: DeveloperCountAggregateOutputType | null
@@ -204,9 +211,11 @@ export type DeveloperWhereInput = {
   description?: Prisma.StringNullableFilter<"Developer"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Developer"> | string | null
   websiteUrl?: Prisma.StringNullableFilter<"Developer"> | string | null
+  publishStatus?: Prisma.EnumPublishStatusFilter<"Developer"> | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFilter<"Developer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Developer"> | Date | string
   projects?: Prisma.ProjectListRelationFilter
+  media?: Prisma.MediaListRelationFilter
 }
 
 export type DeveloperOrderByWithRelationInput = {
@@ -216,9 +225,11 @@ export type DeveloperOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   websiteUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projects?: Prisma.ProjectOrderByRelationAggregateInput
+  media?: Prisma.MediaOrderByRelationAggregateInput
 }
 
 export type DeveloperWhereUniqueInput = Prisma.AtLeast<{
@@ -231,9 +242,11 @@ export type DeveloperWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Developer"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Developer"> | string | null
   websiteUrl?: Prisma.StringNullableFilter<"Developer"> | string | null
+  publishStatus?: Prisma.EnumPublishStatusFilter<"Developer"> | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFilter<"Developer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Developer"> | Date | string
   projects?: Prisma.ProjectListRelationFilter
+  media?: Prisma.MediaListRelationFilter
 }, "id" | "slug">
 
 export type DeveloperOrderByWithAggregationInput = {
@@ -243,6 +256,7 @@ export type DeveloperOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   websiteUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DeveloperCountOrderByAggregateInput
@@ -260,6 +274,7 @@ export type DeveloperScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Developer"> | string | null
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Developer"> | string | null
   websiteUrl?: Prisma.StringNullableWithAggregatesFilter<"Developer"> | string | null
+  publishStatus?: Prisma.EnumPublishStatusWithAggregatesFilter<"Developer"> | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Developer"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Developer"> | Date | string
 }
@@ -271,9 +286,11 @@ export type DeveloperCreateInput = {
   description?: string | null
   logoUrl?: string | null
   websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ProjectCreateNestedManyWithoutDeveloperInput
+  media?: Prisma.MediaCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperUncheckedCreateInput = {
@@ -283,9 +300,11 @@ export type DeveloperUncheckedCreateInput = {
   description?: string | null
   logoUrl?: string | null
   websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDeveloperInput
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperUpdateInput = {
@@ -295,9 +314,11 @@ export type DeveloperUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUpdateManyWithoutDeveloperNestedInput
+  media?: Prisma.MediaUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperUncheckedUpdateInput = {
@@ -307,9 +328,11 @@ export type DeveloperUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutDeveloperNestedInput
+  media?: Prisma.MediaUncheckedUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperCreateManyInput = {
@@ -319,6 +342,7 @@ export type DeveloperCreateManyInput = {
   description?: string | null
   logoUrl?: string | null
   websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -330,6 +354,7 @@ export type DeveloperUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -341,6 +366,7 @@ export type DeveloperUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -352,6 +378,7 @@ export type DeveloperCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   websiteUrl?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -363,6 +390,7 @@ export type DeveloperMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   websiteUrl?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -374,6 +402,7 @@ export type DeveloperMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   websiteUrl?: Prisma.SortOrder
+  publishStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -383,12 +412,21 @@ export type DeveloperScalarRelationFilter = {
   isNot?: Prisma.DeveloperWhereInput
 }
 
+export type DeveloperNullableScalarRelationFilter = {
+  is?: Prisma.DeveloperWhereInput | null
+  isNot?: Prisma.DeveloperWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type EnumPublishStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PublishStatus
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -409,6 +447,22 @@ export type DeveloperUpdateOneRequiredWithoutProjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DeveloperUpdateToOneWithWhereWithoutProjectsInput, Prisma.DeveloperUpdateWithoutProjectsInput>, Prisma.DeveloperUncheckedUpdateWithoutProjectsInput>
 }
 
+export type DeveloperCreateNestedOneWithoutMediaInput = {
+  create?: Prisma.XOR<Prisma.DeveloperCreateWithoutMediaInput, Prisma.DeveloperUncheckedCreateWithoutMediaInput>
+  connectOrCreate?: Prisma.DeveloperCreateOrConnectWithoutMediaInput
+  connect?: Prisma.DeveloperWhereUniqueInput
+}
+
+export type DeveloperUpdateOneWithoutMediaNestedInput = {
+  create?: Prisma.XOR<Prisma.DeveloperCreateWithoutMediaInput, Prisma.DeveloperUncheckedCreateWithoutMediaInput>
+  connectOrCreate?: Prisma.DeveloperCreateOrConnectWithoutMediaInput
+  upsert?: Prisma.DeveloperUpsertWithoutMediaInput
+  disconnect?: Prisma.DeveloperWhereInput | boolean
+  delete?: Prisma.DeveloperWhereInput | boolean
+  connect?: Prisma.DeveloperWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DeveloperUpdateToOneWithWhereWithoutMediaInput, Prisma.DeveloperUpdateWithoutMediaInput>, Prisma.DeveloperUncheckedUpdateWithoutMediaInput>
+}
+
 export type DeveloperCreateWithoutProjectsInput = {
   id?: string
   name: string
@@ -416,8 +470,10 @@ export type DeveloperCreateWithoutProjectsInput = {
   description?: string | null
   logoUrl?: string | null
   websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  media?: Prisma.MediaCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperUncheckedCreateWithoutProjectsInput = {
@@ -427,8 +483,10 @@ export type DeveloperUncheckedCreateWithoutProjectsInput = {
   description?: string | null
   logoUrl?: string | null
   websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperCreateOrConnectWithoutProjectsInput = {
@@ -454,8 +512,10 @@ export type DeveloperUpdateWithoutProjectsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  media?: Prisma.MediaUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperUncheckedUpdateWithoutProjectsInput = {
@@ -465,8 +525,78 @@ export type DeveloperUncheckedUpdateWithoutProjectsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  media?: Prisma.MediaUncheckedUpdateManyWithoutDeveloperNestedInput
+}
+
+export type DeveloperCreateWithoutMediaInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  logoUrl?: string | null
+  websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ProjectCreateNestedManyWithoutDeveloperInput
+}
+
+export type DeveloperUncheckedCreateWithoutMediaInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  logoUrl?: string | null
+  websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDeveloperInput
+}
+
+export type DeveloperCreateOrConnectWithoutMediaInput = {
+  where: Prisma.DeveloperWhereUniqueInput
+  create: Prisma.XOR<Prisma.DeveloperCreateWithoutMediaInput, Prisma.DeveloperUncheckedCreateWithoutMediaInput>
+}
+
+export type DeveloperUpsertWithoutMediaInput = {
+  update: Prisma.XOR<Prisma.DeveloperUpdateWithoutMediaInput, Prisma.DeveloperUncheckedUpdateWithoutMediaInput>
+  create: Prisma.XOR<Prisma.DeveloperCreateWithoutMediaInput, Prisma.DeveloperUncheckedCreateWithoutMediaInput>
+  where?: Prisma.DeveloperWhereInput
+}
+
+export type DeveloperUpdateToOneWithWhereWithoutMediaInput = {
+  where?: Prisma.DeveloperWhereInput
+  data: Prisma.XOR<Prisma.DeveloperUpdateWithoutMediaInput, Prisma.DeveloperUncheckedUpdateWithoutMediaInput>
+}
+
+export type DeveloperUpdateWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ProjectUpdateManyWithoutDeveloperNestedInput
+}
+
+export type DeveloperUncheckedUpdateWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDeveloperNestedInput
 }
 
 
@@ -476,10 +606,12 @@ export type DeveloperUncheckedUpdateWithoutProjectsInput = {
 
 export type DeveloperCountOutputType = {
   projects: number
+  media: number
 }
 
 export type DeveloperCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | DeveloperCountOutputTypeCountProjectsArgs
+  media?: boolean | DeveloperCountOutputTypeCountMediaArgs
 }
 
 /**
@@ -499,6 +631,13 @@ export type DeveloperCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.ProjectWhereInput
 }
 
+/**
+ * DeveloperCountOutputType without action
+ */
+export type DeveloperCountOutputTypeCountMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MediaWhereInput
+}
+
 
 export type DeveloperSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -507,9 +646,11 @@ export type DeveloperSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   description?: boolean
   logoUrl?: boolean
   websiteUrl?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projects?: boolean | Prisma.Developer$projectsArgs<ExtArgs>
+  media?: boolean | Prisma.Developer$mediaArgs<ExtArgs>
   _count?: boolean | Prisma.DeveloperCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["developer"]>
 
@@ -520,6 +661,7 @@ export type DeveloperSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   description?: boolean
   logoUrl?: boolean
   websiteUrl?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["developer"]>
@@ -531,6 +673,7 @@ export type DeveloperSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   description?: boolean
   logoUrl?: boolean
   websiteUrl?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["developer"]>
@@ -542,13 +685,15 @@ export type DeveloperSelectScalar = {
   description?: boolean
   logoUrl?: boolean
   websiteUrl?: boolean
+  publishStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DeveloperOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "logoUrl" | "websiteUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["developer"]>
+export type DeveloperOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "logoUrl" | "websiteUrl" | "publishStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["developer"]>
 export type DeveloperInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | Prisma.Developer$projectsArgs<ExtArgs>
+  media?: boolean | Prisma.Developer$mediaArgs<ExtArgs>
   _count?: boolean | Prisma.DeveloperCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DeveloperIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -558,6 +703,7 @@ export type $DeveloperPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "Developer"
   objects: {
     projects: Prisma.$ProjectPayload<ExtArgs>[]
+    media: Prisma.$MediaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -566,6 +712,7 @@ export type $DeveloperPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     description: string | null
     logoUrl: string | null
     websiteUrl: string | null
+    publishStatus: $Enums.PublishStatus
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["developer"]>
@@ -963,6 +1110,7 @@ readonly fields: DeveloperFieldRefs;
 export interface Prisma__DeveloperClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   projects<T extends Prisma.Developer$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Developer$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  media<T extends Prisma.Developer$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Developer$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -998,6 +1146,7 @@ export interface DeveloperFieldRefs {
   readonly description: Prisma.FieldRef<"Developer", 'String'>
   readonly logoUrl: Prisma.FieldRef<"Developer", 'String'>
   readonly websiteUrl: Prisma.FieldRef<"Developer", 'String'>
+  readonly publishStatus: Prisma.FieldRef<"Developer", 'PublishStatus'>
   readonly createdAt: Prisma.FieldRef<"Developer", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Developer", 'DateTime'>
 }
@@ -1414,6 +1563,30 @@ export type Developer$projectsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * Developer.media
+ */
+export type Developer$mediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Media
+   */
+  select?: Prisma.MediaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Media
+   */
+  omit?: Prisma.MediaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MediaInclude<ExtArgs> | null
+  where?: Prisma.MediaWhereInput
+  orderBy?: Prisma.MediaOrderByWithRelationInput | Prisma.MediaOrderByWithRelationInput[]
+  cursor?: Prisma.MediaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MediaScalarFieldEnum | Prisma.MediaScalarFieldEnum[]
 }
 
 /**

@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Admin lead management HTTP controllers.
+ *
+ * FLOW:
+ * Admin Lead Triage Flow
+ *
+ * RESPONSIBILITY:
+ * Handles listing, retrieving, and updating customer enquiry lead records for administrative triage.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import {
   getLeadById,
@@ -6,6 +17,7 @@ import {
   type UpdateLeadInput,
 } from "../../services/lead.service.js";
 import type { AdminLeadUpdateBody } from "../../validators/lead.validator.js";
+
 
 type LeadIdParams = { id: string };
 

@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Text search input form component.
+ *
+ * FLOW:
+ * Natural Language Search Flow
+ *
+ * RESPONSIBILITY:
+ * Renders the search query input box and submit button with validation error display.
+ */
+
 import type { FormEvent } from "react";
 
 type SearchInputProps = {

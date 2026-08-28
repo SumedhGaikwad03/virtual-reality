@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Admin project route definitions.
+ *
+ * FLOW:
+ * Admin Project Management Flow
+ *
+ * RESPONSIBILITY:
+ * Mounts authenticated admin CRUD endpoints for projects (/api/admin/projects) and connects validation to controllers.
+ */
+
 import express, { Router } from "express";
 import {
   createProjectController,

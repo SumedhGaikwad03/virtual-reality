@@ -1,0 +1,38 @@
+/*
+ * PURPOSE:
+ * Owns Project administration visual styles.
+ *
+ * FLOW:
+ * ProjectsPage / ProjectFormPage -> Project admin components -> Project admin selectors.
+ *
+ * RESPONSIBILITY:
+ * Isolate Project admin list, row grid, and form presentation rules.
+ */
+
+.admin-project-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-project-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-project-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-project-row h2,
+.admin-project-row p {
+  margin: 0;
+}
+
+.admin-project-form {
+  max-width: 42rem;
+}

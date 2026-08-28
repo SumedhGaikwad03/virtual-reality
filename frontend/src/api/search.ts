@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Public property search API client.
+ *
+ * FLOW:
+ * Natural Language Search API Flow
+ *
+ * RESPONSIBILITY:
+ * Encapsulates HTTP client requests for property text searches, supporting AbortSignal cancellation
+ * and typed error handling.
+ */
+
 import { API_BASE_URL } from "./config";
 import type { SearchResult } from "../types/search";
 

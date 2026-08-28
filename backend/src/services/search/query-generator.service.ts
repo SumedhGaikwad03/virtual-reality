@@ -1,3 +1,16 @@
+/*
+ * PURPOSE:
+ * Natural language query parser for property search.
+ *
+ * FLOW:
+ * Natural Language Query Parsing Flow
+ *
+ * RESPONSIBILITY:
+ * Transforms freeform text queries into structured PropertySearchQuery objects by extracting
+ * BHK requirements, location/developer slugs, Indian currency price limits (converted to paise),
+ * carpet area boundaries, availability status, and construction status.
+ */
+
 import type {
   AvailabilityStatus,
   ProjectStatus,
@@ -15,6 +28,7 @@ export type PropertySearchQuery = {
   projectStatus?: ProjectStatus;
 };
 
+// Aliases mapping colloquial location variations to canonical database slugs
 const locationAliases: Record<string, string> = {
   pimpri: "pimpri",
   "pimpri pune": "pimpri",
@@ -28,6 +42,7 @@ function toSlug(value: string) {
     .replace(/^-|-$/g, "");
 }
 
+// Converts Indian denomination amounts (Crores or Lakhs) to exact BigInt values in paise (1 Cr = 10,000,000 paise; 1 Lakh = 100,000 paise)
 function parsePrice(value: string, unit: string) {
   const [whole, fraction = ""] = value.split(".");
   const scale = unit === "crore" || unit === "cr" ? 10_000_000n : 100_000n;
@@ -51,6 +66,7 @@ function parseDeveloper(input: string) {
   return match ? toSlug(match[1]) : undefined;
 }
 
+// Evaluates candidate project slug when query is not an attribute-based search
 function parseProjectCandidate(input: string, query: PropertySearchQuery) {
   if (
     query.bhk !== undefined ||
@@ -80,6 +96,7 @@ function parseProjectCandidate(input: string, query: PropertySearchQuery) {
   return candidate.includes("-") ? candidate : undefined;
 }
 
+// Parses input search string into structured search query parameters
 export function generatePropertySearchQuery(input: string): PropertySearchQuery {
   const normalized = input.trim().toLowerCase();
   const query: PropertySearchQuery = {};

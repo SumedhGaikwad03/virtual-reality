@@ -1,0 +1,144 @@
+/*
+ * PURPOSE:
+ * Owns shared Admin presentation styles.
+ *
+ * FLOW:
+ * Admin pages -> shared Admin layout/components -> Admin styles.
+ *
+ * RESPONSIBILITY:
+ * Centralize Admin-wide presentation (login, sidebar, layout grid, cards, leads, importer, responsive breakpoints)
+ * while domain-specific administration styles remain in their respective stylesheets.
+ */
+
+.admin-login-page {
+  display: grid;
+  min-height: calc(100vh - 4rem);
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+.admin-login-form {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 24rem);
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.admin-layout {
+  display: grid;
+  min-height: calc(100vh - 4rem);
+  grid-template-columns: 12rem 1fr;
+}
+
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: #172f68;
+  color: white;
+}
+
+.admin-sidebar a,
+.admin-sidebar button {
+  color: white;
+}
+
+.admin-sidebar nav {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  background: transparent;
+}
+
+.admin-nav-placeholder {
+  color: #dbe7ff;
+}
+
+.admin-sidebar button {
+  margin-top: auto;
+  background: transparent;
+  border: 1px solid #dbe7ff;
+}
+
+.admin-content {
+  padding: 2rem;
+}
+
+.admin-page-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-card {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #dbe2ef;
+  border-radius: 0.5rem;
+}
+
+.admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-lead-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-lead-row {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(4, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.admin-lead-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-lead-row h2,
+.admin-lead-row p {
+  margin: 0;
+}
+
+.admin-lead-details,
+.admin-lead-update-form {
+  max-width: 42rem;
+  margin-top: 1rem;
+}
+
+.admin-import-url-form,
+.admin-import-preview {
+  max-width: 52rem;
+}
+
+.admin-import-preview {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    min-height: auto;
+  }
+
+  .admin-sidebar button {
+    margin-top: 0;
+  }
+}

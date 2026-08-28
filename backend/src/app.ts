@@ -1,4 +1,19 @@
+/*
+ * PURPOSE:
+ * Express application bootstrap, HTTP security header configuration, CORS policy enforcement,
+ * route mounting, and centralized error handling.
+ *
+ * FLOW:
+ * Application Entry & Middleware Flow
+ *
+ * RESPONSIBILITY:
+ * Mounts Helmet security headers, CORS origin whitelisting, API routes, and global error handling.
+ */
+
 import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+
 import authRoutes from "./routes/admin/auth.routes.js";
 import adminDeveloperRoutes from "./routes/admin/developer.routes.js";
 import adminProjectRoutes from "./routes/admin/project.routes.js";
@@ -16,6 +31,77 @@ import siteRoutes from "./routes/public/site.routes.js";
 import leadRoutes from "./routes/public/lead.routes.js";
 
 const app = express();
+
+/*
+ * Security Headers (Helmet):
+ * Applies baseline security headers (X-Content-Type-Options: nosniff, Referrer-Policy, X-Frame-Options: SAMEORIGIN).
+ * - contentSecurityPolicy is disabled at the API boundary because this is a JSON REST service, not an HTML server.
+ * - crossOriginResourcePolicy is set to 'cross-origin' to permit frontend consumption across different origins/ports.
+ * - HSTS is only active in production to avoid forcing HTTPS on local HTTP development servers.
+ */
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    hsts: process.env.NODE_ENV === "production" ? undefined : false,
+  }),
+);
+
+/*
+ * Cross-Origin Resource Sharing (CORS):
+ * Restricts browser-initiated requests to authorized frontend origins.
+ * - In production: checks environment-defined ALLOWED_ORIGINS/CORS_ORIGIN, falling back to official production domains.
+ * - In development: permits standard Vite local development origins (localhost / 127.0.0.1 on any local port).
+ * - Supports preflight caching (24h) and standard methods/headers used by public and admin API clients.
+ */
+function getCorsOrigins(): string[] {
+  const envOrigins = process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGIN;
+  if (envOrigins) {
+    return envOrigins
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+  }
+
+  return [
+    "https://www.virtual2reality.in",
+    "https://virtual2reality.in",
+    "http://localhost:5173",
+    "http://localhost:4173",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+  ];
+}
+
+const allowedOrigins = getCorsOrigins();
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow non-browser requests (e.g. server-to-server, curl, Postman) where origin is undefined
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      const isDev = process.env.NODE_ENV !== "production";
+      const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(
+        origin,
+      );
+
+      if (allowedOrigins.includes(origin) || (isDev && isLocalhost)) {
+        callback(null, true);
+      } else {
+        // Disallow origin by omitting CORS headers (clean browser-side blocking without 500 crashes)
+        callback(null, false);
+      }
+    },
+    methods: ["GET", "POST", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    maxAge: 86400,
+  }),
+);
+
 
 app.use("/api/developers", projectRoutes);
 app.use("/api/developers", developerRoutes);

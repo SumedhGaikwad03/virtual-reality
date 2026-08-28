@@ -54,6 +54,8 @@ export const ModelName = {
   Developer: 'Developer',
   Configuration: 'Configuration',
   Project: 'Project',
+  ProjectHighlight: 'ProjectHighlight',
+  ProjectAmenity: 'ProjectAmenity',
   Media: 'Media',
   Lead: 'Lead',
   Admin: 'Admin',
@@ -83,6 +85,7 @@ export const DeveloperScalarFieldEnum = {
   description: 'description',
   logoUrl: 'logoUrl',
   websiteUrl: 'websiteUrl',
+  publishStatus: 'publishStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -119,6 +122,7 @@ export const ProjectScalarFieldEnum = {
   mapsUrl: 'mapsUrl',
   status: 'status',
   featured: 'featured',
+  publishStatus: 'publishStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -126,10 +130,37 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
-export const MediaScalarFieldEnum = {
+export const ProjectHighlightScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
+  text: 'text',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectHighlightScalarFieldEnum = (typeof ProjectHighlightScalarFieldEnum)[keyof typeof ProjectHighlightScalarFieldEnum]
+
+
+export const ProjectAmenityScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  name: 'name',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectAmenityScalarFieldEnum = (typeof ProjectAmenityScalarFieldEnum)[keyof typeof ProjectAmenityScalarFieldEnum]
+
+
+export const MediaScalarFieldEnum = {
+  id: 'id',
+  developerId: 'developerId',
+  projectId: 'projectId',
   configurationId: 'configurationId',
+  context: 'context',
+  slot: 'slot',
   type: 'type',
   category: 'category',
   title: 'title',

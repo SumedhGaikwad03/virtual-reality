@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin configuration create and edit form page.
+ *
+ * FLOW:
+ * Admin Configuration Management Flow
+ *
+ * RESPONSIBILITY:
+ * Manages configuration create and edit form state, input validation (positive integers for areas/BHK,
+ * numeric string for paise price), parent project resolution, and submission to the backend API.
+ */
+
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -79,6 +91,7 @@ function toForm(configuration: AdminConfiguration): FormState {
       configuration.superBuiltUpArea === null
         ? ""
         : String(configuration.superBuiltUpArea),
+    // priceFrom is retained as a numeric string in the frontend to prevent floating-point precision issues
     priceFrom: configuration.priceFrom,
     availabilityStatus: configuration.availabilityStatus,
   };
@@ -108,6 +121,7 @@ function cleanPayload(
     ? positiveInteger(form.superBuiltUpArea)
     : undefined;
 
+  // Validate required fields: name, BHK (positive integer), carpet area (positive integer), and priceFrom (whole number string in paise)
   if (
     !form.name.trim() ||
     bhk === null ||
@@ -169,6 +183,8 @@ export function ConfigurationFormPage() {
   useEffect(() => {
     let active = true;
 
+    // In edit mode (id), fetch the configuration first, then load the parent project using configuration.projectId.
+    // In create mode (projectId), load the parent project directly from the URL param.
     const load = id
       ? getConfiguration(id).then((response) =>
           getProject(response.data.projectId).then(
@@ -299,6 +315,14 @@ export function ConfigurationFormPage() {
       <h1>
         {id ? "Edit Configuration" : "Add Configuration"}
       </h1>
+
+      {id && (
+        <p>
+          <Link to={`/admin/configurations/${id}/media`}>
+            Manage media
+          </Link>
+        </p>
+      )}
 
       {error && <p role="alert">{error}</p>}
 

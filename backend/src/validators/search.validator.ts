@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Search query parameter validation middleware.
+ *
+ * FLOW:
+ * Natural Language Search Validation Flow
+ *
+ * RESPONSIBILITY:
+ * Validates that incoming public text search requests supply a non-empty query parameter
+ * within safety length bounds (<= 200 characters).
+ */
+
 import type { NextFunction, Request, Response } from "express";
 
 export function validateSearchQuery(

@@ -1,0 +1,911 @@
+# Architecture Rules
+
+This document defines the engineering and code-organization rules for the project.
+
+It is the source of truth for how the codebase should be structured, modularized, documented, refactored, and maintained.
+
+These rules apply to both frontend and backend code unless a rule explicitly applies to only one side.
+
+---
+
+# 1. Core Architectural Philosophy
+
+The project should remain:
+
+- modular
+- understandable
+- maintainable
+- discoverable
+- predictable
+- easy to extend
+- safe to refactor
+
+The goal is not to maximize the number of files.
+
+The goal is to give each piece of code a clear responsibility.
+
+The project should favor:
+
+Clear responsibility
+        ↓
+Small meaningful modules
+        ↓
+Explicit dependencies
+        ↓
+Predictable data flow
+        ↓
+Maintainable system
+
+Avoid:
+
+Premature abstraction
+        ↓
+Too many tiny files
+        ↓
+Indirect dependencies
+        ↓
+Harder code discovery
+        ↓
+Unnecessary complexity
+
+---
+
+# 2. Moderate Modularization
+
+Responsibility is the primary trigger for modularization.
+
+Line count alone must never determine whether a file should be split.
+
+A large file can remain intact if it contains one coherent responsibility.
+
+A smaller file should be split if it contains multiple unrelated responsibilities.
+
+The question should always be:
+
+> Does this file contain more than one meaningful responsibility?
+
+not:
+
+> Does this file have too many lines?
+
+---
+
+# 3. One Coherent Responsibility Per Module
+
+A module should have one coherent responsibility.
+
+A module may contain multiple closely related:
+
+- functions
+- constants
+- types
+- helpers
+- components
+
+as long as they contribute to the same responsibility.
+
+Do not create one file per function simply to make files smaller.
+
+---
+
+# 4. Pages Must Be Thin Orchestrators
+
+Pages should primarily:
+
+- read route parameters
+- read query parameters
+- coordinate page-level state
+- call appropriate hooks
+- compose domain components
+- handle page-level loading/error states where appropriate
+
+Pages should not contain large amounts of:
+
+- business logic
+- data transformation
+- validation
+- API implementation
+- reusable stateful behavior
+- complex calculations
+- media processing
+- domain rules
+
+Preferred architecture:
+
+Page
+  ↓
+Page-level coordination
+  ↓
+Hooks
+  ↓
+Domain logic
+  ↓
+Components
+
+A page should read more like an orchestration layer than an implementation layer.
+
+---
+
+# 5. Components
+
+Components should primarily be responsible for presentation and UI behavior.
+
+A component may contain local UI state when that state is genuinely local.
+
+Avoid putting large domain/business workflows directly inside visual components.
+
+If a component contains substantial reusable stateful behavior, consider extracting a hook.
+
+---
+
+# 6. Hooks
+
+Hooks should contain reusable stateful frontend behavior.
+
+Hooks are appropriate for:
+
+- React state
+- effects
+- subscriptions
+- asynchronous UI state
+- reusable interaction behavior
+- URL/query synchronization
+
+Do not create hooks simply to move a few lines into another file.
+
+A hook should represent a meaningful reusable or stateful responsibility.
+
+---
+
+# 7. Domain-Based Organization
+
+Code should be organized around domains where practical.
+
+Prefer structures such as:
+
+components/
+├── home/
+├── developer/
+├── project/
+├── configuration/
+├── media/
+├── leads/
+└── common/
+
+Domain-specific logic should remain close to its domain.
+
+Example:
+
+project/
+├── components/
+├── hooks/
+├── utils/
+└── types/
+
+---
+
+# 8. Domain-Local Utilities
+
+Domain-specific utilities should live close to the domain that owns them.
+
+For example:
+
+project/
+├── components/
+├── hooks/
+├── utils/
+│   └── project.utils.ts
+└── types/
+
+Generic utilities may live in a shared utility location.
+
+Avoid giant dumping-ground files such as:
+
+- utils.ts
+- helpers.ts
+- common.ts
+- misc.ts
+
+---
+
+# 9. Shared Components
+
+Shared components should be created only when there is genuine reuse or a clearly stable cross-domain concept.
+
+Do not create shared abstractions merely because two pieces of code look similar.
+
+Similarity alone is not sufficient justification for abstraction.
+
+---
+
+# 10. Do Not Abstract Prematurely
+
+Before creating an abstraction ask:
+
+1. Is the behavior genuinely shared?
+2. Is the responsibility conceptually the same?
+3. Is reuse likely to continue?
+4. Will the abstraction make the code easier to understand?
+5. Does it reduce meaningful duplication?
+
+If the answer is unclear, keep the implementation local.
+
+Prefer a little duplication over a confusing abstraction.
+
+Abstraction is a tool, not a goal.
+
+---
+
+# 11. Backend Architecture
+
+The backend follows this layered architecture:
+
+Route
+  ↓
+Validator
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Repository
+  ↓
+Database
+
+Routes handle HTTP route definitions, middleware composition, and endpoint wiring.
+
+Validators handle request, input-shape, and parameter validation.
+
+Controllers receive requests, extract validated input, call services, return responses, and forward errors.
+
+Services handle business rules, workflows, orchestration, transformations, and domain decisions.
+
+Repositories handle Prisma queries, persistence, and database access.
+
+---
+
+# 12. Backend Modularization
+
+The same moderate modularization philosophy applies to backend files.
+
+Do not split a service merely because it is long.
+
+Split it when it contains multiple meaningful responsibilities.
+
+Do not create backend modules preemptively.
+
+---
+
+# 13. Named Application Flows
+
+Important behavior should use consistent named flows.
+
+Examples:
+
+- Authentication Flow
+- Admin Creation Flow
+- Developer Creation Flow
+- Developer Update Flow
+- Project Creation Flow
+- Project Update Flow
+- Configuration Creation Flow
+- Configuration Update Flow
+- Media Upload Flow
+- Media Update Flow
+- Media Activation Flow
+- Media Publication Flow
+- Public Project Discovery Flow
+- Configuration Selection Flow
+- Lead Submission Flow
+- Homepage Content Flow
+- Search Flow
+- Chatbot Discovery Flow
+
+Flow names should remain consistent across architecture documentation, file headers, important comments, and agent instructions.
+
+---
+
+# 14. Flow Documentation
+
+Important files should explain the flow they participate in.
+
+Backend:
+
+Route
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Repository
+  ↓
+Database
+
+Frontend:
+
+Route
+  ↓
+Page
+  ↓
+Hook
+  ↓
+API client
+  ↓
+Backend endpoint
+
+Flow documentation should describe the actual project architecture.
+
+---
+
+# 15. File-Level Documentation
+
+Meaningful files should begin with a short documentation block.
+
+The first comment should explain:
+
+1. What the file does.
+2. Which flow it participates in.
+3. Its primary responsibility.
+
+Example:
+
+/*
+ * PURPOSE:
+ * Manages project media on the public project page.
+ *
+ * FLOW:
+ * Public Project Media Flow
+ *
+ * RESPONSIBILITY:
+ * Groups and presents project-level media by category.
+ */
+
+Do not write an essay at the top of every file.
+
+---
+
+# 16. Code Comments
+
+Comments should explain what, how, and why when the logic is not obvious.
+
+Comments are especially valuable for:
+
+- business rules
+- data flow
+- non-obvious transformations
+- security decisions
+- URL/query state
+- architectural decisions
+- unusual framework behavior
+- important edge cases
+
+The goal is to preserve reasoning behind important decisions.
+
+---
+
+# 17. Explain Non-Obvious Syntax and Concepts
+
+When code introduces syntax or concepts that are:
+
+- non-obvious
+- project-specific
+- important to control flow
+- important to data flow
+
+add a concise explanatory comment.
+
+Explain the logical effect of the syntax, not merely its name.
+
+Do not comment universally understood syntax.
+
+---
+
+# 18. Comments Should Explain Why
+
+Prefer comments that preserve reasoning.
+
+Good comments explain why a decision exists and what behavior it protects.
+
+Avoid comments that merely restate the code.
+
+---
+
+# 19. Naming Conventions
+
+Components:
+PascalCase
+
+Examples:
+- ProjectHeader.tsx
+- ConfigurationMediaSection.tsx
+- FeaturedProjectCard.tsx
+
+Pages:
+PascalCase ending with Page
+
+Examples:
+- ProjectPage.tsx
+- ProjectsPage.tsx
+- ConfigurationFormPage.tsx
+
+Hooks:
+camelCase beginning with use
+
+Examples:
+- useProject.ts
+- useProjectForm.ts
+- useMediaUpload.ts
+
+Domain Utilities:
+- something.utils.ts
+- project.utils.ts
+- media.utils.ts
+
+Types:
+- something.types.ts
+- project.types.ts
+- media.types.ts
+
+API Clients:
+Use concise domain names.
+
+Examples:
+- project.ts
+- site.ts
+- admin-media.ts
+- admin-project.ts
+
+Do not force an .api.ts suffix onto every existing API file merely for naming consistency.
+
+Services:
+- something.service.ts
+- project.service.ts
+- media.service.ts
+
+Repositories:
+- something.repository.ts
+- project.repository.ts
+- media.repository.ts
+
+Validators:
+- something.validator.ts
+- project.validator.ts
+- media.validator.ts
+
+Controllers:
+- something.controller.ts
+- project.controller.ts
+- media.controller.ts
+
+Existing conventions should be standardized gradually while working on each domain rather than through unnecessary global renaming.
+
+---
+
+# 20. CSS Architecture
+
+Styles should follow:
+
+styles/
+├── globals.css
+├── layout.css
+├── components.css
+│
+├── home.css
+├── developer.css
+├── project.css
+├── configuration.css
+├── search.css
+│
+└── admin/
+    ├── admin.css
+    ├── developers.css
+    ├── projects.css
+    ├── configurations.css
+    └── media.css
+
+Styles should be placed according to responsibility.
+
+Avoid one giant stylesheet.
+
+Avoid creating a stylesheet for every tiny component unless there is a genuine architectural reason.
+
+---
+
+# 21. CSS Naming
+
+Use BEM-ish naming.
+
+Example:
+
+.project-page {}
+
+.project-page__hero {}
+
+.project-page__media {}
+
+.project-page__media-item {}
+
+.project-page__media-item--active {}
+
+The goal is discoverability, predictable relationships, domain ownership, and reduced naming collisions.
+
+---
+
+# 22. Limited Barrel Exports
+
+Barrel exports are allowed when they improve:
+
+- discoverability
+- readability
+- domain boundaries
+
+Do not create barrel files everywhere.
+
+Avoid deeply nested or circular barrel-export structures.
+
+Direct imports are preferable when they make dependencies clearer.
+
+---
+
+# 23. Import and Export Integrity
+
+This is a hard rule.
+
+Before:
+
+- moving a file
+- renaming a file
+- deleting a file
+- splitting a module
+- changing an export
+- changing a barrel export
+
+search the entire repository for references.
+
+Update all affected:
+
+- imports
+- exports
+- re-exports
+- route references
+- component references
+- existing test references
+- dependency references
+
+A refactor must not knowingly leave broken imports.
+
+---
+
+# 24. Legacy Files
+
+Legacy files should not be deleted casually.
+
+Before removing one:
+
+1. Search the entire repository for references.
+2. Identify imports.
+3. Identify exports and re-exports.
+4. Migrate valid references.
+5. Confirm compatibility is no longer required.
+6. Only then remove it.
+
+If still useful for compatibility, a temporary re-export is acceptable.
+
+Legacy compatibility must be intentional.
+
+---
+
+# 25. Refactoring Must Preserve Behavior
+
+Refactoring must not intentionally change observable product behavior unless the task explicitly requests a behavior change.
+
+The following should remain stable:
+
+- API contracts
+- routes
+- user workflows
+- publication rules
+- authentication behavior
+- search behavior
+- media ownership
+- data relationships
+- URL behavior
+- configuration selection
+- lead behavior
+
+Goal:
+
+Same behavior
+    +
+Better internal architecture
+
+---
+
+# 26. Refactoring Process
+
+Refactoring should happen domain-by-domain.
+
+Preferred process:
+
+1. Inspect domain.
+2. Map dependencies.
+3. Identify responsibilities.
+4. Identify module boundaries.
+5. Identify reusable abstractions.
+6. Identify imports/exports affected.
+7. Identify documentation/comments required.
+8. Implement refactor.
+9. Report changes.
+
+Do not blindly restructure code immediately after opening a large file.
+
+---
+
+# 27. Domain-by-Domain Refactoring
+
+A reasonable sequence is:
+
+Architecture Rules
+        ↓
+Home
+        ↓
+Developer
+        ↓
+Project
+        ↓
+Configuration
+        ↓
+Media
+        ↓
+Search
+        ↓
+Leads
+        ↓
+Admin
+        ↓
+Shared/Common Cleanup
+
+The exact order may change when dependencies make another sequence more sensible.
+
+Do not refactor unrelated domains during a focused domain task.
+
+---
+
+# 28. Refactoring Plans Before Implementation
+
+Before significant structural changes to a domain, inspect the domain and create a refactoring plan.
+
+The plan should identify:
+
+- current responsibilities
+- proposed responsibilities
+- files that should remain
+- files that should be split
+- files that should be created
+- files that may be removed
+- abstractions that are justified
+- imports/exports affected
+- legacy compatibility concerns
+- documentation/comments that should be added
+
+Only then implement the refactor.
+
+---
+
+# 29. Dependency Awareness
+
+Before moving code, understand dependency direction.
+
+Prefer:
+
+Page
+ ↓
+Domain components/hooks
+ ↓
+Domain utilities
+ ↓
+API/service boundaries
+
+Avoid circular dependencies.
+
+Avoid making lower-level utilities depend on pages.
+
+Avoid making generic components depend on a specific domain unless intentionally domain-specific.
+
+---
+
+# 30. Public vs Admin Boundaries
+
+Keep public and admin concerns separated.
+
+Public code should not depend on admin-only components merely because they share data structures.
+
+Admin code may use shared domain abstractions where appropriate.
+
+Media remains a shared backend system but can have separate public/admin presentation layers.
+
+---
+
+# 31. Data Ownership
+
+Data should be owned by the domain that logically owns it.
+
+Examples:
+
+Project
+  └── Project Media
+
+Configuration
+  └── Configuration Media
+
+Home
+  └── Home Media
+
+Do not merge unrelated domain data merely because data shapes look similar.
+
+---
+
+# 32. URL State
+
+When state is intentionally represented in the URL, preserve that architecture.
+
+Example:
+
+?configuration=<configurationId>
+
+is the public representation of selected configuration.
+
+Do not replace URL state with local React state unless product behavior explicitly changes.
+
+URL state should remain:
+
+- shareable
+- refresh-safe
+- navigable
+- predictable
+
+---
+
+# 33. Public Data Filtering
+
+Public data must respect existing visibility rules.
+
+Architectural refactoring must not weaken:
+
+- publication filtering
+- active media filtering
+- ownership validation
+- authentication
+- authorization
+
+Do not rely solely on frontend filtering for public visibility.
+
+---
+
+# 34. Existing Tests
+
+Existing tests may be inspected to understand expected behavior.
+
+The refactoring agent may:
+
+- read tests
+- use tests as behavioral documentation
+
+The refactoring agent must not:
+
+- create tests
+- modify tests
+- execute tests
+- install testing infrastructure
+
+unless a separate task explicitly authorizes those actions.
+
+---
+
+# 35. No Unnecessary Package Dependencies
+
+Architectural refactoring should prefer existing project capabilities.
+
+Do not introduce a package merely to make a small abstraction easier.
+
+Do not install:
+
+- carousel libraries for simple carousel behavior
+- state-management libraries for state that can remain local
+- utility libraries for trivial helpers
+
+Dependencies should be introduced only through an explicit separate decision.
+
+---
+
+# 36. No Architecture for Architecture's Sake
+
+The codebase should not become more complicated merely to appear more sophisticated.
+
+Prefer:
+
+Simple
+Clear
+Explicit
+
+over:
+
+Generic
+Highly abstracted
+Indirect
+Over-engineered
+
+A developer should be able to discover where a feature lives without navigating through unnecessary abstraction layers.
+
+---
+
+# 37. Refactoring Completion Standard
+
+A domain refactor is complete when:
+
+- responsibilities are clear
+- large mixed-responsibility files have been appropriately modularized
+- pages are thin
+- reusable logic lives in appropriate hooks/utilities
+- domain-specific utilities remain local
+- shared abstractions are justified
+- imports and exports remain valid
+- legacy compatibility is intentional
+- file headers explain purpose and flow
+- important logic has useful comments
+- CSS ownership remains clear
+- existing behavior is preserved
+
+The goal is not to maximize modularity.
+
+The goal is to make the code easier to understand and safely change.
+
+---
+
+# 38. Architectural Decision Principle
+
+When multiple reasonable implementations exist, prefer the one that:
+
+1. preserves existing behavior
+2. minimizes unnecessary complexity
+3. keeps responsibilities clear
+4. keeps related code close together
+5. reduces coupling
+6. improves discoverability
+7. makes future changes easier
+8. does not introduce premature abstractions
+
+The simplest architecture that satisfies product requirements should win.
+
+---
+
+# 39. Final Rule
+
+The most important rule is:
+
+> Make the codebase easier for the next developer to understand and change.
+
+Every refactor should leave the project:
+
+More modular
+More readable
+More discoverable
+More predictable
+
+without making it:
+
+More abstract
+More fragmented
+More indirect
+More difficult to navigate
+
+Good architecture is not measured by how many files exist.
+
+It is measured by how easily a developer can answer:
+
+- Where does this behavior live?
+- Why does it live there?
+- What does it depend on?
+- What depends on it?
+- What flow does it belong to?
+- How can I safely change it?

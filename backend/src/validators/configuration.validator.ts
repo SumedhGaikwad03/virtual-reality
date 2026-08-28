@@ -1,3 +1,16 @@
+/*
+ * PURPOSE:
+ * Request validation middlewares for configuration endpoints.
+ *
+ * FLOW:
+ * Admin Configuration Validation Flow
+ *
+ * RESPONSIBILITY:
+ * Validates request parameters (projectId, id) and request body payloads for creating and updating
+ * configurations, enforcing positive integers for BHK and area fields, whole-number strings for price,
+ * and valid AvailabilityStatus enums.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 
 export type AdminCreateConfigurationBody = {
@@ -33,10 +46,12 @@ function validationError(message: string) {
   return error;
 }
 
+// Enforces that numeric values like BHK, carpetArea, and builtUpArea are positive whole integers
 function isPositiveInteger(value: unknown) {
   return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
 }
 
+// Enforces that priceFrom is a string containing only digits representing paise
 function isPriceString(value: unknown) {
   return typeof value === "string" && /^\d+$/.test(value);
 }

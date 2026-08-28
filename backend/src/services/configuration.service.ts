@@ -1,3 +1,18 @@
+/*
+ * PURPOSE:
+ * Configuration application service layer.
+ *
+ * FLOW:
+ * Configuration Business Logic Flow
+ *
+ * RESPONSIBILITY:
+ * Encapsulates business rules for property configurations:
+ * - Enforces parent project existence before creating or listing configurations.
+ * - Converts string priceFrom to BigInt for safe database persistence without floating-point issues.
+ * - Serializes BigInt priceFrom back to string for API response DTOs.
+ * - Maps not-found and validation failures to domain errors.
+ */
+
 import type { AvailabilityStatus } from "../../generated/prisma/enums.js";
 import { projectRepository } from "../repositories/project.repository.js";
 import { configurationRepository } from "../repositories/configuration.repository.js";
@@ -37,6 +52,7 @@ export class ConfigurationServiceError extends Error {
   }
 }
 
+// Converts the Prisma entity to an API response DTO, safely converting BigInt priceFrom to string
 function toConfigurationResponse(configuration: {
   id: string;
   projectId: string;
@@ -65,6 +81,7 @@ function toConfigurationResponse(configuration: {
   };
 }
 
+// Converts string price in paise to BigInt for exact database storage
 function toBigInt(value: string) {
   try {
     return BigInt(value);
@@ -77,6 +94,7 @@ function toBigInt(value: string) {
   }
 }
 
+// Verifies that the parent project exists before adding configurations to it
 async function ensureProjectExists(projectId: string) {
   if (!(await projectRepository.findById(projectId))) {
     throw new ConfigurationServiceError(

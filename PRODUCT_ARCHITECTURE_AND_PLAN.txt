@@ -1,0 +1,652 @@
+VIRTUAL REALITY - PRODUCT ARCHITECTURE AND PRODUCT PLAN
+
+PURPOSE
+
+Virtual Reality is a real-estate property discovery platform.
+
+The product is intended to make property information easier to discover, compare, understand, and eventually act on.
+
+The system is being built as a structured property data platform first, with a public property website and an admin system. Later capabilities such as importing property information, search, conversational property discovery, and lead capture will build on the same approved property data.
+
+The database is the source of truth for approved property information.
+
+PRODUCT PRINCIPLE
+
+The core idea is:
+
+STRUCTURED PROPERTY DATA
+        ->
+PUBLIC PROPERTY EXPERIENCE
+        ->
+SEARCH AND DISCOVERY
+        ->
+QUALIFIED LEADS
+
+Future AI features must use the structured property system. AI must not become an uncontrolled source of property facts.
+
+
+CORE DOMAIN
+
+The core property hierarchy is:
+
+Developer
+    ->
+Project
+    ->
+Configuration
+    ->
+Media
+
+Projects belong to developers.
+
+Projects can have many configurations.
+
+Configuration-specific information belongs to configurations.
+
+Examples:
+- BHK
+- carpet area
+- built-up area
+- super built-up area
+- price
+- availability
+
+Project-level information should not be duplicated into configurations unless there is a real domain reason.
+
+Media is a reusable system. It can belong to:
+- the website/home
+- a developer
+- a project
+- a configuration
+
+
+CURRENT PRODUCT AREAS
+
+1. ADMIN
+
+The admin system is used to manage approved platform data.
+
+Current areas:
+- Authentication
+- Developers
+- Projects
+- Configurations
+- Media
+- Leads
+- Import
+
+The admin system is protected by authentication.
+
+The admin should be able to create, update, review, activate, deactivate, and manage platform data without directly editing the database.
+
+2. PUBLIC WEBSITE
+
+The public website presents approved property information.
+
+Current public areas include:
+- Home
+- Developer pages
+- Project pages
+- Search
+- Lead/contact functionality
+
+The public website should consume backend APIs rather than access the database directly.
+
+3. MEDIA
+
+Media is a first-class domain.
+
+Media storage uses Cloudinary.
+
+The database stores media metadata and URLs, not the actual binary files.
+
+Media supports:
+- context
+- slot
+- type
+- category
+- title
+- URL
+- thumbnail
+- alt text
+- ordering
+- primary status
+- active status
+- source information
+
+Media contexts:
+- HOME
+- DEVELOPER
+- PROJECT
+- CONFIGURATION
+
+Media types:
+- IMAGE
+- DOCUMENT
+- VIDEO
+
+Current categories:
+- HERO
+- HERO_CAROUSEL
+- CARD
+- GALLERY
+- AMENITY
+- EXTERIOR
+- INTERIOR
+- LOCATION
+- CONSTRUCTION
+- FLOOR_PLAN
+- BROCHURE
+- PROJECT_VIDEO
+
+
+HOME MEDIA
+
+The homepage currently needs only four media categories:
+
+HOME
+- HERO
+- HERO_CAROUSEL
+- CARD
+- GALLERY
+
+Meaning:
+
+HERO:
+One dominant hero asset.
+
+HERO_CAROUSEL:
+Multiple prominent assets shown in a rotating or changing hero area.
+
+CARD:
+Images intended for homepage cards.
+
+GALLERY:
+A collection of homepage images that users browse together.
+
+Do not treat HERO_CAROUSEL and GALLERY as the same thing.
+
+HERO_CAROUSEL is presentation-focused and rotating.
+
+GALLERY is collection-focused and browsable.
+
+The current priority is to make the data and component structure correct before adding CSS and visual polish.
+
+
+BACKEND ARCHITECTURE
+
+The backend follows:
+
+HTTP Request
+    ->
+Route
+    ->
+Controller
+    ->
+Service
+    ->
+Repository
+    ->
+Database
+
+Routes:
+Define endpoints and connect them to controllers.
+
+Controllers:
+Handle HTTP concerns only.
+
+Services:
+Contain business rules and application workflows.
+
+Repositories:
+Contain database persistence logic.
+
+Validators:
+Validate externally supplied input.
+
+Adapters:
+Isolate external systems such as:
+- Cloudinary
+- email
+- scraping
+- external APIs
+- LLM providers
+
+Do not put business logic in controllers.
+
+Do not put scattered database queries throughout the application.
+
+
+MEDIA BACKEND FLOW
+
+Upload:
+
+Frontend file
+    ->
+multipart/form-data
+    ->
+Multer
+    ->
+Media service
+    ->
+Cloudinary
+    ->
+Cloudinary URL
+    ->
+Media repository
+    ->
+PostgreSQL
+
+If Cloudinary succeeds but the database write fails, the uploaded Cloudinary asset should be cleaned up.
+
+Deleting or deactivating metadata must not accidentally delete a Cloudinary asset.
+
+
+PUBLIC SITE FLOW
+
+GET /api/site
+
+Route
+    ->
+Controller
+    ->
+Site service
+    ->
+Site repository
+    ->
+Database
+
+The site service provides:
+- site configuration
+- featured projects
+- project hero media
+- homepage media as the contract evolves
+
+The frontend consumes this through its API layer.
+
+
+SEARCH ARCHITECTURE
+
+Search is intended to become a reusable backend capability.
+
+The intended model is:
+
+User
+    ->
+Search parser
+    ->
+Validated PropertyQuery
+    ->
+Property Search Service
+    ->
+Repository
+    ->
+Database
+
+PropertyQuery may contain fields such as:
+- locations
+- BHK
+- minimum price
+- maximum price
+- minimum area
+- maximum area
+- area target
+- developer
+- project
+
+The chatbot and website search should eventually use the same search service.
+
+Never allow:
+
+User
+    ->
+LLM
+    ->
+generated SQL
+    ->
+database
+
+The LLM should produce or help construct a controlled query representation, not arbitrary database queries.
+
+
+LEAD ARCHITECTURE
+
+Leads are a core business feature.
+
+A lead may eventually contain:
+- contact details
+- project
+- configuration
+- intent
+- source
+- budget
+- location
+- requested asset
+- message
+- notes
+- status
+
+Website lead forms and the chatbot should eventually use the same lead service.
+
+Do not create separate incompatible lead systems.
+
+
+IMPORTER / SCRAPER ARCHITECTURE
+
+External websites are data sources, not the source of truth.
+
+The intended pipeline is:
+
+External source
+    ->
+Fetcher
+    ->
+Extractor
+    ->
+Normalizer
+    ->
+Validator
+    ->
+Import Draft
+    ->
+Human Review
+    ->
+Approved Property Data
+
+Imported information must not silently overwrite published property data.
+
+Imported media is a candidate until reviewed.
+
+The importer should preserve useful source information.
+
+
+CHATBOT / AI FUTURE
+
+The chatbot is intended to become a Property Search Assistant.
+
+Its job is to:
+- understand property requirements
+- construct a controlled PropertyQuery
+- search real properties
+- present real results
+- provide approved media
+- capture qualified leads
+
+It must not:
+- invent properties
+- invent prices
+- invent availability
+- generate arbitrary SQL
+- bypass the property database
+- bypass lead validation
+
+The property database remains the source of truth.
+
+
+PRODUCT EVOLUTION
+
+The intended product evolution is:
+
+PHASE 1 - STRUCTURED PROPERTY PLATFORM
+
+Build the reliable foundation:
+- Developers
+- Projects
+- Configurations
+- Media
+- Leads
+- Admin
+- Public property pages
+
+Goal:
+Create a trustworthy property dataset and management system.
+
+PHASE 2 - STRONG PUBLIC EXPERIENCE
+
+Improve:
+- Home
+- Developer pages
+- Project pages
+- Configuration presentation
+- Media presentation
+- Search
+- Lead capture
+
+Goal:
+Make the website useful even without AI.
+
+PHASE 3 - DATA INGESTION
+
+Build:
+- Importer
+- Scraper/fetcher
+- Extraction
+- Normalization
+- Validation
+- Import drafts
+- Human approval
+
+Goal:
+Reduce manual data entry while keeping humans responsible for data quality.
+
+PHASE 4 - PROPERTY SEARCH
+
+Build a reusable Property Search Service.
+
+Support:
+- location
+- BHK
+- price
+- area
+- developer
+- project
+- other controlled property filters
+
+Goal:
+Make structured property discovery reliable and reusable.
+
+PHASE 5 - AI PROPERTY ASSISTANT
+
+Add conversational discovery on top of the existing search system.
+
+Example flow:
+
+User:
+"I want a 2 BHK around Pune under my budget."
+
+AI:
+Understands the request.
+
+AI:
+Creates a validated PropertyQuery.
+
+Search service:
+Finds actual properties.
+
+AI:
+Presents those properties.
+
+User:
+Chooses one.
+
+System:
+Shows approved project/configuration/media information.
+
+User:
+Requests contact.
+
+Lead service:
+Creates a qualified lead.
+
+The AI is an interface to the property system, not the property system itself.
+
+PHASE 6 - LEAD INTELLIGENCE AND AUTOMATION
+
+Potential future capabilities:
+- lead qualification
+- intent classification
+- source attribution
+- follow-up workflows
+- notifications
+- analytics
+- conversion tracking
+
+These should build on the existing lead model and service.
+
+PHASE 7 - PLATFORM / BUSINESS EXPANSION
+
+Long-term possibilities may include:
+- richer property discovery
+- developer dashboards
+- automated data monitoring
+- property availability monitoring
+- personalized recommendations
+- analytics
+- stronger developer tooling
+- additional acquisition channels
+
+These are future possibilities, not current implementation requirements.
+
+
+WHAT THE PRODUCT SHOULD BECOME
+
+The long-term product is intended to become more than a real-estate listing website.
+
+The direction is:
+
+A structured property intelligence and discovery platform.
+
+The foundation is a trusted property graph:
+
+Developer
+    ->
+Projects
+    ->
+Configurations
+    ->
+Media
+    ->
+Leads
+
+Around that foundation:
+
+Importers create candidate data.
+
+Humans approve data.
+
+Search makes the data discoverable.
+
+The public website presents it.
+
+AI makes discovery conversational.
+
+Lead systems turn discovery into business outcomes.
+
+The important architectural rule is that every future capability should build on the same structured source of truth.
+
+
+NON-NEGOTIABLE PRODUCT RULES
+
+1. Approved database data is the source of truth.
+
+2. External websites are sources, not truth.
+
+3. Imported data requires validation and review.
+
+4. AI cannot invent property facts.
+
+5. AI cannot generate arbitrary SQL.
+
+6. Public APIs should expose approved data.
+
+7. Admin operations require authentication.
+
+8. Media should remain a reusable system.
+
+9. Project and configuration data should remain properly separated.
+
+10. Business logic belongs in services, not controllers.
+
+11. Database access belongs in repositories.
+
+12. Features should be implemented incrementally.
+
+13. Do not build future roadmap features early just because they are planned.
+
+14. Do not add dependencies without a real need.
+
+15. Do not make major architectural decisions silently.
+
+
+CURRENT DEVELOPMENT PRIORITY
+
+The immediate development sequence is:
+
+1. Solidify media structure.
+2. Verify public media API.
+3. Refine project media.
+4. Refine configuration media.
+5. Refine developer media.
+6. Refine the admin media manager.
+7. Complete public media presentation.
+8. Add CSS and responsive design.
+9. Continue with search and ingestion improvements.
+10. Build AI capabilities only after the underlying property/search systems are reliable.
+
+
+ENGINEERING PHILOSOPHY
+
+The project optimizes for:
+
+- clear architecture
+- low coupling
+- high cohesion
+- maintainability
+- testability
+- simple solutions
+- fast development without shortcuts that damage the architecture
+
+Avoid:
+- giant files
+- god services
+- circular dependencies
+- unnecessary abstractions
+- unnecessary dependencies
+- unrelated refactoring
+- premature optimization
+- hidden side effects
+
+
+AI AGENT ROLE
+
+The AI coding agent is an implementation accelerator.
+
+The human developer remains the architect.
+
+The agent must:
+- inspect before editing
+- reuse existing functionality
+- make small changes
+- explain important decisions
+- avoid scope expansion
+- validate its work
+- avoid guessing
+- preserve working behavior
+
+When asked for an MCP/Antigravity implementation prompt, provide a self-contained prompt with:
+
+TASK
+CONTEXT
+FILES TO INSPECT
+FILES TO MODIFY
+REQUIREMENTS
+DO NOT CHANGE
+VALIDATION
+DONE WHEN
+
+When architecture or business behavior is ambiguous, stop and explain the ambiguity instead of silently inventing a solution.
+
+
+ONE-SENTENCE PRODUCT VISION
+
+Virtual Reality aims to become a trusted, structured property discovery platform where verified property data powers the website, search, lead generation, ingestion systems, and eventually an AI property assistant.

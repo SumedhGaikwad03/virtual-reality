@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Public project API client.
+ *
+ * FLOW:
+ * Public Project Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Performs GET /api/developers/:developerSlug/:locationSlug/:projectSlug HTTP requests,
+ * validates response shapes, and provides typed errors.
+ */
+
 import { API_BASE_URL } from "./config";
 import type { Project } from "../types/project";
 
@@ -17,24 +29,37 @@ export async function getProject(
   projectSlug: string,
   signal?: AbortSignal,
 ): Promise<Project> {
-  const path = [developerSlug, locationSlug, projectSlug]
+  const path = [
+    developerSlug,
+    locationSlug,
+    projectSlug,
+  ]
     .map(encodeURIComponent)
     .join("/");
 
   let response: Response;
 
   try {
-    response = await fetch(`${API_BASE_URL}/developers/${path}`, { signal });
+    response = await fetch(
+      `${API_BASE_URL}/developers/${path}`,
+      { signal },
+    );
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       throw error;
     }
-    throw new ProjectApiError("Project request failed", null);
+
+    throw new ProjectApiError(
+      "Project request failed",
+      null,
+    );
   }
 
   if (!response.ok) {
     throw new ProjectApiError(
-      response.status === 404 ? "Project not found" : "Project request failed",
+      response.status === 404
+        ? "Project not found"
+        : "Project request failed",
       response.status,
     );
   }
@@ -42,13 +67,18 @@ export async function getProject(
   const body: unknown = await response.json();
 
   if (!isProjectResponse(body)) {
-    throw new ProjectApiError("Invalid project response", response.status);
+    throw new ProjectApiError(
+      "Invalid project response",
+      response.status,
+    );
   }
 
   return body.data;
 }
 
-function isProjectResponse(value: unknown): value is { data: Project } {
+function isProjectResponse(
+  value: unknown,
+): value is { data: Project } {
   return (
     typeof value === "object" &&
     value !== null &&

@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Public site API client.
+ *
+ * FLOW:
+ * Homepage Content Flow
+ *
+ * RESPONSIBILITY:
+ * Performs GET /api/site HTTP requests, validates response shapes, and provides typed errors.
+ */
+
 import { API_BASE_URL } from "./config";
 import type { Site } from "../types/site";
 

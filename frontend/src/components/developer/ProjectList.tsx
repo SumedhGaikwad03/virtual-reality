@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Renders the project list section on the public developer page.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Maps the published projects belonging to the developer into ProjectCard components,
+ * or displays an empty state message if none exist.
+ */
+
 import type { ProjectCard as ProjectCardData } from "../../types/developer";
 import { ProjectCard } from "./ProjectCard";
 

@@ -400,6 +400,8 @@ export const ModelName = {
   Developer: 'Developer',
   Configuration: 'Configuration',
   Project: 'Project',
+  ProjectHighlight: 'ProjectHighlight',
+  ProjectAmenity: 'ProjectAmenity',
   Media: 'Media',
   Lead: 'Lead',
   Admin: 'Admin',
@@ -419,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "developer" | "configuration" | "project" | "media" | "lead" | "admin" | "passwordResetToken"
+    modelProps: "developer" | "configuration" | "project" | "projectHighlight" | "projectAmenity" | "media" | "lead" | "admin" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -642,6 +644,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProjectHighlight: {
+      payload: Prisma.$ProjectHighlightPayload<ExtArgs>
+      fields: Prisma.ProjectHighlightFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectHighlightFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProjectHighlightFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>
+        }
+        findFirst: {
+          args: Prisma.ProjectHighlightFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProjectHighlightFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>
+        }
+        findMany: {
+          args: Prisma.ProjectHighlightFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>[]
+        }
+        create: {
+          args: Prisma.ProjectHighlightCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>
+        }
+        createMany: {
+          args: Prisma.ProjectHighlightCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProjectHighlightCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>[]
+        }
+        delete: {
+          args: Prisma.ProjectHighlightDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>
+        }
+        update: {
+          args: Prisma.ProjectHighlightUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProjectHighlightDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProjectHighlightUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProjectHighlightUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProjectHighlightUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectHighlightPayload>
+        }
+        aggregate: {
+          args: Prisma.ProjectHighlightAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectHighlight>
+        }
+        groupBy: {
+          args: Prisma.ProjectHighlightGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectHighlightGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProjectHighlightCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectHighlightCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProjectAmenity: {
+      payload: Prisma.$ProjectAmenityPayload<ExtArgs>
+      fields: Prisma.ProjectAmenityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectAmenityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProjectAmenityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>
+        }
+        findFirst: {
+          args: Prisma.ProjectAmenityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProjectAmenityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>
+        }
+        findMany: {
+          args: Prisma.ProjectAmenityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>[]
+        }
+        create: {
+          args: Prisma.ProjectAmenityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>
+        }
+        createMany: {
+          args: Prisma.ProjectAmenityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProjectAmenityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>[]
+        }
+        delete: {
+          args: Prisma.ProjectAmenityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>
+        }
+        update: {
+          args: Prisma.ProjectAmenityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProjectAmenityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProjectAmenityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProjectAmenityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProjectAmenityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectAmenityPayload>
+        }
+        aggregate: {
+          args: Prisma.ProjectAmenityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectAmenity>
+        }
+        groupBy: {
+          args: Prisma.ProjectAmenityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectAmenityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProjectAmenityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectAmenityCountAggregateOutputType> | number
         }
       }
     }
@@ -987,6 +1137,7 @@ export const DeveloperScalarFieldEnum = {
   description: 'description',
   logoUrl: 'logoUrl',
   websiteUrl: 'websiteUrl',
+  publishStatus: 'publishStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1023,6 +1174,7 @@ export const ProjectScalarFieldEnum = {
   mapsUrl: 'mapsUrl',
   status: 'status',
   featured: 'featured',
+  publishStatus: 'publishStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1030,10 +1182,37 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
-export const MediaScalarFieldEnum = {
+export const ProjectHighlightScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
+  text: 'text',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectHighlightScalarFieldEnum = (typeof ProjectHighlightScalarFieldEnum)[keyof typeof ProjectHighlightScalarFieldEnum]
+
+
+export const ProjectAmenityScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  name: 'name',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectAmenityScalarFieldEnum = (typeof ProjectAmenityScalarFieldEnum)[keyof typeof ProjectAmenityScalarFieldEnum]
+
+
+export const MediaScalarFieldEnum = {
+  id: 'id',
+  developerId: 'developerId',
+  projectId: 'projectId',
   configurationId: 'configurationId',
+  context: 'context',
+  slot: 'slot',
   type: 'type',
   category: 'category',
   title: 'title',
@@ -1139,6 +1318,20 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'PublishStatus'
+ */
+export type EnumPublishStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PublishStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PublishStatus[]'
+ */
+export type ListEnumPublishStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PublishStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -1212,6 +1405,20 @@ export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaContext'
+ */
+export type EnumMediaContextFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaContext'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaContext[]'
+ */
+export type ListEnumMediaContextFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaContext[]'>
     
 
 
@@ -1438,6 +1645,8 @@ export type GlobalOmitConfig = {
   developer?: Prisma.DeveloperOmit
   configuration?: Prisma.ConfigurationOmit
   project?: Prisma.ProjectOmit
+  projectHighlight?: Prisma.ProjectHighlightOmit
+  projectAmenity?: Prisma.ProjectAmenityOmit
   media?: Prisma.MediaOmit
   lead?: Prisma.LeadOmit
   admin?: Prisma.AdminOmit

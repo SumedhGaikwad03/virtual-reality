@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin developer route definitions.
+ *
+ * FLOW:
+ * Admin Developer Management Flow
+ *
+ * RESPONSIBILITY:
+ * Mounts authenticated admin developer endpoints (POST /, GET /, GET /:id, PATCH /:id)
+ * with admin auth middleware and request validation.
+ */
+
 import express, { Router } from "express";
 import {
   createDeveloperController,

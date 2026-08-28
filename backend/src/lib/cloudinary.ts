@@ -1,3 +1,17 @@
+/*
+ * PURPOSE:
+ * External Cloudinary media storage adapter.
+ *
+ * FLOW:
+ * Cloudinary Media Storage Flow
+ *
+ * RESPONSIBILITY:
+ * Encapsulates communication with Cloudinary API:
+ * - Lazy configuration using server-side environment variables.
+ * - Streaming upload buffers directly to Cloudinary folder destinations.
+ * - Destroying assets by public ID with CDN invalidation on rollback or deletion.
+ */
+
 import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 
 export class CloudinaryConfigurationError extends Error {
@@ -22,6 +36,7 @@ export class CloudinaryUploadError extends Error {
 
 let isConfigured = false;
 
+// Initializes Cloudinary client lazily on first access using server-side environment credentials
 function getClient() {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
   const apiKey = process.env.CLOUDINARY_API_KEY;
@@ -39,6 +54,7 @@ function getClient() {
   return cloudinary;
 }
 
+// Uploads a file buffer stream to Cloudinary in the designated folder and resource type
 export function uploadMediaBuffer(
   buffer: Buffer,
   folder: string,
@@ -62,6 +78,7 @@ export function uploadMediaBuffer(
   });
 }
 
+// Destroys an uploaded asset on Cloudinary and invalidates CDN cache
 export async function deleteUploadedAsset(
   publicId: string,
   resourceType: "image" | "video" | "raw",

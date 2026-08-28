@@ -1,63 +1,67 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { SiteApiError, getSite } from "../api/site";
-import { ContactSection } from "../components/home/ContactSection";
+/*
+ * PURPOSE:
+ * Public homepage orchestrator.
+ *
+ * FLOW:
+ * Homepage Journey Flow:
+ * AtmosphericHero -> ExploreDevelopers -> FeaturedProjects -> ConversationalSearchEntry -> AboutFooter + FloatingSearchControl.
+ *
+ * RESPONSIBILITY:
+ * Coordinates homepage state and composes the structural editorial layout per product architecture guidelines.
+ * Delegates data-fetching lifecycle to the useSite hook.
+ */
+
+import { AboutFooter } from "../components/home/AboutFooter";
+import { AtmosphericHero } from "../components/home/AtmosphericHero";
+import { ConversationalSearchEntry } from "../components/home/ConversationalSearchEntry";
+import { ExploreDevelopers } from "../components/home/ExploreDevelopers";
 import { FeaturedProjects } from "../components/home/FeaturedProjects";
-import { FirmHero } from "../components/home/FirmHero";
-import { FirmOverview } from "../components/home/FirmOverview";
-import type { Site } from "../types/site";
+import { FloatingSearchControl } from "../components/home/FloatingSearchControl";
+import { useSite } from "../components/home/hooks/useSite";
 
 export function HomePage() {
-  const [site, setSite] = useState<Site | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    setIsLoading(true);
-    setHasError(false);
-
-    getSite(controller.signal)
-      .then(setSite)
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-
-        if (error instanceof SiteApiError) {
-          setHasError(true);
-        } else {
-          setHasError(true);
-        }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => controller.abort();
-  }, []);
+  const { site, isLoading, hasError } = useSite();
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="home-loading-state" aria-busy="true">
+        <p>Loading Virtual Reality...</p>
+      </div>
+    );
   }
 
   if (hasError || !site) {
-    return <p>Unable to load the site.</p>;
+    return (
+      <div className="home-error-state" role="alert">
+        <p>Unable to load the site. Please try refreshing.</p>
+      </div>
+    );
   }
 
   return (
-    <main className="home-page">
-      <FirmHero site={site} />
-      <FirmOverview site={site} />
+    <main className="home-page-container">
+      {/* 1. HERO / AMBIENCE */}
+      <AtmosphericHero
+        name={site.name}
+        tagline={site.tagline}
+        description={site.description}
+        heroMedia={site.homeMedia}
+      />
+
+      {/* 2. DEVELOPERS */}
+      <ExploreDevelopers developers={site.developers} />
+
+      {/* 3. FEATURED PROJECTS */}
       <FeaturedProjects projects={site.featuredProjects} />
-      <section>
-        <h2>Explore</h2>
-        <Link to="/search">Search properties</Link>
-      </section>
-      <ContactSection contact={site.contact} />
+
+      {/* 4. CONVERSATIONAL SEARCH */}
+      <ConversationalSearchEntry />
+
+      {/* 5. ABOUT / COMPANY / FOOTER */}
+      <AboutFooter site={site} />
+
+      {/* 6. PERSISTENT SEARCH CHAT CONTROL */}
+      <FloatingSearchControl />
     </main>
   );
 }

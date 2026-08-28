@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Developer request input validation middleware.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow & Admin Developer Management Flow
+ *
+ * RESPONSIBILITY:
+ * Validates route parameters, create payloads, update payloads, and publishStatus enum values
+ * for both public and admin developer operations.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 
 export type AdminCreateDeveloperBody = {
@@ -6,9 +18,12 @@ export type AdminCreateDeveloperBody = {
   description?: unknown;
   logoUrl?: unknown;
   websiteUrl?: unknown;
+  publishStatus?: unknown;
 };
 
 export type AdminUpdateDeveloperBody = AdminCreateDeveloperBody;
+
+const publishStatuses = new Set(["DRAFT", "PUBLISHED"]);
 
 function adminValidationError(message: string) {
   const error = new Error(message);
@@ -24,11 +39,36 @@ function isOptionalString(value: unknown) {
   return value === undefined || typeof value === "string";
 }
 
+/*
+ * URL Protocol Security:
+ * Strictly enforces http: and https: protocols on user/admin-supplied URLs to prevent
+ * Stored XSS via executable or browser-sensitive schemes (e.g. javascript:, data:, vbscript:).
+ */
+function isValidOptionalHttpUrl(value: unknown): boolean {
+  if (value === undefined || value === null || value === "") {
+    return true;
+  }
+
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 function validateOptionalFields(body: AdminCreateDeveloperBody) {
   return (
     isOptionalString(body.description) &&
-    isOptionalString(body.logoUrl) &&
-    isOptionalString(body.websiteUrl)
+    isValidOptionalHttpUrl(body.logoUrl) &&
+    isValidOptionalHttpUrl(body.websiteUrl) &&
+    (body.publishStatus === undefined ||
+      (typeof body.publishStatus === "string" &&
+        publishStatuses.has(body.publishStatus)))
   );
 }
 
@@ -59,7 +99,14 @@ export function validateAdminUpdateDeveloper(
   next: NextFunction,
 ) {
   const body = req.body as AdminUpdateDeveloperBody;
-  const allowedFields = ["name", "slug", "description", "logoUrl", "websiteUrl"];
+  const allowedFields = [
+    "name",
+    "slug",
+    "description",
+    "logoUrl",
+    "websiteUrl",
+    "publishStatus",
+  ];
   const hasOnlyAllowedFields = Object.keys(body).every((key) =>
     allowedFields.includes(key),
   );

@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin developer API client.
+ *
+ * FLOW:
+ * Admin Developer Management Flow
+ *
+ * RESPONSIBILITY:
+ * Provides CRUD HTTP client functions (getDevelopers, getDeveloper, createDeveloper, updateDeveloper)
+ * targeting the authenticated admin developer endpoints.
+ */
+
 import { adminRequest } from "./admin-client";
 import type {
   AdminDeveloperInput,

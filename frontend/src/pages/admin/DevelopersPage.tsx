@@ -1,34 +1,23 @@
-import type { FormEvent } from "react";
+/*
+ * PURPOSE:
+ * Admin developers list page.
+ *
+ * FLOW:
+ * Admin Developer Management Flow
+ *
+ * RESPONSIBILITY:
+ * Fetches and renders the list of all developers (Draft and Published) for admin management,
+ * and provides navigation to create a new developer or edit an existing one.
+ */
+
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
-import {
-  createDeveloper,
-  getDeveloper,
-  getDevelopers,
-  updateDeveloper,
-} from "../../api/admin-developers";
+import { getDevelopers } from "../../api/admin-developers";
 import { AdminLayout } from "../../components/admin/AdminLayout";
-import type {
-  AdminDeveloper,
-  AdminDeveloperInput,
-} from "../../types/admin-developer";
+import type { AdminDeveloper } from "../../types/admin-developer";
 
-type FormState = {
-  name: string;
-  slug: string;
-  description: string;
-  logoUrl: string;
-  websiteUrl: string;
-};
-
-const emptyForm: FormState = {
-  name: "",
-  slug: "",
-  description: "",
-  logoUrl: "",
-  websiteUrl: "",
-};
+export { DeveloperFormPage } from "./DeveloperFormPage";
 
 function errorMessage(error: unknown) {
   if (!(error instanceof AdminApiError)) {
@@ -54,37 +43,6 @@ function errorMessage(error: unknown) {
   return "The server could not complete that request. Please try again.";
 }
 
-function toForm(developer: AdminDeveloper): FormState {
-  return {
-    name: developer.name,
-    slug: developer.slug,
-    description: developer.description ?? "",
-    logoUrl: developer.logoUrl ?? "",
-    websiteUrl: developer.websiteUrl ?? "",
-  };
-}
-
-function cleanPayload(form: FormState): AdminDeveloperInput {
-  const payload: AdminDeveloperInput = {
-    name: form.name.trim(),
-    slug: form.slug.trim(),
-  };
-
-  if (form.description.trim()) {
-    payload.description = form.description.trim();
-  }
-
-  if (form.logoUrl.trim()) {
-    payload.logoUrl = form.logoUrl.trim();
-  }
-
-  if (form.websiteUrl.trim()) {
-    payload.websiteUrl = form.websiteUrl.trim();
-  }
-
-  return payload;
-}
-
 export function DevelopersPage() {
   const navigate = useNavigate();
 
@@ -92,174 +50,6 @@ export function DevelopersPage() {
     <DeveloperListPage
       onAdd={() => navigate("/admin/developers/new")}
     />
-  );
-}
-
-export function DeveloperFormPage() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-
-  const isEditing = Boolean(id);
-
-  const [form, setForm] = useState<FormState>(emptyForm);
-  const [isLoading, setIsLoading] = useState(isEditing);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false);
-      return;
-    }
-
-    let active = true;
-
-    getDeveloper(id)
-      .then((response) => {
-        if (active) {
-          setForm(toForm(response.data));
-        }
-      })
-      .catch((requestError: unknown) => {
-        if (active) {
-          setError(errorMessage(requestError));
-        }
-      })
-      .finally(() => {
-        if (active) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [id]);
-
-  function setField(field: keyof FormState, value: string) {
-    setForm((current) => ({
-      ...current,
-      [field]: value,
-    }));
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    setError(null);
-
-    const payload = cleanPayload(form);
-
-    if (!payload.name || !payload.slug) {
-      setError("Name and slug are required.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      if (isEditing && id) {
-        await updateDeveloper(id, payload);
-      } else {
-        await createDeveloper(payload);
-      }
-
-      navigate("/admin/developers", {
-        replace: true,
-      });
-    } catch (requestError) {
-      setError(errorMessage(requestError));
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <AdminLayout>
-        <p>Loading developer...</p>
-      </AdminLayout>
-    );
-  }
-
-  return (
-    <AdminLayout>
-      <p>
-        <Link to="/admin/developers">
-          ← Developers
-        </Link>
-      </p>
-
-      <h1>{isEditing ? "Edit Developer" : "Add Developer"}</h1>
-
-      {error && <p role="alert">{error}</p>}
-
-      <form
-        className="admin-developer-form"
-        onSubmit={handleSubmit}
-      >
-        <label>
-          Name
-          <input
-            required
-            value={form.name}
-            onChange={(event) =>
-              setField("name", event.target.value)
-            }
-          />
-        </label>
-
-        <label>
-          Slug
-          <input
-            required
-            value={form.slug}
-            onChange={(event) =>
-              setField("slug", event.target.value)
-            }
-          />
-        </label>
-
-        <label>
-          Description
-          <textarea
-            value={form.description}
-            onChange={(event) =>
-              setField("description", event.target.value)
-            }
-          />
-        </label>
-
-        <label>
-          Logo URL
-          <input
-            type="url"
-            value={form.logoUrl}
-            onChange={(event) =>
-              setField("logoUrl", event.target.value)
-            }
-          />
-        </label>
-
-        <label>
-          Website URL
-          <input
-            type="url"
-            value={form.websiteUrl}
-            onChange={(event) =>
-              setField("websiteUrl", event.target.value)
-            }
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Saving..." : "Save Developer"}
-        </button>
-      </form>
-    </AdminLayout>
   );
 }
 
@@ -349,7 +139,12 @@ function DeveloperListPage({
 
                 <div>
                   <h2>{developer.name}</h2>
-                  <p>{developer.slug}</p>
+                  <p>
+                    {developer.slug} ·{" "}
+                    {developer.publishStatus === "PUBLISHED"
+                      ? "Published"
+                      : "Draft"}
+                  </p>
                 </div>
 
                 <Link

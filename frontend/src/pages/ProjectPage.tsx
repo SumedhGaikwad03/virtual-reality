@@ -1,13 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+/*
+ * PURPOSE:
+ * Public project page orchestrator.
+ *
+ * FLOW:
+ * Public Project Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Coordinates the public project page presentation, manages configuration URL selection state
+ * (?configuration=<id>), handles "Contact Now" smooth scrolling, and composes Project sections.
+ * Delegates data-fetching lifecycle to the useProject hook.
+ */
+
+import { useRef } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { getProject, ProjectApiError } from "../api/project";
+import { ConfigurationMediaSection } from "../components/project/ConfigurationMediaSection";
 import { ConfigurationSection } from "../components/project/ConfigurationSection";
 import { HeroSection } from "../components/project/HeroSection";
 import { LeadSection } from "../components/project/LeadSection";
 import { MediaSection } from "../components/project/MediaSection";
 import { ProjectHeader } from "../components/project/ProjectHeader";
+import { ProjectHeroCarousel } from "../components/project/ProjectHeroCarousel";
 import { ProjectOverview } from "../components/project/ProjectOverview";
-import type { Project } from "../types/project";
+import { useProject } from "../components/project/hooks/useProject";
 
 export function ProjectPage() {
   const { developerSlug, locationSlug, projectSlug } = useParams<{
@@ -16,57 +30,34 @@ export function ProjectPage() {
     projectSlug: string;
   }>();
 
-  const [searchParams] = useSearchParams();
+  // URL state: ?configuration=<configurationId>
+  // Preserved directly in the page orchestrator for shareable, refresh-safe deep linking.
+  const [searchParams, setSearchParams] = useSearchParams();
   const configurationId = searchParams.get("configuration");
 
   const contactRef = useRef<HTMLFormElement | null>(null);
 
-  const [project, setProject] = useState<Project | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<"not-found" | "error" | null>(
-    null,
+  const { project, isLoading, loadError } = useProject(
+    developerSlug,
+    locationSlug,
+    projectSlug,
   );
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const selectedConfiguration = project
+    ? project.configurations.find((c) => c.id === configurationId)
+    : undefined;
 
-    if (!developerSlug || !locationSlug || !projectSlug) {
-      setIsLoading(false);
-      setLoadError("error");
-
-      return () => controller.abort();
-    }
-
-    setIsLoading(true);
-    setLoadError(null);
-    setProject(null);
-
-    getProject(
-      developerSlug,
-      locationSlug,
-      projectSlug,
-      controller.signal,
-    )
-      .then(setProject)
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-
-        if (error instanceof ProjectApiError && error.status === 404) {
-          setLoadError("not-found");
-        } else {
-          setLoadError("error");
-        }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => controller.abort();
-  }, [developerSlug, locationSlug, projectSlug]);
+  function handleSelectConfiguration(id: string) {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (next.get("configuration") === id) {
+        next.delete("configuration");
+      } else {
+        next.set("configuration", id);
+      }
+      return next;
+    });
+  }
 
   function handleContactClick() {
     contactRef.current?.scrollIntoView({
@@ -99,18 +90,27 @@ export function ProjectPage() {
 
       <HeroSection media={project.media} />
 
+      <ProjectHeroCarousel media={project.media} />
+
       <ProjectOverview project={project} />
 
       <ConfigurationSection
         configurations={project.configurations}
         selectedConfigurationId={configurationId}
+        onSelectConfiguration={handleSelectConfiguration}
       />
+
+      {selectedConfiguration && (
+        <ConfigurationMediaSection
+          configuration={selectedConfiguration}
+        />
+      )}
 
       <MediaSection media={project.media} />
 
       <LeadSection
         project={project}
-        selectedConfigurationId={configurationId}
+        selectedConfigurationId={selectedConfiguration?.id ?? null}
         contactRef={contactRef}
       />
     </main>

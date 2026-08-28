@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Guided search property result card component.
+ *
+ * FLOW:
+ * Guided Search Presentation Flow
+ *
+ * RESPONSIBILITY:
+ * Renders a summary card for a matching project and configuration from the search catalog,
+ * providing deep-link navigation directly to the project page with the configuration preselected.
+ */
+
 import { Link } from "react-router-dom";
 import type {
   SearchCatalogProject,
@@ -47,6 +59,7 @@ export function PropertyResultCard({
       </div>
 
       <footer className="property-result-card-footer">
+        {/* Deep-links directly to the public project page with the configuration preselected in the URL */}
         <Link
           to={`/${project.developer.slug}/${project.location.slug}/${project.slug}?configuration=${configuration.id}`}
         >

@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Renders an individual project card within the developer profile context.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Displays project card media (with fallback), project title, location, status badge,
+ * featured tag, and public navigation link to the project page.
+ */
+
 import { Link } from "react-router-dom";
 import type { ProjectCard as ProjectCardData } from "../../types/developer";
 

@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Public developer HTTP controller.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Handles incoming public GET /api/developers/:developerSlug requests,
+ * invokes getPublicDeveloper service, and returns JSON response with HTTP 200.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import { getPublicDeveloper } from "../../services/developer.service.js";
 

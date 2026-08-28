@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Public search catalog API client.
+ *
+ * FLOW:
+ * Guided Search API Flow
+ *
+ * RESPONSIBILITY:
+ * Fetches the complete catalog of published projects, developers, and configurations for client-side guided search.
+ */
+
 import { API_BASE_URL } from "./config";
 import type { SearchCatalogResponse } from "../types/search-catalog";
 

@@ -1,0 +1,838 @@
+/*
+ * PURPOSE:
+ * Home-domain visual presentation styles for the public homepage.
+ *
+ * FLOW:
+ * Homepage Content Flow: HomePage -> Home sections -> CSS selectors.
+ *
+ * RESPONSIBILITY:
+ * Owns homepage visual presentation: atmospheric hero, responsive image picture layout,
+ * floating editorial typography, developer list rows, featured projects scroll-snap,
+ * conversational search entry card, about/footer identity, and persistent floating control.
+ */
+
+/* ==========================================================================
+   Homepage Container & Layout Hierarchy
+   ========================================================================== */
+.home-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 5.5vw, 4.5rem);
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.home-loading-state,
+.home-error-state {
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+  padding: 2rem;
+  font-size: 1.05rem;
+  color: #64748b;
+}
+
+/* Common Section Headers */
+.section-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #2b4c96;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.section-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.section-header-editorial {
+  margin-bottom: 1.5rem;
+}
+
+.section-header-with-link {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.view-all-projects-link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #172f68;
+  text-decoration: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.view-all-projects-link:hover {
+  color: #2b4c96;
+  transform: translateX(3px);
+}
+
+.view-all-projects-link:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* ==========================================================================
+   1. Atmospheric Hero Entry
+   ========================================================================== */
+.atmospheric-hero {
+  position: relative;
+  width: 100%;
+  min-height: clamp(24rem, 55vh, 38rem);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #0f172a;
+  color: #ffffff;
+  margin-top: 1rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+.hero-media-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-media-wrapper picture,
+.hero-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-image {
+  transition: transform 1.2s ease;
+}
+
+.atmospheric-hero:hover .hero-image {
+  transform: scale(1.025);
+}
+
+.hero-fallback-bg {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.hero-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.85) 0%,
+    rgba(15, 23, 42, 0.5) 50%,
+    rgba(15, 23, 42, 0.1) 100%
+  );
+}
+
+/* Floating Editorial Text Positioning */
+.floating-hero-text {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  min-height: clamp(24rem, 55vh, 38rem);
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(2rem, 4vw, 3.5rem);
+  box-sizing: border-box;
+  max-width: 36rem;
+}
+
+.hero-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #93c5fd;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.hero-headline {
+  font-size: clamp(2.1rem, 4.5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.12;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.hero-supporting {
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  line-height: 1.6;
+  color: #e2e8f0;
+  margin: 0;
+  max-width: 30rem;
+}
+
+/* ==========================================================================
+   2. Explore Developers Directory List
+   ========================================================================== */
+.explore-developers-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.explore-developers-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #e2e8f0;
+}
+
+.developer-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-decoration: none;
+  color: #0f172a;
+  transition: background-color 0.15s ease, padding-left 0.2s ease;
+  min-height: 4rem;
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+}
+
+.developer-row-item:hover {
+  background-color: #f8fafc;
+  padding-left: 1.25rem;
+}
+
+.developer-row-item:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+}
+
+.developer-row-content {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.developer-row-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  border-radius: 0.25rem;
+}
+
+.developer-row-badge {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #eef2f7;
+  color: #172f68;
+  font-size: 0.95rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.developer-row-name {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.developer-row-meta {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.developer-row-arrow {
+  font-size: 1.2rem;
+  color: #2b4c96;
+  transition: transform 0.2s ease;
+}
+
+.developer-row-item:hover .developer-row-arrow {
+  transform: translateX(6px);
+}
+
+.no-developers-notice {
+  font-size: 0.95rem;
+  color: #64748b;
+  padding: 1rem 0;
+}
+
+/* ==========================================================================
+   3. Featured Projects Showcase & Mobile Scroll-Snap
+   ========================================================================== */
+.section-header-with-controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.featured-carousel-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.carousel-nav-btn {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.carousel-nav-btn:hover {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.carousel-nav-btn:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+}
+
+.featured-project-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.75rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.featured-project-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.featured-project-list {
+  display: flex;
+  gap: 1.75rem;
+}
+
+.featured-project-card {
+  flex: 0 0 20.5rem;
+  scroll-snap-align: start;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.featured-project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.09);
+}
+
+.featured-project-card-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.featured-project-card-link:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+}
+
+.featured-project-media {
+  position: relative;
+  width: 100%;
+  height: 14.5rem;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.featured-project-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.featured-project-card:hover .featured-project-media img {
+  transform: scale(1.035);
+}
+
+.project-image-fallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 1rem;
+  color: #64748b;
+  font-weight: 600;
+  background: #f1f5f9;
+}
+
+.project-status-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.25rem;
+  backdrop-filter: blur(4px);
+}
+
+.featured-project-info {
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.project-developer-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2b4c96;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.project-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.project-card-location {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   4. Conversational Search Entry
+   ========================================================================== */
+.conversational-search-entry {
+  width: 100%;
+}
+
+.conversational-search-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #cbd5e1;
+  border-radius: 1rem;
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  box-sizing: border-box;
+}
+
+.conversational-search-title {
+  margin: 0 0 0.5rem 0;
+  font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.conversational-search-subtitle {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.98rem;
+  color: #475569;
+}
+
+.conversational-search-form {
+  margin-bottom: 1.5rem;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.5rem 0.35rem 1rem;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #172f68;
+  box-shadow: 0 0 0 2px rgba(23, 47, 104, 0.15);
+}
+
+.conversational-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #0f172a;
+  padding: 0.5rem 0;
+}
+
+.conversational-search-submit {
+  background: #172f68;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.35rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-height: 2.5rem;
+}
+
+.conversational-search-submit:hover {
+  background: #10214a;
+}
+
+.conversational-search-submit:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+.conversational-prompt-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.prompt-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.prompt-pill-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 2rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #1e293b;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.prompt-pill-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #172f68;
+  color: #172f68;
+}
+
+.prompt-pill-btn:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   5. About & Footer Identity Section
+   ========================================================================== */
+.about-footer-section {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.about-footer-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.about-brand-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-brand-logo {
+  max-height: 2.5rem;
+  object-fit: contain;
+}
+
+.footer-brand-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.footer-brand-tagline {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2b4c96;
+  margin: 0;
+}
+
+.footer-about-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #475569;
+  margin: 0;
+  max-width: 28rem;
+}
+
+.footer-column-title {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.footer-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.footer-nav-list a {
+  text-decoration: none;
+  color: #475569;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.footer-nav-list a:hover {
+  color: #172f68;
+}
+
+.footer-nav-list a:focus-visible {
+  outline: 2px solid #172f68;
+  outline-offset: 2px;
+  border-radius: 0.2rem;
+}
+
+.footer-contact-address {
+  font-style: normal;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #475569;
+}
+
+.footer-contact-address p {
+  margin: 0 0 0.4rem 0;
+}
+
+.footer-contact-address a {
+  color: #172f68;
+  text-decoration: none;
+}
+
+.footer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.footer-copyright,
+.footer-attribution {
+  margin: 0;
+}
+
+/* ==========================================================================
+   6. Persistent Floating Search Chat Control
+   ========================================================================== */
+.floating-search-control-container {
+  position: fixed;
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  right: 1.75rem;
+  z-index: 999;
+}
+
+.floating-search-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #0f172a;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 2rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.22);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  min-height: 2.85rem;
+  box-sizing: border-box;
+}
+
+.floating-search-btn:hover {
+  background: #172f68;
+  transform: translateY(-2px);
+}
+
+.floating-search-btn:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Responsive Adaptations & Mobile Snap Scroll
+   ========================================================================== */
+@media (max-width: 768px) {
+  .home-page-container {
+    gap: 2.75rem;
+    padding: 0 1rem 3rem 1rem;
+  }
+
+  .atmospheric-hero {
+    min-height: clamp(22rem, 50vh, 28rem);
+    border-radius: 0.75rem;
+  }
+
+  .hero-media-wrapper picture,
+  .hero-media-wrapper .hero-image {
+    object-position: center 30%;
+  }
+
+  .hero-gradient-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.25) 0%,
+      rgba(15, 23, 42, 0.65) 55%,
+      rgba(15, 23, 42, 0.9) 100%
+    );
+  }
+
+  .floating-hero-text {
+    padding: 1.75rem 1.25rem;
+    min-height: clamp(22rem, 50vh, 28rem);
+    max-width: 100%;
+  }
+
+  .hero-headline {
+    font-size: clamp(1.85rem, 6.5vw, 2.35rem);
+  }
+
+  .hero-supporting {
+    font-size: 0.95rem;
+  }
+
+  .developer-row-item {
+    padding: 1rem 0.25rem;
+  }
+
+  .developer-row-meta {
+    display: none;
+  }
+
+  /* Mobile Featured Projects Scroll Snap with peek effect */
+  .featured-project-scroll-container {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.75rem;
+    scroll-padding-left: 1rem;
+  }
+
+  .featured-project-list {
+    display: flex;
+    grid-template-columns: none;
+    gap: 1rem;
+  }
+
+  .featured-project-card {
+    flex: 0 0 calc(85vw - 1.5rem);
+    max-width: 20rem;
+    scroll-snap-align: start;
+  }
+
+  .featured-project-media {
+    height: 12.5rem;
+  }
+
+  .about-footer-main {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .conversational-search-card {
+    padding: 1.35rem;
+  }
+
+  .search-input-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.5rem;
+  }
+
+  .conversational-search-input {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .floating-search-label {
+    display: none;
+  }
+
+  .floating-search-btn {
+    padding: 0.75rem;
+    border-radius: 50%;
+    min-height: 3.25rem;
+    width: 3.25rem;
+    justify-content: center;
+  }
+
+  .floating-search-control-container {
+    right: 1.25rem;
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .featured-project-scroll-container {
+    scroll-behavior: auto !important;
+  }
+  .hero-image,
+  .developer-row-item,
+  .developer-row-arrow,
+  .featured-project-card,
+  .featured-project-media img,
+  .floating-search-btn {
+    transition: none !important;
+    transform: none !important;
+  }
+}

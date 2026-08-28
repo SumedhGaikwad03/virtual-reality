@@ -1,7 +1,19 @@
+/*
+ * PURPOSE:
+ * Public lead submission route definition and rate-limiting middleware mounting.
+ *
+ * FLOW:
+ * Public Lead Capture Flow
+ *
+ * RESPONSIBILITY:
+ * Mounts the rate-limited POST /api/leads endpoint with input validation and controller handling.
+ */
+
 import express, { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { createLeadController } from "../../controllers/public/lead.controller.js";
 import { validatePublicLead } from "../../validators/lead.validator.js";
+
 
 const submissionLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

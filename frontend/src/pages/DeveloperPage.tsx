@@ -1,53 +1,25 @@
-import { useEffect, useState } from "react";
+/*
+ * PURPOSE:
+ * Public developer page orchestrator.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Coordinates public developer page presentation and composes Developer sections.
+ * Delegates data-fetching lifecycle to the useDeveloper hook.
+ */
+
 import { useParams } from "react-router-dom";
-import { DeveloperApiError, getDeveloper } from "../api/developer";
 import { DeveloperHeader } from "../components/developer/DeveloperHeader";
+import { DeveloperMedia } from "../components/developer/DeveloperMedia";
 import { DeveloperOverview } from "../components/developer/DeveloperOverview";
 import { ProjectList } from "../components/developer/ProjectList";
-import type { PublicDeveloper } from "../types/developer";
+import { useDeveloper } from "../components/developer/hooks/useDeveloper";
 
 export function DeveloperPage() {
   const { developerSlug } = useParams<{ developerSlug: string }>();
-  const [developer, setDeveloper] = useState<PublicDeveloper | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<"not-found" | "error" | null>(
-    null,
-  );
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    if (!developerSlug) {
-      setIsLoading(false);
-      setLoadError("error");
-      return () => controller.abort();
-    }
-
-    setIsLoading(true);
-    setLoadError(null);
-    setDeveloper(null);
-
-    getDeveloper(developerSlug, controller.signal)
-      .then(setDeveloper)
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-
-        if (error instanceof DeveloperApiError && error.status === 404) {
-          setLoadError("not-found");
-        } else {
-          setLoadError("error");
-        }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => controller.abort();
-  }, [developerSlug]);
+  const { developer, isLoading, loadError } = useDeveloper(developerSlug);
 
   if (isLoading) {
     return <p>Loading developer...</p>;
@@ -64,7 +36,13 @@ export function DeveloperPage() {
   return (
     <main className="developer-page">
       <DeveloperHeader developer={developer} />
+
       <DeveloperOverview developer={developer} />
+
+      {developer.media.length > 0 && (
+        <DeveloperMedia media={developer.media} />
+      )}
+
       <ProjectList
         developerSlug={developer.slug}
         projects={developer.projects}

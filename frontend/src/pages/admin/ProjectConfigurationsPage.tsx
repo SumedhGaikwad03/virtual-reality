@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin project configurations list page.
+ *
+ * FLOW:
+ * Admin Configuration Listing Flow
+ *
+ * RESPONSIBILITY:
+ * Loads the parent Project and lists its property unit configurations (BHK, carpet area,
+ * starting price, and availability status) with navigation to add, edit, or manage media.
+ */
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
@@ -25,6 +37,8 @@ export function ProjectConfigurationsPage() {
   useEffect(() => {
     if (!projectId) return;
     let active = true;
+
+    // Load parent project and its configurations in parallel to establish parent context
     Promise.all([getProject(projectId), getConfigurations(projectId)])
       .then(([projectResponse, configurationResponse]) => {
         if (!active) return;

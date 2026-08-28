@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Client-side search catalog caching service.
+ *
+ * FLOW:
+ * Guided Search Data Flow
+ *
+ * RESPONSIBILITY:
+ * Provides in-memory caching and in-flight request deduplication for the search catalog,
+ * ensuring multiple components or search interactions share the same catalog data.
+ */
+
 import { getSearchCatalog } from "../api/search-catalog";
 import type {
   SearchCatalogProject,
@@ -10,6 +22,7 @@ export function getCachedSearchCatalog() {
   return catalog;
 }
 
+// Caches the in-flight Promise so concurrent callers share a single HTTP request
 export async function loadSearchCatalog(): Promise<SearchCatalogProject[]> {
   if (catalog) return catalog;
 
@@ -30,4 +43,3 @@ export async function loadSearchCatalog(): Promise<SearchCatalogProject[]> {
 export function clearSearchCatalogCache() {
   catalog = null;
 }
-

@@ -1,6 +1,19 @@
+/*
+ * PURPOSE:
+ * Lead submission and update request validation middleware.
+ *
+ * FLOW:
+ * Public Lead Capture Flow & Admin Lead Triage Flow
+ *
+ * RESPONSIBILITY:
+ * Validates public lead inputs (name, phone, optional email, optional project/configuration IDs)
+ * and administrative status/notes update payloads.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 
 export type PublicLeadBody = {
+
   name?: unknown;
   phone?: unknown;
   email?: unknown;

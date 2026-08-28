@@ -1,6 +1,21 @@
+/*
+ * PURPOSE:
+ * Project application service layer.
+ *
+ * FLOW:
+ * Public Project Discovery Flow & Admin Project Management Flow
+ *
+ * RESPONSIBILITY:
+ * Encapsulates project domain rules, ensures developer existence, handles slug uniqueness errors (P2002),
+ * serializes BigInt values (priceFrom in paise) to strings, and transforms public/admin DTO responses.
+ */
+
 import { projectRepository } from "../repositories/project.repository.js";
 import { developerRepository } from "../repositories/developer.repository.js";
-import type { ProjectStatus } from "../../generated/prisma/enums.js";
+import type {
+  ProjectStatus,
+  PublishStatus,
+} from "../../generated/prisma/enums.js";
 
 export type CreateProjectInput = {
   developerId: string;
@@ -13,6 +28,7 @@ export type CreateProjectInput = {
   mapsUrl?: string;
   status: ProjectStatus;
   featured?: boolean;
+  publishStatus?: PublishStatus;
 };
 
 export type UpdateProjectInput = Partial<CreateProjectInput>;
@@ -43,7 +59,11 @@ function isUniqueConstraintError(error: unknown) {
 function toAdminProject(project: {
   id: string;
   developerId: string;
-  developer: { id: string; name: string; slug: string };
+  developer: {
+    id: string;
+    name: string;
+    slug: string;
+  };
   name: string;
   slug: string;
   description: string | null;
@@ -53,6 +73,7 @@ function toAdminProject(project: {
   mapsUrl: string | null;
   status: ProjectStatus;
   featured: boolean;
+  publishStatus: PublishStatus;
   createdAt: Date;
   updatedAt: Date;
 }) {
@@ -69,6 +90,7 @@ function toAdminProject(project: {
     mapsUrl: project.mapsUrl,
     status: project.status,
     featured: project.featured,
+    publishStatus: project.publishStatus,
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
   };
@@ -84,6 +106,13 @@ async function ensureDeveloperExists(developerId: string) {
   }
 }
 
+/*
+ * Project Slug Uniqueness Domain Invariant:
+ * Project slug uniqueness is strictly scoped to the parent Developer (@@unique([developerId, slug])).
+ * Two independent developers (e.g. Godrej and Prestige) may legitimately have projects with identical marketing
+ * slugs (e.g. "skyline"), as their public routing paths remain distinct (/:developerSlug/:locationSlug/:projectSlug).
+ * Conflicts only occur if the same developer attempts to reuse an existing project slug.
+ */
 export async function createProject(input: CreateProjectInput) {
   await ensureDeveloperExists(input.developerId);
 
@@ -95,16 +124,20 @@ export async function createProject(input: CreateProjectInput) {
       throw new AdminProjectError(
         "PROJECT_SLUG_EXISTS",
         409,
-        "Project slug already exists",
+        "Project slug already exists for this developer",
       );
     }
+
     throw error;
   }
 }
 
 export async function listProjects() {
   const projects = await projectRepository.findMany();
-  return { data: projects.map(toAdminProject) };
+
+  return {
+    data: projects.map(toAdminProject),
+  };
 }
 
 export async function getProjectById(id: string) {
@@ -118,10 +151,15 @@ export async function getProjectById(id: string) {
     );
   }
 
-  return { data: toAdminProject(project) };
+  return {
+    data: toAdminProject(project),
+  };
 }
 
-export async function updateProject(id: string, input: UpdateProjectInput) {
+export async function updateProject(
+  id: string,
+  input: UpdateProjectInput,
+) {
   const existing = await projectRepository.findById(id);
 
   if (!existing) {
@@ -132,21 +170,28 @@ export async function updateProject(id: string, input: UpdateProjectInput) {
     );
   }
 
-  if (input.developerId && input.developerId !== existing.developerId) {
+  if (
+    input.developerId &&
+    input.developerId !== existing.developerId
+  ) {
     await ensureDeveloperExists(input.developerId);
   }
 
   try {
     const project = await projectRepository.update(id, input);
-    return { data: toAdminProject(project) };
+
+    return {
+      data: toAdminProject(project),
+    };
   } catch (error) {
     if (isUniqueConstraintError(error)) {
       throw new AdminProjectError(
         "PROJECT_SLUG_EXISTS",
         409,
-        "Project slug already exists",
+        "Project slug already exists for this developer",
       );
     }
+
     throw error;
   }
 }
@@ -204,31 +249,50 @@ export async function getPublicProject(
       name: project.name,
       slug: project.slug,
       description: project.description,
+
       location: {
         name: project.locationName,
         slug: project.locationSlug,
         address: project.address,
         mapsUrl: project.mapsUrl,
       },
+
       status: project.status,
       featured: project.featured,
+
       developer: {
         id: project.developer.id,
         name: project.developer.name,
         slug: project.developer.slug,
         logoUrl: project.developer.logoUrl,
       },
-      configurations: project.configurations.map((configuration) => ({
-        id: configuration.id,
-        name: configuration.name,
-        bhk: configuration.bhk,
-        carpetArea: configuration.carpetArea,
-        builtUpArea: configuration.builtUpArea,
-        superBuiltUpArea: configuration.superBuiltUpArea,
-        priceFrom: configuration.priceFrom.toString(),
-        availabilityStatus: configuration.availabilityStatus,
-        media: configuration.media.map(toPublicMedia),
+
+      highlights: project.highlights.map((highlight) => ({
+        id: highlight.id,
+        text: highlight.text,
+        sortOrder: highlight.sortOrder,
       })),
+
+      amenities: project.amenities.map((amenity) => ({
+        id: amenity.id,
+        name: amenity.name,
+        sortOrder: amenity.sortOrder,
+      })),
+
+      configurations: project.configurations.map(
+        (configuration) => ({
+          id: configuration.id,
+          name: configuration.name,
+          bhk: configuration.bhk,
+          carpetArea: configuration.carpetArea,
+          builtUpArea: configuration.builtUpArea,
+          superBuiltUpArea: configuration.superBuiltUpArea,
+          priceFrom: configuration.priceFrom.toString(),
+          availabilityStatus: configuration.availabilityStatus,
+          media: configuration.media.map(toPublicMedia),
+        }),
+      ),
+
       media: project.media.map(toPublicMedia),
     },
   };

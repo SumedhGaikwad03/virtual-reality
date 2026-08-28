@@ -1,6 +1,18 @@
+/*
+ * PURPOSE:
+ * Public lead creation HTTP controller.
+ *
+ * FLOW:
+ * Public Lead Capture Flow
+ *
+ * RESPONSIBILITY:
+ * Extracts validated lead data from the request, delegates to lead service, and returns HTTP 201 response.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import { createLead, type CreateLeadInput } from "../../services/lead.service.js";
 import type { PublicLeadBody } from "../../validators/lead.validator.js";
+
 
 export async function createLeadController(
   req: Request<{}, unknown, PublicLeadBody>,

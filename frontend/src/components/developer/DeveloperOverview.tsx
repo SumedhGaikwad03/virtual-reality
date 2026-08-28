@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Renders the overview and biography section on the public developer page.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Displays the developer description/bio and outbound official website link.
+ */
+
 import type { Developer } from "../../types/developer";
 
 type DeveloperOverviewProps = {

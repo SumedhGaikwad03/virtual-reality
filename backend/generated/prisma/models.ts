@@ -11,6 +11,8 @@
 export type * from './models/Developer.js'
 export type * from './models/Configuration.js'
 export type * from './models/Project.js'
+export type * from './models/ProjectHighlight.js'
+export type * from './models/ProjectAmenity.js'
 export type * from './models/Media.js'
 export type * from './models/Lead.js'
 export type * from './models/Admin.js'

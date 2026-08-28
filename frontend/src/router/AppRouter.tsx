@@ -6,6 +6,7 @@ import {
   DeveloperFormPage,
   DevelopersPage,
 } from "../pages/admin/DevelopersPage";
+import { HomeMediaPage } from "../pages/admin/HomeMediaPage";
 import {
   ProjectFormPage,
   ProjectsPage,
@@ -15,10 +16,8 @@ import { ConfigurationFormPage } from "../pages/admin/ConfigurationFormPage";
 import { LeadsPage } from "../pages/admin/LeadsPage";
 import { LeadDetailPage } from "../pages/admin/LeadDetailPage";
 import { ImportPage } from "../pages/admin/ImportPage";
-import {
-  ProjectMediaPage,
-  ConfigurationMediaPage,
-} from "../pages/admin/ProjectMediaPage";
+import { ProjectMediaPage } from "../pages/admin/ProjectMediaPage";
+import { ConfigurationMediaPage } from "../pages/admin/ConfigurationMediaPage";
 import { AdminLoginPage } from "../pages/admin/AdminLoginPage";
 
 import { DeveloperPage } from "../pages/DeveloperPage";
@@ -158,24 +157,34 @@ export function AppRouter() {
         }
       />
 
-      {/* Admin media */}
-      <Route
-        path="/admin/projects/:projectId/media"
-        element={
-          <ProtectedRoute>
-            <ProjectMediaPage />
-          </ProtectedRoute>
-        }
-      />
+     {/* Admin media */}
 
-      <Route
-        path="/admin/configurations/:configurationId/media"
-        element={
-          <ProtectedRoute>
-            <ConfigurationMediaPage />
-          </ProtectedRoute>
-        }
-      />
+<Route
+  path="/admin/media"
+  element={
+    <ProtectedRoute>
+      <HomeMediaPage />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/projects/:projectId/media"
+  element={
+    <ProtectedRoute>
+      <ProjectMediaPage />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/configurations/:configurationId/media"
+  element={
+    <ProtectedRoute>
+      <ConfigurationMediaPage />
+    </ProtectedRoute>
+  }
+/>
 
       {/* Public routes */}
       <Route

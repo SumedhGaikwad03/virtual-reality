@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Public property search HTTP controller.
+ *
+ * FLOW:
+ * Natural Language Search Flow
+ *
+ * RESPONSIBILITY:
+ * Receives validated text search queries, invokes query generation to parse structured filters,
+ * and calls the search service to retrieve matching property configurations.
+ */
+
 import type { NextFunction, Request, Response } from "express";
 import { generatePropertySearchQuery } from "../../services/search/query-generator.service.js";
 import { searchProperties } from "../../services/search/search.service.js";

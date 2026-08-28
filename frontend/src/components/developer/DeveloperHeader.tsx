@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Renders the brand header section on the public developer page.
+ *
+ * FLOW:
+ * Public Developer Discovery Flow
+ *
+ * RESPONSIBILITY:
+ * Displays the developer's logo (with fallback initial avatar), developer name, and slug.
+ */
+
 import type { Developer } from "../../types/developer";
 
 type DeveloperHeaderProps = {

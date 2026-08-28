@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin configuration domain type definitions.
+ *
+ * FLOW:
+ * Admin Configuration Management Flow
+ *
+ * RESPONSIBILITY:
+ * Defines TypeScript types for AdminConfiguration entity, input payload, availability status enum,
+ * and API responses. priceFrom is represented as a string representing paise.
+ */
+
 export type AvailabilityStatus = "AVAILABLE" | "LIMITED" | "SOLD_OUT";
 
 export type AdminConfiguration = {

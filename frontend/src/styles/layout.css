@@ -1,0 +1,21 @@
+/*
+ * PURPOSE:
+ * Defines shared application layout and site-wide structural patterns.
+ *
+ * FLOW:
+ * Application -> top-level layout / navigation -> page views.
+ *
+ * RESPONSIBILITY:
+ * Owns top navigation bar layout, brand color, link styling, and shared structural wrappers.
+ */
+
+nav {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #172f68;
+}
+
+nav a {
+  color: white;
+}

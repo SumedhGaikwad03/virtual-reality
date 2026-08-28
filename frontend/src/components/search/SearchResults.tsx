@@ -1,3 +1,14 @@
+/*
+ * PURPOSE:
+ * Text search results list container component.
+ *
+ * FLOW:
+ * Natural Language Search Presentation Flow
+ *
+ * RESPONSIBILITY:
+ * Handles loading, error, empty, and populated states for direct property search results.
+ */
+
 import type { SearchResult } from "../../types/search";
 import { SearchResultCard } from "./SearchResultCard";
 

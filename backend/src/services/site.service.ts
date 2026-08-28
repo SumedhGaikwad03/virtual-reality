@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Public site service layer.
+ *
+ * FLOW:
+ * Homepage Content Flow
+ *
+ * RESPONSIBILITY:
+ * Aggregates public site configuration (from environment variables), active Home media,
+ * and published featured projects (with derived heroImage) into a unified site data response.
+ */
+
 import { siteRepository } from "../repositories/site.repository.js";
 
 function siteConfiguration() {
@@ -34,11 +46,30 @@ function selectHeroImage(
 }
 
 export async function getSite() {
-  const projects = await siteRepository.findFeaturedProjects();
+  const [homeMedia, projects, developers] = await Promise.all([
+    siteRepository.findHomeMedia(),
+    siteRepository.findFeaturedProjects(),
+    siteRepository.findPublishedDevelopers(),
+  ]);
 
   return {
     data: {
       ...siteConfiguration(),
+
+      homeMedia: homeMedia.map((media) => ({
+        id: media.id,
+        context: media.context,
+        slot: media.slot,
+        type: media.type,
+        category: media.category,
+        title: media.title,
+        url: media.url,
+        thumbnailUrl: media.thumbnailUrl,
+        altText: media.altText,
+        sortOrder: media.sortOrder,
+        isPrimary: media.isPrimary,
+      })),
+
       featuredProjects: projects.map((project) => ({
         id: project.id,
         name: project.name,
@@ -50,6 +81,13 @@ export async function getSite() {
         status: project.status,
         developer: project.developer,
         heroImage: selectHeroImage(project.media),
+      })),
+
+      developers: developers.map((developer) => ({
+        id: developer.id,
+        name: developer.name,
+        slug: developer.slug,
+        logoUrl: developer.logoUrl,
       })),
     },
   };

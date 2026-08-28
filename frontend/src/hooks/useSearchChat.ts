@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * State management hook for guided conversational property search.
+ *
+ * FLOW:
+ * Guided Search Lifecycle Flow
+ *
+ * RESPONSIBILITY:
+ * Manages asynchronous search catalog loading, multi-turn query state transitions,
+ * conversation message history, undo (goBack), and reset actions.
+ */
+
 import { useEffect, useState } from "react";
 import { loadSearchCatalog } from "../services/search-catalog.service";
 import {
@@ -21,6 +33,7 @@ export function useSearchChat() {
   useEffect(() => {
     let active = true;
 
+    // Loads the public search catalog and computes the initial question state
     loadSearchCatalog()
       .then((loadedCatalog) => {
         if (!active) return;
@@ -59,9 +72,11 @@ export function useSearchChat() {
     };
   }, []);
 
+  // Advances the conversation by applying the chosen option to the query and evaluating the next rule
   function selectOption(value: string, label: string) {
     if (!state?.nextRule) return;
 
+    // Preserves query history to enable user undo
     setQueryHistory((current) => [...current, query]);
 
     const nextQuery = applyQueryRule(
@@ -86,49 +101,51 @@ export function useSearchChat() {
         text: label,
       },
       ...(nextState.nextRule
-  ? [
-      {
-        id: `assistant-${Date.now()}`,
-        role: "assistant" as const,
-        text: nextState.nextRule.question,
-      },
-    ]
-  : [
-      {
-        id: `assistant-${Date.now()}`,
-        role: "assistant" as const,
-        text:
-          nextState.matches.length > 0
-            ? `I found ${nextState.matches.length} properties matching your preferences.`
-            : "I couldn't find any properties matching those preferences.",
-      },
-    ]),
+        ? [
+            {
+              id: `assistant-${Date.now()}`,
+              role: "assistant" as const,
+              text: nextState.nextRule.question,
+            },
+          ]
+        : [
+            {
+              id: `assistant-${Date.now()}`,
+              role: "assistant" as const,
+              text:
+                nextState.matches.length > 0
+                  ? `I found ${nextState.matches.length} properties matching your preferences.`
+                  : "I couldn't find any properties matching those preferences.",
+            },
+          ]),
     ]);
   }
 
+  // Rolls back one question step in the search history
   function goBack() {
-  if (queryHistory.length === 0) return;
+    if (queryHistory.length === 0) return;
 
-  const previousQuery =
-    queryHistory[queryHistory.length - 1];
+    const previousQuery =
+      queryHistory[queryHistory.length - 1];
 
-  const previousState = getQueryBuilderState(
-    catalog,
-    previousQuery,
-  );
+    const previousState = getQueryBuilderState(
+      catalog,
+      previousQuery,
+    );
 
-  setQuery(previousQuery);
-  setState(previousState);
+    setQuery(previousQuery);
+    setState(previousState);
 
-  setQueryHistory((current) => current.slice(0, -1));
+    setQueryHistory((current) => current.slice(0, -1));
 
-  setMessages((current) => {
-    const nextMessages = current.slice(0, -2);
+    // Removes the last user answer and the subsequent assistant prompt from the chat log
+    setMessages((current) => {
+      const nextMessages = current.slice(0, -2);
+      return nextMessages;
+    });
+  }
 
-    return nextMessages;
-  });
-}
-
+  // Resets the search session back to the initial question state
   function reset() {
     const initialState = getQueryBuilderState(
       catalog,
@@ -136,6 +153,7 @@ export function useSearchChat() {
     );
 
     setQuery({});
+    setQueryHistory([]);
     setState(initialState);
 
     setMessages(

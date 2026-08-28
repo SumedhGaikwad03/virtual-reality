@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Renders the site contact information section on the homepage.
+ *
+ * FLOW:
+ * Homepage Content Flow
+ *
+ * RESPONSIBILITY:
+ * Displays firm phone link, email link, and postal address.
+ * Returns null if all contact fields are empty/unavailable.
+ */
+
 import type { SiteContact } from "../../types/site";
 
 type ContactSectionProps = {

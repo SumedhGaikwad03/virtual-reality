@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin project API client.
+ *
+ * FLOW:
+ * Admin Project Management Flow
+ *
+ * RESPONSIBILITY:
+ * Provides CRUD HTTP client functions (getProjects, getProject, createProject, updateProject)
+ * targeting the authenticated admin project endpoints.
+ */
+
 import { adminRequest } from "./admin-client";
 import type {
   AdminProjectInput,

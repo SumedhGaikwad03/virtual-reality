@@ -1,3 +1,18 @@
+/*
+ * PURPOSE:
+ * Direct text search domain type definitions.
+ *
+ * FLOW:
+ * Natural Language Search Flow
+ *
+ * RESPONSIBILITY:
+ * Defines TypeScript types for search result items, matched projects, developers, configurations,
+ * and API response wrappers.
+ */
+
+import type { AvailabilityStatus } from "./admin-configuration";
+import type { ProjectStatus } from "./project";
+
 export type SearchResult = {
   project: {
     id: string;
@@ -7,7 +22,7 @@ export type SearchResult = {
       name: string;
       slug: string;
     };
-    status: "UPCOMING" | "ONGOING" | "READY_TO_MOVE" | "COMPLETED" | "SOLD_OUT";
+    status: ProjectStatus;
   };
   developer: {
     id: string;
@@ -20,6 +35,10 @@ export type SearchResult = {
     bhk: number;
     carpetArea: number;
     priceFrom: string;
-    availabilityStatus: "AVAILABLE" | "LIMITED" | "SOLD_OUT";
+    availabilityStatus: AvailabilityStatus;
   };
+};
+
+export type SearchResponse = {
+  data: SearchResult[];
 };

@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Client-side query builder rule engine for guided property search.
+ *
+ * FLOW:
+ * Guided Search Logic Flow
+ *
+ * RESPONSIBILITY:
+ * Encapsulates sequential discovery rules (BHK, Location, Developer, Price, Availability, Project Status),
+ * dynamic option extraction from candidate properties, in-memory catalog filtering, and result readiness checks.
+ */
+
 import type { AvailabilityStatus } from "../types/admin-configuration";
 import type { SearchCatalogProject } from "../types/search-catalog";
 
@@ -39,6 +51,7 @@ export type QueryRule = {
   ) => PropertySearchQuery;
 };
 
+// 1. Bedroom count rule
 const bhkRule: QueryRule = {
   id: "bhk",
   question: "How many bedrooms are you looking for?",
@@ -103,6 +116,7 @@ const bhkRule: QueryRule = {
   }),
 };
 
+// 2. Location preference rule
 const locationRule: QueryRule = {
   id: "location",
   question: "Which location are you interested in?",
@@ -175,6 +189,7 @@ const locationRule: QueryRule = {
   }),
 };
 
+// 3. Developer preference rule (with "Any developer" bypass option)
 const developerRule: QueryRule = {
   id: "developer",
   question: "Do you have a preferred developer?",
@@ -256,6 +271,7 @@ const developerRule: QueryRule = {
   },
 };
 
+// 4. Budget / maximum price band rule
 const priceRule: QueryRule = {
   id: "price",
   question: "What's your budget?",
@@ -322,6 +338,7 @@ const priceRule: QueryRule = {
       0n,
     );
 
+    // Standard real-estate budget bands in paise
     const bands = [
       { label: "Under ₹1 Cr", value: "10000000" },
       { label: "₹1–2 Cr", value: "20000000" },
@@ -345,6 +362,7 @@ const priceRule: QueryRule = {
   }),
 };
 
+// 5. Unit availability status rule
 const availabilityRule: QueryRule = {
   id: "availability",
   question: "What availability are you looking for?",
@@ -409,6 +427,7 @@ const availabilityRule: QueryRule = {
   }),
 };
 
+// 6. Project construction status rule
 const projectStatusRule: QueryRule = {
   id: "project-status",
   question: "What project status are you looking for?",
@@ -479,6 +498,7 @@ const projectStatusRule: QueryRule = {
   }),
 };
 
+// Ordered question progression sequence
 export const queryRules: QueryRule[] = [
   bhkRule,
   locationRule,
@@ -488,6 +508,7 @@ export const queryRules: QueryRule[] = [
   projectStatusRule,
 ];
 
+// Returns the first rule in sequence that still has viable options given current query filters
 export function getNextQueryRule(
   catalog: SearchCatalogProject[],
   query: PropertySearchQuery,
@@ -503,6 +524,7 @@ export function getNextQueryRule(
   return null;
 }
 
+// In-memory catalog filter producing project-configuration match pairs
 export function filterCatalog(
   catalog: SearchCatalogProject[],
   query: PropertySearchQuery,
@@ -621,6 +643,7 @@ export function applyQueryRule(
   return rule.apply(query, value);
 }
 
+// Determines whether matches have narrowed sufficiently (<= 3 items or all questions answered) to show results
 export function shouldShowResults(
   catalog: SearchCatalogProject[],
   query: PropertySearchQuery,
