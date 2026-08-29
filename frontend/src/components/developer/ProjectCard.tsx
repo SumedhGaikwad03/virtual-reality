@@ -11,7 +11,7 @@
  */
 
 import { Link } from "react-router-dom";
-import type { ProjectCard as ProjectCardData } from "../../types/developer";
+import type { DeveloperProjectCard as ProjectCardData } from "../../types/developer";
 
 type ProjectCardProps = {
   developerSlug: string;

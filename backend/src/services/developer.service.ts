@@ -181,6 +181,40 @@ function selectProjectCardMedia(
   );
 }
 
+function selectBannerMedia(
+  media: Array<{
+    id: string;
+    type: string;
+    category: string;
+    url: string;
+    thumbnailUrl: string | null;
+    altText: string | null;
+    sortOrder: number;
+    isPrimary: boolean;
+  }>,
+) {
+  const banner = media.find((item) => item.category === "DEVELOPER_BANNER");
+  return banner ? toPublicMedia(banner) : null;
+}
+
+function selectHeroMedia(
+  media: Array<{
+    id: string;
+    type: string;
+    category: string;
+    url: string;
+    thumbnailUrl: string | null;
+    altText: string | null;
+    sortOrder: number;
+    isPrimary: boolean;
+  }>,
+) {
+  const hero =
+    media.find((item) => item.category === "DEVELOPER_HERO") ??
+    media.find((item) => item.category === "HERO");
+  return hero ? toPublicMedia(hero) : null;
+}
+
 export class DeveloperNotFoundError extends Error {
   code = "DEVELOPER_NOT_FOUND";
   statusCode = 404;
@@ -198,6 +232,10 @@ export async function getPublicDeveloper(developerSlug: string) {
     throw new DeveloperNotFoundError();
   }
 
+  const developerMedia = developer.media.map(toPublicMedia);
+  const bannerMedia = selectBannerMedia(developer.media);
+  const heroMedia = selectHeroMedia(developer.media);
+
   return {
     data: {
       id: developer.id,
@@ -207,10 +245,13 @@ export async function getPublicDeveloper(developerSlug: string) {
       logoUrl: developer.logoUrl,
       websiteUrl: developer.websiteUrl,
 
-      media: developer.media.map(toPublicMedia),
+      bannerMedia,
+      heroMedia,
+      media: developerMedia,
 
       projects: developer.projects.map((project) => {
         const cardMedia = selectProjectCardMedia(project.media);
+        const formattedMedia = cardMedia ? toPublicMedia(cardMedia) : null;
 
         return {
           id: project.id,
@@ -222,7 +263,13 @@ export async function getPublicDeveloper(developerSlug: string) {
           },
           status: project.status,
           featured: project.featured,
-          media: cardMedia ? toPublicMedia(cardMedia) : null,
+          developer: {
+            id: developer.id,
+            name: developer.name,
+            slug: developer.slug,
+          },
+          heroImage: formattedMedia,
+          media: formattedMedia,
         };
       }),
     },

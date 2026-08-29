@@ -4,7 +4,8 @@ export type CreateLeadPayload = {
   name: string;
   phone: string;
   email?: string;
-  projectId: string;
+  developerId?: string;
+  projectId?: string;
   configurationId?: string;
   message?: string;
 };

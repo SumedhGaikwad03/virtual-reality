@@ -10,7 +10,7 @@
  * or displays an empty state message if none exist.
  */
 
-import type { ProjectCard as ProjectCardData } from "../../types/developer";
+import type { DeveloperProjectCard as ProjectCardData } from "../../types/developer";
 import { ProjectCard } from "./ProjectCard";
 
 type ProjectListProps = {

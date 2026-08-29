@@ -37,7 +37,9 @@ export type HomeMedia = {
     | "CONSTRUCTION"
     | "FLOOR_PLAN"
     | "BROCHURE"
-    | "PROJECT_VIDEO";
+    | "PROJECT_VIDEO"
+    | "DEVELOPER_BANNER"
+    | "DEVELOPER_HERO";
   title: string | null;
   url: string;
   thumbnailUrl: string | null;

@@ -58,7 +58,9 @@ export const MediaCategory = {
   CONSTRUCTION: 'CONSTRUCTION',
   FLOOR_PLAN: 'FLOOR_PLAN',
   BROCHURE: 'BROCHURE',
-  PROJECT_VIDEO: 'PROJECT_VIDEO'
+  PROJECT_VIDEO: 'PROJECT_VIDEO',
+  DEVELOPER_BANNER: 'DEVELOPER_BANNER',
+  DEVELOPER_HERO: 'DEVELOPER_HERO'
 } as const
 
 export type MediaCategory = (typeof MediaCategory)[keyof typeof MediaCategory]

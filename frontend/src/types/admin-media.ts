@@ -33,7 +33,9 @@ export type MediaCategory =
   | "CONSTRUCTION"
   | "FLOOR_PLAN"
   | "BROCHURE"
-  | "PROJECT_VIDEO";
+  | "PROJECT_VIDEO"
+  | "DEVELOPER_BANNER"
+  | "DEVELOPER_HERO";
 
 export type AdminMedia = {
   id: string;

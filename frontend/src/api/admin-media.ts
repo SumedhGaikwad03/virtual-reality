@@ -24,7 +24,6 @@ import type {
 export function uploadMedia(input: MediaUploadInput) {
   const formData = new FormData();
 
-  formData.append("file", input.file);
   formData.append("context", input.context);
   formData.append("type", input.type);
   formData.append("category", input.category);
@@ -60,6 +59,9 @@ export function uploadMedia(input: MediaUploadInput) {
   if (input.isPrimary !== undefined) {
     formData.append("isPrimary", String(input.isPrimary));
   }
+
+  // Appending file last guarantees Multer populates all body fields prior to validation middleware
+  formData.append("file", input.file);
 
   return adminRequest<AdminMediaResponse>(
     "/admin/media",

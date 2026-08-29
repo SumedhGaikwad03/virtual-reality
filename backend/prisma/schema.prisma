@@ -48,6 +48,8 @@ enum MediaCategory {
   FLOOR_PLAN
   BROCHURE
   PROJECT_VIDEO
+  DEVELOPER_BANNER
+  DEVELOPER_HERO
 }
 
 enum MediaSource {
@@ -76,6 +78,7 @@ model Developer {
 
   projects Project[]
   media    Media[]
+  leads    Lead[]
 }
 
 model Configuration {
@@ -203,6 +206,9 @@ model Lead {
   phone String
   email String?
 
+  developerId String?
+  developer   Developer? @relation(fields: [developerId], references: [id])
+
   projectId String?
   project   Project? @relation(fields: [projectId], references: [id])
 
@@ -216,6 +222,7 @@ model Lead {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([developerId])
   @@index([projectId])
   @@index([configurationId])
   @@index([status])

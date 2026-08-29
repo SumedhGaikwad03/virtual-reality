@@ -216,6 +216,7 @@ export type DeveloperWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Developer"> | Date | string
   projects?: Prisma.ProjectListRelationFilter
   media?: Prisma.MediaListRelationFilter
+  leads?: Prisma.LeadListRelationFilter
 }
 
 export type DeveloperOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type DeveloperOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   projects?: Prisma.ProjectOrderByRelationAggregateInput
   media?: Prisma.MediaOrderByRelationAggregateInput
+  leads?: Prisma.LeadOrderByRelationAggregateInput
 }
 
 export type DeveloperWhereUniqueInput = Prisma.AtLeast<{
@@ -247,6 +249,7 @@ export type DeveloperWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Developer"> | Date | string
   projects?: Prisma.ProjectListRelationFilter
   media?: Prisma.MediaListRelationFilter
+  leads?: Prisma.LeadListRelationFilter
 }, "id" | "slug">
 
 export type DeveloperOrderByWithAggregationInput = {
@@ -291,6 +294,7 @@ export type DeveloperCreateInput = {
   updatedAt?: Date | string
   projects?: Prisma.ProjectCreateNestedManyWithoutDeveloperInput
   media?: Prisma.MediaCreateNestedManyWithoutDeveloperInput
+  leads?: Prisma.LeadCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperUncheckedCreateInput = {
@@ -305,6 +309,7 @@ export type DeveloperUncheckedCreateInput = {
   updatedAt?: Date | string
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDeveloperInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutDeveloperInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperUpdateInput = {
@@ -319,6 +324,7 @@ export type DeveloperUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUpdateManyWithoutDeveloperNestedInput
   media?: Prisma.MediaUpdateManyWithoutDeveloperNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperUncheckedUpdateInput = {
@@ -333,6 +339,7 @@ export type DeveloperUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutDeveloperNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutDeveloperNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperCreateManyInput = {
@@ -463,6 +470,22 @@ export type DeveloperUpdateOneWithoutMediaNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DeveloperUpdateToOneWithWhereWithoutMediaInput, Prisma.DeveloperUpdateWithoutMediaInput>, Prisma.DeveloperUncheckedUpdateWithoutMediaInput>
 }
 
+export type DeveloperCreateNestedOneWithoutLeadsInput = {
+  create?: Prisma.XOR<Prisma.DeveloperCreateWithoutLeadsInput, Prisma.DeveloperUncheckedCreateWithoutLeadsInput>
+  connectOrCreate?: Prisma.DeveloperCreateOrConnectWithoutLeadsInput
+  connect?: Prisma.DeveloperWhereUniqueInput
+}
+
+export type DeveloperUpdateOneWithoutLeadsNestedInput = {
+  create?: Prisma.XOR<Prisma.DeveloperCreateWithoutLeadsInput, Prisma.DeveloperUncheckedCreateWithoutLeadsInput>
+  connectOrCreate?: Prisma.DeveloperCreateOrConnectWithoutLeadsInput
+  upsert?: Prisma.DeveloperUpsertWithoutLeadsInput
+  disconnect?: Prisma.DeveloperWhereInput | boolean
+  delete?: Prisma.DeveloperWhereInput | boolean
+  connect?: Prisma.DeveloperWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DeveloperUpdateToOneWithWhereWithoutLeadsInput, Prisma.DeveloperUpdateWithoutLeadsInput>, Prisma.DeveloperUncheckedUpdateWithoutLeadsInput>
+}
+
 export type DeveloperCreateWithoutProjectsInput = {
   id?: string
   name: string
@@ -474,6 +497,7 @@ export type DeveloperCreateWithoutProjectsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.MediaCreateNestedManyWithoutDeveloperInput
+  leads?: Prisma.LeadCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperUncheckedCreateWithoutProjectsInput = {
@@ -487,6 +511,7 @@ export type DeveloperUncheckedCreateWithoutProjectsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutDeveloperInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperCreateOrConnectWithoutProjectsInput = {
@@ -516,6 +541,7 @@ export type DeveloperUpdateWithoutProjectsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.MediaUpdateManyWithoutDeveloperNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperUncheckedUpdateWithoutProjectsInput = {
@@ -529,6 +555,7 @@ export type DeveloperUncheckedUpdateWithoutProjectsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.MediaUncheckedUpdateManyWithoutDeveloperNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperCreateWithoutMediaInput = {
@@ -542,6 +569,7 @@ export type DeveloperCreateWithoutMediaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ProjectCreateNestedManyWithoutDeveloperInput
+  leads?: Prisma.LeadCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperUncheckedCreateWithoutMediaInput = {
@@ -555,6 +583,7 @@ export type DeveloperUncheckedCreateWithoutMediaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDeveloperInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutDeveloperInput
 }
 
 export type DeveloperCreateOrConnectWithoutMediaInput = {
@@ -584,6 +613,7 @@ export type DeveloperUpdateWithoutMediaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUpdateManyWithoutDeveloperNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutDeveloperNestedInput
 }
 
 export type DeveloperUncheckedUpdateWithoutMediaInput = {
@@ -597,6 +627,79 @@ export type DeveloperUncheckedUpdateWithoutMediaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutDeveloperNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutDeveloperNestedInput
+}
+
+export type DeveloperCreateWithoutLeadsInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  logoUrl?: string | null
+  websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ProjectCreateNestedManyWithoutDeveloperInput
+  media?: Prisma.MediaCreateNestedManyWithoutDeveloperInput
+}
+
+export type DeveloperUncheckedCreateWithoutLeadsInput = {
+  id?: string
+  name: string
+  slug: string
+  description?: string | null
+  logoUrl?: string | null
+  websiteUrl?: string | null
+  publishStatus?: $Enums.PublishStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDeveloperInput
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutDeveloperInput
+}
+
+export type DeveloperCreateOrConnectWithoutLeadsInput = {
+  where: Prisma.DeveloperWhereUniqueInput
+  create: Prisma.XOR<Prisma.DeveloperCreateWithoutLeadsInput, Prisma.DeveloperUncheckedCreateWithoutLeadsInput>
+}
+
+export type DeveloperUpsertWithoutLeadsInput = {
+  update: Prisma.XOR<Prisma.DeveloperUpdateWithoutLeadsInput, Prisma.DeveloperUncheckedUpdateWithoutLeadsInput>
+  create: Prisma.XOR<Prisma.DeveloperCreateWithoutLeadsInput, Prisma.DeveloperUncheckedCreateWithoutLeadsInput>
+  where?: Prisma.DeveloperWhereInput
+}
+
+export type DeveloperUpdateToOneWithWhereWithoutLeadsInput = {
+  where?: Prisma.DeveloperWhereInput
+  data: Prisma.XOR<Prisma.DeveloperUpdateWithoutLeadsInput, Prisma.DeveloperUncheckedUpdateWithoutLeadsInput>
+}
+
+export type DeveloperUpdateWithoutLeadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ProjectUpdateManyWithoutDeveloperNestedInput
+  media?: Prisma.MediaUpdateManyWithoutDeveloperNestedInput
+}
+
+export type DeveloperUncheckedUpdateWithoutLeadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  websiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishStatus?: Prisma.EnumPublishStatusFieldUpdateOperationsInput | $Enums.PublishStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDeveloperNestedInput
+  media?: Prisma.MediaUncheckedUpdateManyWithoutDeveloperNestedInput
 }
 
 
@@ -607,11 +710,13 @@ export type DeveloperUncheckedUpdateWithoutMediaInput = {
 export type DeveloperCountOutputType = {
   projects: number
   media: number
+  leads: number
 }
 
 export type DeveloperCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | DeveloperCountOutputTypeCountProjectsArgs
   media?: boolean | DeveloperCountOutputTypeCountMediaArgs
+  leads?: boolean | DeveloperCountOutputTypeCountLeadsArgs
 }
 
 /**
@@ -638,6 +743,13 @@ export type DeveloperCountOutputTypeCountMediaArgs<ExtArgs extends runtime.Types
   where?: Prisma.MediaWhereInput
 }
 
+/**
+ * DeveloperCountOutputType without action
+ */
+export type DeveloperCountOutputTypeCountLeadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeadWhereInput
+}
+
 
 export type DeveloperSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -651,6 +763,7 @@ export type DeveloperSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   updatedAt?: boolean
   projects?: boolean | Prisma.Developer$projectsArgs<ExtArgs>
   media?: boolean | Prisma.Developer$mediaArgs<ExtArgs>
+  leads?: boolean | Prisma.Developer$leadsArgs<ExtArgs>
   _count?: boolean | Prisma.DeveloperCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["developer"]>
 
@@ -694,6 +807,7 @@ export type DeveloperOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type DeveloperInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | Prisma.Developer$projectsArgs<ExtArgs>
   media?: boolean | Prisma.Developer$mediaArgs<ExtArgs>
+  leads?: boolean | Prisma.Developer$leadsArgs<ExtArgs>
   _count?: boolean | Prisma.DeveloperCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DeveloperIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -704,6 +818,7 @@ export type $DeveloperPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   objects: {
     projects: Prisma.$ProjectPayload<ExtArgs>[]
     media: Prisma.$MediaPayload<ExtArgs>[]
+    leads: Prisma.$LeadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1111,6 +1226,7 @@ export interface Prisma__DeveloperClient<T, Null = never, ExtArgs extends runtim
   readonly [Symbol.toStringTag]: "PrismaPromise"
   projects<T extends Prisma.Developer$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Developer$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   media<T extends Prisma.Developer$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Developer$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leads<T extends Prisma.Developer$leadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Developer$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1587,6 +1703,30 @@ export type Developer$mediaArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.MediaScalarFieldEnum | Prisma.MediaScalarFieldEnum[]
+}
+
+/**
+ * Developer.leads
+ */
+export type Developer$leadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Lead
+   */
+  select?: Prisma.LeadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Lead
+   */
+  omit?: Prisma.LeadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeadInclude<ExtArgs> | null
+  where?: Prisma.LeadWhereInput
+  orderBy?: Prisma.LeadOrderByWithRelationInput | Prisma.LeadOrderByWithRelationInput[]
+  cursor?: Prisma.LeadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeadScalarFieldEnum | Prisma.LeadScalarFieldEnum[]
 }
 
 /**

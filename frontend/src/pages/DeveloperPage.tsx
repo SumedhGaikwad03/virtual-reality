@@ -3,50 +3,86 @@
  * Public developer page orchestrator.
  *
  * FLOW:
- * Public Developer Discovery Flow
+ * Public Developer Discovery Flow: Route /:developerSlug -> DeveloperPage.
  *
  * RESPONSIBILITY:
- * Coordinates public developer page presentation and composes Developer sections.
- * Delegates data-fetching lifecycle to the useDeveloper hook.
+ * Coordinates public developer page presentation and composes Developer sections:
+ * 1. Full-bleed DeveloperHero (with integrated floating brand logo mark)
+ * 2. DeveloperIntro (Identity & Overview)
+ * 3. DeveloperProjects (Portfolio carousel & zero-project state)
+ * 4. DeveloperLeadSection (Developer Enquiry)
+ * 5. AboutFooter (Site Footer)
+ * 6. FloatingSearchControl (Persistent Assistant Access)
  */
 
 import { useParams } from "react-router-dom";
-import { DeveloperHeader } from "../components/developer/DeveloperHeader";
-import { DeveloperMedia } from "../components/developer/DeveloperMedia";
-import { DeveloperOverview } from "../components/developer/DeveloperOverview";
-import { ProjectList } from "../components/developer/ProjectList";
+import { AboutFooter } from "../components/home/AboutFooter";
+import { FloatingSearchControl } from "../components/home/FloatingSearchControl";
+import { useSite } from "../components/home/hooks/useSite";
+import { DeveloperHero } from "../components/developer/DeveloperHero";
+import { DeveloperIntro } from "../components/developer/DeveloperIntro";
+import { DeveloperLeadSection } from "../components/developer/DeveloperLeadSection";
+import { DeveloperProjects } from "../components/developer/DeveloperProjects";
 import { useDeveloper } from "../components/developer/hooks/useDeveloper";
+
+const defaultSiteFallback = {
+  name: "Virtual Reality",
+  tagline: "Architectural Real Estate Platform",
+  description: "Virtual Reality is a real-estate discovery platform showcasing prime residential developments and architectural landmarks.",
+  logoUrl: null,
+  contact: {
+    phone: null,
+    email: null,
+    address: null,
+  },
+  homeMedia: [],
+  featuredProjects: [],
+  developers: [],
+};
 
 export function DeveloperPage() {
   const { developerSlug } = useParams<{ developerSlug: string }>();
   const { developer, isLoading, loadError } = useDeveloper(developerSlug);
+  const { site } = useSite();
 
   if (isLoading) {
-    return <p>Loading developer...</p>;
+    return (
+      <div className="home-loading-state" aria-busy="true">
+        <p>Loading developer profile...</p>
+      </div>
+    );
   }
 
-  if (loadError === "not-found") {
-    return <p>Developer not found.</p>;
-  }
-
-  if (loadError || !developer) {
-    return <p>Unable to load this developer.</p>;
+  if (loadError === "not-found" || !developer) {
+    return (
+      <div className="developer-not-found-state">
+        <h2>Developer Not Found</h2>
+        <p>The requested developer profile is not available.</p>
+      </div>
+    );
   }
 
   return (
-    <main className="developer-page">
-      <DeveloperHeader developer={developer} />
+    <div className="developer-page-container">
+      <main className="developer-page-main">
+        {/* 1. Full-Bleed Atmospheric Hero with Integrated Floating Brand Mark */}
+        <DeveloperHero developer={developer} />
 
-      <DeveloperOverview developer={developer} />
+        {/* 2. Developer Introduction / Identity */}
+        <DeveloperIntro developer={developer} />
 
-      {developer.media.length > 0 && (
-        <DeveloperMedia media={developer.media} />
-      )}
+        {/* 3. Projects by Developer */}
+        <DeveloperProjects developer={developer} />
 
-      <ProjectList
-        developerSlug={developer.slug}
-        projects={developer.projects}
-      />
-    </main>
+        {/* 4. Developer Enquiry */}
+        <DeveloperLeadSection developer={developer} />
+      </main>
+
+      {/* 5. Footer */}
+      <AboutFooter site={site || defaultSiteFallback} />
+
+      {/* 6. Persistent Floating Control */}
+      <FloatingSearchControl />
+    </div>
   );
 }

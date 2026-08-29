@@ -20,7 +20,7 @@ export type Developer = {
   websiteUrl: string | null;
 };
 
-export type ProjectCard = {
+export type DeveloperProjectCard = {
   id: string;
   name: string;
   slug: string;
@@ -35,10 +35,18 @@ export type ProjectCard = {
     | "COMPLETED"
     | "SOLD_OUT";
   featured: boolean;
+  developer: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  heroImage: Media | null;
   media: Media | null;
 };
 
 export type PublicDeveloper = Developer & {
+  bannerMedia: Media | null;
+  heroMedia: Media | null;
   media: Media[];
-  projects: ProjectCard[];
+  projects: DeveloperProjectCard[];
 };

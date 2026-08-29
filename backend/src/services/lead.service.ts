@@ -7,13 +7,15 @@
  *
  * RESPONSIBILITY:
  * - Validates public lead submissions and enforces relational integrity.
- * - Auto-populates the parent projectId from configurationId if configuration is provided.
- * - Prevents cross-project / cross-configuration ownership mismatches.
+ * - Auto-populates parent developerId and projectId context based on configuration/project relationships.
+ * - Supports developer-level enquiries (where developerId is supplied directly).
+ * - Prevents cross-developer / cross-project / cross-configuration ownership mismatches.
  * - Manages lead status transitions and administrative triage notes.
  */
 
 import type { LeadStatus } from "../../generated/prisma/enums.js";
 import { configurationRepository } from "../repositories/configuration.repository.js";
+import { developerRepository } from "../repositories/developer.repository.js";
 import { leadRepository } from "../repositories/lead.repository.js";
 import { projectRepository } from "../repositories/project.repository.js";
 
@@ -21,6 +23,7 @@ export type CreateLeadInput = {
   name: string;
   phone: string;
   email?: string;
+  developerId?: string;
   projectId?: string;
   configurationId?: string;
   message?: string;
@@ -31,9 +34,11 @@ export type UpdateLeadInput = { status?: LeadStatus; notes?: string | null };
 export class LeadServiceError extends Error {
   constructor(
     public readonly code:
+      | "DEVELOPER_NOT_FOUND"
       | "PROJECT_NOT_FOUND"
       | "CONFIGURATION_NOT_FOUND"
       | "CONFIGURATION_PROJECT_MISMATCH"
+      | "DEVELOPER_PROJECT_MISMATCH"
       | "LEAD_NOT_FOUND",
     public readonly statusCode: 400 | 404,
     message: string,
@@ -48,6 +53,7 @@ function toAdminLead(lead: {
   name: string;
   phone: string;
   email: string | null;
+  developer: { id: string; name: string; slug: string } | null;
   project: { id: string; name: string; slug: string } | null;
   configuration: { id: string; name: string } | null;
   message: string | null;
@@ -61,6 +67,7 @@ function toAdminLead(lead: {
     name: lead.name,
     phone: lead.phone,
     email: lead.email,
+    developer: lead.developer,
     project: lead.project,
     configuration: lead.configuration,
     message: lead.message,
@@ -73,14 +80,12 @@ function toAdminLead(lead: {
 
 /*
  * Lead Context & Relationship Resolution:
- * WHAT: Derives the authoritative parent projectId from the configuration relationship when configurationId is supplied.
- * WHY:  A Configuration strictly belongs to a single Project. If a lead is submitted with only a configurationId
- *       (e.g. from a unit modal), leaving projectId null creates orphaned/unattributed leads. If both are supplied,
- *       the client-provided projectId must match the configuration's actual parent project to prevent cross-project corruption.
- * HOW:  Looks up the Configuration record. If found, resolves resolvedProjectId = configuration.projectId and verifies
- *       equality against any client-supplied input.projectId. If only projectId is supplied, verifies project existence.
+ * WHAT: Resolves authoritative developerId and parent projectId from configuration/project relationships.
+ * WHY:  Supports Developer enquiries (developerId only), Project enquiries (projectId only), and Configuration enquiries (configurationId).
+ *       Prevents mismatched developer/project/configuration submissions.
  */
 type ResolvedLeadContext = {
+  developerId?: string;
   projectId?: string;
   configurationId?: string;
 };
@@ -88,6 +93,7 @@ type ResolvedLeadContext = {
 async function resolveLeadContext(
   input: CreateLeadInput,
 ): Promise<ResolvedLeadContext> {
+  let resolvedDeveloperId = input.developerId;
   let resolvedProjectId = input.projectId;
   let resolvedConfigurationId = input.configurationId;
 
@@ -113,6 +119,19 @@ async function resolveLeadContext(
 
     // Authoritatively auto-populate the parent projectId from the verified Configuration
     resolvedProjectId = configuration.projectId;
+
+    // Retrieve project to derive owning developerId
+    const project = await projectRepository.findById(configuration.projectId);
+    if (project) {
+      if (input.developerId && project.developerId !== input.developerId) {
+        throw new LeadServiceError(
+          "DEVELOPER_PROJECT_MISMATCH",
+          400,
+          "Project does not belong to the specified developer",
+        );
+      }
+      resolvedDeveloperId = project.developerId;
+    }
   } else if (input.projectId) {
     const project = await projectRepository.findById(input.projectId);
     if (!project) {
@@ -122,9 +141,30 @@ async function resolveLeadContext(
         "Project not found",
       );
     }
+
+    if (input.developerId && project.developerId !== input.developerId) {
+      throw new LeadServiceError(
+        "DEVELOPER_PROJECT_MISMATCH",
+        400,
+        "Project does not belong to the specified developer",
+      );
+    }
+
+    // Authoritatively auto-populate owning developerId from the verified Project
+    resolvedDeveloperId = project.developerId;
+  } else if (input.developerId) {
+    const developer = await developerRepository.findById(input.developerId);
+    if (!developer) {
+      throw new LeadServiceError(
+        "DEVELOPER_NOT_FOUND",
+        404,
+        "Developer not found",
+      );
+    }
   }
 
   return {
+    developerId: resolvedDeveloperId,
     projectId: resolvedProjectId,
     configurationId: resolvedConfigurationId,
   };
@@ -137,6 +177,7 @@ export async function createLead(input: CreateLeadInput) {
     name: input.name,
     phone: input.phone,
     email: input.email,
+    developerId: context.developerId,
     projectId: context.projectId,
     configurationId: context.configurationId,
     message: input.message,

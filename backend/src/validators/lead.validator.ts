@@ -13,10 +13,10 @@
 import type { NextFunction, Request, Response } from "express";
 
 export type PublicLeadBody = {
-
   name?: unknown;
   phone?: unknown;
   email?: unknown;
+  developerId?: unknown;
   projectId?: unknown;
   configurationId?: unknown;
   message?: unknown;
@@ -68,6 +68,7 @@ export function validatePublicLead(
       "name",
       "phone",
       "email",
+      "developerId",
       "projectId",
       "configurationId",
       "message",
@@ -75,6 +76,7 @@ export function validatePublicLead(
     !isNonEmptyString(body?.name) ||
     !validPhone ||
     !validEmail ||
+    (body?.developerId !== undefined && !isNonEmptyString(body.developerId)) ||
     (body?.projectId !== undefined && !isNonEmptyString(body.projectId)) ||
     (body?.configurationId !== undefined &&
       !isNonEmptyString(body.configurationId)) ||

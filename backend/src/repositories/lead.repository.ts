@@ -17,8 +17,10 @@ const leadSelect = {
   name: true,
   phone: true,
   email: true,
+  developerId: true,
   projectId: true,
   configurationId: true,
+  developer: { select: { id: true, name: true, slug: true } },
   project: { select: { id: true, name: true, slug: true } },
   configuration: { select: { id: true, name: true } },
   message: true,
@@ -33,6 +35,7 @@ export class LeadRepository {
     name: string;
     phone: string;
     email?: string;
+    developerId?: string;
     projectId?: string;
     configurationId?: string;
     message?: string;

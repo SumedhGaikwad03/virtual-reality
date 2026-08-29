@@ -263,7 +263,7 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
     res.status(400).json({
       error: {
         code: "INVALID_MEDIA_OWNER",
-        message: "Media must belong to either a project or a configuration",
+        message: error.message || "Media ownership does not match its context",
       },
     });
     return;
@@ -314,6 +314,26 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
       error: {
         code: "MEDIA_FILE_TOO_LARGE",
         message: "Media file exceeds the allowed size",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "DEVELOPER_NOT_FOUND") {
+    res.status(404).json({
+      error: {
+        code: "DEVELOPER_NOT_FOUND",
+        message: "Developer not found",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "DEVELOPER_PROJECT_MISMATCH") {
+    res.status(400).json({
+      error: {
+        code: "DEVELOPER_PROJECT_MISMATCH",
+        message: "Project does not belong to the specified developer",
       },
     });
     return;

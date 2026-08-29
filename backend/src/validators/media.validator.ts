@@ -69,6 +69,8 @@ const mediaCategories = new Set([
   "FLOOR_PLAN",
   "BROCHURE",
   "PROJECT_VIDEO",
+  "DEVELOPER_BANNER",
+  "DEVELOPER_HERO",
 ]);
 
 const updateFields = [

@@ -20,6 +20,7 @@ import {
   updateDeveloper,
 } from "../../api/admin-developers";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { DeveloperMediaSection } from "../../components/admin/DeveloperMediaSection";
 import type {
   AdminDeveloper,
   AdminDeveloperInput,
@@ -289,6 +290,10 @@ export function DeveloperFormPage() {
           {isSubmitting ? "Saving..." : "Save Developer"}
         </button>
       </form>
+
+      {isEditing && id && (
+        <DeveloperMediaSection developerId={id} />
+      )}
     </AdminLayout>
   );
 }
