@@ -24,6 +24,7 @@ import { DeveloperPage } from "../pages/DeveloperPage";
 import { HomePage } from "../pages/HomePage";
 import { ProjectPage } from "../pages/ProjectPage";
 import { SearchPage } from "../pages/SearchPage";
+import { PublicShell } from "../components/shell/PublicShell";
 
 export function AppRouter() {
   return (
@@ -157,55 +158,44 @@ export function AppRouter() {
         }
       />
 
-     {/* Admin media */}
-
-<Route
-  path="/admin/media"
-  element={
-    <ProtectedRoute>
-      <HomeMediaPage />
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/admin/projects/:projectId/media"
-  element={
-    <ProtectedRoute>
-      <ProjectMediaPage />
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/admin/configurations/:configurationId/media"
-  element={
-    <ProtectedRoute>
-      <ConfigurationMediaPage />
-    </ProtectedRoute>
-  }
-/>
-
-      {/* Public routes */}
+      {/* Admin media */}
       <Route
-        path="/"
-        element={<HomePage />}
+        path="/admin/media"
+        element={
+          <ProtectedRoute>
+            <HomeMediaPage />
+          </ProtectedRoute>
+        }
       />
 
       <Route
-        path="/search"
-        element={<SearchPage />}
+        path="/admin/projects/:projectId/media"
+        element={
+          <ProtectedRoute>
+            <ProjectMediaPage />
+          </ProtectedRoute>
+        }
       />
 
       <Route
-        path="/:developerSlug/:locationSlug/:projectSlug"
-        element={<ProjectPage />}
+        path="/admin/configurations/:configurationId/media"
+        element={
+          <ProtectedRoute>
+            <ConfigurationMediaPage />
+          </ProtectedRoute>
+        }
       />
 
-      <Route
-        path="/:developerSlug"
-        element={<DeveloperPage />}
-      />
+      {/* Public routes wrapped in shared PublicShell layout */}
+      <Route element={<PublicShell />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route
+          path="/:developerSlug/:locationSlug/:projectSlug"
+          element={<ProjectPage />}
+        />
+        <Route path="/:developerSlug" element={<DeveloperPage />} />
+      </Route>
     </Routes>
   );
 }

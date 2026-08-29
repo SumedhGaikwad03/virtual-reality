@@ -41,23 +41,27 @@ The frontend directory structure is organized into domain-driven layers:
 ```
 frontend/src/
 ├── api/          # Typed HTTP API client functions (Fetch + AbortSignal)
+├── auth/         # Admin AuthContext and ProtectedRoute guard
 ├── components/   # Domain-grouped presentation components and domain-local hooks
 │   ├── admin/    # Shared AdminLayout and navigation components
 │   ├── developer/# Public Developer header, overview, media, and project card components
 │   ├── home/     # Public Home hero, showcase, cards, and featured project components
 │   ├── project/  # Public Project header, hero carousel, overview, media, and lead components
-│   └── search/   # Guided search builder, result cards, and text search input/results
-├── hooks/        # Cross-domain / root custom hooks (e.g., useSearchChat)
+│   ├── search/   # Pure rule-based conversational discovery assistant, result cards, and overlay
+│   └── shell/    # PublicShell layout route and GlobalHeader site-wide navigation
+├── context/      # Application-wide global contexts (AssistantContext)
+├── hooks/        # Cross-domain / root custom hooks (e.g., useSearchChat, useAssistant)
 ├── pages/        # Thin route-level orchestrators
 │   └── admin/    # Admin view pages and create/edit form pages
-├── services/     # Client-side domain engines and caches (e.g., query-builder, search-catalog)
+├── router/       # AppRouter defining public shell layout route and isolated admin routes
+├── services/     # Client-side domain engines (e.g., query-builder, search-catalog)
 ├── styles/       # Modular CSS architecture (foundations, public domains, admin domains)
 └── types/        # TypeScript DTOs, domain interfaces, and form payload definitions
 ```
 
 ### Preferred Frontend Data Flow
-$$\text{Route} \longrightarrow \text{Page Orchestrator} \longrightarrow \text{Domain Hook} \longrightarrow \text{API Client} \longrightarrow \text{Backend}$$
-$$\text{Page Orchestrator} \longrightarrow \text{Domain Presentation Components (Props In, Events Out)}$$
+$$\text{App} \longrightarrow \text{AssistantProvider} \longrightarrow \text{AppRouter} \longrightarrow \text{PublicShell} \longrightarrow \text{GlobalHeader} \mathbin{\&} \text{Page Orchestrator} \longrightarrow \text{Domain Hook} \longrightarrow \text{API Client} \longrightarrow \text{Backend}$$
+$$\text{GlobalHeader / Triggers} \longrightarrow \text{openAssistant()} \longrightarrow \text{PropertyAssistantOverlay} \longrightarrow \text{SearchAssistant (Rule-Based)}$$
 
 ---
 

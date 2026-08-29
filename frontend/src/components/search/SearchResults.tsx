@@ -1,60 +1,42 @@
 /*
  * PURPOSE:
- * Text search results list container component.
+ * Displays matching property cards below the conversational assistant interface.
  *
  * FLOW:
- * Natural Language Search Presentation Flow
+ * Public Search Flow: SearchPage -> SearchResults -> PropertyResultCard[].
  *
  * RESPONSIBILITY:
- * Handles loading, error, empty, and populated states for direct property search results.
+ * Renders candidate property result cards when matches exist and criteria are sufficient.
  */
 
-import type { SearchResult } from "../../types/search";
-import { SearchResultCard } from "./SearchResultCard";
+import { PropertyResultCard } from "./PropertyResultCard";
+import type { filterCatalog } from "../../services/query-builder";
 
 type SearchResultsProps = {
-  query: string;
-  results: SearchResult[] | null;
-  isSearching: boolean;
-  hasError: boolean;
-  validationError: string | null;
+  matches: ReturnType<typeof filterCatalog>;
 };
 
-export function SearchResults({
-  query,
-  results,
-  isSearching,
-  hasError,
-  validationError,
-}: SearchResultsProps) {
-  if (isSearching) {
-    return <p>Searching...</p>;
-  }
-
-  if (validationError) {
+export function SearchResults({ matches }: SearchResultsProps) {
+  if (matches.length === 0) {
     return null;
   }
 
-  if (hasError) {
-    return <p role="alert">Unable to search properties.</p>;
-  }
-
-  if (results === null) {
-    return <p>Search for properties by location, BHK, price, or project.</p>;
-  }
-
-  if (results.length === 0) {
-    return <p>No properties found{query ? ` for "${query}".` : "."}</p>;
-  }
-
   return (
-    <section>
-      <h2>Search results</h2>
-      <div className="property-search-results">
-        {results.map((result) => (
-          <SearchResultCard
-            key={`${result.project.id}-${result.configuration.id}`}
-            result={result}
+    <section className="search-results-section" aria-label="Matching Property Results">
+      <div className="search-results-header">
+        <h2 className="search-results-count-title">
+          {matches.length === 1
+            ? "I found 1 property matching your search."
+            : `I found ${matches.length} properties matching your search.`}
+        </h2>
+      </div>
+
+      <div className="property-result-list">
+        {matches.map(({ project, configuration }) => (
+          <PropertyResultCard
+            key={`${project.id}-${configuration.id}`}
+            project={project}
+            configuration={configuration}
           />
         ))}
       </div>

@@ -1,39 +1,80 @@
 /*
  * PURPOSE:
- * Defines application-wide visual foundations and base element defaults.
+ * Defines application-wide visual foundations, box-sizing rules, and reset defaults.
  *
  * FLOW:
  * Application -> global CSS foundation -> domain styles.
  *
  * RESPONSIBILITY:
- * Owns root color scheme, typography, page margin reset, and universal form control primitives
- * without containing domain-specific page or feature styles.
+ * Owns root color scheme, typography resets, responsive box-sizing, image bounds,
+ * and universal form control primitives without domain-specific styling.
  */
 
 :root {
   font-family: Arial, sans-serif;
   color: #172033;
-  background: #f7f9fc;
+  background: #ffffff;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
 body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: #ffffff;
+  -webkit-text-size-adjust: 100%;
 }
 
-main,
-h1 {
-  margin: 2rem;
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, label {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+img, video, picture, svg {
+  max-width: 100%;
+  height: auto;
 }
 
 form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
+  width: 100%;
   max-width: 36rem;
+  box-sizing: border-box;
 }
 
 label {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.35rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 input,
@@ -43,6 +84,7 @@ button {
   box-sizing: border-box;
   font: inherit;
   padding: 0.6rem;
+  max-width: 100%;
 }
 
 textarea {

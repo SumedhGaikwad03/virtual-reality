@@ -13,8 +13,10 @@
  * 4. DeveloperLeadSection (Developer Enquiry)
  * 5. AboutFooter (Site Footer)
  * 6. FloatingSearchControl (Persistent Assistant Access)
+ * 7. Communicates developer.name context to GlobalHeader for developer brand attribution.
  */
 
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AboutFooter } from "../components/home/AboutFooter";
 import { FloatingSearchControl } from "../components/home/FloatingSearchControl";
@@ -24,6 +26,7 @@ import { DeveloperIntro } from "../components/developer/DeveloperIntro";
 import { DeveloperLeadSection } from "../components/developer/DeveloperLeadSection";
 import { DeveloperProjects } from "../components/developer/DeveloperProjects";
 import { useDeveloper } from "../components/developer/hooks/useDeveloper";
+import { useHeader } from "../context/HeaderContext";
 
 const defaultSiteFallback = {
   name: "Virtual Reality",
@@ -44,6 +47,17 @@ export function DeveloperPage() {
   const { developerSlug } = useParams<{ developerSlug: string }>();
   const { developer, isLoading, loadError } = useDeveloper(developerSlug);
   const { site } = useSite();
+  const { setDeveloperName } = useHeader();
+
+  // Communicate developer.name context to GlobalHeader
+  useEffect(() => {
+    if (developer?.name) {
+      setDeveloperName(developer.name);
+    }
+    return () => {
+      setDeveloperName(null);
+    };
+  }, [developer?.name, setDeveloperName]);
 
   if (isLoading) {
     return (

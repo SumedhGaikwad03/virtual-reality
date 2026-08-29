@@ -1,13 +1,13 @@
 /*
  * PURPOSE:
- * State management hook for guided conversational property search.
+ * State management hook for pure rule-based conversational property search discovery.
  *
  * FLOW:
  * Guided Search Lifecycle Flow
  *
  * RESPONSIBILITY:
- * Manages asynchronous search catalog loading, multi-turn query state transitions,
- * conversation message history, undo (goBack), and reset actions.
+ * Manages search catalog loading, multi-turn query state transitions, option selections,
+ * conversation message history, attribute removals, undo (goBack), and reset actions.
  */
 
 import { useEffect, useState } from "react";
@@ -33,15 +33,12 @@ export function useSearchChat() {
   useEffect(() => {
     let active = true;
 
-    // Loads the public search catalog and computes the initial question state
+    // Loads public search catalog and initializes initial question rule state
     loadSearchCatalog()
       .then((loadedCatalog) => {
         if (!active) return;
 
-        const initialState = getQueryBuilderState(
-          loadedCatalog,
-          {},
-        );
+        const initialState = getQueryBuilderState(loadedCatalog, {});
 
         setCatalog(loadedCatalog);
         setState(initialState);
@@ -58,7 +55,7 @@ export function useSearchChat() {
       })
       .catch(() => {
         if (active) {
-          setError("Unable to load property search.");
+          setError("Unable to load property search catalog.");
         }
       })
       .finally(() => {
@@ -72,23 +69,14 @@ export function useSearchChat() {
     };
   }, []);
 
-  // Advances the conversation by applying the chosen option to the query and evaluating the next rule
+  // Advances conversation by applying selected rule option to the query and evaluating the next unresolved rule
   function selectOption(value: string, label: string) {
     if (!state?.nextRule) return;
 
-    // Preserves query history to enable user undo
     setQueryHistory((current) => [...current, query]);
 
-    const nextQuery = applyQueryRule(
-      state.nextRule,
-      query,
-      value,
-    );
-
-    const nextState = getQueryBuilderState(
-      catalog,
-      nextQuery,
-    );
+    const nextQuery = applyQueryRule(state.nextRule, query, value);
+    const nextState = getQueryBuilderState(catalog, nextQuery);
 
     setQuery(nextQuery);
     setState(nextState);
@@ -114,43 +102,49 @@ export function useSearchChat() {
               role: "assistant" as const,
               text:
                 nextState.matches.length > 0
-                  ? `I found ${nextState.matches.length} properties matching your preferences.`
-                  : "I couldn't find any properties matching those preferences.",
+                  ? `Here are ${nextState.matches.length} properties matching your preferences.`
+                  : "I couldn't find an exact match for those preferences.",
             },
           ]),
     ]);
+  }
+
+  // Removes an individual query constraint and recomputes the rule engine state
+  function removeQueryAttribute(key: keyof PropertySearchQuery) {
+    const nextQuery = { ...query };
+    delete nextQuery[key];
+    const nextState = getQueryBuilderState(catalog, nextQuery);
+
+    setQuery(nextQuery);
+    setState(nextState);
+
+    if (nextState.nextRule) {
+      setMessages([
+        {
+          id: `assistant-${Date.now()}`,
+          role: "assistant",
+          text: nextState.nextRule.question,
+        },
+      ]);
+    }
   }
 
   // Rolls back one question step in the search history
   function goBack() {
     if (queryHistory.length === 0) return;
 
-    const previousQuery =
-      queryHistory[queryHistory.length - 1];
-
-    const previousState = getQueryBuilderState(
-      catalog,
-      previousQuery,
-    );
+    const previousQuery = queryHistory[queryHistory.length - 1];
+    const previousState = getQueryBuilderState(catalog, previousQuery);
 
     setQuery(previousQuery);
     setState(previousState);
-
     setQueryHistory((current) => current.slice(0, -1));
-
-    // Removes the last user answer and the subsequent assistant prompt from the chat log
-    setMessages((current) => {
-      const nextMessages = current.slice(0, -2);
-      return nextMessages;
-    });
+    setMessages((current) => current.slice(0, -2));
   }
 
-  // Resets the search session back to the initial question state
+  // Resets search session back to initial rule question
   function reset() {
-    const initialState = getQueryBuilderState(
-      catalog,
-      {},
-    );
+    const initialState = getQueryBuilderState(catalog, {});
 
     setQuery({});
     setQueryHistory([]);
@@ -176,8 +170,9 @@ export function useSearchChat() {
     messages,
     isLoading,
     error,
-    goBack,
     selectOption,
+    removeQueryAttribute,
+    goBack,
     reset,
   };
 }

@@ -1,36 +1,602 @@
 /*
  * PURPOSE:
- * Owns public Search-domain visual styles.
+ * Owns public Pure Rule-Based Conversational Property Search presentation styles.
  *
  * FLOW:
- * SearchPage -> Search components -> Search-specific selectors.
+ * SearchPage -> SearchAssistant & SearchResults -> Search-specific selectors.
  *
  * RESPONSIBILITY:
- * Isolate Search presentation while shared visual primitives remain
- * in the shared stylesheet.
+ * Provides a calm, editorial conversational layout for:
+ * 1. AssistantHeader (Title & subtext)
+ * 2. ConversationMessages (Assistant & User message thread with avatar badges)
+ * 3. QuerySummary (Subtle conversational search context chips)
+ * 4. RuleOptions (Rule-based option selection buttons with min ~44px tap targets)
+ * 5. SearchAssistantEmptyState (Zero-matches conversational recovery guidance)
+ * 6. SearchResults (Matching property result cards grid)
  */
 
-.search-page {
-  display: grid;
-  gap: 2rem;
-  max-width: 72rem;
+.search-page-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+
+.search-page-main {
+  flex: 1;
+  width: 100%;
+  max-width: 54rem;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: clamp(2rem, 5vw, 4rem) 1.5rem clamp(3rem, 6vw, 5.5rem);
+  box-sizing: border-box;
 }
 
-.property-search-form {
-  max-width: 42rem;
+/* ==========================================================================
+   1. Conversational Assistant Card Container
+   ========================================================================== */
+.search-assistant-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  margin-bottom: 3rem;
+  box-sizing: border-box;
 }
 
-.property-search-results {
+.assistant-header {
+  margin-bottom: 2rem;
+}
+
+.assistant-title {
+  font-size: clamp(1.85rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0.5rem 0 0.5rem;
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.assistant-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #64748b;
+  margin: 0;
+}
+
+/* ==========================================================================
+   2. Messaging Thread (Assistant & User Bubbles)
+   ========================================================================== */
+.conversation-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  margin-bottom: 2rem;
+}
+
+.conversation-bubble-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  max-width: 85%;
+}
+
+.conversation-bubble-wrapper.assistant {
+  align-self: flex-start;
+}
+
+.conversation-bubble-wrapper.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.assistant-avatar-badge {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background-color: #0f172a;
+  color: #ffffff;
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  place-items: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
 }
 
-.property-search-result {
-  padding: 1rem;
-  background: white;
-  border: 1px solid #dbe2ef;
+.conversation-bubble {
+  padding: 0.95rem 1.35rem;
+  border-radius: 1.15rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.conversation-bubble.assistant {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  border-top-left-radius: 0.25rem;
+}
+
+.conversation-bubble.user {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-top-right-radius: 0.25rem;
+}
+
+.conversation-bubble p {
+  margin: 0;
+}
+
+/* ==========================================================================
+   3. Subtle Conversational Query Summary Chips
+   ========================================================================== */
+.query-summary-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.15rem;
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-chips-list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.summary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.chip-remove-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0 0.1rem;
+}
+
+.chip-remove-btn:hover {
+  color: #ef4444;
+}
+
+.summary-reset-btn {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.2rem 0.4rem;
+}
+
+.summary-reset-btn:hover {
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   4. Pure Rule Option Selection Buttons
+   ========================================================================== */
+.rule-options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rule-options-grid {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.rule-option-btn {
+  padding: 0.85rem 1.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background-color: #ffffff;
+  border: 1px solid #0f172a;
+  border-radius: 2rem;
+  color: #0f172a;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.rule-option-btn:hover {
+  background-color: #0f172a;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.rule-option-btn:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+.conversational-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.control-link-btn {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.control-link-btn:hover {
+  color: #0f172a;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   5. Conversational Zero-Matches Recovery State
+   ========================================================================== */
+.assistant-empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.assistant-empty-bubble {
+  padding: 1.15rem 1.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 1rem;
+  color: #991b1b;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.assistant-empty-bubble p {
+  margin: 0;
+}
+
+.assistant-recovery-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.recovery-action-btn {
+  padding: 0.65rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 2rem;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.recovery-action-btn:hover {
+  border-color: #0f172a;
+  background-color: #f8fafc;
+}
+
+.recovery-reset-btn {
+  padding: 0.65rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background-color: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+/* ==========================================================================
+   6. Matching Property Results Section
+   ========================================================================== */
+.search-results-section {
+  width: 100%;
+}
+
+.search-results-header {
+  margin-bottom: 1.75rem;
+}
+
+.search-results-count-title {
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+}
+
+.property-result-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 1.5rem;
+}
+
+.property-result-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  box-sizing: border-box;
+}
+
+.property-result-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.property-result-card-header h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.25rem 0;
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+}
+
+.property-result-card-header p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.property-result-card-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1.25rem 0;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.property-result-card-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.property-result-card-details span {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.property-result-card-details strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.property-result-card-footer a {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-decoration: none;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 0.2rem;
+  transition: opacity 0.2s ease;
+}
+
+.property-result-card-footer a:hover {
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   7. Mobile Responsive Queries
+   ========================================================================== */
+@media (max-width: 768px) {
+  .search-page-main {
+    padding: 1.5rem 1rem 3.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .search-assistant-card {
+    padding: 1.25rem 1rem;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .conversation-bubble-wrapper {
+    max-width: 95%;
+  }
+
+  .rule-options-grid {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .rule-option-btn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .property-result-list {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .property-result-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 1.35rem 1rem;
+  }
+}
+
+/* ==========================================================================
+   8. Application-Wide Assistant Overlay & Mobile Bottom Sheet
+   ========================================================================== */
+.assistant-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  animation: fadeInOverlay 0.2s ease-out;
+}
+
+.assistant-overlay-card {
+  width: 100%;
+  max-width: 32rem;
+  max-height: calc(100vh - 3rem);
+  background-color: #ffffff;
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.assistant-overlay-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.15rem 1.5rem;
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+.assistant-overlay-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.assistant-overlay-close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  line-height: 1;
+  border-radius: 0.25rem;
+  transition: opacity 0.2s ease;
+}
+
+.assistant-overlay-close-btn:hover {
+  opacity: 0.75;
+}
+
+.assistant-overlay-content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.assistant-overlay-content .search-assistant-card {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.assistant-overlay-footer-action {
+  margin-top: 1rem;
+}
+
+.view-results-overlay-btn {
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background-color: #0f172a;
+  color: #ffffff;
+  border: none;
   border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.view-results-overlay-btn:hover {
+  background-color: #1e293b;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .assistant-overlay-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .assistant-overlay-card {
+    max-width: 100%;
+    max-height: 90vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 }

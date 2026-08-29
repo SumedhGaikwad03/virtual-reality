@@ -3,7 +3,7 @@
  * Renders the project enquiry and lead capture form on the public project page.
  *
  * FLOW:
- * Lead / Enquiry Flow
+ * Lead / Enquiry Flow: ProjectPage -> LeadSection -> createLead API.
  *
  * RESPONSIBILITY:
  * Handles consumer contact input, automatically binds project and selected configuration context,
@@ -72,7 +72,7 @@ export function LeadSection({
     setSubmitted(false);
 
     if (!form.name.trim() || !form.phone.trim()) {
-      setError("Name and phone are required.");
+      setError("Name and phone number are required.");
       return;
     }
 
@@ -104,90 +104,106 @@ export function LeadSection({
   }
 
   return (
-    <section>
-      <h2>Enquire about this project</h2>
-
-      {submitted && (
-        <p role="status">
-          Your enquiry has been submitted.
+    <section className="project-lead-section" aria-labelledby="project-lead-heading">
+      <div className="project-lead-card">
+        <span className="section-eyebrow">ENQUIRE</span>
+        <h2 id="project-lead-heading" className="project-lead-title">
+          Interested in {project.name}?
+        </h2>
+        <p className="project-lead-subtitle">
+          Connect with our real-estate team for pricing, availability, and exclusive site visits.
         </p>
-      )}
 
-      {error && <p role="alert">{error}</p>}
-
-      <form ref={contactRef} onSubmit={handleSubmit}>
-        <label>
-          Name
-          <input
-            required
-            value={form.name}
-            onChange={(event) =>
-              updateField("name", event.target.value)
-            }
-          />
-        </label>
-
-        <label>
-          Phone
-          <input
-            required
-            value={form.phone}
-            onChange={(event) =>
-              updateField("phone", event.target.value)
-            }
-          />
-        </label>
-
-        <label>
-          Email
-          <input
-            type="email"
-            value={form.email}
-            onChange={(event) =>
-              updateField("email", event.target.value)
-            }
-          />
-        </label>
-
-        {project.configurations.length > 0 && (
-          <label>
-            Configuration
-            <select
-              value={form.configurationId}
-              onChange={(event) =>
-                updateField("configurationId", event.target.value)
-              }
-            >
-              <option value="">Any configuration</option>
-
-              {project.configurations.map(
-                (configuration: Configuration) => (
-                  <option
-                    key={configuration.id}
-                    value={configuration.id}
-                  >
-                    {configuration.name}
-                  </option>
-                ),
-              )}
-            </select>
-          </label>
+        {submitted && (
+          <div className="project-lead-success" role="status">
+            <p>Your enquiry for {project.name} has been submitted. Our team will reach out shortly.</p>
+          </div>
         )}
 
-        <label>
-          Message
-          <textarea
-            value={form.message}
-            onChange={(event) =>
-              updateField("message", event.target.value)
-            }
-          />
-        </label>
+        {error && (
+          <div className="project-lead-error" role="alert">
+            <p>{error}</p>
+          </div>
+        )}
 
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit enquiry"}
-        </button>
-      </form>
+        <form ref={contactRef} onSubmit={handleSubmit} className="project-lead-form">
+          <div className="form-group-row">
+            <label className="form-label">
+              Name <span className="required-star">*</span>
+              <input
+                type="text"
+                required
+                value={form.name}
+                onChange={(event) => updateField("name", event.target.value)}
+                placeholder="Your full name"
+                className="form-input"
+              />
+            </label>
+
+            <label className="form-label">
+              Phone <span className="required-star">*</span>
+              <input
+                type="tel"
+                required
+                value={form.phone}
+                onChange={(event) => updateField("phone", event.target.value)}
+                placeholder="Phone number"
+                className="form-input"
+              />
+            </label>
+          </div>
+
+          <div className="form-group-row">
+            <label className="form-label">
+              Email <span className="optional-tag">(optional)</span>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(event) => updateField("email", event.target.value)}
+                placeholder="Email address"
+                className="form-input"
+              />
+            </label>
+
+            {project.configurations.length > 0 && (
+              <label className="form-label">
+                Preferred Configuration <span className="optional-tag">(optional)</span>
+                <select
+                  value={form.configurationId}
+                  onChange={(event) => updateField("configurationId", event.target.value)}
+                  className="form-select"
+                >
+                  <option value="">Any configuration</option>
+                  {project.configurations.map((config: Configuration) => (
+                    <option key={config.id} value={config.id}>
+                      {config.name} ({config.bhk} BHK)
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
+
+          <label className="form-label">
+            Message <span className="optional-tag">(optional)</span>
+            <textarea
+              rows={3}
+              value={form.message}
+              onChange={(event) => updateField("message", event.target.value)}
+              placeholder={`Share what you're looking for at ${project.name}...`}
+              className="form-textarea"
+            />
+          </label>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="project-lead-submit-btn"
+          >
+            {isSubmitting ? "Submitting..." : `Enquire about ${project.name} →`}
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

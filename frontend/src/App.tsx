@@ -1,16 +1,18 @@
-import { BrowserRouter, Link } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
+import { AssistantProvider } from "./context/AssistantContext";
+import { HeaderProvider } from "./context/HeaderContext";
 import { AppRouter } from "./router/AppRouter";
 
 export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <nav aria-label="Main navigation">
-          <Link to="/">Virtual Reality</Link>{" "}
-          <Link to="/search">Search</Link>
-        </nav>
-        <AppRouter />
+        <HeaderProvider>
+          <AssistantProvider>
+            <AppRouter />
+          </AssistantProvider>
+        </HeaderProvider>
       </AuthProvider>
     </BrowserRouter>
   );
