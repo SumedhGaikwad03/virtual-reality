@@ -237,6 +237,23 @@ model Admin {
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   passwordResetTokens PasswordResetToken[]
+  pushSubscriptions   PushSubscription[]
+}
+
+model PushSubscription {
+  id          String   @id @default(uuid())
+  adminId     String
+  admin       Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  endpoint    String   @unique
+  p256dh      String
+  auth        String
+  userAgent   String?
+  deviceLabel String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastUsedAt  DateTime?
+
+  @@index([adminId])
 }
 
 model PasswordResetToken {

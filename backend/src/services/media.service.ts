@@ -454,6 +454,67 @@ export async function uploadMedia(
   }
 }
 
+export type CreateMediaFromUrlInput = {
+  developerId?: string;
+  projectId?: string;
+  configurationId?: string;
+
+  context: MediaContext;
+  slot?: string;
+
+  type: MediaType;
+  category: MediaCategory;
+
+  title?: string;
+  url: string;
+  altText?: string;
+
+  sortOrder?: number;
+  isPrimary?: boolean;
+};
+
+export async function createMediaFromUrl(input: CreateMediaFromUrlInput) {
+  await validateOwnership({
+    developerId: input.developerId,
+    projectId: input.projectId,
+    configurationId: input.configurationId,
+    context: input.context,
+    slot: input.slot,
+    type: input.type,
+    category: input.category,
+    title: input.title,
+    altText: input.altText,
+    sortOrder: input.sortOrder,
+    isPrimary: input.isPrimary,
+  });
+
+  const media = await mediaRepository.create({
+    developerId: input.developerId,
+    projectId: input.projectId,
+    configurationId: input.configurationId,
+
+    context: input.context,
+    slot: input.slot,
+
+    type: input.type,
+    category: input.category,
+
+    title: input.title,
+    url: input.url.trim(),
+    altText: input.altText,
+
+    sortOrder: input.sortOrder,
+    isPrimary: input.isPrimary,
+
+    source: "MANUAL",
+    sourceUrl: input.url.trim(),
+  });
+
+  return {
+    data: toMediaResponse(media),
+  };
+}
+
 export async function listDeveloperMedia(
   developerId: string,
 ) {
@@ -577,6 +638,23 @@ export async function updateMedia(
       "Media not found",
     );
   }
+
+  // Reuse upload ownership rules with the persisted relationships so metadata edits cannot
+  // leave a media record inconsistent with its context. Owner IDs are intentionally not
+  // accepted in MediaUpdateInput; the existing record remains the authority for ownership.
+  await validateOwnership({
+    developerId: existing.developerId ?? undefined,
+    projectId: existing.projectId ?? undefined,
+    configurationId: existing.configurationId ?? undefined,
+    context: input.context ?? existing.context,
+    slot: input.slot === null ? undefined : input.slot ?? existing.slot ?? undefined,
+    type: existing.type,
+    category: input.category ?? existing.category,
+    title: input.title === null ? undefined : input.title ?? existing.title ?? undefined,
+    altText: input.altText === null ? undefined : input.altText ?? existing.altText ?? undefined,
+    sortOrder: input.sortOrder ?? existing.sortOrder,
+    isPrimary: input.isPrimary ?? existing.isPrimary,
+  });
 
   const media =
     await mediaRepository.update(

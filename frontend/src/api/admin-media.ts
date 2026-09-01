@@ -18,6 +18,7 @@ import type {
   AdminMediaResponse,
   MediaMetadataInput,
   MediaUploadInput,
+  MediaUrlInput,
 } from "../types/admin-media";
 
 // Uploads media using multipart/form-data to support file streams and metadata in a single request
@@ -68,6 +69,19 @@ export function uploadMedia(input: MediaUploadInput) {
     {
       method: "POST",
       body: formData,
+    },
+  );
+}
+
+export function createMediaFromUrl(input: MediaUrlInput) {
+  return adminRequest<AdminMediaResponse>(
+    "/admin/media/url",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(input),
     },
   );
 }

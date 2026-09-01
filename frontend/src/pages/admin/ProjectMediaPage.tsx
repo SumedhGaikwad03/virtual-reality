@@ -17,6 +17,7 @@ import { Link, useParams } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
 import { getProject } from "../../api/admin-projects";
 import {
+  createMediaFromUrl,
   getProjectMedia,
   updateMedia,
   uploadMedia,
@@ -163,7 +164,8 @@ export function ProjectMediaPage() {
   }, [projectId]);
 
   async function handleUpload(input: {
-    file: File;
+    file?: File;
+    url?: string;
     type: MediaType;
     category: MediaCategory;
     slot?: string;
@@ -182,23 +184,42 @@ export function ProjectMediaPage() {
     setIsUploading(true);
 
     try {
-      // Project media requires context: "PROJECT", valid projectId, and valid developerId
-      await uploadMedia({
-        file: input.file,
-        context: "PROJECT",
-        type: input.type,
-        category: input.category,
-        projectId: project.id,
-        developerId: project.developerId,
-        slot: input.slot,
-        title: input.title,
-        altText: input.altText,
-        sortOrder: input.sortOrder,
-        isPrimary: input.isPrimary,
-      });
+      if (input.url) {
+        await createMediaFromUrl({
+          url: input.url,
+          context: "PROJECT",
+          type: input.type,
+          category: input.category,
+          projectId: project.id,
+          developerId: project.developerId,
+          slot: input.slot,
+          title: input.title,
+          altText: input.altText,
+          sortOrder: input.sortOrder,
+          isPrimary: input.isPrimary,
+        });
+        setSuccess("Media created from URL successfully.");
+      } else if (input.file) {
+        await uploadMedia({
+          file: input.file,
+          context: "PROJECT",
+          type: input.type,
+          category: input.category,
+          projectId: project.id,
+          developerId: project.developerId,
+          slot: input.slot,
+          title: input.title,
+          altText: input.altText,
+          sortOrder: input.sortOrder,
+          isPrimary: input.isPrimary,
+        });
+        setSuccess("Media uploaded successfully.");
+      } else {
+        setError("Please provide either a file or an external URL.");
+        return;
+      }
 
       await loadMedia();
-      setSuccess("Media uploaded successfully.");
     } catch (requestError) {
       setError(errorMessage(requestError, "upload"));
     } finally {
@@ -402,7 +423,8 @@ function ProjectMediaUploadForm({
 }: {
   isUploading: boolean;
   onSubmit: (input: {
-    file: File;
+    file?: File;
+    url?: string;
     type: MediaType;
     category: MediaCategory;
     slot?: string;
@@ -412,7 +434,9 @@ function ProjectMediaUploadForm({
     isPrimary: boolean;
   }) => Promise<void>;
 }) {
+  const [sourceMode, setSourceMode] = useState<"FILE" | "URL">("FILE");
   const [file, setFile] = useState<File | null>(null);
+  const [externalUrl, setExternalUrl] = useState("");
   const [type, setType] = useState<MediaType>("IMAGE");
   const [category, setCategory] = useState<MediaCategory>("HERO");
   const [slot, setSlot] = useState("");
@@ -426,6 +450,7 @@ function ProjectMediaUploadForm({
     setType(newType);
     if (newType === "VIDEO") {
       setCategory("PROJECT_VIDEO");
+      setSourceMode("URL");
     } else if (category === "PROJECT_VIDEO") {
       setCategory("HERO");
     }
@@ -434,8 +459,13 @@ function ProjectMediaUploadForm({
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!file) {
+    if (sourceMode === "FILE" && !file) {
       setError("Please select a file.");
+      return;
+    }
+
+    if (sourceMode === "URL" && !externalUrl.trim()) {
+      setError("Please enter a valid external URL.");
       return;
     }
 
@@ -449,7 +479,8 @@ function ProjectMediaUploadForm({
     setError(null);
 
     await onSubmit({
-      file,
+      file: sourceMode === "FILE" ? (file ?? undefined) : undefined,
+      url: sourceMode === "URL" ? externalUrl.trim() : undefined,
       type,
       category,
       slot: slot.trim() || undefined,
@@ -460,6 +491,7 @@ function ProjectMediaUploadForm({
     });
 
     setFile(null);
+    setExternalUrl("");
     setSlot("");
     setTitle("");
     setAltText("");
@@ -483,23 +515,47 @@ function ProjectMediaUploadForm({
       {error && <p role="alert">{error}</p>}
 
       <label>
-        File
-        <input
-          id="project-media-file-input"
-          required
-          type="file"
-          accept={
-            type === "IMAGE"
-              ? "image/*"
-              : type === "VIDEO"
-                ? "video/*"
-                : "*/*"
-          }
-          onChange={(event) =>
-            setFile(event.target.files?.[0] ?? null)
-          }
-        />
+        Source Mode
+        <select
+          value={sourceMode}
+          onChange={(e) => setSourceMode(e.target.value as "FILE" | "URL")}
+        >
+          <option value="FILE">Upload Local File</option>
+          <option value="URL">External URL (e.g. YouTube / Vimeo)</option>
+        </select>
       </label>
+
+      {sourceMode === "FILE" ? (
+        <label>
+          File
+          <input
+            id="project-media-file-input"
+            required
+            type="file"
+            accept={
+              type === "IMAGE"
+                ? "image/*"
+                : type === "VIDEO"
+                  ? "video/*"
+                  : "*/*"
+            }
+            onChange={(event) =>
+              setFile(event.target.files?.[0] ?? null)
+            }
+          />
+        </label>
+      ) : (
+        <label>
+          External Media / Video URL
+          <input
+            required
+            type="url"
+            value={externalUrl}
+            placeholder="e.g. https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+            onChange={(event) => setExternalUrl(event.target.value)}
+          />
+        </label>
+      )}
 
       <label>
         Media type
@@ -580,8 +636,18 @@ function ProjectMediaUploadForm({
         Primary asset
       </label>
 
-      <button type="submit" disabled={isUploading || !file}>
-        {isUploading ? "Uploading..." : "Upload Project Media"}
+      <button
+        type="submit"
+        disabled={
+          isUploading ||
+          (sourceMode === "FILE" ? !file : !externalUrl.trim())
+        }
+      >
+        {isUploading
+          ? "Saving..."
+          : sourceMode === "URL"
+            ? "Add Media from URL"
+            : "Upload Project Media"}
       </button>
     </form>
   );

@@ -575,3 +575,157 @@
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   8. Developer Media Showcase Carousel & Floating Controls
+   ========================================================================== */
+.developer-media-carousel-section {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) 1.5rem;
+  box-sizing: border-box;
+}
+
+.developer-media-carousel-header {
+  margin-bottom: 1.5rem;
+}
+
+.developer-media-carousel-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0.35rem 0 0;
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  letter-spacing: -0.025em;
+}
+
+.developer-media-carousel-stage {
+  position: relative;
+  width: 100%;
+  /* Stable editorial stage; the media itself remains uncropped below. */
+  aspect-ratio: 21 / 10;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background-color: #0b1320;
+  box-shadow: 0 20px 40px -15px rgba(11, 19, 32, 0.2);
+}
+
+.developer-media-carousel-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  pointer-events: none;
+}
+
+.developer-media-carousel-slide.active-slide {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.developer-carousel-image,
+.developer-carousel-video {
+  width: 100%;
+  height: 100%;
+  /* Preserve architectural composition and embedded typography. */
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.developer-media-carousel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: linear-gradient(180deg, transparent 0%, rgba(11, 19, 32, 0.85) 100%);
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.developer-media-carousel-caption h3 {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  margin: 0;
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+}
+
+/* Floating Sleek Controls & Counter Overlay */
+.carousel-floating-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.carousel-floating-btn:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+}
+
+.carousel-floating-btn.prev-btn {
+  left: 1rem;
+}
+
+.carousel-floating-btn.next-btn {
+  right: 1rem;
+}
+
+.carousel-stage-counter {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  background: rgba(11, 19, 32, 0.75);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .developer-media-carousel-stage {
+    /* A taller mobile stage avoids a tiny image inside a cinematic frame. */
+    aspect-ratio: 4 / 3;
+  }
+
+  .carousel-floating-btn {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 0.95rem;
+  }
+
+  .carousel-floating-btn.prev-btn {
+    left: 0.65rem;
+  }
+
+  .carousel-floating-btn.next-btn {
+    right: 0.65rem;
+  }
+}

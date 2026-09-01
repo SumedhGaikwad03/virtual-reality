@@ -18,6 +18,7 @@ import { configurationRepository } from "../repositories/configuration.repositor
 import { developerRepository } from "../repositories/developer.repository.js";
 import { leadRepository } from "../repositories/lead.repository.js";
 import { projectRepository } from "../repositories/project.repository.js";
+import { notifyNewLead } from "./notification.service.js";
 
 export type CreateLeadInput = {
   name: string;
@@ -183,6 +184,13 @@ export async function createLead(input: CreateLeadInput) {
     message: input.message,
     status: "NEW",
   });
+
+  // Lead persistence is authoritative; notification failure must never reject a successful lead.
+  void notifyNewLead({
+    id: lead.id,
+    projectName: lead.project?.name,
+    configurationName: lead.configuration?.name,
+  }).catch(() => undefined);
 
   return {
     data: { id: lead.id, status: lead.status, createdAt: lead.createdAt },

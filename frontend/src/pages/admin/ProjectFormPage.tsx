@@ -1,6 +1,6 @@
 /*
  * PURPOSE:
- * Admin project create, edit, and amenities management form page.
+ * Admin project create, edit, highlights, and amenities management form page.
  *
  * FLOW:
  * Admin Project Management Flow
@@ -8,7 +8,7 @@
  * RESPONSIBILITY:
  * Manages the form lifecycle for creating a new project or editing an existing project,
  * including developer selection, location fields, status enum, publication status controls,
- * slug conflict error handling, and structured project amenities CRUD management (View, Add, Edit, Delete).
+ * project highlight authoring, slug conflict error handling, and structured project amenities CRUD management.
  */
 
 import type { FormEvent } from "react";
@@ -19,10 +19,13 @@ import { getDevelopers } from "../../api/admin-developers";
 import {
   createProject,
   createProjectAmenity,
+  createProjectHighlight,
   deleteProjectAmenity,
+  deleteProjectHighlight,
   getProject,
   updateProject,
   updateProjectAmenity,
+  updateProjectHighlight,
 } from "../../api/admin-projects";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import type { AdminDeveloper, PublishStatus } from "../../types/admin-developer";
@@ -30,6 +33,7 @@ import type {
   AdminProject,
   AdminProjectInput,
   ProjectAmenity,
+  ProjectHighlight,
   ProjectStatus,
 } from "../../types/admin-project";
 
@@ -136,6 +140,11 @@ export function ProjectFormPage() {
   const [editingAmenityName, setEditingAmenityName] = useState("");
   const [isAmenitySubmitting, setIsAmenitySubmitting] = useState(false);
   const [amenityError, setAmenityError] = useState<string | null>(null);
+  const [highlights, setHighlights] = useState<ProjectHighlight[]>([]);
+  const [originalHighlights, setOriginalHighlights] = useState<ProjectHighlight[]>([]);
+  const [highlightError, setHighlightError] = useState<string | null>(null);
+  const [highlightSuccess, setHighlightSuccess] = useState<string | null>(null);
+  const [isHighlightsSubmitting, setIsHighlightsSubmitting] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -162,6 +171,9 @@ export function ProjectFormPage() {
         if (active) {
           setForm(toForm(response.data));
           setAmenities(response.data.amenities ?? []);
+          const loadedHighlights = response.data.highlights ?? [];
+          setHighlights(loadedHighlights);
+          setOriginalHighlights(loadedHighlights);
         }
       })
       .catch((requestError: unknown) => {
@@ -179,6 +191,84 @@ export function ProjectFormPage() {
     setForm((current) => ({ ...current, [field]: value }));
   }
 
+  async function persistHighlights(
+    projectId: string,
+    currentHighlights: ProjectHighlight[] = highlights,
+  ) {
+    const retainedIds = new Set(
+      currentHighlights
+        .filter((highlight) => !highlight.id.startsWith("new-"))
+        .filter((highlight) => highlight.text.trim())
+        .map((highlight) => highlight.id),
+    );
+
+    for (const highlight of originalHighlights) {
+      if (!retainedIds.has(highlight.id)) {
+        await deleteProjectHighlight(projectId, highlight.id);
+      }
+    }
+
+    const persistedHighlights: ProjectHighlight[] = [];
+    for (let index = 0; index < currentHighlights.length; index += 1) {
+      const highlight = currentHighlights[index];
+      const text = highlight.text.trim();
+      if (!text) continue;
+
+      if (highlight.id.startsWith("new-")) {
+        const response = await createProjectHighlight(projectId, { text, sortOrder: index });
+        persistedHighlights.push(response.data);
+        continue;
+      }
+
+      const original = originalHighlights.find((item) => item.id === highlight.id);
+      if (original?.text === text && original.sortOrder === index) {
+        persistedHighlights.push({ ...highlight, text, sortOrder: index });
+        continue;
+      }
+
+      const response = await updateProjectHighlight(projectId, highlight.id, {
+        text,
+        sortOrder: index,
+      });
+      persistedHighlights.push(response.data);
+    }
+
+    setHighlights(persistedHighlights);
+    setOriginalHighlights(persistedHighlights);
+  }
+
+  async function handleSaveHighlights() {
+    if (!id) {
+      setHighlightError("Save the project first, then save its highlights.");
+      return;
+    }
+
+    const nonEmptyHighlights = highlights.filter((highlight) => highlight.text.trim());
+    if (highlights.length > 0 && nonEmptyHighlights.length === 0) {
+      setHighlightError("Enter text for a highlight before saving.");
+      return;
+    }
+
+    setHighlightError(null);
+    setHighlightSuccess(null);
+    setIsHighlightsSubmitting(true);
+    try {
+      if (nonEmptyHighlights.length !== highlights.length) {
+        setHighlights(nonEmptyHighlights);
+      }
+      await persistHighlights(id, nonEmptyHighlights);
+      setHighlightSuccess("Highlights saved successfully.");
+    } catch (requestError) {
+      setHighlightError(
+        requestError instanceof AdminApiError
+          ? requestError.message || "Unable to save highlights. Please try again."
+          : "Unable to save highlights. Please try again.",
+      );
+    } finally {
+      setIsHighlightsSubmitting(false);
+    }
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
@@ -193,11 +283,15 @@ export function ProjectFormPage() {
     }
     setIsSubmitting(true);
     try {
+      let projectId = id;
       if (id) {
         await updateProject(id, payload);
       } else {
-        await createProject(payload);
+        const response = await createProject(payload);
+        projectId = response.data.id;
       }
+
+      if (projectId) await persistHighlights(projectId);
       navigate("/admin/projects", { replace: true });
     } catch (requestError) {
       setError(errorMessage(requestError, "save"));
@@ -328,8 +422,100 @@ export function ProjectFormPage() {
           </small>
         </label>
         <label className="admin-checkbox"><input type="checkbox" checked={form.featured} onChange={(event) => setField("featured", event.target.checked)} /> Featured</label>
-        <button type="submit" disabled={isSubmitting || developers.length === 0}>{isSubmitting ? "Saving..." : "Save Project"}</button>
+        <button type="submit" disabled={isSubmitting || isHighlightsSubmitting || developers.length === 0}>{isSubmitting ? "Saving..." : "Save Project"}</button>
       </form>
+
+      <section className="admin-highlights-section">
+        <h2>Key Highlights</h2>
+        <p>Enter concise, manually authored facts to show on the public project page.</p>
+        {highlightError && <p role="alert">{highlightError}</p>}
+        {highlightSuccess && <p role="status">{highlightSuccess}</p>}
+        {highlights.length === 0 ? (
+          <p>No highlights added yet.</p>
+        ) : (
+          <ol>
+            {highlights.map((highlight, index) => (
+              <li key={highlight.id}>
+                <input
+                  type="text"
+                  aria-label={`Key highlight ${index + 1}`}
+                  value={highlight.text}
+                  onChange={(event) =>
+                    setHighlights((current) =>
+                      current.map((item) =>
+                        item.id === highlight.id
+                          ? { ...item, text: event.target.value }
+                          : item,
+                      ),
+                    )
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHighlights((current) => current.filter((item) => item.id !== highlight.id));
+                    setHighlightError(null);
+                  }}
+                >
+                  Remove
+                </button>
+                <button
+                  type="button"
+                  disabled={index === 0}
+                  onClick={() =>
+                    setHighlights((current) => {
+                      const next = [...current];
+                      [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                      return next;
+                    })
+                  }
+                >
+                  Move up
+                </button>
+                <button
+                  type="button"
+                  disabled={index === highlights.length - 1}
+                  onClick={() =>
+                    setHighlights((current) => {
+                      const next = [...current];
+                      [next[index], next[index + 1]] = [next[index + 1], next[index]];
+                      return next;
+                    })
+                  }
+                >
+                  Move down
+                </button>
+              </li>
+            ))}
+          </ol>
+        )}
+        <button
+          type="button"
+          disabled={highlights.length >= 12}
+          onClick={() => {
+            if (highlights.length >= 12) {
+              setHighlightError("A project may have at most 12 highlights.");
+              return;
+            }
+            setHighlights((current) => [
+              ...current,
+              { id: `new-${Date.now()}-${current.length}`, text: "", sortOrder: current.length },
+            ]);
+            setHighlightError(null);
+          }}
+        >
+          + Add Highlight
+        </button>
+        <button
+          type="button"
+          onClick={handleSaveHighlights}
+          disabled={!id || isSubmitting || isHighlightsSubmitting}
+        >
+          {isHighlightsSubmitting ? "Saving Highlights..." : "Save Highlights"}
+        </button>
+        {!id && <p>Save the project first to persist its highlights.</p>}
+        <p>Highlights are optional. Blank unsaved rows are ignored when saved.</p>
+      </section>
 
       {id && (
         <section className="admin-amenities-section">

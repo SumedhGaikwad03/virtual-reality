@@ -40,7 +40,9 @@ export class AdminProjectError extends Error {
       | "DEVELOPER_NOT_FOUND"
       | "PROJECT_SLUG_EXISTS"
       | "AMENITY_NOT_FOUND"
-      | "INVALID_AMENITY_REQUEST",
+      | "INVALID_AMENITY_REQUEST"
+      | "HIGHLIGHT_NOT_FOUND"
+      | "INVALID_HIGHLIGHT_REQUEST",
     public readonly statusCode: 400 | 404 | 409,
     message: string,
   ) {
@@ -81,6 +83,11 @@ function toAdminProject(project: {
     name: string;
     sortOrder: number;
   }[];
+  highlights?: {
+    id: string;
+    text: string;
+    sortOrder: number;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }) {
@@ -99,6 +106,7 @@ function toAdminProject(project: {
     featured: project.featured,
     publishStatus: project.publishStatus,
     amenities: project.amenities ?? [],
+    highlights: project.highlights ?? [],
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
   };
@@ -320,6 +328,76 @@ export async function listProjectAmenities(projectId: string) {
   }
   const amenities = await projectRepository.findAmenities(projectId);
   return { data: amenities };
+}
+
+const MAX_PROJECT_HIGHLIGHTS = 12;
+
+export async function listProjectHighlights(projectId: string) {
+  const project = await projectRepository.findById(projectId);
+  if (!project) {
+    throw new AdminProjectError("PROJECT_NOT_FOUND", 404, "Project not found");
+  }
+  return { data: await projectRepository.findHighlights(projectId) };
+}
+
+export async function createProjectHighlight(
+  projectId: string,
+  input: { text: string; sortOrder?: number },
+) {
+  const project = await projectRepository.findById(projectId);
+  if (!project) {
+    throw new AdminProjectError("PROJECT_NOT_FOUND", 404, "Project not found");
+  }
+
+  const text = input.text.trim();
+  if (!text) {
+    throw new AdminProjectError("INVALID_HIGHLIGHT_REQUEST", 400, "Highlight text is required");
+  }
+
+  const existingHighlights = await projectRepository.findHighlights(projectId);
+  if (existingHighlights.length >= MAX_PROJECT_HIGHLIGHTS) {
+    throw new AdminProjectError("INVALID_HIGHLIGHT_REQUEST", 400, "A project may have at most 12 highlights");
+  }
+
+  return {
+    data: await projectRepository.createHighlight({
+      projectId,
+      text,
+      sortOrder: input.sortOrder ?? existingHighlights.length,
+    }),
+  };
+}
+
+export async function updateProjectHighlight(
+  projectId: string,
+  highlightId: string,
+  input: { text?: string; sortOrder?: number },
+) {
+  const highlight = await projectRepository.findHighlightById(highlightId);
+  if (!highlight || highlight.projectId !== projectId) {
+    throw new AdminProjectError("HIGHLIGHT_NOT_FOUND", 404, "Highlight not found for this project");
+  }
+
+  const data: { text?: string; sortOrder?: number } = {};
+  if (input.text !== undefined) {
+    const text = input.text.trim();
+    if (!text) {
+      throw new AdminProjectError("INVALID_HIGHLIGHT_REQUEST", 400, "Highlight text cannot be empty");
+    }
+    data.text = text;
+  }
+  if (input.sortOrder !== undefined) data.sortOrder = input.sortOrder;
+
+  return { data: await projectRepository.updateHighlight(highlightId, data) };
+}
+
+export async function deleteProjectHighlight(projectId: string, highlightId: string) {
+  const highlight = await projectRepository.findHighlightById(highlightId);
+  if (!highlight || highlight.projectId !== projectId) {
+    throw new AdminProjectError("HIGHLIGHT_NOT_FOUND", 404, "Highlight not found for this project");
+  }
+  await projectRepository.deleteHighlight(highlightId);
+  return { success: true };
 }
 
 export async function createProjectAmenity(

@@ -20,6 +20,7 @@ import express, { Router } from "express";
 import multer from "multer";
 
 import {
+  createMediaFromUrlController,
   getMediaController,
   listConfigurationMediaController,
   listContextMediaController,
@@ -36,6 +37,7 @@ import {
   validateMediaOwnerParam,
   validateMediaUpdate,
   validateMediaUpload,
+  validateMediaUrlCreation,
 } from "../../validators/media.validator.js";
 
 const maxFileSize = Number(
@@ -71,6 +73,15 @@ router.post(
   upload.single("file"),
   validateMediaUpload,
   uploadMediaController,
+);
+
+/*
+ * Create media from URL (e.g. YouTube / Vimeo video URL)
+ */
+router.post(
+  "/url",
+  validateMediaUrlCreation,
+  createMediaFromUrlController,
 );
 
 /*

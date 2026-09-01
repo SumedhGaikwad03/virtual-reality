@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import type { ReactNode } from "react";
+import { LeadNotificationControl } from "./LeadNotificationControl";
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -19,6 +21,18 @@ export function AdminLayout({
   children,
 }: AdminLayoutProps) {
   const { logout } = useAuth();
+  const [isOnline, setIsOnline] = useState(() => navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   return (
     <div className="admin-layout">
@@ -93,6 +107,8 @@ export function AdminLayout({
           })}
         </nav>
 
+        <LeadNotificationControl />
+
         <button
           type="button"
           onClick={logout}
@@ -102,6 +118,7 @@ export function AdminLayout({
       </aside>
 
       <main className="admin-content">
+        {!isOnline && <p className="admin-offline-banner" role="status">You are offline. Live lead data is unavailable.</p>}
         {children}
       </main>
     </div>

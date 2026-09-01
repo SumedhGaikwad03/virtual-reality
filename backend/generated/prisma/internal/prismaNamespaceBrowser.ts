@@ -59,6 +59,7 @@ export const ModelName = {
   Media: 'Media',
   Lead: 'Lead',
   Admin: 'Admin',
+  PushSubscription: 'PushSubscription',
   PasswordResetToken: 'PasswordResetToken'
 } as const
 
@@ -208,6 +209,22 @@ export const AdminScalarFieldEnum = {
 } as const
 
 export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+export const PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  adminId: 'adminId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  deviceLabel: 'deviceLabel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  lastUsedAt: 'lastUsedAt'
+} as const
+
+export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
 
 
 export const PasswordResetTokenScalarFieldEnum = {

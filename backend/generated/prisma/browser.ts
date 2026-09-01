@@ -58,6 +58,11 @@ export type Lead = Prisma.LeadModel
  */
 export type Admin = Prisma.AdminModel
 /**
+ * Model PushSubscription
+ *
+ */
+export type PushSubscription = Prisma.PushSubscriptionModel
+/**
  * Model PasswordResetToken
  * 
  */

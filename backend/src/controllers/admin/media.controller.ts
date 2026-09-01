@@ -18,6 +18,7 @@ import type {
 } from "../../../generated/prisma/enums.js";
 
 import {
+  createMediaFromUrl,
   getMediaById,
   listConfigurationMedia,
   listContextMedia,
@@ -107,6 +108,39 @@ export async function uploadMediaController(
         category: body.category as MediaCategory,
 
         title: body.title as string | undefined,
+        altText: body.altText as string | undefined,
+
+        sortOrder: multipartInteger(body.sortOrder),
+        isPrimary: multipartBoolean(body.isPrimary),
+      }),
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function createMediaFromUrlController(
+  req: Request<{}, unknown, MediaUploadBody & { url: string }>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const body = req.body;
+
+    res.status(201).json(
+      await createMediaFromUrl({
+        developerId: body.developerId as string | undefined,
+        projectId: body.projectId as string | undefined,
+        configurationId: body.configurationId as string | undefined,
+
+        context: body.context as MediaContext,
+        slot: body.slot as string | undefined,
+
+        type: body.type as MediaType,
+        category: body.category as MediaCategory,
+
+        title: body.title as string | undefined,
+        url: body.url,
         altText: body.altText as string | undefined,
 
         sortOrder: multipartInteger(body.sortOrder),

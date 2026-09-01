@@ -11,7 +11,7 @@
  * manages the active slide index state, and provides user-accessible carousel controls.
  */
 
-import { useState, useRef, type KeyboardEvent, type TouchEvent } from "react";
+import { useState, useRef, useEffect, type KeyboardEvent, type TouchEvent } from "react";
 import type { Media } from "../../types/project";
 
 type ProjectHeroCarouselProps = {
@@ -20,20 +20,63 @@ type ProjectHeroCarouselProps = {
 
 export function ProjectHeroCarousel({ media }: ProjectHeroCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
   const carouselItems = media
     .filter((item) => item.category === "HERO_CAROUSEL")
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
+  const hasMultiple = carouselItems.length > 1;
+  const activeIndex = currentIndex >= carouselItems.length ? 0 : currentIndex;
+
+  // Preload the next slide image for seamless transitions
+  useEffect(() => {
+    if (!hasMultiple || carouselItems.length === 0) return;
+    const nextIndex = (activeIndex + 1) % carouselItems.length;
+    const nextItem = carouselItems[nextIndex];
+    if (nextItem && nextItem.type === "IMAGE" && nextItem.url) {
+      const img = new Image();
+      img.src = nextItem.url;
+    }
+  }, [activeIndex, hasMultiple, carouselItems]);
+
+  // Handle document visibility change (pause autoplay when tab is hidden)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsPaused(true);
+      } else {
+        setIsPaused(false);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  // Auto-rotation with pause on hover/focus/tab-hidden and respects prefers-reduced-motion
+  useEffect(() => {
+    if (!hasMultiple || isPaused) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev === carouselItems.length - 1 ? 0 : prev + 1));
+    }, 5500);
+
+    return () => clearInterval(timer);
+  }, [hasMultiple, isPaused, carouselItems.length]);
+
   if (carouselItems.length === 0) {
     return null;
   }
-
-  // Ensure currentIndex stays within bounds if media items change
-  const activeIndex = currentIndex >= carouselItems.length ? 0 : currentIndex;
-  const currentItem = carouselItems[activeIndex];
-  const hasMultiple = carouselItems.length > 1;
 
   // Wrap-around index navigation for cyclic carousel browsing
   const goToPrevious = () => {
@@ -75,6 +118,9 @@ export function ProjectHeroCarousel({ media }: ProjectHeroCarouselProps) {
     touchStartX.current = null;
   };
 
+  const formattedCurrent = String(activeIndex + 1).padStart(2, "0");
+  const formattedTotal = String(carouselItems.length).padStart(2, "0");
+
   return (
     <section
       className="project-hero-carousel"
@@ -84,92 +130,107 @@ export function ProjectHeroCarousel({ media }: ProjectHeroCarouselProps) {
       onKeyDown={handleKeyDown}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
     >
       <div className="project-hero-carousel-header">
-        <h2>Featured Showcase</h2>
+        <span className="section-eyebrow">FEATURED SHOWCASE</span>
+        <h2>Architectural Highlights</h2>
+      </div>
+
+      <div
+        className="project-hero-carousel-stage"
+      >
+        {carouselItems.map((item, idx) => {
+          const isActive = idx === activeIndex;
+          return (
+            <article
+              key={item.id}
+              className={`project-hero-carousel-item ${isActive ? "active-slide" : "inactive-slide"}`}
+              aria-roledescription="slide"
+              aria-label={`Slide ${idx + 1} of ${carouselItems.length}`}
+              aria-hidden={!isActive}
+            >
+              {item.type === "IMAGE" && (
+                <img
+                  src={item.url}
+                  alt={item.altText ?? "Featured showcase image"}
+                  className="carousel-slide-image"
+                  loading={idx === 0 ? "eager" : "lazy"}
+                />
+              )}
+
+              {item.type === "VIDEO" && (
+                <video
+                  controls
+                  src={item.url}
+                  preload="metadata"
+                  className="carousel-slide-video"
+                  aria-label={item.altText ?? "Featured showcase video"}
+                />
+              )}
+
+              {item.type === "DOCUMENT" && (
+                <div className="carousel-slide-doc">
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Open document
+                  </a>
+                </div>
+              )}
+
+              {item.title && (
+                <div className="project-hero-carousel-caption">
+                  <h3>{item.title}</h3>
+                </div>
+              )}
+            </article>
+          );
+        })}
+
         {hasMultiple && (
-          <span
-            className="project-hero-carousel-counter"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {activeIndex + 1} / {carouselItems.length}
-          </span>
+          <>
+            <div className="project-carousel-stage-counter" aria-live="polite">
+              {formattedCurrent} / {formattedTotal}
+            </div>
+
+            <button
+              type="button"
+              className="project-carousel-floating-btn prev-btn"
+              onClick={goToPrevious}
+              aria-label="Previous image"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              className="project-carousel-floating-btn next-btn"
+              onClick={goToNext}
+              aria-label="Next image"
+            >
+              →
+            </button>
+          </>
         )}
       </div>
 
-      <div className="project-hero-carousel-stage">
-        <article
-          key={currentItem.id}
-          className="media-item project-hero-carousel-item"
-          aria-roledescription="slide"
-          aria-label={`Slide ${activeIndex + 1} of ${carouselItems.length}`}
-        >
-          {currentItem.type === "IMAGE" && (
-            <img
-              src={currentItem.thumbnailUrl ?? currentItem.url}
-              alt={currentItem.altText ?? "Featured showcase image"}
-            />
-          )}
-
-          {currentItem.type === "VIDEO" && (
-            <video
-              controls
-              src={currentItem.url}
-              preload="metadata"
-              aria-label={currentItem.altText ?? "Featured showcase video"}
-            />
-          )}
-
-          {currentItem.type === "DOCUMENT" && (
-            <p>
-              <a
-                href={currentItem.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open document
-              </a>
-            </p>
-          )}
-
-          {currentItem.title && (
-            <div className="project-hero-carousel-caption">
-              <h3>{currentItem.title}</h3>
-            </div>
-          )}
-        </article>
-      </div>
-
       {hasMultiple && (
-        <div
-          className="project-hero-carousel-controls"
-          aria-label="Carousel navigation"
-        >
-          <button
-            type="button"
-            className="project-hero-carousel-btn"
-            onClick={goToPrevious}
-            aria-label="Previous image"
-          >
-            ‹ Previous
-          </button>
-
-          <span
-            className="project-hero-carousel-counter-mobile"
-            aria-hidden="true"
-          >
-            {activeIndex + 1} / {carouselItems.length}
-          </span>
-
-          <button
-            type="button"
-            className="project-hero-carousel-btn"
-            onClick={goToNext}
-            aria-label="Next image"
-          >
-            Next ›
-          </button>
+        <div className="carousel-dots-container" aria-label="Slide dots navigation">
+          {carouselItems.map((item, idx) => (
+            <button
+              key={item.id}
+              type="button"
+              className={`carousel-dot ${idx === activeIndex ? "active" : ""}`}
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+              aria-current={idx === activeIndex ? "true" : undefined}
+            />
+          ))}
         </div>
       )}
     </section>

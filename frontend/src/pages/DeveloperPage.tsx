@@ -85,7 +85,7 @@ export function DeveloperPage() {
         {/* 2. Developer Introduction / Identity */}
         <DeveloperIntro developer={developer} />
 
-        {/* 3. Projects by Developer */}
+        {/* 3. Projects by Developer Portfolio */}
         <DeveloperProjects developer={developer} />
 
         {/* 4. Developer Enquiry */}

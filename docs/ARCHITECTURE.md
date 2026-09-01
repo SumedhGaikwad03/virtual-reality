@@ -51,7 +51,7 @@ frontend/src/
 │   ├── admin/             # Shared AdminLayout and navigation
 │   ├── developer/         # DeveloperHero, DeveloperIntro, DeveloperProjects, DeveloperLeadSection
 │   ├── home/              # AtmosphericHero, ExploreDevelopers, FeaturedProjects, ConversationalSearchEntry, AboutFooter, FloatingSearchControl
-│   ├── project/           # ProjectHero, ProjectSubNav, ProjectOverview, ConfigurationSection, ConfigurationMediaSection, ProjectVisualStory, ProjectAmenities, ProjectLocation, ProjectDeveloper, LeadSection
+│   ├── project/           # ProjectHero, ProjectSubNav, ProjectOverview, showcase carousels, ConfigurationSection, ConfigurationMediaSection, ProjectAmenities, ProjectLocation, ProjectDeveloper, LeadSection
 │   ├── search/            # SearchAssistant, AssistantHeader, ConversationMessages, QuerySummary, RuleOptions, SearchAssistantEmptyState, SearchResults, PropertyResultCard, PropertyAssistantOverlay
 │   └── shell/             # PublicShell, GlobalHeader
 ├── context/               # Global Context Providers
@@ -128,20 +128,20 @@ model Project {
 }
 
 model Configuration {
-  id           String            @id @default(cuid())
-  projectId    String
-  project      Project           @relation(fields: [projectId], references: [id])
-  name         String
-  type         ConfigurationType @default(RESIDENTIAL)
-  bhk          Int?
-  carpetArea   Float?
-  builtUpArea  Float?
-  priceFrom    BigInt?
-  availability AvailabilityStatus @default(AVAILABLE)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  media        Media[]
-  leads        Lead[]
+  id                 String             @id @default(uuid())
+  name               String
+  bhk                Int
+  carpetArea         Int
+  builtUpArea        Int?
+  superBuiltUpArea   Int?
+  priceFrom          BigInt
+  availabilityStatus AvailabilityStatus
+  projectId          String
+  project            Project            @relation(fields: [projectId], references: [id])
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  media              Media[]
+  leads              Lead[]
 }
 
 model Media {
@@ -189,6 +189,32 @@ model Lead {
 }
 ```
 
+### Public media relation boundaries
+
+The public project query exposes top-level `project.media` only for active media with `context = PROJECT`. Configuration-owned media remains available through each `project.configurations[].media` relation and is not included in the top-level project media collection.
+
+The Project Gallery consumes `IMAGE` records from this already project-scoped collection. Consequently, project-owned photos are gallery-eligible regardless of specialized category, while `VIDEO` and `DOCUMENT` records remain excluded from the photo gallery. Configuration media cannot enter the gallery through the top-level relation.
+
+Configuration authoring is exposed through authenticated admin routes: configurations are created and listed under a project, and retrieved or updated by configuration ID. The current configuration entity supports name, BHK, carpet area, optional built-up and super-built-up areas, price-from, and availability status. It has no independent active flag, delete operation, description, bathroom count, or persisted configuration ordering field. Configuration media is managed separately through the configuration media route and remains related through `configurationId`.
+
+Admin media metadata updates reuse the same ownership validation as media creation. The persisted developer/project/configuration relationships are combined with the requested context before a `Media` update is written, so category, title, ordering, primary status, and activation edits remain available while invalid context transitions are rejected.
+
+### Admin PWA and lead notifications
+
+The admin application is installable through `manifest.webmanifest` and registers `sw.js`. The service worker caches only the static application shell and same-origin static assets; `/api/` requests, including authenticated leads, subscriptions, and notification data, are network-only and are never cached.
+
+Authenticated admins can explicitly register multiple browser/device PushSubscriptions. Each subscription is owned by the admin identity in the JWT, and endpoints are unique. After a lead is persisted with status `NEW`, the notification service performs best-effort Web Push delivery to subscriptions belonging to active admins. Push failure does not affect lead persistence, and permanent subscription failures are removed.
+
+The Leads page can request permission only after an explicit user action and can send an authenticated real test push to the current admin's registered devices. A successful browser permission without a backend registration is not treated as enabled.
+
+Web Push delivery requires backend-only `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, and `VAPID_SUBJECT` environment variables; the frontend receives only the public key through `VITE_VAPID_PUBLIC_KEY`.
+
+The public lead controller forwards the validated direct `developerId` to the lead service. Project and configuration enquiries continue to derive authoritative parent ownership from their verified relationships.
+
+Project highlights use the existing `ProjectHighlight` child model. The authenticated project editor manages them as a project-owned repeatable field through `/api/admin/projects/:projectId/highlights`; the public project query returns them ordered by `sortOrder` for `ProjectOverview`.
+
+The supported backend runtime is `backend/src/server.ts` compiled to `backend/dist/src/server.js`, with the development `PORT` configured as `3000`. `backend/server.js` is retained legacy code and is not the current API server; it does not register the layered admin routes. The frontend's relative `/api` calls are proxied by Vite to the configured backend port.
+
 ---
 
 ## 5. End-to-End Data Flow Examples
@@ -206,7 +232,7 @@ $$\text{Returns Serialized Project DTO (BigInt priceFrom converted to string)}$$
 $$\downarrow$$
 $$\text{ProjectPage sets } \text{developerName} \text{ in HeaderContext } \longrightarrow \text{GlobalHeader renders } [Developer Name]$$
 $$\downarrow$$
-$$\text{Renders ProjectHero, ProjectSubNav, Overview, Configs, Visual Story, Amenities, Location, Developer, LeadSection}$$
+$$\text{Renders ProjectHero, ProjectSubNav, Overview, Showcase, Configurations, Configuration Media, Location, Amenities, Gallery, Video, Developer, LeadSection}$$
 
 ### 2. Rule-Based Search Flow
 $$\text{User clicks "Ask Assistant" or navigates to } /search$$

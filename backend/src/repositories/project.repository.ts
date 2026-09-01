@@ -141,6 +141,7 @@ export class ProjectRepository {
         media: {
           where: {
             isActive: true,
+            context: "PROJECT",
           },
           orderBy: [
             { sortOrder: "asc" as const },
@@ -211,6 +212,60 @@ export class ProjectRepository {
         projectId: true,
       },
     });
+  }
+
+  findHighlights(projectId: string) {
+    return prisma.projectHighlight.findMany({
+      where: { projectId },
+      orderBy: [{ sortOrder: "asc" as const }, { id: "asc" as const }],
+      select: {
+        id: true,
+        text: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  findHighlightById(id: string) {
+    return prisma.projectHighlight.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        text: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  createHighlight(data: { projectId: string; text: string; sortOrder?: number }) {
+    return prisma.projectHighlight.create({
+      data,
+      select: {
+        id: true,
+        text: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  updateHighlight(id: string, data: { text?: string; sortOrder?: number }) {
+    return prisma.projectHighlight.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        text: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  deleteHighlight(id: string) {
+    return prisma.projectHighlight.delete({ where: { id } });
   }
 
   findAmenityById(id: string) {
@@ -288,6 +343,18 @@ const adminProjectSelect = {
     select: {
       id: true,
       name: true,
+      sortOrder: true,
+    },
+  },
+
+  highlights: {
+    orderBy: [
+      { sortOrder: "asc" as const },
+      { id: "asc" as const },
+    ],
+    select: {
+      id: true,
+      text: true,
       sortOrder: true,
     },
   },

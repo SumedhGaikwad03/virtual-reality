@@ -101,6 +101,27 @@ export type MediaUploadInput = {
   isPrimary?: boolean;
 };
 
+export type MediaUrlInput = {
+  url: string;
+
+  context: MediaContext;
+
+  type: MediaType;
+  category: MediaCategory;
+
+  developerId?: string;
+  projectId?: string;
+  configurationId?: string;
+
+  slot?: string;
+
+  title?: string;
+  altText?: string;
+
+  sortOrder?: number;
+  isPrimary?: boolean;
+};
+
 export type AdminMediaResponse = {
   data: AdminMedia;
 };

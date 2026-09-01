@@ -73,6 +73,7 @@ export class DeveloperRepository {
         media: {
           where: {
             isActive: true,
+            context: "DEVELOPER",
           },
           orderBy: [
             { sortOrder: "asc" },

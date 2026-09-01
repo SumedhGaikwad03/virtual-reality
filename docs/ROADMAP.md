@@ -33,6 +33,15 @@
 - ✅ Application-Wide Assistant Overlay & Sheet (`PropertyAssistantOverlay.tsx`, `AssistantContext.tsx`).
 - ✅ Global Shell Layout & Header (`PublicShell.tsx`, `GlobalHeader.tsx`).
 - ✅ Contextual Developer Header Branding (`HeaderContext.tsx`).
+- ✅ Installable admin PWA foundation with static-shell-only service-worker caching.
+- ✅ Multi-device authenticated Web Push subscriptions and best-effort new-lead notifications.
+- ✅ Operational Lead Manager actions for WhatsApp, phone calls, and NEW-lead attention state.
+- ✅ Project Amenities Admin Management Workflow (`/api/admin/projects/:projectId/amenities`).
+- ✅ Project Key Highlights authoring workflow (`/api/admin/projects/:projectId/highlights`) with optional ordered content in the Project form.
+- ✅ Public Project Page information architecture (static hero, overview with optional highlights, project showcase, configurations and configuration media, location, amenities, project gallery, optional video, developer attribution, enquiry, and footer).
+- ✅ Admin External Video URL Creation (`POST /api/admin/media/url`).
+- ✅ Visual Media Refinement Pass (soft crossfade 800ms transitions, wide cinematic carousel framing, slide preloading, visibility change pause).
+- ✅ Contextual Enquiry Modal & Mobile Sticky Action Bar (`ContextualEnquiryModal.tsx`, mobile sticky bar `<768px`).
 
 ### CURRENTLY LOCKED
 - 🔒 Section ordering on Homepage, Developer Page, Project Page, and Search Page.

@@ -70,3 +70,97 @@
 - Verified that newly created/updated admin amenities render seamlessly on the public Project page (`ProjectAmenities.tsx`) with automatic emoji icon badge mapping.
 
 - Verified query-builder rule engine dynamically generates interactive questions and matches from the new Pune dataset.
+
+---
+
+## Phase 9: Public Project Page Media Narrative & External Video Workflow
+- Implemented backend endpoint `POST /api/admin/media/url` and validator `validateMediaUrlCreation` to allow creating media assets from external URLs (YouTube, Vimeo, Cloudinary links) without requiring raw file uploads.
+- Updated Admin Media UI (`ProjectMediaPage.tsx`) with a mode toggle (Local File Upload vs External Media URL) for managing project media.
+- Refactored public Project Page (`ProjectPage.tsx`) to strictly enforce the 14-step agreed visual media narrative:
+  1. `GlobalHeader` (PublicShell)
+  2. `ProjectHero` (Static top hero - strictly excludes `HERO_CAROUSEL` media)
+  3. `ProjectSubNav` (Sticky contextual section navigation)
+  4. `ProjectOverview` (Identity narrative & highlights)
+  5. `ProjectHeroCarousel` (Top visual showcase carousel for `category === "HERO_CAROUSEL"`)
+  6. `ProjectInteriorExteriorCarousel` (Combined Interior + Exterior Visual Carousel merging `INTERIOR` and `EXTERIOR` media)
+  7. `ConfigurationSection` (Unit configurations selection)
+  8. `ConfigurationMediaSection` (Configuration floor plans & unit media)
+  9. `ProjectLocation` (Location section combining address, Google Maps link, and `LOCATION` category media image)
+  10. `TapToExploreGallery` ("Tap to Explore" lightbox modal trigger for `GALLERY` and `CONSTRUCTION` media)
+  11. `ProjectVideoSection` (Optional project video embed player with YouTube/Vimeo embed URL normalization)
+  12. `ProjectAmenities` & `ProjectDeveloper` (Amenities floating cards & Developer card)
+  13. `LeadSection` (Enquiry form)
+  14. `AboutFooter` (Site Footer)
+- Retired monolithic dumping ground component `MediaSection.tsx` and container `ProjectVisualStory.tsx` to prevent duplicate media rendering.
+- Updated `project.css` with responsive styling across 320px–1440px+ viewports, smooth transitions, focus traps, body scroll locking, and `prefers-reduced-motion` compliance.
+
+---
+
+## Phase 10: Visual Media Refinement & Contextual Enquiry UX
+- **Hero Carousel Visual Refinement (`ProjectHeroCarousel.tsx`)**: Replaced thumbnail URLs with full-resolution primary media URLs (`item.url`), framed container with wide cinematic aspect-ratio bounds (`21 / 9` desktop, `16 / 9` mobile) to eliminate empty whitespace margins, added slide preloading (`new Image().src`), document visibility pause (`visibilitychange`), and soft crossfade opacity transitions (800ms).
+- **Interior + Exterior Combined Carousel Rework (`ProjectInteriorExteriorCarousel.tsx`)**: Combined `INTERIOR` and `EXTERIOR` photography into a single sequence, single primary image framing on mobile with zero horizontal overflow, 5.5s autoplay, hover/focus/tab-hidden pause, preloading, and category badges ("Interior Space" / "Exterior & Architecture").
+- **Contextual Enquiry Modal (`ContextualEnquiryModal.tsx`)**: Created reusable, non-intrusive contextual enquiry modal supporting Project and Developer page contexts, with focus trapping, auto-focus, Escape key listener, backdrop click close, body scroll locking, and focus restoration.
+- **Mobile Sticky Enquiry Action Bar (`ProjectPage.tsx` & `project.css`)**: Added restrained sticky enquiry bar (`[ Project Name · Enquire ]`) at the bottom of narrow mobile viewports (<768px) with `env(safe-area-inset-bottom)` safe-area padding.
+- **Enquiry Flow Integration**: Reused existing `createLead` API client (`lead.ts`) without creating duplicate backend endpoints or modifying schema.
+
+---
+
+## Phase 11: Developer Page Visual Carousel Refinement & Floating Control Polish
+- **Developer Media Showcase Carousel (`DeveloperMediaCarousel.tsx`)**: Created dedicated developer showcase carousel component rendering `developer.media` with wide cinematic aspect-ratio bounds (`21 / 9` desktop, `16 / 9` mobile), eliminating arbitrary fixed heights and empty vertical whitespace margins around the visual stage.
+- **Sleek Floating Controls & Padded Indicators**: Replaced generic browser `‹ Previous` / `Next ›` buttons with sleek floating translucent circular arrow controls (`←` and `→`) and formatted slide counter indicator as padded numbers (`01 / 02`) overlaid on the image stage.
+- **Project Hero Carousel Alignment (`ProjectHeroCarousel.tsx`)**: Aligned `ProjectHeroCarousel` controls and counter overlay with the same sleek floating arrow buttons (`←` / `→`) and padded indicator overlay (`01 / 02`) for site-wide visual consistency.
+- **Floating Assistant Control Positioning (`home.css`)**: Positioned `.floating-search-control-container` on mobile viewports (`bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px))`) to prevent overlapping developer page enquiry forms, CTAs, or sticky bars.
+
+---
+
+## Phase 12: Public Project Media Boundary
+
+- Scoped the public top-level `project.media` relation to active `PROJECT`-context media. Configuration media remains available through `project.configurations[].media` and no longer enters top-level project media presentation.
+
+---
+
+## Phase 13: Project Gallery Eligibility
+
+- Updated `TapToExploreGallery` to include active project-scoped `IMAGE` media regardless of specialized project category, while excluding `VIDEO` and `DOCUMENT` records. Configuration media remains isolated through configuration relationships.
+
+---
+
+## Phase 14: Admin PWA, Lead Actions, and Web Push
+
+- Added an installable admin PWA manifest, branded icon, standalone metadata, static-shell service worker, offline live-data notice, and no API/lead PII caching.
+- Added responsive operational lead actions for WhatsApp and phone calls, developer context, readable status labels, and subtle NEW-lead attention behavior while preserving `NEW`, `IN_PROGRESS`, and `DONE` storage values.
+- Added authenticated multi-device `PushSubscription` persistence, VAPID-backed best-effort new-lead notifications, expired endpoint cleanup, and notification deep links to the existing protected lead detail route.
+- Added backend-backed notification status and real test-push verification in the Leads page; permission alone is not reported as an active subscription.
+- Corrected direct developer enquiry attribution so the validated `developerId` is persisted through the existing lead service/repository flow.
+
+---
+
+## Phase 15: Project Page Information Architecture Refinement
+
+- Reordered the public Project Page so the project showcase is followed immediately by available configurations and selected configuration media, then location, amenities, project gallery, optional video, developer attribution, and enquiry.
+- Preserved optional Key Highlights behavior: the highlights block renders only for persisted project highlights and leaves no empty section when none exist.
+- Removed the redundant `Visual Story` sub-navigation item while retaining the existing showcase carousels.
+- Confirmed configuration-owned media remains available through `project.configurations[].media`; top-level `project.media` remains limited to active `PROJECT` context.
+
+---
+
+## Phase 16: Project Key Highlights Authoring
+
+- Reused the existing `ProjectHighlight` model and public DTO flow; no schema or migration was required.
+- Added authenticated project highlight CRUD endpoints and included ordered highlights in the admin project response.
+- Added optional repeatable Key Highlights authoring to `ProjectFormPage`, including add, edit, remove, reorder, and a 12-item limit. Blank rows are ignored on save.
+- Preserved public behavior: `ProjectOverview` renders only persisted highlights and renders no empty section.
+
+---
+
+## Phase 17: Media Ownership Integrity Hardening
+
+- Revalidated persisted developer/project/configuration ownership against the requested media context before admin metadata or activation updates, preventing invalid context transitions while preserving legitimate metadata edits.
+
+---
+
+## Phase 17: Highlight Proxy Diagnosis and Lead Attention Refinement
+
+- Confirmed the highlight client correctly uses the shared `/api` path and the Vite proxy already forwards it to the configured backend port; a stale/not-running backend process can produce the observed 5173/404 rather than a missing highlight route.
+- Refined `NEW` Lead Manager rows with a contained green outer halo and reduced-motion handling, without changing `Ongoing` or `Done` cards or lead status behavior.
+- Documented the supported backend entrypoint and the legacy `backend/server.js` runtime distinction after tracing the 5173/404 failure mode.

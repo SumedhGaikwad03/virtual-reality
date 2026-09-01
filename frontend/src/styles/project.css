@@ -1234,3 +1234,844 @@
     transform: none;
   }
 }
+
+/* ==========================================================================
+   13. Combined Interior + Exterior Visual Carousel
+   ========================================================================== */
+.project-ie-carousel-section {
+  width: 100%;
+  max-width: var(--w-content);
+  margin-inline: auto;
+  padding: clamp(3rem, 6vw, 5rem) var(--gutter);
+  box-sizing: border-box;
+}
+
+.project-ie-carousel-header {
+  margin-bottom: 2rem;
+}
+
+.project-ie-carousel-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-weight: 700;
+  color: var(--c-ink);
+  margin: 0.4rem 0 0.4rem;
+  letter-spacing: -0.03em;
+  font-family: var(--font-serif);
+  line-height: 1.18;
+}
+
+.project-ie-carousel-subtitle {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--c-ink-faint);
+  margin-bottom: 0;
+  max-width: 38rem;
+}
+
+.project-ie-carousel-stage {
+  position: relative;
+  width: 100%;
+  /*
+   * Keep the crossfade stage dimensionally stable while giving the visual story
+   * a practical composition for the populated interior/exterior assets.
+   */
+  aspect-ratio: 3 / 2;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  background-color: #0b1320;
+  box-shadow: var(--shadow-lift);
+}
+
+.project-ie-carousel-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.project-ie-carousel-image,
+.project-ie-carousel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.project-ie-carousel-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  background: linear-gradient(180deg, transparent 0%, rgba(11, 19, 32, 0.85) 100%);
+  color: var(--c-white);
+  pointer-events: none;
+}
+
+.project-ie-category-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 0.22rem 0.65rem;
+  border-radius: var(--r-sm);
+  margin-bottom: 0.35rem;
+}
+
+.project-ie-caption-title {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  margin: 0;
+  font-family: var(--font-serif);
+}
+
+.project-ie-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+  gap: 1rem;
+}
+
+.project-ie-control-btn,
+.project-hero-carousel-btn {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  color: var(--c-ink);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--r-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--t-base), border-color var(--t-base);
+}
+
+.project-ie-control-btn:hover,
+.project-hero-carousel-btn:hover {
+  background-color: var(--c-white);
+  border-color: var(--c-ink);
+}
+
+.carousel-dots-container {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--c-border-mid);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color var(--t-base), transform var(--t-fast);
+}
+
+.carousel-dot.active {
+  background-color: var(--c-ink);
+  transform: scale(1.35);
+}
+
+/* ==========================================================================
+   14. Location & Location Image Card
+   ========================================================================== */
+.project-location-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .project-location-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.project-location-media-card {
+  position: relative;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--c-border);
+  background-color: var(--c-surface);
+}
+
+.project-location-media-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.location-media-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--c-white);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   15. Tap to Explore Gallery Preview & Lightbox Modal
+   ========================================================================== */
+.tap-to-explore-section {
+  width: 100%;
+  max-width: var(--w-content);
+  margin-inline: auto;
+  padding: clamp(2.5rem, 5vw, 4rem) var(--gutter);
+  box-sizing: border-box;
+}
+
+.tap-to-explore-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  min-height: clamp(240px, 35vh, 380px);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-lift);
+  border: 1px solid var(--c-border);
+  transition: transform var(--t-base), box-shadow var(--t-base);
+}
+
+.tap-to-explore-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hero);
+}
+
+.tap-to-explore-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.tap-to-explore-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tap-to-explore-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 19, 32, 0.3) 0%, rgba(11, 19, 32, 0.85) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  color: var(--c-white);
+}
+
+.tap-to-explore-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-slate);
+  margin-bottom: 0.4rem;
+}
+
+.tap-to-explore-title {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  font-family: var(--font-serif);
+}
+
+.tap-to-explore-count {
+  font-size: 0.95rem;
+  color: rgba(203, 213, 225, 0.9);
+  margin-bottom: 1.25rem;
+}
+
+.tap-to-explore-cta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 0.65rem 1.35rem;
+  background-color: var(--c-white);
+  color: var(--c-ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: var(--r-md);
+}
+
+/* Lightbox Modal */
+.gallery-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(11, 19, 32, 0.94);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+}
+
+.gallery-modal-container {
+  width: 100%;
+  max-width: 72rem;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.gallery-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--c-white);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.gallery-modal-info h2 {
+  font-size: 1.25rem;
+  margin: 0 0 0.2rem;
+  font-family: var(--font-serif);
+}
+
+.gallery-modal-counter {
+  font-size: 0.82rem;
+  color: var(--c-slate);
+}
+
+.gallery-modal-close-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: var(--c-white);
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--r-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gallery-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.gallery-modal-stage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block: 1rem;
+  overflow: hidden;
+}
+
+.gallery-modal-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.gallery-modal-image,
+.gallery-modal-video {
+  max-height: 65vh;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: var(--r-md);
+}
+
+.gallery-modal-caption {
+  color: rgba(203, 213, 225, 0.9);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+.gallery-modal-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: var(--c-white);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.gallery-modal-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.gallery-modal-nav-btn.prev-btn {
+  left: 0.5rem;
+}
+
+.gallery-modal-nav-btn.next-btn {
+  right: 0.5rem;
+}
+
+.gallery-modal-thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-top: 0.75rem;
+  justify-content: center;
+}
+
+.gallery-thumb-btn {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity var(--t-base), border-color var(--t-base);
+}
+
+.gallery-thumb-btn.active,
+.gallery-thumb-btn:hover {
+  opacity: 1;
+  border-color: var(--c-white);
+}
+
+.gallery-thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   16. Project Video Section
+   ========================================================================== */
+.project-video-section {
+  width: 100%;
+  max-width: var(--w-content);
+  margin-inline: auto;
+  padding: clamp(2.5rem, 5vw, 4.5rem) var(--gutter);
+  box-sizing: border-box;
+}
+
+.project-video-title {
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: var(--c-ink);
+  margin: 0.4rem 0 1.5rem;
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+}
+
+.project-video-embed-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  background-color: var(--c-hero-bg);
+  box-shadow: var(--shadow-lift);
+}
+
+.project-video-iframe,
+.project-video-native {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ==========================================================================
+   17. Carousel Soft Crossfade & Dominant Framing
+   ========================================================================== */
+.project-hero-carousel-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 21 / 10;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  background-color: #0b1320;
+  box-shadow: var(--shadow-lift);
+}
+
+.project-ie-carousel-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  background-color: #0b1320;
+  box-shadow: var(--shadow-lift);
+}
+
+.project-hero-carousel-item,
+.project-ie-carousel-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  pointer-events: none;
+}
+
+.project-hero-carousel-item.active-slide,
+.project-ie-carousel-slide.active-slide {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.carousel-slide-image,
+.carousel-slide-video,
+.project-ie-carousel-image,
+.project-ie-carousel-video {
+  width: 100%;
+  height: 100%;
+  /* Preserve architectural composition and embedded typography. */
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .project-hero-carousel-stage {
+    /* Keep the wide populated hero assets from taking an overly tall tablet crop. */
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 767px) {
+  .project-hero-carousel-stage {
+    /* The populated hero assets are wide landscapes; 16:9 limits side crop on mobile. */
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-ie-carousel-stage {
+    /* The populated exterior asset is closer to 3:2; keep its architecture prominent. */
+    aspect-ratio: 3 / 2;
+  }
+}
+
+/* ==========================================================================
+   18. Project Carousel Editorial Controls
+   ========================================================================== */
+.project-carousel-floating-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  width: 2.75rem;
+  height: 2.75rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--c-ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-carousel-floating-btn:hover {
+  background: var(--c-white);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+}
+
+.project-carousel-floating-btn.prev-btn {
+  left: 1rem;
+}
+
+.project-carousel-floating-btn.next-btn {
+  right: 1rem;
+}
+
+.project-carousel-stage-counter {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 2rem;
+  background: rgba(11, 19, 32, 0.75);
+  color: var(--c-white);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(6px);
+}
+
+.project-ie-carousel-dots {
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .project-carousel-floating-btn {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 0.95rem;
+  }
+
+  .project-carousel-floating-btn.prev-btn {
+    left: 0.65rem;
+  }
+
+  .project-carousel-floating-btn.next-btn {
+    right: 0.65rem;
+  }
+}
+
+/* ==========================================================================
+   18. Contextual Enquiry Modal
+   ========================================================================== */
+.contextual-enquiry-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(11, 19, 32, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+  animation: fadeIn 0.25s ease-out;
+}
+
+.contextual-enquiry-card {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  box-shadow: var(--shadow-hero);
+  color: var(--c-ink);
+  box-sizing: border-box;
+}
+
+.contextual-enquiry-close-btn {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  background: var(--c-bg-subtle);
+  border: 1px solid var(--c-border);
+  color: var(--c-ink-faint);
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--t-base), background var(--t-base);
+}
+
+.contextual-enquiry-close-btn:hover {
+  color: var(--c-ink);
+  background: var(--c-border);
+}
+
+.enquiry-modal-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink-faint);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.enquiry-modal-title {
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  color: var(--c-ink);
+  margin: 0 0 0.35rem 0;
+  font-family: var(--font-serif);
+  line-height: 1.2;
+}
+
+.enquiry-modal-subtitle {
+  font-size: 0.88rem;
+  color: var(--c-ink-faint);
+  line-height: 1.55;
+  margin-bottom: 1.35rem;
+}
+
+.contextual-enquiry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.enquiry-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+
+.enquiry-form-input,
+.enquiry-form-textarea {
+  width: 100%;
+  padding: 0.75rem 0.95rem;
+  background-color: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  color: var(--c-ink);
+  font-size: max(0.9rem, 16px);
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color var(--t-base);
+}
+
+.enquiry-form-input:focus,
+.enquiry-form-textarea:focus {
+  outline: none;
+  border-color: var(--c-ink);
+}
+
+.enquiry-modal-submit-btn {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background-color: var(--c-ink);
+  color: var(--c-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: opacity var(--t-base);
+  margin-top: 0.35rem;
+}
+
+.enquiry-modal-submit-btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.enquiry-modal-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.enquiry-modal-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #dc2626;
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--r-md);
+  font-size: 0.85rem;
+}
+
+.enquiry-success-container {
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+.enquiry-success-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #16a34a;
+  background: rgba(34, 197, 94, 0.12);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--r-full);
+  margin-bottom: 0.75rem;
+}
+
+/* ==========================================================================
+   19. Mobile Sticky Enquiry Action Bar
+   ========================================================================== */
+.mobile-sticky-enquiry-bar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* Reserve the fixed enquiry bar's footprint after the final page content. */
+  .project-page-container {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Keep the assistant above the sticky enquiry bar with a safe-area-aware gap. */
+  .project-page-container .floating-search-control-container {
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-sticky-enquiry-bar {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 990;
+    background-color: rgba(11, 19, 32, 0.92);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.75rem var(--gutter);
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .mobile-sticky-enquiry-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: var(--w-content);
+    margin-inline: auto;
+  }
+
+  .mobile-sticky-project-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--c-white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--font-serif);
+  }
+
+  .mobile-sticky-enquiry-btn {
+    background-color: var(--c-white);
+    color: var(--c-ink);
+    border: none;
+    padding: 0.55rem 1.15rem;
+    border-radius: var(--r-md);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}

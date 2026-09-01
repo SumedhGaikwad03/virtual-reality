@@ -7,7 +7,7 @@
  *
  * RESPONSIBILITY:
  * Provides quick anchor navigation buttons to jump directly between Overview, Configurations,
- * Visual Story, Amenities, Location, Developer, and Enquiry sections.
+ * Amenities, Location, Developer, and Enquiry sections.
  */
 
 type ProjectSubNavProps = {
@@ -43,14 +43,6 @@ export function ProjectSubNav({ hasConfigurations, hasAmenities }: ProjectSubNav
             Configurations
           </button>
         )}
-
-        <button
-          type="button"
-          onClick={() => scrollToSection("project-visual-story-heading")}
-          className="sub-nav-item"
-        >
-          Visual Story
-        </button>
 
         {hasAmenities && (
           <button

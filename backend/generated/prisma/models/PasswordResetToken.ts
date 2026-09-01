@@ -381,10 +381,6 @@ export type PasswordResetTokenUncheckedUpdateManyWithoutAdminNestedInput = {
   deleteMany?: Prisma.PasswordResetTokenScalarWhereInput | Prisma.PasswordResetTokenScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type PasswordResetTokenCreateWithoutAdminInput = {
   id?: string
   tokenHash: string

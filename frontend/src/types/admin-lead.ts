@@ -5,6 +5,7 @@ export type AdminLead = {
   name: string;
   phone: string;
   email: string | null;
+  developer: { id: string; name: string; slug: string } | null;
   project: { id: string; name: string; slug: string } | null;
   configuration: { id: string; name: string } | null;
   message: string | null;

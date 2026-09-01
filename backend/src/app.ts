@@ -19,6 +19,7 @@ import adminDeveloperRoutes from "./routes/admin/developer.routes.js";
 import adminProjectRoutes from "./routes/admin/project.routes.js";
 import adminMediaRoutes from "./routes/admin/media.routes.js";
 import adminLeadRoutes from "./routes/admin/lead.routes.js";
+import adminPushSubscriptionRoutes from "./routes/admin/push-subscription.routes.js";
 import adminImportRoutes from "./routes/admin/import.routes.js";
 import {
   configurationRouter,
@@ -28,6 +29,7 @@ import developerRoutes from "./routes/public/developer.routes.js";
 import projectRoutes from "./routes/public/project.routes.js";
 import searchRoutes from "./routes/public/search.routes.js";
 import { projectAmenityRouter } from "./routes/admin/amenity.routes.js";
+import { projectHighlightRouter } from "./routes/admin/highlight.routes.js";
 import siteRoutes from "./routes/public/site.routes.js";
 import leadRoutes from "./routes/public/lead.routes.js";
 
@@ -114,10 +116,12 @@ app.use("/api/admin/auth", authRoutes);
 app.use("/api/admin/developers", adminDeveloperRoutes);
 app.use("/api/admin/projects/:projectId/configurations", projectConfigurationRouter);
 app.use("/api/admin/projects/:projectId/amenities", projectAmenityRouter);
+app.use("/api/admin/projects/:projectId/highlights", projectHighlightRouter);
 app.use("/api/admin/projects", adminProjectRoutes);
 app.use("/api/admin/configurations", configurationRouter);
 app.use("/api/admin/media", adminMediaRoutes);
 app.use("/api/admin/leads", adminLeadRoutes);
+app.use("/api/admin/push-subscriptions", adminPushSubscriptionRoutes);
 app.use("/api/admin/import", adminImportRoutes);
 
 app.use((error: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -371,6 +375,13 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
   if (error?.code === "INVALID_LEAD_REQUEST") {
     res.status(400).json({
       error: { code: "INVALID_LEAD_REQUEST", message: error.message },
+    });
+    return;
+  }
+
+  if (error?.code === "PUSH_SUBSCRIPTION_OWNERSHIP_CONFLICT") {
+    res.status(409).json({
+      error: { code: "PUSH_SUBSCRIPTION_OWNERSHIP_CONFLICT", message: "Push subscription is already registered" },
     });
     return;
   }

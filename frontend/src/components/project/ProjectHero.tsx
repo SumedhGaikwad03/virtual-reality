@@ -17,6 +17,7 @@ import type { Project } from "../../types/project";
 type ProjectHeroProps = {
   project: Project;
   contactRef: RefObject<HTMLFormElement | null>;
+  onOpenEnquiry?: (triggerEl?: HTMLElement | null) => void;
 };
 
 function formatStatus(status: string) {
@@ -36,7 +37,7 @@ function formatStatus(status: string) {
   }
 }
 
-export function ProjectHero({ project, contactRef }: ProjectHeroProps) {
+export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroProps) {
   // Deterministic hero image selection priority:
   // 1. IMAGE + HERO category + isPrimary === true
   // 2. IMAGE + HERO category
@@ -53,18 +54,27 @@ export function ProjectHero({ project, contactRef }: ProjectHeroProps) {
       (item) => item.type === "IMAGE" && item.category === "HERO",
     ) ??
     project.media.find(
-      (item) => item.type === "IMAGE" && item.isPrimary,
+      (item) =>
+        item.type === "IMAGE" &&
+        item.category !== "HERO_CAROUSEL" &&
+        item.isPrimary,
     ) ??
-    project.media.find((item) => item.type === "IMAGE");
+    project.media.find(
+      (item) => item.type === "IMAGE" && item.category !== "HERO_CAROUSEL",
+    );
 
   const heroImageUrl = heroMedia?.url || null;
 
-  function handleContactClick() {
-    contactRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-    contactRef.current?.querySelector<HTMLInputElement>("input")?.focus();
+  function handleContactClick(e: React.MouseEvent<HTMLButtonElement>) {
+    if (onOpenEnquiry) {
+      onOpenEnquiry(e.currentTarget);
+    } else {
+      contactRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      contactRef.current?.querySelector<HTMLInputElement>("input")?.focus();
+    }
   }
 
   return (

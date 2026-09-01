@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
 import { getLeads } from "../../api/admin-leads";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { LeadActions } from "../../components/admin/LeadActions";
 import type { AdminLead } from "../../types/admin-lead";
 
 function errorMessage(error: unknown) {
@@ -14,6 +15,10 @@ function errorMessage(error: unknown) {
 function formatDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+}
+
+function statusLabel(status: AdminLead["status"]) {
+  return status === "IN_PROGRESS" ? "Ongoing" : status;
 }
 
 export function LeadsPage() {
@@ -54,13 +59,14 @@ export function LeadsPage() {
       {!isLoading && !error && leads.length > 0 && (
         <div className="admin-card admin-lead-list">
           {leads.map((lead) => (
-            <article className="admin-lead-row" key={lead.id}>
+            <article className={`admin-lead-row ${lead.status === "NEW" ? "is-new" : ""}`} key={lead.id}>
               <div><h2>{lead.name}</h2><p>{lead.phone}{lead.email ? ` · ${lead.email}` : ""}</p></div>
+              <p>{lead.developer?.name ?? "—"}</p>
               <p>{lead.project?.name ?? "General enquiry"}</p>
               <p>{lead.configuration?.name ?? "—"}</p>
-              <p>{lead.status}</p>
+              <p><span className={`admin-lead-status status-${lead.status.toLowerCase()}`}>{statusLabel(lead.status)}</span></p>
               <p>{formatDate(lead.createdAt)}</p>
-              <Link to={`/admin/leads/${lead.id}`}>View</Link>
+              <div className="admin-lead-row-actions"><Link to={`/admin/leads/${lead.id}`}>View</Link><LeadActions lead={lead} /></div>
             </article>
           ))}
         </div>

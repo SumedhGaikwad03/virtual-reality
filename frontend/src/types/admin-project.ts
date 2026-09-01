@@ -24,6 +24,12 @@ export type ProjectAmenity = {
   sortOrder: number;
 };
 
+export type ProjectHighlight = {
+  id: string;
+  text: string;
+  sortOrder: number;
+};
+
 export type AdminProject = {
   id: string;
   developerId: string;
@@ -39,6 +45,7 @@ export type AdminProject = {
   featured: boolean;
   publishStatus: PublishStatus;
   amenities?: ProjectAmenity[];
+  highlights?: ProjectHighlight[];
   createdAt: string;
   updatedAt: string;
 };

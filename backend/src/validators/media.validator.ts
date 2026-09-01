@@ -306,6 +306,69 @@ export function validateMediaUpload(
   next();
 }
 
+export function validateMediaUrlCreation(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
+  const body = req.body as MediaUploadBody & { url?: unknown };
+
+  if (typeof body.url !== "string" || body.url.trim() === "") {
+    next(
+      mediaValidationError(
+        "INVALID_MEDIA_REQUEST",
+        "Media URL is required",
+      ),
+    );
+    return;
+  }
+
+  if (
+    typeof body.context !== "string" ||
+    !mediaContexts.has(body.context)
+  ) {
+    next(
+      mediaValidationError(
+        "INVALID_MEDIA_REQUEST",
+        "Invalid media context",
+      ),
+    );
+    return;
+  }
+
+  if (!validateContextOwnership(body)) {
+    next(
+      mediaValidationError(
+        "INVALID_MEDIA_OWNER",
+        "Media ownership does not match its context",
+      ),
+    );
+    return;
+  }
+
+  if (
+    typeof body.type !== "string" ||
+    !mediaTypes.has(body.type) ||
+    typeof body.category !== "string" ||
+    !mediaCategories.has(body.category) ||
+    (body.title !== undefined && typeof body.title !== "string") ||
+    (body.altText !== undefined && typeof body.altText !== "string") ||
+    (body.sortOrder !== undefined &&
+      !isNonNegativeInteger(Number(body.sortOrder))) ||
+    (body.isPrimary !== undefined && !parseBoolean(body.isPrimary))
+  ) {
+    next(
+      mediaValidationError(
+        "INVALID_MEDIA_REQUEST",
+        "Invalid media metadata",
+      ),
+    );
+    return;
+  }
+
+  next();
+}
+
 export function validateMediaId(
   req: Request,
   _res: Response,

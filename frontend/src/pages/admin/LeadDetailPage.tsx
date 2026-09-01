@@ -4,9 +4,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
 import { getLead, updateLead } from "../../api/admin-leads";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { LeadActions } from "../../components/admin/LeadActions";
 import type { AdminLead, LeadStatus } from "../../types/admin-lead";
 
-const statuses: LeadStatus[] = ["NEW", "IN_PROGRESS", "DONE"];
+const statuses: Array<{ value: LeadStatus; label: string }> = [
+  { value: "NEW", label: "New" },
+  { value: "IN_PROGRESS", label: "Ongoing" },
+  { value: "DONE", label: "Done" },
+];
 
 function errorMessage(error: unknown, context: "load" | "update") {
   if (!(error instanceof AdminApiError)) return "Something went wrong. Please try again.";
@@ -83,12 +88,14 @@ export function LeadDetailPage() {
     <AdminLayout>
       <p><Link to="/admin/leads">← Leads</Link></p>
       <h1>{lead.name}</h1>
+      <LeadActions lead={lead} />
       {error && <p role="alert">{error}</p>}
       {success && <p role="status">Lead updated successfully.</p>}
       <section className="admin-card admin-lead-details">
         <h2>Contact</h2>
         <p><strong>Phone:</strong> {lead.phone}</p>
         <p><strong>Email:</strong> {lead.email ?? "—"}</p>
+        <p><strong>Developer:</strong> {lead.developer?.name ?? "—"}</p>
         <p><strong>Project:</strong> {lead.project?.name ?? "General enquiry"}</p>
         <p><strong>Configuration:</strong> {lead.configuration?.name ?? "—"}</p>
         <p><strong>Created:</strong> {formatDate(lead.createdAt)}</p>
@@ -98,7 +105,7 @@ export function LeadDetailPage() {
       <form className="admin-lead-update-form" onSubmit={handleSubmit}>
         <h2>Lead management</h2>
         <label>Status<select value={status} onChange={(event) => setStatus(event.target.value as LeadStatus)}>
-          {statuses.map((value) => <option key={value} value={value}>{value}</option>)}
+          {statuses.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
         </select></label>
         <label>Internal notes<textarea value={notes} onChange={(event) => setNotes(event.target.value)} /></label>
         <button type="submit" disabled={isSubmitting}>{isSubmitting ? "Saving..." : "Save changes"}</button>
