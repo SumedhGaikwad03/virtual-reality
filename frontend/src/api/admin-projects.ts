@@ -40,3 +40,47 @@ export function updateProject(id: string, payload: Partial<AdminProjectInput>) {
     body: JSON.stringify(payload),
   });
 }
+
+export function getProjectAmenities(projectId: string) {
+  return adminRequest<{ data: import("../types/admin-project").ProjectAmenity[] }>(
+    `/admin/projects/${projectId}/amenities`,
+  );
+}
+
+export function createProjectAmenity(
+  projectId: string,
+  payload: { name: string; sortOrder?: number },
+) {
+  return adminRequest<{ data: import("../types/admin-project").ProjectAmenity }>(
+    `/admin/projects/${projectId}/amenities`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    },
+  );
+}
+
+export function updateProjectAmenity(
+  projectId: string,
+  amenityId: string,
+  payload: { name?: string; sortOrder?: number },
+) {
+  return adminRequest<{ data: import("../types/admin-project").ProjectAmenity }>(
+    `/admin/projects/${projectId}/amenities/${amenityId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    },
+  );
+}
+
+export function deleteProjectAmenity(projectId: string, amenityId: string) {
+  return adminRequest<{ success: boolean }>(
+    `/admin/projects/${projectId}/amenities/${amenityId}`,
+    {
+      method: "DELETE",
+    },
+  );
+}

@@ -50,3 +50,23 @@
 - Created `reset-dev-data.ts` administrative script for atomic database reset.
 - Verified seed script (`seed.ts`) only seeds admin credentials from environment variables without regenerating demo data.
 - Verified clean empty-state rendering across public pages (`/`, `/search`, `/:developerSlug`, `/:developerSlug/:locationSlug/:projectSlug`) and admin CRUD panels.
+
+---
+
+## Phase 7: Realistic Text-Only Development Dataset Seeding
+- Created `seed-dev-dataset.ts` populating 3 developers, 6 projects (2 per developer), 30 configurations (5 per project), 21 highlights, and 32 amenities across Pune localities (Hinjewadi, Pimpri, Kharadi, Magarpatta).
+- Provided varied BHK inventory combinations (`2 BHK`, `2 BHK Plus`, `3 BHK`, `3 BHK Plus`, `4 BHK`, `4 BHK Plus`, `5 BHK`) with realistic carpet areas (690–3400 sq ft) and prices (₹62 Lakhs–₹5.6 Crores).
+- Zero image/media records created (`Media` table count = 0).
+- Preserved existing `Admin` authentication account (`admin@example.com`).
+
+---
+
+## Phase 8: Project Amenities Admin Management Workflow
+- Implemented RESTful sub-resource admin endpoints for project amenities: `GET /api/admin/projects/:projectId/amenities`, `POST /api/admin/projects/:projectId/amenities`, `PATCH /api/admin/projects/:projectId/amenities/:amenityId`, and `DELETE /api/admin/projects/:projectId/amenities/:amenityId`.
+- Extended `projectRepository` and `projectService` to query, create, update, and delete amenities with duplicate name validation and sort order tracking.
+- Included `amenities` in `adminProjectSelect` for administrative inspection when loading project details in admin UI.
+- Updated `ProjectFormPage.tsx` with a dedicated, structured "Project Amenities" CRUD management section supporting inline viewing, adding, editing, and deleting amenities.
+- Updated `admin/projects.css` with responsive layout rules for desktop and mobile amenity management rows.
+- Verified that newly created/updated admin amenities render seamlessly on the public Project page (`ProjectAmenities.tsx`) with automatic emoji icon badge mapping.
+
+- Verified query-builder rule engine dynamically generates interactive questions and matches from the new Pune dataset.

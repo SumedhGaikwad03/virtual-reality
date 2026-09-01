@@ -30,7 +30,15 @@ The **Virtual Reality Real-Estate Platform** is a production-ready, modular web 
 - `frontend/src/context/AssistantContext.tsx`: Global search assistant overlay state & `useSearchChat`.
 - `frontend/src/context/HeaderContext.tsx`: `developerName` context provider.
 - `frontend/src/services/query-builder.ts`: Sequential rule engine logic.
-- `backend/src/repositories/project.repository.ts`: Multi-entity publication queries.
+- `backend/src/repositories/project.repository.ts`: Multi-entity publication queries and `ProjectAmenity` operations.
+- `backend/src/routes/admin/amenity.routes.ts`: Admin RESTful project amenities management endpoints (`/api/admin/projects/:projectId/amenities`).
+- `frontend/src/pages/admin/ProjectFormPage.tsx`: Admin project form & structured Project Amenities CRUD section.
+
+---
+
+## Administrative CRUD Workflows
+- **Project Amenities Management**: Admin UI enables viewing, adding, editing, and deleting project amenities (`ProjectFormPage.tsx` $\rightarrow$ `admin-projects.ts` $\rightarrow$ `amenity.routes.ts` $\rightarrow$ `project.service.ts` $\rightarrow$ `project.repository.ts` $\rightarrow$ Prisma `ProjectAmenity`).
+- **Public Integration**: Amenities created in admin UI instantly render on public project pages (`ProjectAmenities.tsx`) with automatic emoji icon badge mapping.
 
 ---
 

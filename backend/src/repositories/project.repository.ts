@@ -16,6 +16,7 @@ import type {
   ProjectStatus,
   PublishStatus,
 } from "../../generated/prisma/enums.js";
+import type { Prisma } from "../../generated/prisma/client.js";
 
 export class ProjectRepository {
   create(data: {
@@ -40,7 +41,6 @@ export class ProjectRepository {
   findMany() {
     return prisma.project.findMany({
       orderBy: [{ name: "asc" }, { id: "asc" }],
-      // Bounded administrative project limit: Returns up to 100 projects to protect memory and response payload size
       take: 100,
       select: adminProjectSelect,
     });
@@ -116,8 +116,8 @@ export class ProjectRepository {
 
         highlights: {
           orderBy: [
-            { sortOrder: "asc" },
-            { id: "asc" },
+            { sortOrder: "asc" as const },
+            { id: "asc" as const },
           ],
           select: {
             id: true,
@@ -128,8 +128,8 @@ export class ProjectRepository {
 
         amenities: {
           orderBy: [
-            { sortOrder: "asc" },
-            { id: "asc" },
+            { sortOrder: "asc" as const },
+            { id: "asc" as const },
           ],
           select: {
             id: true,
@@ -143,9 +143,9 @@ export class ProjectRepository {
             isActive: true,
           },
           orderBy: [
-            { sortOrder: "asc" },
-            { createdAt: "asc" },
-            { id: "asc" },
+            { sortOrder: "asc" as const },
+            { createdAt: "asc" as const },
+            { id: "asc" as const },
           ],
           select: {
             id: true,
@@ -161,8 +161,8 @@ export class ProjectRepository {
 
         configurations: {
           orderBy: [
-            { name: "asc" },
-            { id: "asc" },
+            { name: "asc" as const },
+            { id: "asc" as const },
           ],
           select: {
             id: true,
@@ -179,9 +179,9 @@ export class ProjectRepository {
                 isActive: true,
               },
               orderBy: [
-                { sortOrder: "asc" },
-                { createdAt: "asc" },
-                { id: "asc" },
+                { sortOrder: "asc" as const },
+                { createdAt: "asc" as const },
+                { id: "asc" as const },
               ],
               select: {
                 id: true,
@@ -197,6 +197,62 @@ export class ProjectRepository {
           },
         },
       },
+    });
+  }
+
+  findAmenities(projectId: string) {
+    return prisma.projectAmenity.findMany({
+      where: { projectId },
+      orderBy: [{ sortOrder: "asc" as const }, { id: "asc" as const }],
+      select: {
+        id: true,
+        name: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  findAmenityById(id: string) {
+    return prisma.projectAmenity.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  createAmenity(data: { projectId: string; name: string; sortOrder?: number }) {
+    return prisma.projectAmenity.create({
+      data,
+      select: {
+        id: true,
+        name: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  updateAmenity(id: string, data: { name?: string; sortOrder?: number }) {
+    return prisma.projectAmenity.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        name: true,
+        sortOrder: true,
+        projectId: true,
+      },
+    });
+  }
+
+  deleteAmenity(id: string) {
+    return prisma.projectAmenity.delete({
+      where: { id },
     });
   }
 }
@@ -223,8 +279,21 @@ const adminProjectSelect = {
   status: true,
   featured: true,
   publishStatus: true,
+
+  amenities: {
+    orderBy: [
+      { sortOrder: "asc" as const },
+      { id: "asc" as const },
+    ],
+    select: {
+      id: true,
+      name: true,
+      sortOrder: true,
+    },
+  },
+
   createdAt: true,
   updatedAt: true,
-} as const;
+} satisfies Prisma.ProjectSelect;
 
 export const projectRepository = new ProjectRepository();

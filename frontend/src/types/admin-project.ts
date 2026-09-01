@@ -18,6 +18,12 @@ export type ProjectStatus =
   | "COMPLETED"
   | "SOLD_OUT";
 
+export type ProjectAmenity = {
+  id: string;
+  name: string;
+  sortOrder: number;
+};
+
 export type AdminProject = {
   id: string;
   developerId: string;
@@ -32,6 +38,7 @@ export type AdminProject = {
   status: ProjectStatus;
   featured: boolean;
   publishStatus: PublishStatus;
+  amenities?: ProjectAmenity[];
   createdAt: string;
   updatedAt: string;
 };

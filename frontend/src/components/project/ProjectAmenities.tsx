@@ -6,8 +6,9 @@
  * Public Project Discovery Flow: ProjectPage -> ProjectAmenities.
  *
  * RESPONSIBILITY:
- * Displays every available project amenity in a clean editorial grid (3-4 cols desktop, 2 cols mobile)
- * with consistent icon badge, typography, sortOrder preservation, and graceful zero-amenities omission.
+ * Displays every available project amenity as a clean, floating editorial card
+ * with refined typography, sortOrder preservation, comfortable whitespace,
+ * and graceful zero-amenities omission.
  */
 
 import type { ProjectAmenity } from "../../types/project";
@@ -15,42 +16,6 @@ import type { ProjectAmenity } from "../../types/project";
 type ProjectAmenitiesProps = {
   amenities: ProjectAmenity[];
 };
-
-// Helper function to pick a clean icon symbol based on amenity name keywords
-function getAmenityIcon(name: string) {
-  const lower = name.toLowerCase();
-  if (lower.includes("pool") || lower.includes("swim")) {
-    return "🏊";
-  }
-  if (lower.includes("gym") || lower.includes("fitness") || lower.includes("health")) {
-    return "🏋️";
-  }
-  if (lower.includes("park") || lower.includes("garden") || lower.includes("landscape") || lower.includes("green")) {
-    return "🌿";
-  }
-  if (lower.includes("security") || lower.includes("cctv") || lower.includes("gate")) {
-    return "🛡️";
-  }
-  if (lower.includes("park") || lower.includes("car") || lower.includes("garage")) {
-    return "🚗";
-  }
-  if (lower.includes("play") || lower.includes("kid") || lower.includes("child")) {
-    return "🛝";
-  }
-  if (lower.includes("club") || lower.includes("lounge") || lower.includes("hall")) {
-    return "🏛️";
-  }
-  if (lower.includes("court") || lower.includes("sport") || lower.includes("tennis") || lower.includes("badminton")) {
-    return "🎾";
-  }
-  if (lower.includes("power") || lower.includes("backup") || lower.includes("generator")) {
-    return "⚡";
-  }
-  if (lower.includes("lift") || lower.includes("elevator")) {
-    return "🛗";
-  }
-  return "✦";
-}
 
 export function ProjectAmenities({ amenities }: ProjectAmenitiesProps) {
   if (!amenities || amenities.length === 0) {
@@ -73,9 +38,6 @@ export function ProjectAmenities({ amenities }: ProjectAmenitiesProps) {
         <div className="project-amenities-grid">
           {sortedAmenities.map((amenity) => (
             <div key={amenity.id} className="project-amenity-card">
-              <span className="amenity-icon-badge" aria-hidden="true">
-                {getAmenityIcon(amenity.name)}
-              </span>
               <span className="amenity-name">{amenity.name}</span>
             </div>
           ))}

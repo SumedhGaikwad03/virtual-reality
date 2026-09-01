@@ -27,6 +27,7 @@ import {
 import developerRoutes from "./routes/public/developer.routes.js";
 import projectRoutes from "./routes/public/project.routes.js";
 import searchRoutes from "./routes/public/search.routes.js";
+import { projectAmenityRouter } from "./routes/admin/amenity.routes.js";
 import siteRoutes from "./routes/public/site.routes.js";
 import leadRoutes from "./routes/public/lead.routes.js";
 
@@ -111,8 +112,9 @@ app.use("/api/site", siteRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/admin/auth", authRoutes);
 app.use("/api/admin/developers", adminDeveloperRoutes);
-app.use("/api/admin/projects", adminProjectRoutes);
 app.use("/api/admin/projects/:projectId/configurations", projectConfigurationRouter);
+app.use("/api/admin/projects/:projectId/amenities", projectAmenityRouter);
+app.use("/api/admin/projects", adminProjectRoutes);
 app.use("/api/admin/configurations", configurationRouter);
 app.use("/api/admin/media", adminMediaRoutes);
 app.use("/api/admin/leads", adminLeadRoutes);
@@ -234,6 +236,16 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
       error: {
         code: "INVALID_PROJECT_REQUEST",
         message: error.message,
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "AMENITY_NOT_FOUND") {
+    res.status(404).json({
+      error: {
+        code: "AMENITY_NOT_FOUND",
+        message: "Amenity not found",
       },
     });
     return;

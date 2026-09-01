@@ -38,8 +38,10 @@ export class AdminProjectError extends Error {
     public readonly code:
       | "PROJECT_NOT_FOUND"
       | "DEVELOPER_NOT_FOUND"
-      | "PROJECT_SLUG_EXISTS",
-    public readonly statusCode: 404 | 409,
+      | "PROJECT_SLUG_EXISTS"
+      | "AMENITY_NOT_FOUND"
+      | "INVALID_AMENITY_REQUEST",
+    public readonly statusCode: 400 | 404 | 409,
     message: string,
   ) {
     super(message);
@@ -74,6 +76,11 @@ function toAdminProject(project: {
   status: ProjectStatus;
   featured: boolean;
   publishStatus: PublishStatus;
+  amenities?: {
+    id: string;
+    name: string;
+    sortOrder: number;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }) {
@@ -91,6 +98,7 @@ function toAdminProject(project: {
     status: project.status,
     featured: project.featured,
     publishStatus: project.publishStatus,
+    amenities: project.amenities ?? [],
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
   };
@@ -296,4 +304,99 @@ export async function getPublicProject(
       media: project.media.map(toPublicMedia),
     },
   };
+}
+
+export type CreateAmenityInput = {
+  name: string;
+  sortOrder?: number;
+};
+
+export type UpdateAmenityInput = Partial<CreateAmenityInput>;
+
+export async function listProjectAmenities(projectId: string) {
+  const project = await projectRepository.findById(projectId);
+  if (!project) {
+    throw new AdminProjectError("PROJECT_NOT_FOUND", 404, "Project not found");
+  }
+  const amenities = await projectRepository.findAmenities(projectId);
+  return { data: amenities };
+}
+
+export async function createProjectAmenity(
+  projectId: string,
+  input: CreateAmenityInput,
+) {
+  const project = await projectRepository.findById(projectId);
+  if (!project) {
+    throw new AdminProjectError("PROJECT_NOT_FOUND", 404, "Project not found");
+  }
+
+  const name = input.name.trim();
+  if (!name) {
+    throw new AdminProjectError("INVALID_AMENITY_REQUEST", 400, "Amenity name is required");
+  }
+
+  const existingAmenities = await projectRepository.findAmenities(projectId);
+  if (existingAmenities.some((a) => a.name.toLowerCase() === name.toLowerCase())) {
+    throw new AdminProjectError("INVALID_AMENITY_REQUEST", 400, "An amenity with this name already exists in this project");
+  }
+
+  const amenity = await projectRepository.createAmenity({
+    projectId,
+    name,
+    sortOrder: input.sortOrder ?? existingAmenities.length,
+  });
+
+  return { data: amenity };
+}
+
+export async function updateProjectAmenity(
+  projectId: string,
+  amenityId: string,
+  input: UpdateAmenityInput,
+) {
+  const amenity = await projectRepository.findAmenityById(amenityId);
+  if (!amenity || amenity.projectId !== projectId) {
+    throw new AdminProjectError("AMENITY_NOT_FOUND", 404, "Amenity not found for this project");
+  }
+
+  const dataToUpdate: { name?: string; sortOrder?: number } = {};
+
+  if (input.name !== undefined) {
+    const name = input.name.trim();
+    if (!name) {
+      throw new AdminProjectError("INVALID_AMENITY_REQUEST", 400, "Amenity name cannot be empty");
+    }
+
+    const existingAmenities = await projectRepository.findAmenities(projectId);
+    if (
+      existingAmenities.some(
+        (a) => a.id !== amenityId && a.name.toLowerCase() === name.toLowerCase(),
+      )
+    ) {
+      throw new AdminProjectError("INVALID_AMENITY_REQUEST", 400, "An amenity with this name already exists in this project");
+    }
+
+    dataToUpdate.name = name;
+  }
+
+  if (input.sortOrder !== undefined) {
+    dataToUpdate.sortOrder = input.sortOrder;
+  }
+
+  const updated = await projectRepository.updateAmenity(amenityId, dataToUpdate);
+  return { data: updated };
+}
+
+export async function deleteProjectAmenity(
+  projectId: string,
+  amenityId: string,
+) {
+  const amenity = await projectRepository.findAmenityById(amenityId);
+  if (!amenity || amenity.projectId !== projectId) {
+    throw new AdminProjectError("AMENITY_NOT_FOUND", 404, "Amenity not found for this project");
+  }
+
+  await projectRepository.deleteAmenity(amenityId);
+  return { success: true };
 }

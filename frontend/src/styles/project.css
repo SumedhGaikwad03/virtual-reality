@@ -682,8 +682,8 @@
 
 .project-amenities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -692,42 +692,29 @@
 .project-amenity-card {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.95rem 1.1rem;
+  padding: 1.25rem 1.5rem;
   background-color: var(--c-surface);
   border: 1px solid var(--c-border);
   border-radius: var(--r-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
   min-width: 0;
-  transition: border-color var(--t-base), transform var(--t-base), background-color var(--t-base);
   box-sizing: border-box;
+  transition: border-color var(--t-base), transform var(--t-base), box-shadow var(--t-base), background-color var(--t-base);
 }
 
 .project-amenity-card:hover {
   border-color: var(--c-border-mid);
-  background-color: #f1f5f9;
-  transform: translateY(-1px);
-}
-
-.amenity-icon-badge {
-  display: inline-grid;
-  place-items: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  min-width: 2.1rem;
-  border-radius: var(--r-md);
   background-color: var(--c-white);
-  color: var(--c-ink);
-  font-size: 1rem;
-  border: 1px solid var(--c-border);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  flex-shrink: 0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .amenity-name {
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--c-ink);
-  line-height: 1.4;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
   word-break: break-word;
   overflow-wrap: anywhere;
   min-width: 0;
@@ -1124,10 +1111,14 @@
     grid-template-columns: 1fr;
   }
 
-  /* Amenities: 2 cols on most mobile */
+  /* Amenities: 2 cols on mobile with comfortable padding */
   .project-amenities-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 0.85rem;
+  }
+
+  .project-amenity-card {
+    padding: 1rem 1.15rem;
   }
 
   /* Developer card: stack vertically */
@@ -1210,7 +1201,7 @@
 /* ── 1024px+: Desktop ── */
 @media (min-width: 1024px) {
   .project-amenities-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .project-highlights-grid {
@@ -1221,7 +1212,7 @@
 /* ── 1280px+: Wide desktop ── */
 @media (min-width: 1280px) {
   .project-amenities-grid {
-    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

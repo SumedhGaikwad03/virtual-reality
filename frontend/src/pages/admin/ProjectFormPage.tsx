@@ -1,6 +1,6 @@
 /*
  * PURPOSE:
- * Admin project create and edit form page.
+ * Admin project create, edit, and amenities management form page.
  *
  * FLOW:
  * Admin Project Management Flow
@@ -8,7 +8,7 @@
  * RESPONSIBILITY:
  * Manages the form lifecycle for creating a new project or editing an existing project,
  * including developer selection, location fields, status enum, publication status controls,
- * and slug conflict error handling.
+ * slug conflict error handling, and structured project amenities CRUD management (View, Add, Edit, Delete).
  */
 
 import type { FormEvent } from "react";
@@ -16,10 +16,22 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
 import { getDevelopers } from "../../api/admin-developers";
-import { createProject, getProject, updateProject } from "../../api/admin-projects";
+import {
+  createProject,
+  createProjectAmenity,
+  deleteProjectAmenity,
+  getProject,
+  updateProject,
+  updateProjectAmenity,
+} from "../../api/admin-projects";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import type { AdminDeveloper, PublishStatus } from "../../types/admin-developer";
-import type { AdminProject, AdminProjectInput, ProjectStatus } from "../../types/admin-project";
+import type {
+  AdminProject,
+  AdminProjectInput,
+  ProjectAmenity,
+  ProjectStatus,
+} from "../../types/admin-project";
 
 type FormState = {
   developerId: string;
@@ -116,6 +128,15 @@ export function ProjectFormPage() {
   const [error, setError] = useState<string | null>(null);
   const [developerError, setDeveloperError] = useState<string | null>(null);
 
+  // Amenity Management State
+  const [amenities, setAmenities] = useState<ProjectAmenity[]>([]);
+  const [isAddingAmenity, setIsAddingAmenity] = useState(false);
+  const [newAmenityName, setNewAmenityName] = useState("");
+  const [editingAmenityId, setEditingAmenityId] = useState<string | null>(null);
+  const [editingAmenityName, setEditingAmenityName] = useState("");
+  const [isAmenitySubmitting, setIsAmenitySubmitting] = useState(false);
+  const [amenityError, setAmenityError] = useState<string | null>(null);
+
   useEffect(() => {
     let active = true;
     getDevelopers()
@@ -138,7 +159,10 @@ export function ProjectFormPage() {
     let active = true;
     getProject(id)
       .then((response) => {
-        if (active) setForm(toForm(response.data));
+        if (active) {
+          setForm(toForm(response.data));
+          setAmenities(response.data.amenities ?? []);
+        }
       })
       .catch((requestError: unknown) => {
         if (active) setError(errorMessage(requestError, "load"));
@@ -182,6 +206,72 @@ export function ProjectFormPage() {
     }
   }
 
+  async function handleAddAmenity(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!id) return;
+    const name = newAmenityName.trim();
+    if (!name) {
+      setAmenityError("Amenity name is required.");
+      return;
+    }
+    setAmenityError(null);
+    setIsAmenitySubmitting(true);
+    try {
+      const response = await createProjectAmenity(id, { name });
+      setAmenities((prev) => [...prev, response.data].sort((a, b) => a.sortOrder - b.sortOrder));
+      setNewAmenityName("");
+      setIsAddingAmenity(false);
+    } catch (requestError) {
+      if (requestError instanceof AdminApiError && requestError.status === 400) {
+        setAmenityError(requestError.message || "An amenity with this name already exists.");
+      } else {
+        setAmenityError("Unable to add amenity. Please try again.");
+      }
+    } finally {
+      setIsAmenitySubmitting(false);
+    }
+  }
+
+  async function handleSaveEditAmenity(amenityId: string) {
+    if (!id) return;
+    const name = editingAmenityName.trim();
+    if (!name) {
+      setAmenityError("Amenity name cannot be empty.");
+      return;
+    }
+    setAmenityError(null);
+    setIsAmenitySubmitting(true);
+    try {
+      const response = await updateProjectAmenity(id, amenityId, { name });
+      setAmenities((prev) =>
+        prev
+          .map((item) => (item.id === amenityId ? response.data : item))
+          .sort((a, b) => a.sortOrder - b.sortOrder),
+      );
+      setEditingAmenityId(null);
+      setEditingAmenityName("");
+    } catch (requestError) {
+      if (requestError instanceof AdminApiError && requestError.status === 400) {
+        setAmenityError(requestError.message || "Unable to update amenity.");
+      } else {
+        setAmenityError("Unable to update amenity. Please try again.");
+      }
+    } finally {
+      setIsAmenitySubmitting(false);
+    }
+  }
+
+  async function handleDeleteAmenity(amenityId: string) {
+    if (!id) return;
+    setAmenityError(null);
+    try {
+      await deleteProjectAmenity(id, amenityId);
+      setAmenities((prev) => prev.filter((item) => item.id !== amenityId));
+    } catch {
+      setAmenityError("Unable to delete amenity. Please try again.");
+    }
+  }
+
   if (isLoading || isLoadingDevelopers) {
     return <AdminLayout><p>Loading project...</p></AdminLayout>;
   }
@@ -190,8 +280,13 @@ export function ProjectFormPage() {
     <AdminLayout>
       <p><Link to="/admin/projects">← Projects</Link></p>
       <h1>{id ? "Edit Project" : "Add Project"}</h1>
-      {id && <p><Link to={`/admin/projects/${id}/configurations`}>Manage configurations</Link></p>}
-      {id && <p><Link to={`/admin/projects/${id}/media`}>Manage media</Link></p>}
+      {id && (
+        <p>
+          <Link to={`/admin/projects/${id}/configurations`}>Manage configurations</Link>
+          {" · "}
+          <Link to={`/admin/projects/${id}/media`}>Manage media</Link>
+        </p>
+      )}
       {error && <p role="alert">{error}</p>}
       {developerError && <p role="alert">{developerError}</p>}
       {!developerError && developers.length === 0 && (
@@ -235,6 +330,97 @@ export function ProjectFormPage() {
         <label className="admin-checkbox"><input type="checkbox" checked={form.featured} onChange={(event) => setField("featured", event.target.checked)} /> Featured</label>
         <button type="submit" disabled={isSubmitting || developers.length === 0}>{isSubmitting ? "Saving..." : "Save Project"}</button>
       </form>
+
+      {id && (
+        <section className="admin-amenities-section">
+          <h2>Project Amenities</h2>
+          <p className="admin-amenities-subtitle">
+            Manage lifestyle features and community amenities for this project.
+          </p>
+          {amenityError && <p role="alert" style={{ color: "#ef4444" }}>{amenityError}</p>}
+
+          {amenities.length === 0 ? (
+            <p className="empty-amenities-text">No amenities added yet.</p>
+          ) : (
+            <ul className="admin-amenities-list">
+              {amenities.map((amenity) => (
+                <li key={amenity.id} className="admin-amenity-row">
+                  {editingAmenityId === amenity.id ? (
+                    <form
+                      className="admin-amenity-edit-form"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSaveEditAmenity(amenity.id);
+                      }}
+                    >
+                      <input
+                        type="text"
+                        required
+                        value={editingAmenityName}
+                        onChange={(e) => setEditingAmenityName(e.target.value)}
+                      />
+                      <button type="submit" disabled={isAmenitySubmitting}>Save</button>
+                      <button type="button" onClick={() => setEditingAmenityId(null)}>Cancel</button>
+                    </form>
+                  ) : (
+                    <>
+                      <span className="admin-amenity-name">{amenity.name}</span>
+                      <div className="admin-amenity-actions">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingAmenityId(amenity.id);
+                            setEditingAmenityName(amenity.name);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteAmenity(amenity.id)}
+                          style={{ color: "#ef4444" }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {isAddingAmenity ? (
+            <form className="admin-amenity-add-form" onSubmit={handleAddAmenity}>
+              <label>
+                Amenity name
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Swimming Pool, Gymnasium"
+                  value={newAmenityName}
+                  onChange={(e) => setNewAmenityName(e.target.value)}
+                />
+              </label>
+              <div className="admin-amenity-form-actions">
+                <button type="submit" disabled={isAmenitySubmitting}>
+                  {isAmenitySubmitting ? "Saving..." : "Save Amenity"}
+                </button>
+                <button type="button" onClick={() => setIsAddingAmenity(false)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsAddingAmenity(true)}
+            >
+              + Add Amenity
+            </button>
+          )}
+        </section>
+      )}
     </AdminLayout>
   );
 }
