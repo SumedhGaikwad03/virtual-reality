@@ -1,0 +1,44 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://virtual-reality-backend.onrender.com/api/:path*"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://virtual-reality-backend.onrender.com/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://virtual-reality-backend.onrender.com/robots.txt"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/search",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:developerSlug/:locationSlug/:projectSlug",
+      "destination": "https://virtual-reality-backend.onrender.com/seo/project/:developerSlug/:locationSlug/:projectSlug"
+    },
+    {
+      "source": "/:developerSlug",
+      "destination": "https://virtual-reality-backend.onrender.com/seo/developer/:developerSlug"
+    },
+    {
+      "source": "/",
+      "destination": "https://virtual-reality-backend.onrender.com/seo/home"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -32,6 +32,7 @@ import { projectAmenityRouter } from "./routes/admin/amenity.routes.js";
 import { projectHighlightRouter } from "./routes/admin/highlight.routes.js";
 import siteRoutes from "./routes/public/site.routes.js";
 import leadRoutes from "./routes/public/lead.routes.js";
+import seoRoutes from "./routes/public/seo.routes.js";
 
 const app = express();
 
@@ -123,6 +124,9 @@ app.use("/api/admin/media", adminMediaRoutes);
 app.use("/api/admin/leads", adminLeadRoutes);
 app.use("/api/admin/push-subscriptions", adminPushSubscriptionRoutes);
 app.use("/api/admin/import", adminImportRoutes);
+
+// Public SEO and search engine directives router (registered after all /api/* routes)
+app.use(seoRoutes);
 
 app.use((error: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   if (error?.code === "PROJECT_NOT_FOUND") {
