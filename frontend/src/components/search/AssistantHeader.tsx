@@ -9,14 +9,18 @@
  * Renders the primary assistant title, description, and visual identity badge.
  */
 
+import { TaraAvatar } from "./TaraAvatar";
+
 export function AssistantHeader() {
   return (
     <header className="assistant-header">
-      <span className="section-eyebrow">PROPERTY DISCOVERY ASSISTANT</span>
-      <h1 className="assistant-title">Find a home that fits your life.</h1>
-      <p className="assistant-subtitle">
-        Tell us what you're looking for, or answer a few quick questions to discover matching properties.
-      </p>
+      <div className="assistant-header-profile">
+        <TaraAvatar size="md" />
+        <div className="assistant-header-identity">
+          <span className="assistant-header-name">Tara</span>
+          <span className="assistant-header-role">Property Discovery Advisor</span>
+        </div>
+      </div>
     </header>
   );
 }

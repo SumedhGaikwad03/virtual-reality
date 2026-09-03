@@ -39,23 +39,6 @@ export function SearchPage() {
   const { searchChat } = useAssistant();
   const { site } = useSite();
 
-  if (searchChat.isLoading) {
-    return (
-      <div className="home-loading-state" aria-busy="true">
-        <p>Loading property search assistant...</p>
-      </div>
-    );
-  }
-
-  if (searchChat.error) {
-    return (
-      <div className="developer-not-found-state">
-        <h2>Error Loading Search</h2>
-        <p>{searchChat.error}</p>
-      </div>
-    );
-  }
-
   const matches = searchChat.state ? searchChat.state.matches : [];
 
   return (

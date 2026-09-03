@@ -31,30 +31,52 @@ export function RuleOptions({
     return null;
   }
 
+  // Detect whether this is a compact set (e.g. 2, 3, 4, 5 BHK) or a list (e.g. locations/developers/budget)
+  const isCompactSet = options.length <= 6 && options.every((o) => o.label.length <= 8);
+
   return (
     <div className="rule-options-container">
       {/* Rule options list */}
-      <div className="rule-options-grid" role="group" aria-label="Search options">
+      <div
+        className={`rule-options-grid ${isCompactSet ? "rule-options-grid--compact" : "rule-options-grid--list"}`}
+        role="group"
+        aria-label="Search options"
+      >
         {options.map((option) => (
           <button
             key={option.value}
             type="button"
             onClick={() => onSelectOption(option.value, option.label)}
-            className="rule-option-btn"
+            className={`rule-option-btn ${isCompactSet ? "rule-option-btn--compact" : "rule-option-btn--list"}`}
           >
-            {option.label}
+            <span className="rule-option-label">{option.label}</span>
+            {!isCompactSet && (
+              <span className="rule-option-arrow" aria-hidden="true">
+                →
+              </span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* Conversational controls */}
-      <div className="conversational-controls">
-        {hasHistory && (
-          <button type="button" onClick={onGoBack} className="control-link-btn">
-            ← Change previous answer
+      {/* Subtle bottom utility row */}
+      <div className="assistant-controls-row">
+        {hasHistory ? (
+          <button
+            type="button"
+            onClick={onGoBack}
+            className="assistant-control-btn assistant-control-btn--back"
+          >
+            ← Previous
           </button>
+        ) : (
+          <span />
         )}
-        <button type="button" onClick={onReset} className="control-link-btn">
+        <button
+          type="button"
+          onClick={onReset}
+          className="assistant-control-btn assistant-control-btn--reset"
+        >
           Start over
         </button>
       </div>

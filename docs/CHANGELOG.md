@@ -249,3 +249,50 @@
 - **Action System Standardized (`HomeMediaPage.tsx`)**: Upgraded Home media activation buttons and upload form submit button to unified `.admin-action` classes (`.admin-action--primary`, `.admin-action--secondary`).
 - **Full Application Readiness Audit**: Performed complete end-to-end verification covering Public Experience, Admin Workspaces, Media Ownership, Search Discovery Assistant, Lead Lifecycle, Security Boundaries, Database Integrity (0 violations across 23 media records, 30 configurations, 6 projects, 3 developers), and Outbound Links (all external links verified with `rel="noopener noreferrer"`).
 - **Build & Quality Validation**: Validated clean production builds across frontend (`vite build` in 1.02s) and backend (`tsc`), Prisma 7 schema validation, zero whitespace git diff errors, and 15/15 passing security regression tests.
+
+---
+
+## Phase 26: Property Discovery Assistant Hardening & In-Memory Catalog Engine
+
+- **Pure Deterministic In-Memory Engine**: Refined client-side conversational assistant to load the public catalog projection once (`GET /api/search/catalog`) on search session initialization. All multi-turn question evaluations, filter constraints, candidate inventory slices, and option recalculations execute purely in browser memory with zero per-click network overhead.
+- **Robust Loading, Error & Retry Lifecycle (`useSearchChat.ts` & `SearchAssistant.tsx`)**: Added resilient loading state, empty catalog explanation, and structured error recovery with a direct "Retry" button that clears cached catalog promises and re-fetches cleanly.
+- **Catalog Grounding & No-Phantom-Option Rule**: Verified 100% of presented options (BHK, location, budget, developer, project status, availability) derive strictly from currently viable inventory matches. Single-option questions and no-op rules are automatically skipped.
+- **Distinct Project-Level Stopping**: Enforced intelligent stopping threshold (`PROJECT_STOPPING_THRESHOLD = 3` unique projects) preventing over-questioning and immediately presenting result cards with deep links (`/:devSlug/:locSlug/:projSlug?configuration=:configId`).
+- **Targeted Zero-Result Recovery (`SearchAssistantEmptyState.tsx`)**: Restricts recovery actions strictly to relaxing active user filters (budget, location, configuration, developer, status, availability) alongside a clean "Start over" reset.
+- **Regression Test Verification**: Created and passed 10/10 automated regression tests verifying grounding, stopping thresholds, multi-config project deduplication, no-op skipping, zero-match recovery, rollback, reset, currency formatting, deep-linking, and public repository projection.
+
+---
+
+## Phase 28: Tara Assistant UI Design Restructuring & Conversational Polish
+
+- **Mascot & Visual Identity (`TaraAvatar.tsx` & `AssistantHeader.tsx`)**: Rebranded property discovery companion to **Tara · Property Discovery Advisor** with a dedicated, reusable architectural SVG avatar component (`TaraAvatar.tsx`) supporting responsive sizes (`sm`, `md`, `lg`) and future custom image assets without religious or robotic clichés.
+- **Immediate Non-Verbose Opening State**: Streamlined the opening screen to eliminate multi-layered verbose paragraphs. Users immediately see Tara's profile identity and the concise opening question (*"What are you looking for?"*) with selectable options.
+- **Subtle Query Summary Context Trail (`QuerySummary.tsx`)**: Eliminated loud, technical "LOOKING FOR: ... Reset" query boxes. Active search constraints are now rendered as a subtle, unobtrusive inline chip trail with quiet removable crosses.
+- **Strategic Avatar Grouping (`ConversationMessages.tsx`)**: Grouped consecutive Tara assistant message bubbles under a single left-aligned avatar, creating a refined product chat experience.
+- **Premium Option Buttons & Responsive Touch Grid (`RuleOptions.tsx` & `search.css`)**: Upgraded choices into premium card/pill buttons with directional cues (`→`), subtle elevation, smooth hover/active transitions, and minimum $\ge 44\text{px}$ touch targets.
+- **Subtle Bottom Utility Controls**: Relocated "← Previous" and "Start over" into a restrained bottom utility row with secondary visual weight.
+- **Progressive Interface Compaction**: Applied `.search-assistant-card--active` styling to dynamically minimize headers as conversation progresses, putting full focus on conversation and results.
+- **Automated Verification**: Passed all 15 automated regression assertions verifying Tara dialogue, smart stopping, deep-linking, database grounding, and 15/15 backend security tests.
+
+---
+
+## Phase 29: Server-Side SEO Pre-Rendering & Edge Rewrite Layer (Phase 1 & Phase 2)
+
+- **Express SEO HTML Rendering Engine (`seo-renderer.service.ts`)**:
+  - Implemented server-side pre-rendered semantic HTML generation with metadata, Open Graph, Twitter Cards, and Schema.org JSON-LD structured data.
+  - Phase 1: Homepage (`/` ➔ `/seo/home` with `WebSite` and `Organization`), Developer Hub (`/:developerSlug` ➔ `/seo/developer/:slug` with `Organization` and `BreadcrumbList`), Project Detail (`/:dev/:loc/:proj` ➔ `/seo/project/...` with `ApartmentComplex`, `Offer`, and `BreadcrumbList`).
+  - Phase 2: Location Hubs (`/location/:locationSlug` ➔ `/seo/location/:slug` for `kharadi`, `pimpri`, `hinjewadi`, `magarpatta` with `Place`, `ItemList`, and `BreadcrumbList`), and Pune City Hub (`/projects-in-pune` ➔ `/seo/city-hub` with `Place`, `ItemList`, and `BreadcrumbList`).
+  - Dynamic XML Sitemap (`/sitemap.xml`) generated on the fly, indexing exactly 16 published URLs with valid ISO `<lastmod>` timestamps and proper priorities.
+  - Robots directives (`/robots.txt`) with sitemap declaration and admin/internal path exclusions.
+- **Repository-Level Publication Filtering (`project.repository.ts`)**:
+  - Implemented `findLocationProjects(locationSlug)` enforcing `publishStatus === "PUBLISHED"` on both Project and Developer, selecting relations (`developer`, `highlights`, `amenities`, `media`, `configurations`).
+  - Draft entities return 0 records and render HTTP 404 + `<meta name="robots" content="noindex, nofollow" />`.
+- **Vercel Edge Rewrite Proxy (`vercel.json`)**:
+  - Configured rewrite rules routing public SEO paths to the Render Express backend while preserving `/search` and `/admin/*` as pure client-side Vite SPAs.
+  - Ordered rules with strict precedence (`/projects-in-pune` and `/location/:slug` ahead of `/:developerSlug`) to guarantee zero route collisions.
+- **Security & Sanitization Invariants**:
+  - All dynamic entity fields passed through `escapeHtml()` to eliminate stored XSS.
+  - Structured data passed through `serializeJsonLd()` to prevent `</script>` tag breakout.
+  - All existing `/api/*` routes verified intact with zero interference.
+- **Comprehensive Quality Gates**:
+  - Passed complete automated verification: Backend build (0 errors), Frontend build (0 errors), Phase 1 SEO E2E (8/8), Step 2.5 Integration (33/33), Security Suite (15/15), Tara Lifecycle (8/8), Tara Redesign (15/15), and Local Final Gate (49/49).

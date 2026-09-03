@@ -13,6 +13,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAssistant } from "../../context/AssistantContext";
 import { SearchAssistant } from "./SearchAssistant";
+import { TaraAvatar } from "./TaraAvatar";
 
 export function PropertyAssistantOverlay() {
   const { isOpen, closeAssistant, searchChat } = useAssistant();
@@ -23,7 +24,7 @@ export function PropertyAssistantOverlay() {
   }
 
   function handleViewResults() {
-    closeAssistant();
+    closeAssistant({ reset: false });
     navigate("/search");
   }
 
@@ -39,7 +40,13 @@ export function PropertyAssistantOverlay() {
         aria-label="Property Discovery Assistant"
       >
         <div className="assistant-overlay-header-bar">
-          <span className="assistant-overlay-title">✦ Property Discovery Assistant</span>
+          <div className="assistant-overlay-identity">
+            <TaraAvatar size="sm" />
+            <div className="assistant-overlay-identity-text">
+              <span className="assistant-overlay-name">Tara</span>
+              <span className="assistant-overlay-role">Property Discovery Advisor</span>
+            </div>
+          </div>
           <button
             type="button"
             onClick={closeAssistant}

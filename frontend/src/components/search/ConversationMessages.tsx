@@ -10,6 +10,7 @@
  */
 
 import type { SearchChatMessage } from "../../types/search-chat";
+import { TaraAvatar } from "./TaraAvatar";
 
 type ConversationMessagesProps = {
   messages: SearchChatMessage[];
@@ -18,21 +19,35 @@ type ConversationMessagesProps = {
 export function ConversationMessages({ messages }: ConversationMessagesProps) {
   return (
     <div className="conversation-thread" aria-live="polite">
-      {messages.map((message) => (
-        <div
-          key={message.id}
-          className={`conversation-bubble-wrapper ${message.role}`}
-        >
-          {message.role === "assistant" && (
-            <div className="assistant-avatar-badge" aria-hidden="true">
-              ✦
+      {messages.map((message, index) => {
+        const isFirstInAssistantGroup =
+          message.role === "assistant" &&
+          (index === 0 || messages[index - 1]?.role !== "assistant");
+
+        return (
+          <div
+            key={message.id}
+            className={`conversation-bubble-wrapper ${message.role}`}
+          >
+            {message.role === "assistant" && (
+              <div className="assistant-avatar-slot">
+                {isFirstInAssistantGroup ? (
+                  <TaraAvatar size="sm" />
+                ) : (
+                  <div className="tara-avatar-placeholder" aria-hidden="true" />
+                )}
+              </div>
+            )}
+            <div className={`conversation-bubble ${message.role}`}>
+              {message.text.split("\n\n").map((para, idx) => (
+                <p key={idx} className={idx > 0 ? "bubble-paragraph-spaced" : ""}>
+                  {para}
+                </p>
+              ))}
             </div>
-          )}
-          <div className={`conversation-bubble ${message.role}`}>
-            <p>{message.text}</p>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

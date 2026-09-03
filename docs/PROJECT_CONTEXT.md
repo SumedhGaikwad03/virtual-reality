@@ -48,13 +48,15 @@ PublicShell (Layout Route)
 │
 ├── Outlet (Public Route Content)
 │   ├── Homepage (/)
+│   ├── Pune City Hub (/projects-in-pune)
+│   ├── Locality Hubs (/location/:locationSlug)
 │   ├── Search Page (/search)
 │   ├── Developer Page (/:developerSlug)
 │   └── Project Page (/:developerSlug/:locationSlug/:projectSlug)
 │       └── ProjectSubNav (Contextual page sub-navigation)
 │
 ├── PropertyAssistantOverlay (Application-Wide Floating Panel / Mobile Bottom Sheet)
-│   └── useAssistant() / searchChat (query-builder.ts rule engine)
+│   └── useAssistant() / searchChat (query-builder.ts rule engine with Tara)
 │
 └── AboutFooter (Site-Wide Footer)
 

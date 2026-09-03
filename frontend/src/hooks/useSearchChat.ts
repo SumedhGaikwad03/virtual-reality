@@ -11,13 +11,22 @@
  */
 
 import { useEffect, useState } from "react";
-import { loadSearchCatalog } from "../services/search-catalog.service";
+import {
+  clearSearchCatalogCache,
+  loadSearchCatalog,
+} from "../services/search-catalog.service";
 import {
   applyQueryRule,
   getQueryBuilderState,
   type PropertySearchQuery,
   type QueryBuilderState,
 } from "../services/query-builder";
+import {
+  getTaraInitialMessage,
+  getTaraResponse,
+  getTaraAttributeRemovedMessage,
+  type SelectionContext,
+} from "../services/assistant-dialogue";
 import type { SearchCatalogProject } from "../types/search-catalog";
 import type { SearchChatMessage } from "../types/search-chat";
 
@@ -30,69 +39,66 @@ export function useSearchChat() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let active = true;
+  function initializeCatalog() {
+    setIsLoading(true);
+    setError(null);
 
-    // Loads public search catalog and initializes initial question rule state
     loadSearchCatalog()
       .then((loadedCatalog) => {
-        if (!active) return;
-
         const initialState = getQueryBuilderState(loadedCatalog, {});
 
         setCatalog(loadedCatalog);
         setState(initialState);
+        setQuery({});
+        setQueryHistory([]);
 
         if (initialState.nextRule) {
           setMessages([
             {
               id: "initial-question",
               role: "assistant",
-              text: initialState.nextRule.question,
+              text: getTaraInitialMessage(initialState.nextRule),
             },
           ]);
         }
       })
       .catch(() => {
-        if (active) {
-          setError("Unable to load property search catalog.");
-        }
+        setError("Unable to load property search catalog.");
       })
       .finally(() => {
-        if (active) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       });
+  }
 
-    return () => {
-      active = false;
-    };
+  useEffect(() => {
+    initializeCatalog();
   }, []);
+
+  function retry() {
+    clearSearchCatalogCache();
+    initializeCatalog();
+  }
 
   // Advances conversation by applying selected rule option to the query and evaluating the next unresolved rule
   function selectOption(value: string, label: string) {
     if (!state?.nextRule) return;
 
+    const currentRule = state.nextRule;
     setQueryHistory((current) => [...current, query]);
 
-    const nextQuery = applyQueryRule(state.nextRule, query, value);
+    const nextQuery = applyQueryRule(currentRule, query, value);
     const nextState = getQueryBuilderState(catalog, nextQuery);
 
     setQuery(nextQuery);
     setState(nextState);
 
-    let assistantReply = "";
-    if (nextState.nextRule) {
-      assistantReply = nextState.nextRule.question;
-    } else if (nextState.uniqueProjects.length === 0) {
-      assistantReply = "No properties match those choices right now.";
-    } else if (nextState.uniqueProjects.length === 1) {
-      assistantReply = "I found 1 matching project for your search.";
-    } else {
-      assistantReply = `Here are ${nextState.uniqueProjects.length} matching projects (${nextState.matches.length} ${
-        nextState.matches.length === 1 ? "layout" : "layouts"
-      }).`;
-    }
+    const selectionContext: SelectionContext = {
+      ruleId: currentRule.id,
+      value,
+      label,
+    };
+
+    const assistantReply = getTaraResponse(selectionContext, nextState, catalog);
 
     setMessages((current) => [
       ...current,
@@ -118,18 +124,7 @@ export function useSearchChat() {
     setQuery(nextQuery);
     setState(nextState);
 
-    let assistantReply = "";
-    if (nextState.nextRule) {
-      assistantReply = nextState.nextRule.question;
-    } else if (nextState.uniqueProjects.length === 0) {
-      assistantReply = "No properties match those choices right now.";
-    } else if (nextState.uniqueProjects.length === 1) {
-      assistantReply = "I found 1 matching project for your search.";
-    } else {
-      assistantReply = `Here are ${nextState.uniqueProjects.length} matching projects (${nextState.matches.length} ${
-        nextState.matches.length === 1 ? "layout" : "layouts"
-      }).`;
-    }
+    const assistantReply = getTaraAttributeRemovedMessage(key, nextState);
 
     setMessages((current) => [
       ...current,
@@ -168,7 +163,7 @@ export function useSearchChat() {
             {
               id: "initial-question",
               role: "assistant",
-              text: initialState.nextRule.question,
+              text: getTaraInitialMessage(initialState.nextRule),
             },
           ]
         : [],
@@ -182,6 +177,7 @@ export function useSearchChat() {
     messages,
     isLoading,
     error,
+    retry,
     selectOption,
     removeQueryAttribute,
     goBack,

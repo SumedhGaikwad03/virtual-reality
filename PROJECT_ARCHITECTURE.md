@@ -140,6 +140,18 @@ Database (PostgreSQL) / External Adapter (Cloudinary)
 - **Deep Linking:** Results navigate directly to `/:developerSlug/:locationSlug/:projectSlug?configuration=:configurationId`.
 - **CSS Ownership:** `styles/search.css`.
 
+### SEO Domain (Phase 1 & Phase 2)
+- **Purpose:** Server-side pre-rendered semantic HTML, Schema.org JSON-LD structured data, and dynamic XML sitemap generation.
+- **Taxonomy:**
+  - `/` ➔ `/seo/home` (Homepage SEO with `WebSite` & `Organization` JSON-LD)
+  - `/projects-in-pune` ➔ `/seo/city-hub` (Pune City Hub aggregating all published projects by locality and developer with `Place`, `ItemList`, and `BreadcrumbList` JSON-LD)
+  - `/location/:locationSlug` ➔ `/seo/location/:locationSlug` (Locality Hubs for `kharadi`, `pimpri`, `hinjewadi`, `magarpatta` with `Place`, `ItemList`, and `BreadcrumbList` JSON-LD)
+  - `/:developerSlug` ➔ `/seo/developer/:developerSlug` (Developer Hub with `Organization` & `BreadcrumbList` JSON-LD)
+  - `/:developerSlug/:locationSlug/:projectSlug` ➔ `/seo/project/...` (Project Detail with `ApartmentComplex`, `Offer`, and `BreadcrumbList` JSON-LD)
+  - `/sitemap.xml` ➔ 16-URL dynamic sitemap with ISO `<lastmod>` timestamps
+  - `/robots.txt` ➔ Crawl directives declaring sitemap and blocking admin/internal paths
+- **Edge Routing (`vercel.json`):** Vercel proxies public SEO routes to Render backend Express endpoints while maintaining SPA routing for `/search` and `/admin/*`.
+
 ### Admin Domain
 - **Purpose:** Secure management console for all platform entities.
 - **Authentication:** `POST /api/admin/auth/login` and `POST /api/admin/auth/forgot-password` protected by endpoint rate-limiting (5 requests/15m per IP), issuing signed JWTs verified by `requireAdminAuthentication` middleware.
@@ -292,6 +304,30 @@ media.service.ts:uploadMedia()
 Database persistence in PostgreSQL Media table
   ↓
 Returns 201 Created with AdminMedia DTO
+```
+
+### 7. Public SEO Pre-Rendering & Edge Rewrite Proxy Flow
+```
+Browser / Googlebot requests public URL (e.g., /projects-in-pune or /location/kharadi)
+  ↓
+Vercel Edge CDN evaluates vercel.json rewrite table
+  ├── If /search or /admin/*: Serves static /index.html (React SPA takeover)
+  ├── If static asset /assets/*: Serves static file directly from Vercel CDN
+  └── If public SEO route: Proxies request to Express backend (Render)
+      ↓
+GET /seo/city-hub or GET /seo/location/:locationSlug
+  ↓
+seo.routes.ts (invokes seo-renderer.service.ts)
+  ↓
+seo-renderer.service.ts
+  ├── Queries published projects & developers from repositories (enforcing publication isolation)
+  ├── Generates semantic HTML (<head> with Title, Meta Description, Open Graph, Twitter Cards, Canonical)
+  ├── Injects Schema.org JSON-LD structured data (Place, ItemList, BreadcrumbList, ApartmentComplex)
+  └── Embeds pre-rendered semantic <main> content with crawlable links for search engines
+  ↓
+Returns complete HTML with HTTP 200 OK (or HTTP 404 with noindex for missing entities)
+  ↓
+Client browser loads HTML immediately; hydration/SPA scripts execute progressively
 ```
 
 ---
@@ -550,7 +586,8 @@ Every significant source file contains a standardized top-level documentation bl
 - ✅ **Project Domain:** Clean page orchestrator managing `?configuration=<id>` URL search state, `useProject` hook, and separate `ProjectFormPage`.
 - ✅ **Configuration Domain:** Audited and verified modular; clean isolation of configuration-specific media from project galleries.
 - ✅ **Media Domain:** Reusable unified architecture with context ownership rules, Cloudinary adapter isolation, and clean admin management sub-pages.
-- ✅ **Search Domain:** Clean dual-engine implementation (client-side guided search builder + server-side regex NLP text search with paise accuracy).
+- ✅ **Search Domain:** Clean dual-engine implementation (client-side guided search builder with Tara conversational advisor + server-side regex NLP text search with paise accuracy).
+- ✅ **SEO Architecture (Phase 1 & Phase 2):** Complete server-side pre-rendered semantic HTML and Schema.org JSON-LD structured data engine (`seo-renderer.service.ts`). Edge rewrites (`vercel.json`) proxy public traffic for Home (`/`), Pune City Hub (`/projects-in-pune`), Locality Hubs (`/location/:locationSlug`), Developer Hubs (`/:developerSlug`), and Project Detail pages (`/:developerSlug/:locationSlug/:projectSlug`) to backend Express endpoints. Dynamic XML sitemap (`/sitemap.xml`) indexing 16 published URLs with ISO `<lastmod>` timestamps, and clean robots directives (`/robots.txt`).
 - ✅ **CSS Architecture:** Fully modularized into foundational, layout, components, 6 public domain stylesheets, and 5 admin domain stylesheets with a pure import hub in `styles.css`.
 - ✅ **Database Performance & Indexing:** Explicit PostgreSQL indexes on all relational foreign keys (`developerId`, `projectId`, `configurationId`, `adminId`), publication queries (`[publishStatus, featured]`), and active media lookups (`[context, isActive]`).
 - ✅ **URL Protocol Security Validation:** Strict server-side validation enforcing `http:` and `https:` schemes on user/admin-supplied URLs (`websiteUrl`, `mapsUrl`, `logoUrl`, import URLs), eliminating Stored XSS vectors from executable schemes (`javascript:`, `data:`, `vbscript:`).

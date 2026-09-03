@@ -26,6 +26,8 @@ import {
   generateHomeHtml,
   generateDeveloperHtml,
   generateProjectHtml,
+  generateLocationHtml,
+  generateCityHubHtml,
   generate404Html,
   generateSitemapXml,
   generateRobotsTxt,
@@ -120,7 +122,52 @@ router.get(
 );
 
 /**
- * 4. GET /sitemap.xml - Dynamic Search Engine XML Sitemap
+ * 4. GET /seo/location/:locationSlug - Location Hub SEO Document
+ */
+router.get(
+  "/seo/location/:locationSlug",
+  async (req: Request<{ locationSlug: string }>, res: Response, next: NextFunction) => {
+    try {
+      const { locationSlug } = req.params;
+      const html = await generateLocationHtml(locationSlug);
+
+      if (!html) {
+        res
+          .status(404)
+          .setHeader("Content-Type", "text/html; charset=utf-8")
+          .send(generate404Html("The requested location was not found or has no published projects."));
+        return;
+      }
+
+      res.status(200).setHeader("Content-Type", "text/html; charset=utf-8").send(html);
+    } catch (error) {
+      console.error("SEO /seo/location error:", error);
+      res
+        .status(500)
+        .setHeader("Content-Type", "text/html; charset=utf-8")
+        .send(generate404Html("An unexpected error occurred while loading this page."));
+    }
+  },
+);
+
+/**
+ * 5. GET /seo/city-hub - Pune City Hub SEO Document
+ */
+router.get("/seo/city-hub", async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const html = await generateCityHubHtml();
+    res.status(200).setHeader("Content-Type", "text/html; charset=utf-8").send(html);
+  } catch (error) {
+    console.error("SEO /seo/city-hub error:", error);
+    res
+      .status(500)
+      .setHeader("Content-Type", "text/html; charset=utf-8")
+      .send(generate404Html("An unexpected error occurred while loading this page."));
+  }
+});
+
+/**
+ * 6. GET /sitemap.xml - Dynamic Search Engine XML Sitemap
  */
 router.get("/sitemap.xml", async (_req: Request, res: Response, next: NextFunction) => {
   try {

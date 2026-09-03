@@ -33,7 +33,8 @@ export function SearchAssistantEmptyState({
   return (
     <div className="assistant-empty-state">
       <div className="assistant-empty-bubble">
-        <p>No properties match those choices right now.</p>
+        <p>That combination isn't available right now.</p>
+        <p className="bubble-paragraph-spaced">Let's loosen one choice and try again.</p>
       </div>
 
       <div className="assistant-recovery-actions">
@@ -41,9 +42,10 @@ export function SearchAssistantEmptyState({
           <button
             type="button"
             onClick={() => onRemoveAttribute("maxPrice")}
-            className="recovery-action-btn"
+            className="rule-option-btn rule-option-btn--list recovery-action-btn"
           >
-            Adjust budget
+            <span className="rule-option-label">Adjust budget</span>
+            <span className="rule-option-arrow" aria-hidden="true">↺</span>
           </button>
         )}
 
@@ -51,9 +53,10 @@ export function SearchAssistantEmptyState({
           <button
             type="button"
             onClick={() => onRemoveAttribute("locationSlug")}
-            className="recovery-action-btn"
+            className="rule-option-btn rule-option-btn--list recovery-action-btn"
           >
-            Try all locations
+            <span className="rule-option-label">Try all locations</span>
+            <span className="rule-option-arrow" aria-hidden="true">↺</span>
           </button>
         )}
 
@@ -61,9 +64,10 @@ export function SearchAssistantEmptyState({
           <button
             type="button"
             onClick={() => onRemoveAttribute("bhk")}
-            className="recovery-action-btn"
+            className="rule-option-btn rule-option-btn--list recovery-action-btn"
           >
-            Any configuration
+            <span className="rule-option-label">Any configuration</span>
+            <span className="rule-option-arrow" aria-hidden="true">↺</span>
           </button>
         )}
 
@@ -71,9 +75,10 @@ export function SearchAssistantEmptyState({
           <button
             type="button"
             onClick={() => onRemoveAttribute("developerSlug")}
-            className="recovery-action-btn"
+            className="rule-option-btn rule-option-btn--list recovery-action-btn"
           >
-            Any developer
+            <span className="rule-option-label">Any developer</span>
+            <span className="rule-option-arrow" aria-hidden="true">↺</span>
           </button>
         )}
 
@@ -81,9 +86,10 @@ export function SearchAssistantEmptyState({
           <button
             type="button"
             onClick={() => onRemoveAttribute("projectStatus")}
-            className="recovery-action-btn"
+            className="rule-option-btn rule-option-btn--list recovery-action-btn"
           >
-            Any project status
+            <span className="rule-option-label">Any project status</span>
+            <span className="rule-option-arrow" aria-hidden="true">↺</span>
           </button>
         )}
 
@@ -91,16 +97,20 @@ export function SearchAssistantEmptyState({
           <button
             type="button"
             onClick={() => onRemoveAttribute("availabilityStatus")}
-            className="recovery-action-btn"
+            className="rule-option-btn rule-option-btn--list recovery-action-btn"
           >
-            Any availability
+            <span className="rule-option-label">Any availability</span>
+            <span className="rule-option-arrow" aria-hidden="true">↺</span>
           </button>
         )}
+      </div>
 
+      <div className="assistant-controls-row">
+        <span />
         <button
           type="button"
           onClick={onReset}
-          className="recovery-reset-btn"
+          className="assistant-control-btn assistant-control-btn--reset"
         >
           Start over
         </button>

@@ -572,7 +572,446 @@ export async function generateHomeHtml(): Promise<string> {
 }
 
 /**
- * 4. Generates a 404 Not Found SEO document for missing or unpublished entities.
+ * Format project status for readable display.
+ */
+function formatProjectStatus(status: string): string {
+  switch (status) {
+    case "READY_TO_MOVE":
+      return "Ready to Move";
+    case "ONGOING":
+      return "Ongoing";
+    case "UPCOMING":
+      return "Upcoming";
+    case "COMPLETED":
+      return "Completed";
+    case "SOLD_OUT":
+      return "Sold Out";
+    default:
+      return status;
+  }
+}
+
+/**
+ * 4. Generates SEO-optimized HTML for a Location Hub page.
+ */
+export async function generateLocationHtml(
+  locationSlug: string,
+): Promise<string | null> {
+  const projects = await projectRepository.findLocationProjects(locationSlug);
+
+  if (!projects || projects.length === 0) {
+    return null;
+  }
+
+  const locationName = projects[0].locationName;
+  const canonicalUrl = `${CANONICAL_ORIGIN}/location/${locationSlug}`;
+  const projectCount = projects.length;
+
+  // Aggregate unique developers
+  const developerMap = new Map<string, { name: string; slug: string; logoUrl?: string | null }>();
+  // Aggregate unique BHKs
+  const bhkSet = new Set<number>();
+  // Aggregate price range
+  let minPricePaise: bigint | null = null;
+  let maxPricePaise: bigint | null = null;
+
+  for (const proj of projects) {
+    if (!developerMap.has(proj.developer.slug)) {
+      developerMap.set(proj.developer.slug, {
+        name: proj.developer.name,
+        slug: proj.developer.slug,
+        logoUrl: proj.developer.logoUrl,
+      });
+    }
+
+    for (const cfg of proj.configurations) {
+      if (cfg.bhk) {
+        bhkSet.add(cfg.bhk);
+      }
+      if (cfg.priceFrom && cfg.priceFrom > 0n) {
+        if (minPricePaise === null || cfg.priceFrom < minPricePaise) {
+          minPricePaise = cfg.priceFrom;
+        }
+        if (maxPricePaise === null || cfg.priceFrom > maxPricePaise) {
+          maxPricePaise = cfg.priceFrom;
+        }
+      }
+    }
+  }
+
+  const developers = Array.from(developerMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  const developerCount = developers.length;
+  const sortedBhks = Array.from(bhkSet).sort((a, b) => a - b);
+  const bhkSummary = sortedBhks.length > 0 ? `${sortedBhks.join(", ")} BHK` : "";
+
+  const title = `Residential Projects in ${locationName}, Pune | ${DEFAULT_SITE_NAME}`;
+  const description = `Explore ${projectCount} residential ${projectCount === 1 ? "project" : "projects"} in ${locationName}, Pune across ${developerCount} ${developerCount === 1 ? "developer" : "developers"}${bhkSummary ? ` offering ${bhkSummary} options` : ""}${minPricePaise ? ` starting from ${formatPriceFromPaise(minPricePaise)}` : ""}. View floor plans, pricing, and project details on Virtual Reality.`;
+
+  // Select hero image from first project
+  const firstProj = projects[0];
+  const heroMedia =
+    firstProj.media.find((m) => m.category === "HERO") ||
+    firstProj.media.find((m) => m.isPrimary) ||
+    firstProj.media[0];
+  const ogImage = heroMedia?.url || firstProj.developer.logoUrl || DEFAULT_OG_IMAGE;
+
+  // Build JSON-LD structured data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Place",
+        "@id": `${canonicalUrl}#place`,
+        name: `${locationName}, Pune`,
+        description: `Residential neighborhood in Pune featuring luxury real estate developments.`,
+        url: canonicalUrl,
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${canonicalUrl}#itemlist`,
+        name: `Residential Projects in ${locationName}, Pune`,
+        numberOfItems: projectCount,
+        itemListElement: projects.map((proj, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          name: proj.name,
+          url: `${CANONICAL_ORIGIN}/${proj.developer.slug}/${proj.locationSlug}/${proj.slug}`,
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: CANONICAL_ORIGIN,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Projects in Pune",
+            item: `${CANONICAL_ORIGIN}/projects-in-pune`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: locationName,
+            item: canonicalUrl,
+          },
+        ],
+      },
+    ],
+  };
+
+  // Pre-rendered semantic HTML body
+  const projectsListHtml = projects
+    .map((p) => {
+      const projUrl = `/${escapeHtml(p.developer.slug)}/${escapeHtml(p.locationSlug)}/${escapeHtml(p.slug)}`;
+      const devUrl = `/${escapeHtml(p.developer.slug)}`;
+      const statusText = formatProjectStatus(p.status);
+
+      const configsHtml =
+        p.configurations.length > 0
+          ? `<ul style="margin: 8px 0; padding-left: 20px; font-size: 14px; color: #4b5563;">
+              ${p.configurations
+                .map(
+                  (c) => `<li>
+                    ${c.bhk} BHK (${c.carpetArea} sq.ft.) - Starting from ${escapeHtml(formatPriceFromPaise(c.priceFrom))}
+                  </li>`,
+                )
+                .join("")}
+            </ul>`
+          : "";
+
+      const highlightsHtml =
+        p.highlights.length > 0
+          ? `<p style="font-size: 14px; color: #6b7280; margin-top: 6px;">
+              <strong>Highlights:</strong> ${p.highlights.map((h) => escapeHtml(h.text)).join(" · ")}
+            </p>`
+          : "";
+
+      return `
+        <article style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 6px;">
+            <a href="${projUrl}" style="color: #172f68; text-decoration: none;">${escapeHtml(p.name)}</a>
+          </h3>
+          <p style="font-size: 15px; color: #374151; margin-bottom: 6px;">
+            Developed by <a href="${devUrl}" style="color: #1d4ed8; text-decoration: underline;">${escapeHtml(p.developer.name)}</a>
+            · <span>Status: ${escapeHtml(statusText)}</span>
+          </p>
+          <p style="font-size: 14px; color: #4b5563;"><strong>Address:</strong> ${escapeHtml(p.address)}</p>
+          ${p.description ? `<p style="font-size: 14px; color: #4b5563; margin-top: 8px;">${escapeHtml(p.description)}</p>` : ""}
+          ${configsHtml}
+          ${highlightsHtml}
+          <div style="margin-top: 12px;">
+            <a href="${projUrl}" style="display: inline-block; font-weight: 600; color: #1d4ed8; font-size: 14px;">
+              View configurations &amp; floor plans &rarr;
+            </a>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  const developersListHtml = developers
+    .map((d) => `<li><a href="/${escapeHtml(d.slug)}" style="color: #1d4ed8;">${escapeHtml(d.name)}</a></li>`)
+    .join("");
+
+  const semanticBodyHtml = `
+    <main class="location-page-main" style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+      <nav aria-label="Breadcrumb" style="font-size: 14px; margin-bottom: 16px;">
+        <a href="/">Home</a> &gt;
+        <a href="/projects-in-pune">Projects in Pune</a> &gt;
+        <span>${escapeHtml(locationName)}</span>
+      </nav>
+
+      <header style="margin-bottom: 32px;">
+        <h1 style="font-size: 32px; font-weight: bold; margin-bottom: 8px;">Residential Projects in ${escapeHtml(locationName)}, Pune</h1>
+        <p style="font-size: 18px; color: #4b5563;">
+          Explore ${projectCount} residential ${projectCount === 1 ? "development" : "developments"} in ${escapeHtml(locationName)} from ${developerCount} premier ${developerCount === 1 ? "developer" : "developers"}.
+          ${minPricePaise ? `Pricing starts from ${escapeHtml(formatPriceFromPaise(minPricePaise))}.` : ""}
+        </p>
+      </header>
+
+      <section class="location-seo-projects" style="margin-bottom: 36px;">
+        <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">Projects in ${escapeHtml(locationName)}</h2>
+        ${projectsListHtml}
+      </section>
+
+      <section class="location-seo-developers" style="margin-bottom: 36px;">
+        <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 12px;">Featured Developers in ${escapeHtml(locationName)}</h2>
+        <ul style="padding-left: 20px;">
+          ${developersListHtml}
+        </ul>
+      </section>
+
+      <section style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p><a href="/search" style="font-weight: 600; color: #1d4ed8;">Search all properties in Pune &amp; talk to Tara &rarr;</a></p>
+      </section>
+    </main>
+  `.trim();
+
+  return renderHtmlDocument({
+    title,
+    description,
+    canonicalUrl,
+    ogImage,
+    ogType: "place",
+    jsonLd,
+    semanticBodyHtml,
+  });
+}
+
+/**
+ * 5. Generates SEO-optimized HTML for the Pune City Hub page (/projects-in-pune).
+ */
+export async function generateCityHubHtml(): Promise<string> {
+  const projects = await prisma.project.findMany({
+    where: {
+      publishStatus: "PUBLISHED",
+      developer: {
+        publishStatus: "PUBLISHED",
+      },
+    },
+    orderBy: [
+      { featured: "desc" as const },
+      { name: "asc" as const },
+      { id: "asc" as const },
+    ],
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      locationName: true,
+      locationSlug: true,
+      status: true,
+      developer: {
+        select: {
+          name: true,
+          slug: true,
+        },
+      },
+      configurations: {
+        select: {
+          bhk: true,
+          priceFrom: true,
+        },
+      },
+    },
+  });
+
+  const canonicalUrl = `${CANONICAL_ORIGIN}/projects-in-pune`;
+  const projectCount = projects.length;
+
+  // Aggregate localities and developers
+  const localityMap = new Map<string, { name: string; slug: string; count: number }>();
+  const developerMap = new Map<string, { name: string; slug: string; count: number }>();
+
+  for (const p of projects) {
+    if (!localityMap.has(p.locationSlug)) {
+      localityMap.set(p.locationSlug, { name: p.locationName, slug: p.locationSlug, count: 0 });
+    }
+    localityMap.get(p.locationSlug)!.count++;
+
+    if (!developerMap.has(p.developer.slug)) {
+      developerMap.set(p.developer.slug, { name: p.developer.name, slug: p.developer.slug, count: 0 });
+    }
+    developerMap.get(p.developer.slug)!.count++;
+  }
+
+  const localities = Array.from(localityMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  const developers = Array.from(developerMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  const localityNames = localities.map((l) => l.name).join(", ");
+
+  const title = `Residential Projects in Pune — Luxury Apartments & Developments | ${DEFAULT_SITE_NAME}`;
+  const description = `Explore ${projectCount} premier residential projects across ${localities.length} key localities in Pune (${localityNames}) from ${developers.length} leading developers. Discover floor plans, pricing, and verified property insights on Virtual Reality.`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Place",
+        "@id": `${canonicalUrl}#city`,
+        name: "Pune, Maharashtra, India",
+        description: "Premier real estate market with luxury residential developments.",
+        url: canonicalUrl,
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${canonicalUrl}#itemlist`,
+        name: "Residential Projects in Pune",
+        numberOfItems: projectCount,
+        itemListElement: projects.map((p, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          name: p.name,
+          url: `${CANONICAL_ORIGIN}/${p.developer.slug}/${p.locationSlug}/${p.slug}`,
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: CANONICAL_ORIGIN,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Projects in Pune",
+            item: canonicalUrl,
+          },
+        ],
+      },
+    ],
+  };
+
+  const localitiesListHtml = localities
+    .map(
+      (l) => `<li style="margin-bottom: 8px;">
+        <a href="/location/${escapeHtml(l.slug)}" style="font-size: 16px; color: #1d4ed8; font-weight: 600;">
+          ${escapeHtml(l.name)}
+        </a>
+        <span style="color: #6b7280; font-size: 14px;"> (${l.count} ${l.count === 1 ? "project" : "projects"})</span>
+      </li>`,
+    )
+    .join("");
+
+  const developersListHtml = developers
+    .map(
+      (d) => `<li style="margin-bottom: 8px;">
+        <a href="/${escapeHtml(d.slug)}" style="font-size: 16px; color: #1d4ed8; font-weight: 600;">
+          ${escapeHtml(d.name)}
+        </a>
+        <span style="color: #6b7280; font-size: 14px;"> (${d.count} ${d.count === 1 ? "project" : "projects"})</span>
+      </li>`,
+    )
+    .join("");
+
+  const projectsListHtml = projects
+    .map((p) => {
+      const projUrl = `/${escapeHtml(p.developer.slug)}/${escapeHtml(p.locationSlug)}/${escapeHtml(p.slug)}`;
+      const locUrl = `/location/${escapeHtml(p.locationSlug)}`;
+      const devUrl = `/${escapeHtml(p.developer.slug)}`;
+      const statusText = formatProjectStatus(p.status);
+
+      return `
+        <article style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 18px; margin-bottom: 16px;">
+          <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 4px;">
+            <a href="${projUrl}" style="color: #172f68; text-decoration: none;">${escapeHtml(p.name)}</a>
+          </h3>
+          <p style="font-size: 15px; color: #4b5563;">
+            In <a href="${locUrl}" style="color: #1d4ed8;">${escapeHtml(p.locationName)}</a> · Developed by <a href="${devUrl}" style="color: #1d4ed8;">${escapeHtml(p.developer.name)}</a>
+            · <span>Status: ${escapeHtml(statusText)}</span>
+          </p>
+          ${p.description ? `<p style="font-size: 14px; color: #4b5563; margin-top: 6px;">${escapeHtml(p.description)}</p>` : ""}
+          <div style="margin-top: 10px;">
+            <a href="${projUrl}" style="font-weight: 600; color: #1d4ed8; font-size: 14px;">
+              View project details &rarr;
+            </a>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  const semanticBodyHtml = `
+    <main class="city-hub-main" style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+      <nav aria-label="Breadcrumb" style="font-size: 14px; margin-bottom: 16px;">
+        <a href="/">Home</a> &gt;
+        <span>Projects in Pune</span>
+      </nav>
+
+      <header style="margin-bottom: 32px;">
+        <h1 style="font-size: 36px; font-weight: bold; margin-bottom: 12px;">Residential Projects in Pune</h1>
+        <p style="font-size: 18px; color: #374151;">
+          Explore ${projectCount} premier residential developments across ${localities.length} key micro-markets in Pune.
+        </p>
+      </header>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 36px;">
+        <section class="city-seo-localities" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; background-color: #fafafa;">
+          <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 12px;">Explore by Locality</h2>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            ${localitiesListHtml}
+          </ul>
+        </section>
+
+        <section class="city-seo-developers" style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; background-color: #fafafa;">
+          <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 12px;">Premier Developers in Pune</h2>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            ${developersListHtml}
+          </ul>
+        </section>
+      </div>
+
+      <section class="city-seo-projects">
+        <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">All Developments in Pune</h2>
+        ${projectsListHtml}
+      </section>
+
+      <section style="margin-top: 36px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p><a href="/search" style="font-weight: 600; color: #1d4ed8;">Launch property discovery assistant &rarr;</a></p>
+      </section>
+    </main>
+  `.trim();
+
+  return renderHtmlDocument({
+    title,
+    description,
+    canonicalUrl,
+    ogType: "website",
+    jsonLd,
+    semanticBodyHtml,
+  });
+}
+
+/**
+ * 6. Generates a 404 Not Found SEO document for missing or unpublished entities.
  */
 export function generate404Html(
   message = "The requested property or developer could not be found or is no longer available.",
@@ -601,7 +1040,7 @@ export function generate404Html(
 }
 
 /**
- * 5. Generates dynamic sitemap XML listing all published developers and projects.
+ * 7. Generates dynamic sitemap XML listing all published entities.
  */
 export async function generateSitemapXml(): Promise<string> {
   const [projects, developers] = await Promise.all([
@@ -647,13 +1086,42 @@ export async function generateSitemapXml(): Promise<string> {
       changefreq: "daily",
       priority: "1.0",
     },
-    {
-      loc: `${CANONICAL_ORIGIN}/search`,
-      changefreq: "weekly",
-      priority: "0.8",
-    },
   ];
 
+  // 1. Pune City Hub (if published projects exist)
+  if (projects.length > 0) {
+    const latestProjectUpdate = projects.reduce((latest, p) => {
+      return p.updatedAt > latest ? p.updatedAt : latest;
+    }, projects[0].updatedAt);
+
+    urls.push({
+      loc: `${CANONICAL_ORIGIN}/projects-in-pune`,
+      lastmod: latestProjectUpdate ? latestProjectUpdate.toISOString().split("T")[0] : undefined,
+      changefreq: "daily",
+      priority: "0.9",
+    });
+  }
+
+  // 2. Locality Hubs (derived dynamically from published projects)
+  const locationMap = new Map<string, Date>();
+  for (const proj of projects) {
+    const existing = locationMap.get(proj.locationSlug);
+    if (!existing || proj.updatedAt > existing) {
+      locationMap.set(proj.locationSlug, proj.updatedAt);
+    }
+  }
+
+  const sortedLocations = Array.from(locationMap.entries()).sort(([a], [b]) => a.localeCompare(b));
+  for (const [locationSlug, updatedAt] of sortedLocations) {
+    urls.push({
+      loc: `${CANONICAL_ORIGIN}/location/${locationSlug}`,
+      lastmod: updatedAt ? updatedAt.toISOString().split("T")[0] : undefined,
+      changefreq: "daily",
+      priority: "0.8",
+    });
+  }
+
+  // 3. Developer Hubs
   for (const dev of developers) {
     urls.push({
       loc: `${CANONICAL_ORIGIN}/${dev.slug}`,
@@ -663,6 +1131,7 @@ export async function generateSitemapXml(): Promise<string> {
     });
   }
 
+  // 4. Project Detail Pages
   for (const proj of projects) {
     urls.push({
       loc: `${CANONICAL_ORIGIN}/${proj.developer.slug}/${proj.locationSlug}/${proj.slug}`,
@@ -671,6 +1140,13 @@ export async function generateSitemapXml(): Promise<string> {
       priority: "0.9",
     });
   }
+
+  // 5. Search SPA Entrypoint
+  urls.push({
+    loc: `${CANONICAL_ORIGIN}/search`,
+    changefreq: "monthly",
+    priority: "0.7",
+  });
 
   const urlElements = urls
     .map((entry) => {

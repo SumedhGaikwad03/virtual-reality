@@ -201,6 +201,111 @@ export class ProjectRepository {
     });
   }
 
+  findLocationProjects(locationSlug: string) {
+    return prisma.project.findMany({
+      where: {
+        locationSlug,
+        publishStatus: "PUBLISHED",
+        developer: {
+          publishStatus: "PUBLISHED",
+        },
+      },
+      orderBy: [
+        { featured: "desc" as const },
+        { name: "asc" as const },
+        { id: "asc" as const },
+      ],
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        locationName: true,
+        locationSlug: true,
+        address: true,
+        mapsUrl: true,
+        status: true,
+        featured: true,
+        publishStatus: true,
+        updatedAt: true,
+
+        developer: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logoUrl: true,
+            websiteUrl: true,
+          },
+        },
+
+        highlights: {
+          orderBy: [
+            { sortOrder: "asc" as const },
+            { id: "asc" as const },
+          ],
+          select: {
+            id: true,
+            text: true,
+            sortOrder: true,
+          },
+        },
+
+        amenities: {
+          orderBy: [
+            { sortOrder: "asc" as const },
+            { id: "asc" as const },
+          ],
+          select: {
+            id: true,
+            name: true,
+            sortOrder: true,
+          },
+        },
+
+        media: {
+          where: {
+            isActive: true,
+            context: "PROJECT",
+          },
+          orderBy: [
+            { sortOrder: "asc" as const },
+            { createdAt: "asc" as const },
+            { id: "asc" as const },
+          ],
+          select: {
+            id: true,
+            type: true,
+            category: true,
+            url: true,
+            thumbnailUrl: true,
+            altText: true,
+            sortOrder: true,
+            isPrimary: true,
+          },
+        },
+
+        configurations: {
+          orderBy: [
+            { bhk: "asc" as const },
+            { priceFrom: "asc" as const },
+            { id: "asc" as const },
+          ],
+          select: {
+            id: true,
+            name: true,
+            bhk: true,
+            carpetArea: true,
+            builtUpArea: true,
+            superBuiltUpArea: true,
+            priceFrom: true,
+            availabilityStatus: true,
+          },
+        },
+      },
+    });
+  }
+
   findAmenities(projectId: string) {
     return prisma.projectAmenity.findMany({
       where: { projectId },

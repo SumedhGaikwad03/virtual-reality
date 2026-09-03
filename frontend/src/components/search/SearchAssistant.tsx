@@ -24,11 +24,56 @@ export function SearchAssistant({
   query,
   state,
   messages,
+  isLoading,
+  error,
+  retry,
   selectOption,
   removeQueryAttribute,
   goBack,
   reset,
 }: SearchAssistantProps) {
+  if (isLoading) {
+    return (
+      <section className="search-assistant-card" aria-label="Property Discovery Assistant">
+        <AssistantHeader />
+        <div className="search-assistant-loading-box">
+          <p>Loading available property inventory...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="search-assistant-card" aria-label="Property Discovery Assistant">
+        <AssistantHeader />
+        <div className="search-assistant-error-box">
+          <p className="search-assistant-error-text">{error}</p>
+          {retry && (
+            <button
+              type="button"
+              onClick={retry}
+              className="rule-option-btn retry-btn"
+            >
+              Retry
+            </button>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  if (catalog.length === 0) {
+    return (
+      <section className="search-assistant-card" aria-label="Property Discovery Assistant">
+        <AssistantHeader />
+        <div className="search-assistant-empty-catalog-box">
+          <p>There are currently no published properties available to explore.</p>
+        </div>
+      </section>
+    );
+  }
+
   if (!state) {
     return null;
   }
@@ -38,9 +83,13 @@ export function SearchAssistant({
     : [];
 
   const isZeroMatches = state.matches.length === 0 && Object.keys(query).length > 0;
+  const hasStarted = messages.length > 1;
 
   return (
-    <section className="search-assistant-card" aria-label="Property Discovery Assistant">
+    <section
+      className={`search-assistant-card ${hasStarted ? "search-assistant-card--active" : "search-assistant-card--initial"}`}
+      aria-label="Property Discovery Assistant"
+    >
       <AssistantHeader />
 
       <ConversationMessages messages={messages} />

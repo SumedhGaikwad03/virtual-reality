@@ -42,9 +42,10 @@
 - ✅ Admin External Video URL Creation (`POST /api/admin/media/url`).
 - ✅ Visual Media Refinement Pass (soft crossfade 800ms transitions, wide cinematic carousel framing, slide preloading, visibility change pause).
 - ✅ Contextual Enquiry Modal & Mobile Sticky Action Bar (`ContextualEnquiryModal.tsx`, mobile sticky bar `<768px`).
+- ✅ Server-Side SEO Pre-Rendering & Edge Rewrites (Phase 1 & Phase 2: Home, City Hub, Location Hubs, Developer Hubs, Project Details, dynamic 16-URL XML Sitemap, Robots directives, Schema.org JSON-LD).
 
 ### CURRENTLY LOCKED
-- 🔒 Section ordering on Homepage, Developer Page, Project Page, and Search Page.
+- 🔒 Section ordering on Homepage, Developer Page, Project Page, Search Page, City Hub, and Location Hubs.
 - 🔒 Pure Rule-Based Search strategy (No NLP / No LLM dependency).
 - 🔒 Multi-Entity Publication Model (`Project.publishStatus === "PUBLISHED" && Developer.publishStatus === "PUBLISHED"`).
 - 🔒 Isolated Admin Routes (`/admin/*`).

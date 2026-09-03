@@ -51,3 +51,12 @@
 
 - **Carousel Autoplay**: Intentionally deferred to a dedicated motion/interaction pass.
 - **Advanced Animations & Transitions**: Intentionally deferred to a site-wide visual pass.
+
+---
+
+## Decision 7: Edge-Proxied Server-Side SEO Pre-Rendering & Clean URL Structure
+
+- **Decision**: Proxy public crawling traffic via Vercel Edge rewrites (`vercel.json`) to the Express backend (`seo.routes.ts` ➔ `seo-renderer.service.ts`) for Homepage, City Hub (`/projects-in-pune`), Locality Hubs (`/location/:locationSlug`), Developer Hubs (`/:developerSlug`), and Project Detail pages (`/:dev/:loc/:proj`), while preserving `/search` and `/admin/*` as pure client-side Vite SPAs.
+- **Rationale**: Search engine crawlers receive rich, semantic HTML and Schema.org JSON-LD structured data with zero JavaScript execution latency, while human visitors on discovery or administrative paths experience instantaneous SPA transitions.
+- **Current Status**: **LOCKED & IMPLEMENTED**.
+- **Justification for Revisiting**: None.

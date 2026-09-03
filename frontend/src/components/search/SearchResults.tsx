@@ -29,8 +29,8 @@ export function SearchResults({ matches }: SearchResultsProps) {
       <div className="search-results-header">
         <h2 className="search-results-count-title">
           {uniqueProjects.length === 1
-            ? `I found 1 matching project (${matches.length} ${matches.length === 1 ? "layout" : "layouts"}).`
-            : `I found ${uniqueProjects.length} matching projects (${matches.length} ${matches.length === 1 ? "layout" : "layouts"}).`}
+            ? `Found 1 matching project (${matches.length} ${matches.length === 1 ? "layout" : "layouts"})`
+            : `Found ${uniqueProjects.length} matching projects (${matches.length} ${matches.length === 1 ? "layout" : "layouts"})`}
         </h2>
       </div>
 

@@ -99,8 +99,8 @@ export function QuerySummary({
   }
 
   return (
-    <div className="query-summary-container">
-      <span className="summary-label">Looking for:</span>
+    <div className="query-summary-trail" aria-label="Current search criteria">
+      <span className="summary-trail-label">Looking for</span>
       <div className="summary-chips-list">
         {chips.map((chip) => (
           <span key={chip.key} className="summary-chip">
@@ -115,13 +115,6 @@ export function QuerySummary({
             </button>
           </span>
         ))}
-        <button
-          type="button"
-          onClick={onReset}
-          className="summary-reset-btn"
-        >
-          Reset
-        </button>
       </div>
     </div>
   );

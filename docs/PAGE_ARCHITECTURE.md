@@ -102,9 +102,48 @@ Project pages include an `Explore this project` anchor navigation area after the
 
 Authenticated configuration administration remains project-scoped: configuration list and edit pages preserve the owning project context, use primary save/create actions, and use secondary Back and Manage Configuration Media actions. The public configuration selection contract is unchanged.
 
-## 5. Admin Media Workspace (`/admin/media`)
+---
+
+## 5. Pune City Hub (`/projects-in-pune`)
+
+### Purpose
+High-level city aggregator page presenting all published residential developments in Pune grouped by locality and developer, establishing city-wide search authority with `Place`, `ItemList`, and `BreadcrumbList` Schema.org structured data.
+
+### Pre-Rendered Narrative Structure
+```
+PuneCityHub (Server Pre-rendered HTML)
+├── Header & Narrative (`Residential Projects in Pune`)
+├── City Metrics Summary (Total Projects, Localities, Developers)
+├── Locality Directory Grid (Links to /location/:locationSlug)
+├── Developer Portfolio Directory (Links to /:developerSlug)
+├── Comprehensive Project List (Crawlable canonical cards linking to /:dev/:loc/:proj)
+└── AboutFooter & Search Assistant Deep Links
+```
+
+---
+
+## 6. Locality Hubs (`/location/:locationSlug`)
+
+### Purpose
+Micro-market landing pages for active Pune residential corridors (`/location/kharadi`, `/location/pimpri`, `/location/hinjewadi`, `/location/magarpatta`). Pre-renders local project inventory, developer attributions, and structured metadata (`Place`, `ItemList`, `BreadcrumbList`).
+
+### Pre-Rendered Narrative Structure
+```
+LocationHub (Server Pre-rendered HTML)
+├── Breadcrumb Navigation (`Home` > `Pune Projects` > `:locationName`)
+├── Header & Narrative (`Residential Projects in :locationName, Pune`)
+├── Published Projects Grid (Project status, BHK inventory, starting prices)
+├── Featured Developer Attribution Cards
+├── Cross-Locality Navigation (Explore other Pune localities)
+└── Direct Lead Enquiry & Search Assistant Access
+```
+
+---
+
+## 7. Admin Media Workspace (`/admin/media`)
 
 `/admin/media` is the global Home Media workspace. Its root endpoint is explicitly scoped to `context = HOME`; it does not act as a global “list all media” view. Project, configuration, and developer media are managed through their respective entity-scoped workspaces and remain separated by `PROJECT`, `CONFIGURATION`, and `DEVELOPER` context.
+
 ### Admin action language
 
 Admin project rows, lead actions, configuration actions, and form CTAs use the shared Admin action hierarchy. Primary actions remain filled, secondary actions are outlined, utility links stay compact, and communication actions are grouped; controls stack or wrap on narrow screens while workspace tabs remain compact.

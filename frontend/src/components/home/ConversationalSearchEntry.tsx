@@ -17,12 +17,12 @@ export function ConversationalSearchEntry() {
   return (
     <section className="conversational-search-entry" aria-labelledby="assistant-entry-heading">
       <div className="conversational-search-card">
-        <span className="section-eyebrow">ASK THE ASSISTANT</span>
+        <span className="section-eyebrow">PROPERTY DISCOVERY ADVISOR</span>
         <h2 id="assistant-entry-heading" className="conversational-search-title">
-          Find a home that fits you.
+          Find a home that fits your life.
         </h2>
         <p className="conversational-search-subtitle">
-          Answer a few quick questions with our rule-based property discovery assistant to find available homes.
+          Explore matching homes with Tara through a few quick, grounded choices.
         </p>
 
         <div className="conversational-entry-action">
@@ -31,7 +31,7 @@ export function ConversationalSearchEntry() {
             className="entry-launch-assistant-btn"
             onClick={openAssistant}
           >
-            ✦ Launch Assistant →
+            ✦ Ask Tara →
           </button>
         </div>
       </div>

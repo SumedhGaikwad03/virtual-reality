@@ -17,7 +17,7 @@ import { useSearchChat } from "../hooks/useSearchChat";
 type AssistantContextType = {
   isOpen: boolean;
   openAssistant: () => void;
-  closeAssistant: () => void;
+  closeAssistant: (options?: { reset?: boolean }) => void;
   toggleAssistant: () => void;
   searchChat: ReturnType<typeof useSearchChat>;
 };
@@ -28,20 +28,34 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const searchChat = useSearchChat();
 
-  const openAssistant = () => setIsOpen(true);
-  const closeAssistant = () => setIsOpen(false);
-  const toggleAssistant = () => setIsOpen((prev) => !prev);
+  const openAssistant = () => {
+    searchChat.reset();
+    setIsOpen(true);
+  };
+  const closeAssistant = (options: { reset?: boolean } = { reset: true }) => {
+    setIsOpen(false);
+    if (options.reset !== false) {
+      searchChat.reset();
+    }
+  };
+  const toggleAssistant = () => {
+    setIsOpen((prev) => {
+      searchChat.reset();
+      return !prev;
+    });
+  };
 
-  // Close assistant on Escape key press
+  // Close assistant and reset session on Escape key press
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape" && isOpen) {
         setIsOpen(false);
+        searchChat.reset();
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, searchChat]);
 
   // Lock body scroll on mobile when overlay is open
   useEffect(() => {

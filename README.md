@@ -1,52 +1,133 @@
-# Virtual2Reality
+# Virtual2Reality Real-Estate Platform
 
-Real estate enquiry website — a client project, built and deployed end-to-end for a real estate firm in about a month.
+A modern, production-grade architectural real estate discovery and lead-generation platform for premier residential developments in Pune.
 
-**Live site:** [virtual2reality.in](https://virtual2reality.in)
+**Live Production Domain:** [virtual2reality.in](https://virtual2reality.in)
 
 ---
 
 ## Overview
 
-A real estate firm needed a way to capture and organize enquiries from website visitors without the overhead of a full CRM — something simple, reliable, and easy for non-technical staff to use immediately. This project was built and deployed end-to-end based on that client's real requirements, from initial scoping through deployment and ongoing coordination.
+Virtual2Reality connects homebuyers with curated luxury residential developments and established developers (Godrej Properties, Panchshil Realty, VTP Realty). The platform features an intelligent conversational discovery assistant (**Tara**), deep-linked unit configuration views, a dedicated administrative CRM and media management console, and a high-performance **Server-Side SEO Pre-rendering & Edge Rewrite Layer**.
 
-## What it does
+---
 
-- **Enquiry capture** — a simple, fast-loading enquiry form on the frontend that visitors use to submit their details and interest.
-- **Excel-based record keeping** — the backend receives each submission and appends it directly to a structured Excel file, giving the client an organized, immediately usable record without needing to learn a database tool or admin panel.
-- **Deployed and in production** — live and handling real client enquiries at [virtual2reality.in](https://virtual2reality.in).
+## Core Capabilities
 
-## Architecture
+- **Server-Side SEO & Metadata Pre-rendering:** Edge-proxied dynamic HTML rendering with Schema.org JSON-LD structured data (`WebSite`, `Organization`, `ApartmentComplex`, `Place`, `ItemList`, `BreadcrumbList`), Open Graph, and Twitter Cards across Home, Developer, Project, Locality, and City Hub pages.
+- **Dynamic XML Sitemap:** Automatically generated sitemap (`/sitemap.xml`) indexing published developers, projects, locality hubs, and city aggregators with ISO `<lastmod>` timestamps.
+- **Tara · Property Discovery Advisor:** 100% database-grounded, zero-hallucination conversational discovery assistant that helps users filter real-time catalog inventory via intuitive preference options.
+- **Contextual Lead Capture:** Action-driven enquiry system tying customer interest directly to specific projects and unit configurations with WhatsApp and phone call triggers.
+- **Admin Management Portal:** Administrative CRUD for developers, projects, configurations, highlights, amenities, media uploads (via Cloudinary), and lead review with Web Push notifications.
 
-- **Frontend** — a plain HTML/CSS/JS site. The client's own team would need to maintain and lightly update this site later without a developer on hand, so a simple, dependency-free frontend was a deliberate choice over a framework that would add long-term maintenance overhead for them.
-- **Backend** — a lightweight Node.js/Express service receives form submissions and writes each one as a new row into a structured Excel file, which the client can open directly.
+---
 
+## Architecture & Tech Stack
+
+```text
+                     Browser / Googlebot
+                              │
+                              ▼
+                     Vercel Edge CDN / Proxy
+                      virtual2reality.in
+                              │
+         ┌────────────────────┼────────────────────┐
+         │                    │                    │
+    Static Assets         React SPA            SEO Routes
+  (/assets/*, /icons/*)  (/search, /admin/*)  (/, /projects-in-pune,
+         │                    │                /location/*, /:dev,
+         ▼                    ▼                /:dev/:loc/:proj,
+       Vercel               Vercel             /sitemap.xml, /robots.txt)
+                                                   │
+                                                   ▼
+                                            Render Web Service
+                                             (Express Backend)
+                                                   │
+                                                   ▼
+                                           Prisma 7 Client
+                                                   │
+                                                   ▼
+                                          PostgreSQL Database
 ```
-HTML/CSS/JS form ──POST──▶ Node.js/Express ──▶ Excel record file
-```
 
-## Tech Stack
+### Technology Stack
+- **Frontend:** React 19, TypeScript, React Router 7, Vite, Native Fetch API clients with AbortSignal cancellation.
+- **Backend:** Node.js, Express, TypeScript (ES Modules).
+- **Persistence & ORM:** PostgreSQL 17, Prisma 7 with `@prisma/adapter-pg` driver adapter.
+- **Media Storage:** Cloudinary (server-side media upload with `IMAGE`, `VIDEO`, `DOCUMENT` resource mapping), Multer (memory storage).
+- **Authentication & Security:** Admin database entity, bcrypt password hashing, short-lived JWTs (`HS256`), Helmet security headers, rate limiting, and URL scheme whitelisting.
 
-| Layer | Technology |
-|---|---|
-| Frontend | HTML, CSS, JavaScript |
-| Backend | Node.js, Express |
-| Data output | Excel (.xlsx) |
+---
 
-## Engineering notes
+## Project Structure
 
-- The plain HTML/CSS/JS frontend and Excel-based backend weren't the "impressive" technical choice — they were the *right* one. The client needed something they could keep running and lightly maintain themselves after handoff, without depending on a developer for every small change. Matching the solution to the client's actual technical comfort level mattered more than showcasing a bigger stack.
-- Writing directly to Excel instead of standing up a database avoided unnecessary infrastructure for a client who just needed a usable, glanceable list of enquiries — not a system to query or scale.
-- Delivered end-to-end: requirements gathering, build, deployment, and client coordination, not just the code.
-
-## Project structure
-
-```
+```text
 virtual-reality/
-├── backend/     # Express server handling form submissions and Excel writes
-└── frontend/    # Static HTML/CSS/JS enquiry site
+├── backend/                  # Express REST API & SEO pre-rendering service
+│   ├── prisma/               # Prisma schema & migrations
+│   └── src/
+│       ├── controllers/      # HTTP controllers (public & admin)
+│       ├── lib/              # Prisma client adapter & Cloudinary setup
+│       ├── repositories/     # Data-access layer & publication boundary enforcement
+│       ├── routes/           # Express route definitions (public, admin, seo)
+│       ├── services/         # Application workflows & SEO renderer service
+│       └── validators/       # Input validation middleware
+├── frontend/                 # Vite React SPA
+│   ├── public/               # Static icons, manifest, service worker
+│   └── src/
+│       ├── api/              # Typed API clients
+│       ├── components/       # Domain-grouped UI components (home, developer, project, search, admin)
+│       ├── context/          # Global application state (AssistantContext, HeaderContext)
+│       ├── pages/            # Page-level orchestrators
+│       ├── router/           # React Router route configuration
+│       └── styles/           # Modular CSS architecture
+├── docs/                     # Architectural documentation, state records, and changelog
+└── vercel.json               # Root edge rewrite rules (proxying SEO routes to Render)
 ```
 
 ---
 
-Built by [Sumedh Gaikwad](https://github.com/SumedhGaikwad03) — [Portfolio](https://sumedh-portfolio-cyan.vercel.app/)
+## Development Setup
+
+### Prerequisites
+- Node.js 20+
+- PostgreSQL 17+
+- npm
+
+### Installation & Running Locally
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/SumedhGaikwad03/virtual-reality.git
+   cd virtual-reality
+   ```
+
+2. **Backend Setup:**
+   ```bash
+   cd backend
+   npm install
+   # Configure your .env file with DATABASE_URL, JWT_SECRET, CLOUDINARY credentials
+   npx prisma generate
+   npm run dev
+   ```
+
+3. **Frontend Setup:**
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
+   ```
+
+4. **Production Build Verification:**
+   ```bash
+   # Backend TypeScript build
+   cd backend && npm run build
+   # Frontend Vite build
+   cd ../frontend && npm run build
+   ```
+
+---
+
+## License
+
+Private / Proprietary — All Rights Reserved. Built by [Sumedh Gaikwad](https://github.com/SumedhGaikwad03).

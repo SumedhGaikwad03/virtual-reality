@@ -17,7 +17,7 @@ Admin JWTs use `JWT_EXPIRES_IN` when configured and otherwise expire after 15 mi
 The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()` responses for exactly four operational KPIs: leads created today, all `NEW` leads requiring attention, `IN_PROGRESS` leads, and published projects. It shows up to five recent unattended leads with the shared WhatsApp/Call `LeadActions` component and an additional compact `IN_PROGRESS` work queue; no activity/audit API is invented. The login response's existing admin name/email is persisted alongside the access token for the dashboard greeting and cleared on logout.
 
 ### Product Direction
-- **Rule-Based Conversational Property Discovery**: Powered by `query-builder.ts` and `useSearchChat.ts`. User answers option buttons (`[3 BHK]`, `[Wakad]`) to progressively filter published catalog inventory. Every option is strictly derived from remaining candidate inventory (100% database grounded, no non-existent choices). Questions stop automatically once candidate inventory reaches $\le 3$ unique projects (`PROJECT_STOPPING_THRESHOLD = 3`) or 1 project. Starting prices are cleanly formatted (`₹ 1.50 Cr+`, `₹ 95 Lakhs+`).
+- **Rule-Based Conversational Property Discovery**: Powered by `query-builder.ts`, `assistant-dialogue.ts`, and `useSearchChat.ts`. User answers option buttons (`[3 BHK]`, `[Wakad]`) to progressively filter published catalog inventory with warm, human-friendly concierge dialogue from **Tara · Property Discovery Advisor**. Every option is strictly derived from remaining candidate inventory (100% database grounded, no non-existent choices). Questions stop automatically once candidate inventory reaches $\le 3$ unique projects (`PROJECT_STOPPING_THRESHOLD = 3`) or 1 project. Starting prices are cleanly formatted (`₹ 1.50 Cr+`, `₹ 95 Lakhs+`).
 - **Trusted Developer Attribution**: `GlobalHeader` displays `[Developer Name]` directly on Developer and Project pages. Platform identity (`Virtual Reality`) is established in `AboutFooter`.
 - **Global Public Shell**: `PublicShell.tsx` wraps all public routes (`/`, `/search`, `/:developerSlug`, `/:developerSlug/:locationSlug/:projectSlug`). Admin routes (`/admin/*`) remain isolated.
 
@@ -26,7 +26,7 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 ## Locked Public Pages & Section Narratives
 
 1. **Homepage (`/`)**: `AtmosphericHero` $\rightarrow$ `ExploreDevelopers` $\rightarrow$ `FeaturedProjects` $\rightarrow$ `ConversationalSearchEntry` $\rightarrow$ `FirmOverview` $\rightarrow$ `ContactSection` $\rightarrow$ `AboutFooter`.
-2. **Search Page (`/search`)**: `SearchAssistant` (messages, chips, rule options) $\rightarrow$ `SearchResults` (`PropertyResultCard`).
+2. **Search Page (`/search`)**: `SearchAssistant` (Tara advisor identity & avatar, messages, context trail, rule options) $\rightarrow$ `SearchResults` (`PropertyResultCard`).
 3. **Developer Page (`/:developerSlug`)**: `DeveloperHero` $\rightarrow$ `DeveloperIntro` $\rightarrow$ `DeveloperProjects` $\rightarrow$ `DeveloperLeadSection` $\rightarrow$ `AboutFooter`.
 4. **Project Page (`/:developerSlug/:locationSlug/:projectSlug`)**:
    - `ProjectHero` (Static Top Hero)
@@ -58,7 +58,9 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 - `frontend/src/components/project/ProjectInteriorExteriorCarousel.tsx`: Combined `INTERIOR` + `EXTERIOR` visual story carousel.
 - `frontend/src/context/AssistantContext.tsx`: Global search assistant overlay state & `useSearchChat`.
 - `frontend/src/context/HeaderContext.tsx`: `developerName` context provider.
-- `frontend/src/services/query-builder.ts`: Sequential rule engine logic.
+- `frontend/src/services/query-builder.ts`: Sequential rule engine logic and candidate filtering.
+- `frontend/src/services/assistant-dialogue.ts`: Tara conversational presentation and acknowledgement dialogue layer.
+- `frontend/src/components/search/TaraAvatar.tsx`: Reusable Tara visual avatar token component.
 - `backend/src/repositories/project.repository.ts`: Multi-entity publication queries and `ProjectAmenity` operations.
 - `frontend/src/pages/admin/ProjectFormPage.tsx`: Admin project form with structured Project Highlights and Project Amenities authoring sections.
 - `frontend/public/manifest.webmanifest` and `frontend/public/sw.js`: Installable admin PWA metadata, shell caching, and Web Push notification handling.
@@ -89,8 +91,20 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 - **Push Verification**: Leads includes the explicit notification permission control and a real backend-dispatched test notification; the UI reports unsupported, denied, unregistered, and registered device states.
 - **Developer Lead Attribution**: Direct developer enquiries now forward the validated `developerId`; project and configuration enquiries retain their existing relationship-derived attribution.
 - **Security & Authentication Architecture**: Short-lived JWTs (default 15-minute lifetime) signed with HMAC-SHA256 (`HS256`) and verified server-side with pinned algorithm configuration. `JWT_SECRET` must be non-empty and at least 32 characters in production. All admin endpoints enforce `requireAdminAuthentication`. Login and lead endpoints are strictly rate limited, input lengths are bounded against DoS, and all user-supplied URLs enforce `http:`/`https:` protocol whitelists. The scraper features DNS resolution and private/loopback IP validation against SSRF.
+- **Server-Side SEO Pre-Rendering & Edge Rewrites (Phase 1 & Phase 2)**:
+  - Vercel edge rewrites (`vercel.json`) proxy public traffic to the Express backend (`seo.routes.ts` ➔ `seo-renderer.service.ts`) while keeping `/search` and `/admin/*` as client-side Vite SPAs.
+  - Pre-renders full semantic HTML with Open Graph, Twitter Cards, Canonical URLs, and Schema.org JSON-LD structured data for:
+    - Homepage (`/` with `WebSite` and `Organization`)
+    - Pune City Hub (`/projects-in-pune` with `Place`, `ItemList` of 6 projects, and `BreadcrumbList`)
+    - Locality Hubs (`/location/kharadi`, `/location/pimpri`, `/location/hinjewadi`, `/location/magarpatta` with `Place`, `ItemList`, and `BreadcrumbList`)
+    - Developer Profiles (`/:developerSlug` with `Organization` and `BreadcrumbList`)
+    - Project Details (`/:developerSlug/:locationSlug/:projectSlug` with `ApartmentComplex`, `Offer`, and `BreadcrumbList`)
+  - Dynamic XML Sitemap (`/sitemap.xml`) indexing 16 published URLs with valid ISO `<lastmod>` timestamps.
+  - Robots directives (`/robots.txt`) declaring sitemap and disallowing administrative/internal paths.
+  - Enforces strict publication boundary (`publishStatus === "PUBLISHED"` on both project and developer) returning HTTP 404 + noindex on draft or missing entities.
 
 ---
 
-## Immediate Next Priority
-Phase 4: Site-wide visual refinement pass (typography polish, CSS design token unification, mobile spacing refinements).
+## Current Status & Next Steps
+- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Phase 1 (Foundation), and SEO Phase 2 (City Hub, Location Hubs, 16-URL Sitemap, Edge Rewrites).
+- **Branch**: All Phase 1 and Phase 2 work verified and integrated on `develop`.

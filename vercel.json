@@ -25,6 +25,14 @@
       "destination": "/index.html"
     },
     {
+      "source": "/projects-in-pune",
+      "destination": "https://virtual-reality-backend.onrender.com/seo/city-hub"
+    },
+    {
+      "source": "/location/:locationSlug",
+      "destination": "https://virtual-reality-backend.onrender.com/seo/location/:locationSlug"
+    },
+    {
       "source": "/:developerSlug/:locationSlug/:projectSlug",
       "destination": "https://virtual-reality-backend.onrender.com/seo/project/:developerSlug/:locationSlug/:projectSlug"
     },
