@@ -88,6 +88,7 @@ export async function getSite() {
         name: developer.name,
         slug: developer.slug,
         logoUrl: developer.logoUrl,
+        bannerMedia: developer.media[0] ?? null,
       })),
     },
   };

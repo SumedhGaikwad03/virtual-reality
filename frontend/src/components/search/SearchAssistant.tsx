@@ -54,6 +54,7 @@ export function SearchAssistant({
 
       {isZeroMatches ? (
         <SearchAssistantEmptyState
+          query={query}
           onRemoveAttribute={removeQueryAttribute}
           onReset={reset}
         />

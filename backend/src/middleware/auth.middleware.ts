@@ -31,7 +31,9 @@ export function requireAdminAuthentication(
   }
 
   try {
-    const payload = jwt.verify(token, secret);
+    const payload = jwt.verify(token, secret, {
+      algorithms: ["HS256"],
+    });
     const jwtPayload = typeof payload === "string" ? undefined : payload;
 
     if (

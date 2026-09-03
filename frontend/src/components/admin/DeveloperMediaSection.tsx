@@ -161,7 +161,7 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
               <div className="slot-actions">
                 <button
                   type="button"
-                  className="admin-btn-secondary-danger"
+                  className="admin-action admin-action--danger"
                   onClick={() => handleRemoveMedia(activeBanner.id, "Brand Banner")}
                 >
                   Remove Banner
@@ -188,7 +188,7 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
             <button
               type="submit"
               disabled={!bannerFile || isUploadingBanner}
-              className="admin-btn-primary"
+              className="admin-action admin-action--primary"
             >
               {isUploadingBanner ? "Uploading..." : activeBanner ? "Replace Banner" : "Upload Banner"}
             </button>
@@ -210,7 +210,7 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
               <div className="slot-actions">
                 <button
                   type="button"
-                  className="admin-btn-secondary-danger"
+                  className="admin-action admin-action--danger"
                   onClick={() => handleRemoveMedia(activeHero.id, "Developer Hero")}
                 >
                   Remove Hero
@@ -237,7 +237,7 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
             <button
               type="submit"
               disabled={!heroFile || isUploadingHero}
-              className="admin-btn-primary"
+              className="admin-action admin-action--primary"
             >
               {isUploadingHero ? "Uploading..." : activeHero ? "Replace Hero" : "Upload Hero"}
             </button>

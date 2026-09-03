@@ -25,6 +25,7 @@ import {
   listConfigurationMediaController,
   listContextMediaController,
   listDeveloperMediaController,
+  listHomeMediaController,
   listProjectMediaController,
   updateMediaController,
   uploadMediaController,
@@ -96,7 +97,7 @@ router.post(
  */
 router.get(
   "/",
-  listContextMediaController,
+  listHomeMediaController,
 );
 
 /*

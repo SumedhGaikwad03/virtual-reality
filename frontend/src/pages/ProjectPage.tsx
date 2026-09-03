@@ -12,16 +12,16 @@
  * 2. Static Top Hero (ProjectHero)
  * 3. Sticky Sub-Navigation (ProjectSubNav)
  * 4. Project Overview / optional Key Highlights (ProjectOverview)
- * 5. Project Showcase (ProjectHeroCarousel + ProjectInteriorExteriorCarousel)
- * 6. Available Configurations (ConfigurationSection)
- * 7. Configuration-Specific Media (ConfigurationMediaSection)
- * 8. Location with Location Image (ProjectLocation)
- * 9. Amenities (ProjectAmenities)
- * 10. Project Gallery / Construction Media (TapToExploreGallery)
- * 11. Optional Project Video (ProjectVideoSection)
- * 12. Developer Attribution (ProjectDeveloper)
- * 13. Lead / Enquiry Section (LeadSection)
- * 14. Footer (AboutFooter)
+ * 5. Optional Project Video (ProjectVideoSection)
+ * 6. Interior & Exterior Showcase (ProjectInteriorExteriorCarousel)
+ * 7. Amenities (ProjectAmenities)
+ * 8. Featured Showcase (ProjectHeroCarousel)
+ * 9. Available Configurations (ConfigurationSection)
+ * 10. Configuration-Specific Media (ConfigurationMediaSection)
+ * 11. Location with Location Image (ProjectLocation)
+ * 12. Project Gallery / Construction Media (TapToExploreGallery)
+ * 13. Developer Attribution (ProjectDeveloper)
+ * 14. Lead / Enquiry Section (LeadSection), then Footer (AboutFooter)
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -35,6 +35,7 @@ import { ConfigurationSection } from "../components/project/ConfigurationSection
 import { LeadSection } from "../components/project/LeadSection";
 import { ProjectAmenities } from "../components/project/ProjectAmenities";
 import { ProjectDeveloper } from "../components/project/ProjectDeveloper";
+import { ProjectExploreNav } from "../components/project/ProjectExploreNav";
 import { ProjectHero } from "../components/project/ProjectHero";
 import { ProjectHeroCarousel } from "../components/project/ProjectHeroCarousel";
 import { ProjectInteriorExteriorCarousel } from "../components/project/ProjectInteriorExteriorCarousel";
@@ -144,6 +145,16 @@ export function ProjectPage() {
 
   const hasConfigurations = project.configurations.length > 0;
   const hasAmenities = project.amenities.length > 0;
+  const hasInteriorExterior = project.media.some(
+    (item) => item.category === "INTERIOR" || item.category === "EXTERIOR",
+  );
+  const hasFeaturedShowcase = project.media.some(
+    (item) => item.category === "HERO_CAROUSEL",
+  );
+  const hasShowcase = hasInteriorExterior || hasFeaturedShowcase;
+  const hasGallery = project.media.some(
+    (item) => item.type === "IMAGE" && (item.category === "GALLERY" || item.category === "CONSTRUCTION"),
+  );
 
   // Extract location media if present (category === "LOCATION")
   const locationMedia = project.media.find(
@@ -169,43 +180,54 @@ export function ProjectPage() {
         {/* 2. Project Overview / Identity Narrative and optional Key Highlights */}
         <ProjectOverview project={project} />
 
-        {/* 3. Project Showcase: hero carousel (category === "HERO_CAROUSEL") */}
-        <ProjectHeroCarousel media={project.media} />
+        <ProjectExploreNav
+          hasConfigurations={hasConfigurations}
+          hasShowcase={hasShowcase}
+          showcaseTarget={hasInteriorExterior ? "project-showcase-heading" : "project-featured-showcase-heading"}
+          hasAmenities={hasAmenities}
+          hasGallery={hasGallery}
+        />
+
+        {/* 3. Optional project video; the component returns null when unavailable. */}
+        <ProjectVideoSection media={project.media} />
 
         {/* 4. Project Showcase: combined Interior + Exterior carousel */}
         <ProjectInteriorExteriorCarousel media={project.media} />
 
-        {/* 5. Available Configurations */}
+        {/* 5. Amenities & Features Grid */}
+        <ProjectAmenities amenities={project.amenities} />
+
+        {/* 6. Featured showcase: HERO_CAROUSEL media */}
+        <ProjectHeroCarousel media={project.media} />
+
+        {/* 7. Available Configurations */}
         <ConfigurationSection
           configurations={project.configurations}
           selectedConfigurationId={configurationId}
           onSelectConfiguration={handleSelectConfiguration}
         />
 
-        {/* 6. Configuration-Specific Media */}
+        {/* 8. Configuration-Specific Media */}
         {selectedConfiguration && (
-          <ConfigurationMediaSection configuration={selectedConfiguration} />
+          <ConfigurationMediaSection
+            configuration={selectedConfiguration}
+            onOpenEnquiry={openEnquiryModal}
+          />
         )}
 
-        {/* 7. Location Section with Location Media Image */}
+        {/* 9. Location Section with Location Media Image */}
         <ProjectLocation
           location={project.location}
           locationMedia={locationMedia}
         />
 
-        {/* 8. Amenities & Features Grid */}
-        <ProjectAmenities amenities={project.amenities} />
-
-        {/* 9. Tap to Explore Project Gallery; component returns null without valid project images */}
+        {/* 10. Tap to Explore Project Gallery; component returns null without valid project images */}
         <TapToExploreGallery media={project.media} />
-
-        {/* 10. Optional Project Video Embed */}
-        <ProjectVideoSection media={project.media} />
 
         {/* 11. Developer Attribution Card */}
         <ProjectDeveloper developer={project.developer} />
 
-        {/* 12. Lead Enquiry Section */}
+        {/* 12. Lead Enquiry Section — final conversion step */}
         <LeadSection
           project={project}
           selectedConfigurationId={selectedConfiguration?.id ?? null}

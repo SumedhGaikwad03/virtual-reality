@@ -60,6 +60,20 @@ export function DeveloperHero({ developer }: DeveloperHeroProps) {
             </div>
           )}
         </div>
+
+        <div className="developer-hero-actions">
+          <button
+            type="button"
+            className="developer-hero-contact-btn"
+            onClick={() => {
+              const el = document.getElementById("developer-enquiry-heading");
+              el?.scrollIntoView({ behavior: "smooth", block: "start" });
+              el?.parentElement?.querySelector<HTMLInputElement>("input")?.focus();
+            }}
+          >
+            Enquire with {developer.name} →
+          </button>
+        </div>
       </div>
     </section>
   );

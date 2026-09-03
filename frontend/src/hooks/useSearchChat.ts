@@ -3,7 +3,7 @@
  * State management hook for pure rule-based conversational property search discovery.
  *
  * FLOW:
- * Guided Search Lifecycle Flow
+ * Guided Search Lifecycle Flow: AssistantProvider / SearchPage -> useSearchChat.
  *
  * RESPONSIBILITY:
  * Manages search catalog loading, multi-turn query state transitions, option selections,
@@ -81,6 +81,19 @@ export function useSearchChat() {
     setQuery(nextQuery);
     setState(nextState);
 
+    let assistantReply = "";
+    if (nextState.nextRule) {
+      assistantReply = nextState.nextRule.question;
+    } else if (nextState.uniqueProjects.length === 0) {
+      assistantReply = "No properties match those choices right now.";
+    } else if (nextState.uniqueProjects.length === 1) {
+      assistantReply = "I found 1 matching project for your search.";
+    } else {
+      assistantReply = `Here are ${nextState.uniqueProjects.length} matching projects (${nextState.matches.length} ${
+        nextState.matches.length === 1 ? "layout" : "layouts"
+      }).`;
+    }
+
     setMessages((current) => [
       ...current,
       {
@@ -88,24 +101,11 @@ export function useSearchChat() {
         role: "user",
         text: label,
       },
-      ...(nextState.nextRule
-        ? [
-            {
-              id: `assistant-${Date.now()}`,
-              role: "assistant" as const,
-              text: nextState.nextRule.question,
-            },
-          ]
-        : [
-            {
-              id: `assistant-${Date.now()}`,
-              role: "assistant" as const,
-              text:
-                nextState.matches.length > 0
-                  ? `Here are ${nextState.matches.length} properties matching your preferences.`
-                  : "I couldn't find an exact match for those preferences.",
-            },
-          ]),
+      {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        text: assistantReply,
+      },
     ]);
   }
 
@@ -118,15 +118,27 @@ export function useSearchChat() {
     setQuery(nextQuery);
     setState(nextState);
 
+    let assistantReply = "";
     if (nextState.nextRule) {
-      setMessages([
-        {
-          id: `assistant-${Date.now()}`,
-          role: "assistant",
-          text: nextState.nextRule.question,
-        },
-      ]);
+      assistantReply = nextState.nextRule.question;
+    } else if (nextState.uniqueProjects.length === 0) {
+      assistantReply = "No properties match those choices right now.";
+    } else if (nextState.uniqueProjects.length === 1) {
+      assistantReply = "I found 1 matching project for your search.";
+    } else {
+      assistantReply = `Here are ${nextState.uniqueProjects.length} matching projects (${nextState.matches.length} ${
+        nextState.matches.length === 1 ? "layout" : "layouts"
+      }).`;
     }
+
+    setMessages((current) => [
+      ...current,
+      {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        text: assistantReply,
+      },
+    ]);
   }
 
   // Rolls back one question step in the search history

@@ -116,6 +116,7 @@ export function ProjectInteriorExteriorCarousel({ media }: ProjectInteriorExteri
 
   return (
     <section
+      id="project-showcase-heading"
       className="project-ie-carousel-section"
       aria-label="Interior and Exterior Visual Story"
       tabIndex={0}

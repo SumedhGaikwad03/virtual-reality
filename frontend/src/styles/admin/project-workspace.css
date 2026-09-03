@@ -1,0 +1,156 @@
+/*
+ * PURPOSE:
+ * Styles the contextual project workspace navigation.
+ *
+ * FLOW:
+ * ProjectWorkspaceNav -> project-scoped admin pages -> responsive navigation.
+ *
+ * RESPONSIBILITY:
+ * Keep project section navigation clear, compact, and usable on small screens.
+ */
+
+.admin-project-workspace {
+  margin: 0.5rem 0 1.75rem;
+  padding: 1.25rem 1.25rem 0;
+  min-width: 0;
+  max-width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.admin-project-workspace-heading p,
+.admin-project-workspace-heading h1 {
+  margin: 0;
+}
+
+.admin-project-workspace-heading p {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-project-workspace-heading h1 {
+  color: #0f172a;
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+}
+
+.admin-project-workspace-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-project-workspace-nav a:not(.admin-action) {
+  flex: 0 0 auto;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 2px solid transparent;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.admin-project-workspace-nav a:not(.admin-action):hover,
+.admin-project-workspace-nav a:not(.admin-action):focus-visible {
+  color: #0f172a;
+}
+
+.admin-project-workspace-nav a:not(.admin-action).is-active {
+  color: #172f68;
+  font-weight: 700;
+  border-bottom-color: #172f68;
+}
+
+.admin-project-workspace-nav .admin-action--utility {
+  margin-left: auto;
+  margin-bottom: 0.35rem;
+}
+
+.admin-form-guidance {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.admin-unsaved-state {
+  color: #b45309;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.admin-project-readiness {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.admin-project-readiness div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+}
+
+.admin-project-readiness div strong {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.admin-project-readiness span {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.admin-project-readiness .admin-status-ready {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.admin-highlights-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .admin-project-workspace {
+    padding: 1rem 1rem 0;
+  }
+
+  .admin-project-workspace-nav {
+    margin-inline: -1rem;
+    padding-inline: 0.75rem;
+  }
+
+  .admin-project-readiness {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .admin-project-readiness {
+    grid-template-columns: 1fr;
+  }
+}

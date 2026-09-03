@@ -6,7 +6,7 @@
  * Public Developer Discovery Flow
  *
  * RESPONSIBILITY:
- * Displays the developer description/bio and outbound official website link.
+ * Displays the developer description/bio without exposing administrative external-link metadata publicly.
  */
 
 import type { Developer } from "../../types/developer";
@@ -20,11 +20,6 @@ export function DeveloperOverview({ developer }: DeveloperOverviewProps) {
     <section>
       <h2>About {developer.name}</h2>
       {developer.description && <p>{developer.description}</p>}
-      {developer.websiteUrl && (
-        <a href={developer.websiteUrl} target="_blank" rel="noreferrer">
-          Visit website
-        </a>
-      )}
     </section>
   );
 }

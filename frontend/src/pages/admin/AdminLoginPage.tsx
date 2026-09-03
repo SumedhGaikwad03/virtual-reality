@@ -1,3 +1,15 @@
+/*
+ * PURPOSE:
+ * Admin login page component.
+ *
+ * FLOW:
+ * Admin routing -> AdminLoginPage -> loginAdmin API -> AuthContext.
+ *
+ * RESPONSIBILITY:
+ * Provides a clean, restrained internal administration portal login screen,
+ * handling submission states, validation errors, and redirecting authenticated sessions.
+ */
+
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,7 +27,7 @@ type LoginLocationState = {
 };
 
 export function AdminLoginPage() {
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated, isAuthReady, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState("");
@@ -24,10 +36,22 @@ export function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/admin", { replace: true });
+    if (isAuthReady && isAuthenticated) {
+      const state = location.state as LoginLocationState | null;
+      const destination = state?.from
+        ? `${state.from.pathname}${state.from.search}`
+        : "/admin";
+      navigate(destination, { replace: true, state: null });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthReady, isAuthenticated, location.state, navigate]);
+
+  if (!isAuthReady) {
+    return (
+      <main className="admin-login-page">
+        <p className="admin-login-loading">Checking admin session...</p>
+      </main>
+    );
+  }
 
   if (isAuthenticated) return null;
 
@@ -38,11 +62,6 @@ export function AdminLoginPage() {
 
     try {
       await login(email.trim(), password);
-      const state = location.state as LoginLocationState | null;
-      const destination = state?.from
-        ? `${state.from.pathname}${state.from.search}`
-        : "/admin";
-      navigate(destination, { replace: true });
     } catch (loginError) {
       if (isInvalidCredentialsError(loginError)) {
         setError("Invalid email or password.");
@@ -58,31 +77,53 @@ export function AdminLoginPage() {
 
   return (
     <main className="admin-login-page">
-      <form className="admin-login-form" onSubmit={handleSubmit}>
-        <h1>Admin Login</h1>
-        <label>
-          Email
-          <input
-            required
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </label>
-        <label>
-          Password
-          <input
-            required
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-        {error && <p role="alert">{error}</p>}
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Signing in..." : "Sign in"}
-        </button>
-      </form>
+      <div className="admin-login-card">
+        <header className="admin-login-header">
+          <p className="admin-login-eyebrow">Virtual Reality</p>
+          <h1>Administration Portal</h1>
+          <p className="admin-login-subtitle">Sign in to manage projects, developers, and leads.</p>
+        </header>
+
+        {error && (
+          <div className="admin-alert admin-alert-error" role="alert">
+            {error}
+          </div>
+        )}
+
+        <form className="admin-login-form" onSubmit={handleSubmit}>
+          <label className="admin-login-label">
+            <span>Email</span>
+            <input
+              required
+              type="email"
+              placeholder="admin@example.com"
+              value={email}
+              autoComplete="email"
+              disabled={isSubmitting}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </label>
+          <label className="admin-login-label">
+            <span>Password</span>
+            <input
+              required
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              autoComplete="current-password"
+              disabled={isSubmitting}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </label>
+          <button
+            className="admin-action admin-action--primary admin-login-btn"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

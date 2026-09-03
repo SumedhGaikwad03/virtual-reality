@@ -17,10 +17,14 @@ All public routes are wrapped in `<PublicShell />` layout route:
 ### Admin Routes (`/admin/*`)
 All admin routes are wrapped in `<ProtectedRoute>` (JWT guard) and `<AdminLayout>`:
 
+`AuthProvider` restores the locally stored access token synchronously, clears locally expired JWTs, and publishes an explicit readiness state before `ProtectedRoute` or the login redirect decision is made. Admin API 401 responses clear the token and dispatch the existing unauthorized event; there is no refresh-token flow or cross-device session invalidation.
+
+Admin access tokens default to a 15-minute JWT lifetime, overridable by `JWT_EXPIRES_IN`. The browser stores the token and admin identity in separate local-storage keys; logout clears both, malformed/expired tokens are discarded locally, and backend JWT verification remains the authorization authority. Each browser/device maintains an independent session.
+
 | Route Path | Component | Description |
 | :--- | :--- | :--- |
 | `/admin/login` | `AdminLoginPage.tsx` | Admin authentication login form |
-| `/admin` | `AdminDashboardPage.tsx` | Management overview metrics & shortcuts |
+| `/admin` | `AdminDashboardPage.tsx` | Operational lead/project metrics and work queues |
 | `/admin/developers` | `DevelopersPage.tsx` | List of developer entities |
 | `/admin/developers/new`, `/:id` | `DeveloperFormPage.tsx` | Create/edit developer form |
 | `/admin/projects` | `ProjectsPage.tsx` | List of project entities |
@@ -193,6 +197,10 @@ model Lead {
 
 The public project query exposes top-level `project.media` only for active media with `context = PROJECT`. Configuration-owned media remains available through each `project.configurations[].media` relation and is not included in the top-level project media collection.
 
+The homepage site query and developer portfolio query also scope project-card imagery to `context = PROJECT`. Homepage developer discovery includes at most one active direct `DEVELOPER_BANNER` asset per published developer; it falls back only to the developer's stored logo, never to descendant project or configuration media.
+
+Public project navigation is implemented as anchor scrolling to existing sections rather than duplicate routes. Developer official website metadata remains stored and editable for admin use but is not rendered as a public outbound link; the project location's map link is retained as an essential discovery action.
+
 The Project Gallery consumes `IMAGE` records from this already project-scoped collection. Consequently, project-owned photos are gallery-eligible regardless of specialized category, while `VIDEO` and `DOCUMENT` records remain excluded from the photo gallery. Configuration media cannot enter the gallery through the top-level relation.
 
 Configuration authoring is exposed through authenticated admin routes: configurations are created and listed under a project, and retrieved or updated by configuration ID. The current configuration entity supports name, BHK, carpet area, optional built-up and super-built-up areas, price-from, and availability status. It has no independent active flag, delete operation, description, bathroom count, or persisted configuration ordering field. Configuration media is managed separately through the configuration media route and remains related through `configurationId`.
@@ -214,6 +222,14 @@ The public lead controller forwards the validated direct `developerId` to the le
 Project highlights use the existing `ProjectHighlight` child model. The authenticated project editor manages them as a project-owned repeatable field through `/api/admin/projects/:projectId/highlights`; the public project query returns them ordered by `sortOrder` for `ProjectOverview`.
 
 The supported backend runtime is `backend/src/server.ts` compiled to `backend/dist/src/server.js`, with the development `PORT` configured as `3000`. `backend/server.js` is retained legacy code and is not the current API server; it does not register the layered admin routes. The frontend's relative `/api` calls are proxied by Vite to the configured backend port.
+
+The admin sidebar links to Developers, Projects, Media, Leads, and Import. Configurations are intentionally reached from a project because they are project-owned. Opening a project enters a contextual workspace that links to the existing overview (`ProjectFormPage`), project media, configurations, in-page highlights and amenities authoring, and the existing public project URL as Preview. Configuration media remains reached through the selected configuration's existing route. Project and configuration forms show local unsaved/saved feedback without merging their independent APIs; new records continue into their contextual edit workflow. At phone widths the shared admin shell becomes a compact header with an independently scrollable section navigation strip, while content children are constrained with `min-width: 0`/`max-width: 100%` so lists, cards, and forms cannot widen the document. Push notification controls are presented in the Leads workspace, while the authenticated multi-device subscription architecture remains unchanged.
+
+Configuration editing keeps project context visible and uses a shared action hierarchy: the save/create submit button is primary, while Back to Configurations and Manage Configuration Media are secondary actions. Configuration media remains reached through its existing configuration-scoped route; on narrow screens the action group stacks vertically.
+
+`AdminDashboardPage` is an operational landing page backed by the existing authenticated lead and project list APIs. Its four KPIs are calculated client-side from those bounded admin responses: today’s created leads, `NEW` leads, `IN_PROGRESS` leads, and `PUBLISHED` projects. The attention list reuses `LeadActions`; there is intentionally no recent-activity feed because no existing activity API is available.
+
+Admin media listings preserve context boundaries at the repository/controller layer: the `/admin/media` root is explicitly HOME-scoped, while the separate context path accepts an explicit context parameter and developer, project, and configuration owner queries require their matching DEVELOPER, PROJECT, or CONFIGURATION context. HOME uploads continue to omit all entity owner IDs, and the existing media update ownership validation remains authoritative.
 
 ---
 
@@ -239,8 +255,13 @@ $$\text{User clicks "Ask Assistant" or navigates to } /search$$
 $$\downarrow$$
 $$\text{openAssistant() opens PropertyAssistantOverlay } \longrightarrow \text{useSearchChat hook loads catalog } (\text{GET /api/search/catalog})$$
 $$\downarrow$$
-$$\text{query-builder.ts evaluates sequential rules } (\text{BHK } \rightarrow \text{ Location } \rightarrow \text{ Developer } \rightarrow \text{ Price } \rightarrow \text{ Availability})$$
+$$\text{query-builder.ts derives options strictly from candidate matches; skips no-op questions}$$
 $$\downarrow$$
-$$\text{User selects option button } [3\text{ BHK}] \longrightarrow \text{query state updates } \longrightarrow \text{next rule option presented}$$
+$$\text{User selects option button } [3\text{ BHK}] \longrightarrow \text{query state updates } \longrightarrow \text{options dynamically recalculated}$$
 $$\downarrow$$
-$$\text{Click "View N Matching Homes" } \longrightarrow \text{Navigates to } /search \text{ displaying PropertyResultCard items}$$
+$$\text{When distinct projects } \le 3 \text{ (or 1 project) } \longrightarrow \text{questioning stops immediately } \longrightarrow \text{displays matching property cards}$$
+$$\downarrow$$
+$$\text{Click "View Project" } \longrightarrow \text{Navigates directly to } /:devSlug/:locSlug/:projSlug?configuration=:configId$$
+### Admin action language
+
+Admin actions use shared semantic classes in `styles/admin/admin.css`: primary actions are filled, secondary actions are outlined, utility navigation remains compact, and WhatsApp/Call controls use a grouped communication treatment. Responsive layouts stack or wrap these controls at narrow widths without changing routes or handlers.

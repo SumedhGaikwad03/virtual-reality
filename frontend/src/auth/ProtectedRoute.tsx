@@ -7,8 +7,12 @@ type ProtectedRouteProps = {
 };
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAuthReady } = useAuth();
   const location = useLocation();
+
+  if (!isAuthReady) {
+    return <p>Checking admin session...</p>;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace state={{ from: location }} />;

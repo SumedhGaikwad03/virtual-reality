@@ -30,19 +30,6 @@ export function DeveloperIntro({ developer }: DeveloperIntroProps) {
             Distinguished real-estate developer committed to architectural elegance, structural excellence, and prime location developments.
           </p>
         )}
-        {developer.websiteUrl && (
-          <div className="developer-intro-website">
-            <a
-              href={developer.websiteUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="developer-website-link"
-              aria-label={`Visit official website of ${developer.name}`}
-            >
-              Visit Official Website →
-            </a>
-          </div>
-        )}
       </div>
     </section>
   );

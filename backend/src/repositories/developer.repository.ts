@@ -114,6 +114,7 @@ export class DeveloperRepository {
               where: {
                 type: "IMAGE",
                 isActive: true,
+                context: "PROJECT",
                 OR: [
                   { category: "CARD" },
                   { category: "HERO" },

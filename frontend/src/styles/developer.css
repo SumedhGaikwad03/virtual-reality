@@ -181,6 +181,38 @@
   font-family: var(--font-serif, "Playfair Display", Georgia, serif);
 }
 
+.developer-hero-actions {
+  margin-top: 1.25rem;
+}
+
+.developer-hero-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.85rem 1.85rem;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+  letter-spacing: 0.01em;
+}
+
+.developer-hero-contact-btn:hover {
+  background-color: #f1f5f9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+.developer-hero-contact-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
 /* ==========================================================================
    3. Developer Introduction / Identity
    ========================================================================== */

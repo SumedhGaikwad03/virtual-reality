@@ -75,6 +75,7 @@ export class SiteRepository {
           where: {
             type: "IMAGE",
             isActive: true,
+            context: "PROJECT",
           },
           orderBy: [
             { sortOrder: "asc" },
@@ -110,6 +111,26 @@ export class SiteRepository {
         name: true,
         slug: true,
         logoUrl: true,
+        media: {
+          where: {
+            context: "DEVELOPER",
+            category: "DEVELOPER_BANNER",
+            isActive: true,
+          },
+          orderBy: [
+            { isPrimary: "desc" },
+            { sortOrder: "asc" },
+            { createdAt: "asc" },
+            { id: "asc" },
+          ],
+          take: 1,
+          select: {
+            id: true,
+            url: true,
+            thumbnailUrl: true,
+            altText: true,
+          },
+        },
       },
     });
   }

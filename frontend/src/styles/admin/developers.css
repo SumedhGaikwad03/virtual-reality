@@ -226,3 +226,8 @@
   background-color: #fef2f2;
 }
 
+@media (max-width: 640px) {
+  .admin-developer-media-grid {
+    grid-template-columns: 1fr;
+  }
+}

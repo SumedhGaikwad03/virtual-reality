@@ -23,6 +23,7 @@ import {
   uploadMedia,
 } from "../../api/admin-media";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { ProjectWorkspaceNav } from "../../components/admin/ProjectWorkspaceNav";
 
 import type { AdminProject } from "../../types/admin-project";
 import type {
@@ -305,15 +306,11 @@ export function ProjectMediaPage() {
 
   return (
     <AdminLayout>
-      <p>
-        <Link to="/admin/projects">← Projects</Link>
-        {project && (
-          <>
-            {" "}· <Link to={`/admin/projects/${projectId}`}>View Project</Link>
-            {" "}· <Link to={`/admin/projects/${projectId}/configurations`}>Configurations</Link>
-          </>
-        )}
-      </p>
+      <div className="admin-top-bar">
+        <Link className="admin-action admin-action--secondary" to="/admin/projects">
+          ← Back to Projects
+        </Link>
+      </div>
 
       {isLoading && <p>Loading project media...</p>}
 
@@ -323,6 +320,12 @@ export function ProjectMediaPage() {
 
       {!isLoading && project && (
         <>
+          <ProjectWorkspaceNav
+            projectId={project.id}
+            projectName={project.name}
+            active="media"
+            previewHref={`/${project.developer.slug}/${project.locationSlug}/${project.slug}`}
+          />
           <div className="admin-page-heading">
             <div>
               <p>Project Media</p>
@@ -335,6 +338,7 @@ export function ProjectMediaPage() {
 
           <section className="admin-card">
             <h2>Upload Project Media</h2>
+            <p>This media belongs to the project itself. Configuration floor plans and unit media are managed from Configurations.</p>
             <ProjectMediaUploadForm
               isUploading={isUploading}
               onSubmit={handleUpload}

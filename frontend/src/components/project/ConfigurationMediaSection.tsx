@@ -19,6 +19,7 @@ import type {
 
 type ConfigurationMediaSectionProps = {
   configuration: Configuration | null | undefined;
+  onOpenEnquiry?: (triggerEl?: HTMLElement | null) => void;
 };
 
 // Unit-specific media categories: ordered to present architectural layout (floor plans) first, followed by photos and documents
@@ -47,6 +48,7 @@ const categoryLabels: Record<MediaCategory, string> = {
 
 export function ConfigurationMediaSection({
   configuration,
+  onOpenEnquiry,
 }: ConfigurationMediaSectionProps) {
   if (!configuration) {
     return null;
@@ -79,7 +81,22 @@ export function ConfigurationMediaSection({
       className="configuration-media-section"
       aria-label={`${configuration.name} Media`}
     >
-      <h2>{configuration.name} · Media & Floor Plans</h2>
+      <div className="configuration-media-container">
+        <div className="configuration-media-header-bar">
+          <div>
+            <span className="section-eyebrow">LAYOUT DETAILS</span>
+            <h2 className="configuration-media-title">{configuration.name} · Media & Floor Plans</h2>
+          </div>
+          {onOpenEnquiry && (
+            <button
+              type="button"
+              className="config-media-enquiry-btn"
+              onClick={(e) => onOpenEnquiry(e.currentTarget)}
+            >
+              Enquire for {configuration.name} →
+            </button>
+          )}
+        </div>
 
       {media.length === 0 ? (
         <p>No media available for {configuration.name}.</p>
@@ -121,6 +138,7 @@ export function ConfigurationMediaSection({
           )}
         </>
       )}
+      </div>
     </section>
   );
 }

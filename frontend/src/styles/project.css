@@ -87,6 +87,71 @@
   --gutter: clamp(1rem, 4vw, 1.5rem);
 }
 
+.project-explore-nav {
+  width: 100%;
+  max-width: var(--w-content);
+  margin: 0 auto;
+  padding: 1.5rem var(--gutter) 0;
+  box-sizing: border-box;
+}
+
+.project-explore-nav-header p {
+  margin: 0.35rem 0 1rem;
+  color: var(--c-ink-faint);
+}
+
+.project-explore-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.project-explore-nav-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 4.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-white);
+  color: var(--c-ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--t-base), background-color var(--t-base), transform var(--t-base);
+}
+
+.project-explore-nav-card:hover,
+.project-explore-nav-card:focus-visible {
+  border-color: var(--c-border-mid);
+  background: var(--c-surface);
+  transform: translateY(-1px);
+}
+
+.project-explore-nav-card strong,
+.project-explore-nav-card small {
+  display: block;
+}
+
+.project-explore-nav-card small {
+  margin-top: 0.25rem;
+  color: var(--c-ink-faint);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 768px) {
+  .project-explore-nav-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .project-explore-nav-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ==========================================================================
    1. Page Container & Canvas
    ========================================================================== */
@@ -637,6 +702,128 @@
 /* ==========================================================================
    6. Configuration Media — Floor Plans / Unit Details
    ========================================================================== */
+.configuration-media-section {
+  width: 100%;
+  max-width: var(--w-content);
+  margin-inline: auto;
+  padding: clamp(2rem, 4vw, 3.5rem) var(--gutter);
+  box-sizing: border-box;
+}
+
+.configuration-media-container {
+  width: 100%;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  box-sizing: border-box;
+}
+
+.configuration-media-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--c-border);
+  flex-wrap: wrap;
+}
+
+.configuration-media-title {
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  color: var(--c-ink);
+  margin: 0.25rem 0 0;
+  font-family: var(--font-serif);
+  line-height: 1.2;
+}
+
+.config-media-enquiry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1.45rem;
+  background-color: var(--c-ink);
+  color: var(--c-white);
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: background-color var(--t-base), transform var(--t-fast);
+}
+
+.config-media-enquiry-btn:hover {
+  background-color: #1e293b;
+  transform: translateY(-2px);
+}
+
+.config-media-enquiry-btn:focus-visible {
+  outline: 2px solid var(--c-ink);
+  outline-offset: 2px;
+}
+
+.configuration-media-group {
+  margin-bottom: 2rem;
+}
+
+.configuration-media-group:last-child {
+  margin-bottom: 0;
+}
+
+.configuration-media-group h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--c-ink);
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.configuration-media-section .media-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 1.25rem;
+}
+
+.configuration-media-item {
+  background: #ffffff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  flex-direction: column;
+}
+
+.configuration-media-item img {
+  width: 100%;
+  height: 14rem;
+  object-fit: contain;
+  background-color: #f8fafc;
+  display: block;
+}
+
+.configuration-media-item video {
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+  display: block;
+}
+
+.configuration-media-item p {
+  margin: 0;
+  padding: 1rem;
+}
+
+.configuration-media-item a {
+  color: #2563eb;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
 .project-hero-carousel {
   max-width: var(--w-content);
   margin-inline: auto;

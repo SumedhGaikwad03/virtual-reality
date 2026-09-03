@@ -81,12 +81,16 @@ export function LeadDetailPage() {
 
   if (isLoading) return <AdminLayout><p>Loading lead...</p></AdminLayout>;
   if (!lead) {
-    return <AdminLayout><p><Link to="/admin/leads">← Leads</Link></p><p role="alert">{error ?? "Lead not found."}</p></AdminLayout>;
+    return <AdminLayout><p><Link className="admin-action admin-action--secondary" to="/admin/leads">← Leads</Link></p><p role="alert">{error ?? "Lead not found."}</p></AdminLayout>;
   }
 
   return (
     <AdminLayout>
-      <p><Link to="/admin/leads">← Leads</Link></p>
+      <div className="admin-top-bar">
+        <Link className="admin-action admin-action--secondary" to="/admin/leads">
+          ← Back to Leads
+        </Link>
+      </div>
       <h1>{lead.name}</h1>
       <LeadActions lead={lead} />
       {error && <p role="alert">{error}</p>}
@@ -108,7 +112,7 @@ export function LeadDetailPage() {
           {statuses.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
         </select></label>
         <label>Internal notes<textarea value={notes} onChange={(event) => setNotes(event.target.value)} /></label>
-        <button type="submit" disabled={isSubmitting}>{isSubmitting ? "Saving..." : "Save changes"}</button>
+        <button className="admin-action admin-action--primary" type="submit" disabled={isSubmitting}>{isSubmitting ? "Saving..." : "Save changes"}</button>
       </form>
     </AdminLayout>
   );

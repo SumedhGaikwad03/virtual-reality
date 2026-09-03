@@ -123,6 +123,7 @@ export function ProjectHeroCarousel({ media }: ProjectHeroCarouselProps) {
 
   return (
     <section
+      id="project-featured-showcase-heading"
       className="project-hero-carousel"
       aria-label="Project Hero Carousel"
       aria-roledescription="carousel"

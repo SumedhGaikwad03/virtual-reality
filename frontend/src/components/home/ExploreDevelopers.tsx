@@ -7,7 +7,7 @@
  *
  * RESPONSIBILITY:
  * Displays an independent, first-class list of published developers directly from site.developers.
- * Always renders the section immediately after the hero without depending on project relations or logos.
+ * Uses only the developer-owned banner or logo supplied by the site API; it never falls back to project media.
  */
 
 import { Link } from "react-router-dom";
@@ -42,7 +42,14 @@ export function ExploreDevelopers({ developers = [] }: ExploreDevelopersProps) {
                 role="listitem"
               >
                 <div className="developer-row-content">
-                  {developer.logoUrl ? (
+                  {developer.bannerMedia ? (
+                    <img
+                      src={developer.bannerMedia.thumbnailUrl ?? developer.bannerMedia.url}
+                      alt={developer.bannerMedia.altText || `${developer.name} brand banner`}
+                      className="developer-row-logo"
+                      loading="lazy"
+                    />
+                  ) : developer.logoUrl ? (
                     <img
                       src={developer.logoUrl}
                       alt={`${developer.name} logo`}

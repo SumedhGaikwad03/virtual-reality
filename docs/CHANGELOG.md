@@ -159,8 +159,93 @@
 
 ---
 
+## Phase 18: Admin Experience Simplification
+
+- Added an explicit frontend auth-readiness state before protected admin routes render.
+- Added client-side expiry handling for stored JWTs while retaining server-side 401 handling as authoritative.
+- Removed the non-functional global Configurations navigation item, placed notification controls inside Leads, and added focused mobile stacking for admin lists and media grids.
+- Added a contextual Project Workspace around existing project admin routes, with clear Overview, Media, Configurations, Highlights & Amenities, and public Preview navigation. Existing direct routes and independent save boundaries remain intact.
+- Refined the workspace for non-technical admins with overview readiness cues, local unsaved/success feedback, contextual post-save routing, and explicit project-versus-configuration media guidance.
+- Added shared mobile Admin shell constraints: compact header navigation, contained scrollable nav rows, shrinkable content children, and phone-specific readiness-card stacking.
+- Added a compact mobile More menu for secondary admin destinations and a four-KPI operational Admin Dashboard with existing lead actions and work queues.
+- Corrected admin media context routing and owner listing boundaries so `/admin/media` is explicitly HOME-scoped and HOME, DEVELOPER, PROJECT, and CONFIGURATION workflows cannot expose descendant media through shared ownership IDs.
+- Preserved the returned authenticated admin name/email through refresh and used it in the dashboard greeting; added an operational Ongoing Leads queue for `IN_PROGRESS` records.
+
+---
+
+## Phase 19: Public Project Discovery Refinement
+
+- Reordered the Project Page to progressively disclose optional video, interior/exterior showcase, amenities, featured showcase, configurations, location, gallery, and enquiry.
+- Simplified public configuration cards to BHK/name, carpet area, starting price, availability, and the existing selection CTA; built-up fields remain available in the backend/admin model.
+- Scoped homepage project-card imagery and homepage developer banners to their owning media contexts, with no cross-context fallback.
+
+## Phase 20: Public Navigation and Link Refinement
+
+- Added responsive `Explore this project` anchor navigation using existing project section destinations.
+- Refined homepage developer discovery into fully clickable visual cards sourced from direct developer banners or logos.
+- Removed public developer official-website links while retaining the stored/admin-managed field; essential project map links remain.
+
+## Phase 21: Admin Authentication and Configuration UX
+
+- Documented the existing 15-minute JWT default, no-refresh-token model, local expiry/malformed-token cleanup, backend-authoritative 401 handling, and independent browser/device sessions.
+- Added consistent primary and secondary action styling to configuration list/edit workflows, with project context and configuration-media navigation kept visible on mobile.
+
+---
+
 ## Phase 17: Highlight Proxy Diagnosis and Lead Attention Refinement
 
 - Confirmed the highlight client correctly uses the shared `/api` path and the Vite proxy already forwards it to the configured backend port; a stale/not-running backend process can produce the observed 5173/404 rather than a missing highlight route.
 - Refined `NEW` Lead Manager rows with a contained green outer halo and reduced-motion handling, without changing `Ongoing` or `Done` cards or lead status behavior.
 - Documented the supported backend entrypoint and the legacy `backend/server.js` runtime distinction after tracing the 5173/404 failure mode.
+## Admin Action Consistency
+
+- Refined Admin action consistency across project, developer, lead, import, workspace, and form workflows using shared primary, secondary, utility, communication, and responsive treatments without changing behavior.
+
+---
+
+## Phase 22: Property Discovery Assistant Stabilization & Inventory Grounding
+
+- **100% Database/Catalog Grounding (`query-builder.ts`)**: Every selectable option (BHK, location, developer, budget, project status, availability) is derived strictly from candidate catalog inventory matching all active filters. Non-existent choices are never shown to users.
+- **Project-Level Intelligent Stopping (`PROJECT_STOPPING_THRESHOLD = 3`)**: Questioning stops immediately once remaining candidate inventory narrows to $\le 3$ unique projects (or 1 project) after a selection, presenting results directly rather than over-questioning.
+- **No-Op Question Elimination**: Questions with $\le 1$ option or questions that provide no narrowing separation across remaining projects are skipped automatically.
+- **Conversational Tone & Natural Phrasing**: Questions and assistant replies use warm, human-friendly wording (*"What kind of home are you looking for?"*, *"Where would you like to live?"*, *"What budget feels right for you?"*) without claiming to be an AI or LLM.
+- **Price Formatting**: Integrated `formatPrice` into `PropertyResultCard.tsx` and `QuerySummary.tsx`, rendering standard Indian real estate price denominations (`₹ 1.50 Cr+`, `₹ 95 Lakhs+`) instead of raw paise numbers.
+- **Targeted Zero-Result Recovery (`SearchAssistantEmptyState.tsx`)**: Replaced generic recovery buttons with targeted filter relaxation shortcuts based only on active user filters, plus a clean "Start over" reset action.
+- **Mobile & Overlay Polish**: Verified zero horizontal overflow, natural option button wrapping, responsive result card stacking, and full vertical scrollability across 320px–430px viewports.
+
+---
+
+## Phase 23: Admin UX Polish Pass
+
+- **Mobile "More" Popover Menu (`AdminLayout.tsx` & `admin.css`)**: Upgraded the mobile More menu into a compact, polished popover dropdown with click-outside listener, Escape key dismissal, automatic close on item click, comfortable $\ge 44\text{px}$ touch targets, and a clearly separated destructive logout action. Zero viewport overflow across 320px–430px.
+- **Consistent Action Hierarchy & Glorified Link Elimination**: Eliminated arbitrary underlined hyperlinks across all Admin screens (`ProjectsPage`, `ProjectFormPage`, `ProjectMediaPage`, `ProjectConfigurationsPage`, `ConfigurationFormPage`, `ConfigurationMediaPage`, `DevelopersPage`, `DeveloperFormPage`, `DeveloperMediaSection`, `LeadDetailPage`). Standardized on Primary (`.admin-action--primary`), Secondary (`.admin-action--secondary`), Utility (`.admin-action--utility`), Communication (`.admin-action--communication`), and Danger (`.admin-action--danger`).
+- **Project Workspace Header Hierarchy**: Cleaned up the top breadcrumb area across all project-scoped sub-pages (`admin-top-bar`), separating parent navigation from workspace tabs (`Overview`, `Media`, `Configurations`, `Highlights & Amenities`, `Preview`).
+- **Admin Login Page Polish (`AdminLoginPage.tsx`)**: Elevated the internal administration portal feel with a clean centered card, brand eyebrow, crisp input focus rings, structured error alerts, and full mobile responsiveness.
+- **Dynamic Authenticated Admin Greeting (`AdminDashboardPage.tsx`)**: Derives greeting name dynamically from the authenticated admin identity (`admin.name` or fallback local email name) across page reloads without hardcoding.
+- **Dashboard Visual Refinement (`dashboard.css`)**: Polished 4-KPI metrics grid with clear bold counts and uppercase labels, scannable lead cards with time badges and communication action pills, and serene empty states.
+
+---
+
+## Phase 24: Security Audit & JWT Authentication Hardening
+
+- **JWT Signing & Verification Hardening (`auth.service.ts` & `auth.middleware.ts`)**:
+  - Explicitly pinned HMAC-SHA256 (`algorithm: "HS256"`) in both `jwt.sign` and `jwt.verify` to eliminate algorithm confusion and potential `none` or asymmetric verification attacks.
+  - Enforced strict `JWT_SECRET` validation (ensuring non-empty secret, and requiring minimum 32 characters in production environments).
+- **Authentication DoS & Payload Boundary Hardening (`auth.validator.ts`)**:
+  - Implemented maximum string length checks on email ($\le 255\text{ chars}$), password ($\le 128\text{ chars}$), and token ($\le 512\text{ chars}$) to prevent CPU exhaustion on `bcrypt.compare` during brute-force or fuzzing attempts.
+- **End-to-End Security Boundary Audit**:
+  - Verified 100% of admin endpoints enforce server-side `requireAdminAuthentication`.
+  - Verified media update endpoints (`updateMedia`) validate context against persistent database relations rather than client-supplied owner fields.
+  - Verified public lead submission (`validatePublicLead`) strictly rejects administrative fields (`status`, `notes`) and is protected by `submissionLimiter` (20/15m/IP).
+  - Verified admin login is rate limited (5/15m/IP).
+  - Verified SSRF mitigation in import scraper with DNS resolution and private/loopback IP validation.
+- **Frontend Session Expiry UX (`admin-client.ts` & `ProtectedRoute.tsx`)**:
+  - Verified clean 401 handling, clearing local tokens, triggering `virtual-reality.admin-unauthorized`, redirecting to `/admin/login`, and preserving the intended route in state for post-login redirection.
+
+---
+
+## Phase 25: Product Polish + Release Readiness
+
+- **Action System Standardized (`HomeMediaPage.tsx`)**: Upgraded Home media activation buttons and upload form submit button to unified `.admin-action` classes (`.admin-action--primary`, `.admin-action--secondary`).
+- **Full Application Readiness Audit**: Performed complete end-to-end verification covering Public Experience, Admin Workspaces, Media Ownership, Search Discovery Assistant, Lead Lifecycle, Security Boundaries, Database Integrity (0 violations across 23 media records, 30 configurations, 6 projects, 3 developers), and Outbound Links (all external links verified with `rel="noopener noreferrer"`).
+- **Build & Quality Validation**: Validated clean production builds across frontend (`vite build` in 1.02s) and backend (`tsc`), Prisma 7 schema validation, zero whitespace git diff errors, and 15/15 passing security regression tests.

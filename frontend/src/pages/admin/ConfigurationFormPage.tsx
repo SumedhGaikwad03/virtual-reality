@@ -21,6 +21,7 @@ import {
 } from "../../api/admin-configurations";
 import { getProject } from "../../api/admin-projects";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { ProjectWorkspaceNav } from "../../components/admin/ProjectWorkspaceNav";
 import type { AdminProject } from "../../types/admin-project";
 import type {
   AdminConfiguration,
@@ -179,6 +180,8 @@ export function ConfigurationFormPage() {
 
   const [error, setError] =
     useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [initialForm, setInitialForm] = useState<FormState>(emptyForm);
 
   useEffect(() => {
     let active = true;
@@ -213,7 +216,9 @@ export function ConfigurationFormPage() {
         setResolvedProjectId(result.project.id);
 
         if (result.configuration) {
-          setForm(toForm(result.configuration));
+          const loadedForm = toForm(result.configuration);
+          setForm(loadedForm);
+          setInitialForm(loadedForm);
         }
       })
       .catch((requestError: unknown) => {
@@ -248,6 +253,7 @@ export function ConfigurationFormPage() {
     event.preventDefault();
 
     setError(null);
+    setSuccess(null);
 
     const payload = cleanPayload(form);
 
@@ -266,19 +272,16 @@ export function ConfigurationFormPage() {
     try {
       if (id) {
         await updateConfiguration(id, payload);
+        setInitialForm(form);
+        setSuccess("Configuration saved successfully.");
       } else {
-        await createConfiguration(
+        const response = await createConfiguration(
           resolvedProjectId,
           payload,
         );
+        navigate(`/admin/configurations/${response.data.id}`, { replace: true });
+        return;
       }
-
-      navigate(
-        `/admin/projects/${resolvedProjectId}/configurations`,
-        {
-          replace: true,
-        },
-      );
     } catch (requestError) {
       setError(errorMessage(requestError, "save"));
     } finally {
@@ -296,35 +299,39 @@ export function ConfigurationFormPage() {
 
   return (
     <AdminLayout>
-      <p>
-        <Link
-          to={
-            project
-              ? `/admin/projects/${project.id}/configurations`
-              : "/admin/projects"
-          }
-        >
-          ← Configurations
-        </Link>
-      </p>
-
-      <p>
-        Project: {project?.name ?? "Unknown project"}
-      </p>
-
-      <h1>
-        {id ? "Edit Configuration" : "Add Configuration"}
-      </h1>
-
-      {id && (
-        <p>
-          <Link to={`/admin/configurations/${id}/media`}>
-            Manage media
-          </Link>
-        </p>
+      {project && (
+        <ProjectWorkspaceNav
+          projectId={project.id}
+          projectName={project.name}
+          active="configurations"
+          previewHref={`/${project.developer.slug}/${project.locationSlug}/${project.slug}`}
+        />
       )}
 
+      <div className="admin-page-heading">
+        <div>
+          <p>Project: {project?.name ?? "Project context"}</p>
+          <h1>{id ? "Edit Configuration" : "New Configuration"}</h1>
+        </div>
+      </div>
+
+      <div className="admin-configuration-actions">
+        <Link
+          className="admin-action admin-action--secondary"
+          to={project ? `/admin/projects/${project.id}/configurations` : "/admin/projects"}
+        >
+          ← Back to Configurations
+        </Link>
+        {id && (
+          <Link className="admin-action admin-action--secondary" to={`/admin/configurations/${id}/media`}>
+            Manage Configuration Media
+          </Link>
+        )}
+      </div>
+
       {error && <p role="alert">{error}</p>}
+      {success && <p role="status">{success}</p>}
+      {JSON.stringify(form) !== JSON.stringify(initialForm) && <p className="admin-unsaved-state">Unsaved configuration changes</p>}
 
       <form
         className="admin-configuration-form"
@@ -444,6 +451,7 @@ export function ConfigurationFormPage() {
         </label>
 
         <button
+          className="admin-action admin-action--primary"
           type="submit"
           disabled={
             isSubmitting || !project || !resolvedProjectId

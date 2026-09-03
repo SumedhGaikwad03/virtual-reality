@@ -23,6 +23,7 @@ import {
   uploadMedia,
 } from "../../api/admin-media";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { ProjectWorkspaceNav } from "../../components/admin/ProjectWorkspaceNav";
 
 import type { AdminConfiguration } from "../../types/admin-configuration";
 import type { AdminProject } from "../../types/admin-project";
@@ -292,20 +293,22 @@ export function ConfigurationMediaPage() {
 
   return (
     <AdminLayout>
-      <p>
-        <Link to="/admin/projects">← Projects</Link>
-        {project && (
-          <>
-            {" "}· <Link to={`/admin/projects/${project.id}`}>{project.name}</Link>
-            {" "}· <Link to={`/admin/projects/${project.id}/configurations`}>Configurations</Link>
-            {configuration && (
-              <>
-                {" "}· <Link to={`/admin/configurations/${configuration.id}`}>Edit Configuration</Link>
-              </>
-            )}
-          </>
+      <div className="admin-top-bar">
+        <Link
+          className="admin-action admin-action--secondary"
+          to={project ? `/admin/projects/${project.id}/configurations` : "/admin/projects"}
+        >
+          ← Back to Configurations
+        </Link>
+        {configuration && (
+          <Link
+            className="admin-action admin-action--secondary"
+            to={`/admin/configurations/${configuration.id}`}
+          >
+            Edit Configuration
+          </Link>
         )}
-      </p>
+      </div>
 
       {isLoading && <p>Loading configuration media...</p>}
 
@@ -315,6 +318,12 @@ export function ConfigurationMediaPage() {
 
       {!isLoading && configuration && project && (
         <>
+          <ProjectWorkspaceNav
+            projectId={project.id}
+            projectName={project.name}
+            active="configurations"
+            previewHref={`/${project.developer.slug}/${project.locationSlug}/${project.slug}`}
+          />
           <div className="admin-page-heading">
             <div>
               <p>Project: {project.name} · Configuration Media</p>

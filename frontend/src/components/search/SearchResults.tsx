@@ -6,11 +6,12 @@
  * Public Search Flow: SearchPage -> SearchResults -> PropertyResultCard[].
  *
  * RESPONSIBILITY:
- * Renders candidate property result cards when matches exist and criteria are sufficient.
+ * Renders candidate property result cards when matches exist, communicating distinct project count
+ * and total layout count accurately.
  */
 
 import { PropertyResultCard } from "./PropertyResultCard";
-import type { filterCatalog } from "../../services/query-builder";
+import { getUniqueProjects, type filterCatalog } from "../../services/query-builder";
 
 type SearchResultsProps = {
   matches: ReturnType<typeof filterCatalog>;
@@ -21,13 +22,15 @@ export function SearchResults({ matches }: SearchResultsProps) {
     return null;
   }
 
+  const uniqueProjects = getUniqueProjects(matches);
+
   return (
     <section className="search-results-section" aria-label="Matching Property Results">
       <div className="search-results-header">
         <h2 className="search-results-count-title">
-          {matches.length === 1
-            ? "I found 1 property matching your search."
-            : `I found ${matches.length} properties matching your search.`}
+          {uniqueProjects.length === 1
+            ? `I found 1 matching project (${matches.length} ${matches.length === 1 ? "layout" : "layouts"}).`
+            : `I found ${uniqueProjects.length} matching projects (${matches.length} ${matches.length === 1 ? "layout" : "layouts"}).`}
         </h2>
       </div>
 

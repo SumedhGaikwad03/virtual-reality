@@ -153,7 +153,7 @@ export function HomeMediaPage() {
         <div>
           <p>Website content</p>
 
-          <h1>Home Media</h1>
+          <h1>Homepage Media</h1>
 
           <p>
             Manage the images and media displayed on
@@ -186,7 +186,7 @@ export function HomeMediaPage() {
       {!isLoading && media.length === 0 && (
         <section className="admin-card">
           <p>
-            No home media has been uploaded yet.
+            No homepage media yet.
           </p>
         </section>
       )}
@@ -318,6 +318,11 @@ function HomeMediaCard({
 
         <button
           type="button"
+          className={`admin-action ${
+            media.isActive
+              ? "admin-action--secondary"
+              : "admin-action--primary"
+          }`}
           onClick={() =>
             void onToggle(media)
           }
@@ -388,7 +393,7 @@ function HomeMediaUploadForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="admin-media-upload-form admin-card">
       <div>
         <label>
           File
@@ -514,6 +519,7 @@ function HomeMediaUploadForm({
       <button
         type="submit"
         disabled={!file || isUploading}
+        className="admin-action admin-action--primary"
       >
         {isUploading
           ? "Uploading..."

@@ -44,3 +44,9 @@
 .admin-media-card p {
   margin: 0;
 }
+
+@media (max-width: 640px) {
+  .admin-media-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -148,7 +148,7 @@ export function ImportPage() {
       <p>Analyze one developer or project page, review the extracted data, then approve it through the existing admin APIs.</p>
       <form className="admin-import-url-form" onSubmit={handleAnalyze}>
         <label>Developer / Project URL<input required type="url" placeholder="https://developer.com/project/example" value={url} onChange={(event) => setUrl(event.target.value)} /></label>
-        <button type="submit" disabled={isAnalyzing}>{isAnalyzing ? "Analyzing..." : "Analyze"}</button>
+        <button className="admin-action admin-action--primary" type="submit" disabled={isAnalyzing}>{isAnalyzing ? "Analyzing..." : "Analyze"}</button>
       </form>
       {error && <p role="alert">{error}</p>}
       {result && <p role="status">{result}</p>}
@@ -171,7 +171,7 @@ export function ImportPage() {
             </div>)}
           </section>
           <section className="admin-card"><h2>Media preview</h2><p>{draft.media.length} media candidates extracted. Media is not uploaded by this workflow.</p>{draft.media.map((media) => <p key={media.url}><a href={media.url} target="_blank" rel="noreferrer">{media.type}: {media.url}</a></p>)}</section>
-          <button type="button" disabled={isImporting} onClick={handleApprove}>{isImporting ? "Importing..." : "Approve & Import"}</button>
+          <button className="admin-action admin-action--primary" type="button" disabled={isImporting} onClick={handleApprove}>{isImporting ? "Importing..." : "Approve & Import"}</button>
         </div>
       )}
     </AdminLayout>

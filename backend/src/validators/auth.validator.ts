@@ -34,8 +34,10 @@ export function validateLoginBody(
   if (
     typeof body.email !== "string" ||
     body.email.trim() === "" ||
+    body.email.length > 255 ||
     typeof body.password !== "string" ||
-    body.password === ""
+    body.password === "" ||
+    body.password.length > 128
   ) {
     next(validationError("Email and password are required"));
     return;
@@ -51,7 +53,11 @@ export function validateForgotPasswordBody(
 ) {
   const body = req.body as ForgotPasswordRequestBody;
 
-  if (typeof body.email !== "string" || body.email.trim() === "") {
+  if (
+    typeof body.email !== "string" ||
+    body.email.trim() === "" ||
+    body.email.length > 255
+  ) {
     next(validationError("Email is required"));
     return;
   }
@@ -69,12 +75,14 @@ export function validateResetPasswordBody(
   if (
     typeof body.token !== "string" ||
     body.token.trim() === "" ||
+    body.token.length > 512 ||
     typeof body.newPassword !== "string" ||
-    body.newPassword.length < 8
+    body.newPassword.length < 8 ||
+    body.newPassword.length > 128
   ) {
     next(
       validationError(
-        "Token and a password of at least 8 characters are required",
+        "Token and a password between 8 and 128 characters are required",
       ),
     );
     return;

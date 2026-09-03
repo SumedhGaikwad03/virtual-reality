@@ -106,7 +106,7 @@ export function TapToExploreGallery({ media }: TapToExploreGalleryProps) {
   };
 
   return (
-    <section className="tap-to-explore-section" aria-label="Project Gallery Exploration">
+    <section id="project-gallery-heading" className="tap-to-explore-section" aria-label="Project Gallery Exploration">
       <div className="tap-to-explore-card" onClick={handleOpen} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && handleOpen()}>
         <div className="tap-to-explore-preview">
           <img src={coverItem.url} alt={coverItem.altText ?? "Project gallery preview"} className="tap-to-explore-cover-img" />

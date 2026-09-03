@@ -16,6 +16,7 @@ import { AdminApiError } from "../../api/admin-client";
 import { getProject } from "../../api/admin-projects";
 import { getConfigurations } from "../../api/admin-configurations";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { ProjectWorkspaceNav } from "../../components/admin/ProjectWorkspaceNav";
 import type { AdminProject } from "../../types/admin-project";
 import type { AdminConfiguration } from "../../types/admin-configuration";
 
@@ -60,17 +61,27 @@ export function ProjectConfigurationsPage() {
 
   return (
     <AdminLayout>
-      <p><Link to="/admin/projects">← Projects</Link></p>
+      <div className="admin-top-bar">
+        <Link className="admin-action admin-action--secondary" to="/admin/projects">
+          ← Back to Projects
+        </Link>
+      </div>
       {isLoading && <p>Loading configurations...</p>}
       {error && <p role="alert">{error}</p>}
       {!isLoading && !error && project && (
         <>
+          <ProjectWorkspaceNav
+            projectId={project.id}
+            projectName={project.name}
+            active="configurations"
+            previewHref={`/${project.developer.slug}/${project.locationSlug}/${project.slug}`}
+          />
           <div className="admin-page-heading">
             <div>
               <p>Project: {project.name}</p>
               <h1>Configurations</h1>
             </div>
-            <button type="button" onClick={() => navigate(`/admin/projects/${projectId}/configurations/new`)}>
+            <button className="admin-action admin-action--primary" type="button" onClick={() => navigate(`/admin/projects/${projectId}/configurations/new`)}>
               Add Configuration
             </button>
           </div>
@@ -85,8 +96,7 @@ export function ProjectConfigurationsPage() {
                   <p>{configuration.carpetArea} sq ft</p>
                   <p>₹{configuration.priceFrom}</p>
                   <p>{configuration.availabilityStatus}</p>
-                  <Link to={`/admin/configurations/${configuration.id}`}>View / Edit</Link>
-                  <Link to={`/admin/configurations/${configuration.id}/media`}>Media</Link>
+                  <Link className="admin-action admin-action--secondary" to={`/admin/configurations/${configuration.id}`}>Edit</Link>
                 </article>
               ))}
             </div>

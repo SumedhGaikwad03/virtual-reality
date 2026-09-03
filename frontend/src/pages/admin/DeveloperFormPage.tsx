@@ -194,11 +194,11 @@ export function DeveloperFormPage() {
 
   return (
     <AdminLayout>
-      <p>
-        <Link to="/admin/developers">
-          ← Developers
+      <div className="admin-top-bar">
+        <Link className="admin-action admin-action--secondary" to="/admin/developers">
+          ← Back to Developers
         </Link>
-      </p>
+      </div>
 
       <h1>{isEditing ? "Edit Developer" : "Add Developer"}</h1>
 
@@ -284,6 +284,7 @@ export function DeveloperFormPage() {
         </label>
 
         <button
+          className="admin-action admin-action--primary"
           type="submit"
           disabled={isSubmitting}
         >

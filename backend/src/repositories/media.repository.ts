@@ -83,6 +83,7 @@ export class MediaRepository {
     return prisma.media.findMany({
       where: {
         developerId,
+        context: "DEVELOPER",
       },
       orderBy: [
         { sortOrder: "asc" },
@@ -99,6 +100,7 @@ export class MediaRepository {
     return prisma.media.findMany({
       where: {
         projectId,
+        context: "PROJECT",
       },
       orderBy: [
         { sortOrder: "asc" },
@@ -115,6 +117,7 @@ export class MediaRepository {
     return prisma.media.findMany({
       where: {
         configurationId,
+        context: "CONFIGURATION",
       },
       orderBy: [
         { sortOrder: "asc" },

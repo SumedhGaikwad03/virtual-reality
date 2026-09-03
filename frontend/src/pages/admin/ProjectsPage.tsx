@@ -7,7 +7,7 @@
  *
  * RESPONSIBILITY:
  * Fetches and renders the list of all projects (Draft and Published) for admin management,
- * and provides navigation to create a new project, edit a project, manage configurations, and manage media.
+ * and provides navigation to create a new project or open its contextual workspace.
  */
 
 import { useEffect, useState } from "react";
@@ -67,7 +67,7 @@ function ProjectListPage({ onAdd }: { onAdd: () => void }) {
           <h1>Projects</h1>
           <p>Manage the projects shown on the public site.</p>
         </div>
-        <button type="button" onClick={onAdd}>Add Project</button>
+        <button className="admin-action admin-action--primary" type="button" onClick={onAdd}>Add Project</button>
       </div>
       {isLoading && <p>Loading projects...</p>}
       {error && <p role="alert">{error}</p>}
@@ -89,9 +89,7 @@ function ProjectListPage({ onAdd }: { onAdd: () => void }) {
                 {project.featured ? " · Featured" : ""} ·{" "}
                 {project.publishStatus === "PUBLISHED" ? "Published" : "Draft"}
               </p>
-              <Link to={`/admin/projects/${project.id}`}>View / Edit</Link>
-              <Link to={`/admin/projects/${project.id}/configurations`}>Configurations</Link>
-              <Link to={`/admin/projects/${project.id}/media`}>Media</Link>
+              <Link className="admin-action admin-action--secondary" to={`/admin/projects/${project.id}`}>Open Workspace</Link>
             </article>
           ))}
         </div>

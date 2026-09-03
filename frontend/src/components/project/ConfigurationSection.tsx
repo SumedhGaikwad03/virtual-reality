@@ -6,7 +6,7 @@
  * Public Configuration Selection Flow: ProjectPage -> ConfigurationSection -> ?configuration=<id>.
  *
  * RESPONSIBILITY:
- * Displays BHK unit types, carpet/built-up area, starting price (formatted), availability status,
+ * Displays BHK unit types, carpet area, starting price (formatted), availability status,
  * and selection toggle buttons to update the ?configuration=<id> query parameter.
  */
 
@@ -97,19 +97,6 @@ export function ConfigurationSection({
                       <span className="spec-value">{config.carpetArea.toLocaleString()} sq.ft.</span>
                     </div>
 
-                    {config.builtUpArea !== null && (
-                      <div className="config-spec-item">
-                        <span className="spec-label">Built-up Area</span>
-                        <span className="spec-value">{config.builtUpArea.toLocaleString()} sq.ft.</span>
-                      </div>
-                    )}
-
-                    {config.superBuiltUpArea !== null && (
-                      <div className="config-spec-item">
-                        <span className="spec-label">Super Built-up</span>
-                        <span className="spec-value">{config.superBuiltUpArea.toLocaleString()} sq.ft.</span>
-                      </div>
-                    )}
                   </div>
 
                   <div className="config-price-footer">

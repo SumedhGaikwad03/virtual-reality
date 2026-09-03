@@ -1,0 +1,218 @@
+/*
+ * PURPOSE:
+ * Owns the restrained operational dashboard layout.
+ *
+ * FLOW:
+ * AdminDashboardPage -> dashboard selectors -> responsive admin presentation.
+ *
+ * RESPONSIBILITY:
+ * Keep the four metrics, lead actions, and quick actions scannable without introducing
+ * dashboard-specific infrastructure or decorative marketing UI.
+ */
+
+.admin-dashboard-heading {
+  margin-bottom: 1.75rem;
+}
+
+.admin-dashboard-heading h1,
+.admin-dashboard-heading p {
+  margin: 0;
+}
+
+.admin-dashboard-eyebrow {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-dashboard-heading h1 {
+  margin-top: 0.35rem;
+  color: #0f172a;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.admin-dashboard-heading > p:last-child {
+  margin-top: 0.35rem;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   KPI Cards Grid
+   ========================================================================== */
+
+.admin-dashboard-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-kpi-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
+.admin-kpi-card strong {
+  color: #172f68;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.admin-kpi-card span {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   Dashboard Sections
+   ========================================================================== */
+
+.admin-dashboard-section {
+  margin-top: 2rem;
+}
+
+.admin-dashboard-section h2,
+.admin-dashboard-section-heading p,
+.admin-dashboard-section-heading h2 {
+  margin: 0;
+}
+
+.admin-dashboard-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.admin-dashboard-section-heading h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.admin-dashboard-section-heading p {
+  margin-top: 0.25rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.admin-dashboard-leads {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-dashboard-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition: border-color 0.15s ease;
+}
+
+.admin-dashboard-lead:hover {
+  border-color: #cbd5e1;
+}
+
+.admin-dashboard-lead-info h3,
+.admin-dashboard-lead-info p {
+  margin: 0;
+}
+
+.admin-dashboard-lead-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.admin-dashboard-lead-info p {
+  margin-top: 0.2rem;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.admin-dashboard-lead-time {
+  color: #64748b;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.admin-dashboard-lead-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.admin-empty-card {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.admin-empty-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .admin-dashboard-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-dashboard-heading h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-dashboard-kpis {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .admin-dashboard-section-heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .admin-dashboard-lead {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .admin-dashboard-lead-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

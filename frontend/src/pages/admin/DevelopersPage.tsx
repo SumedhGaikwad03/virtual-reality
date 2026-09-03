@@ -97,7 +97,7 @@ function DeveloperListPage({
           </p>
         </div>
 
-        <button type="button" onClick={onAdd}>
+        <button className="admin-action admin-action--primary" type="button" onClick={onAdd}>
           Add Developer
         </button>
       </div>
@@ -148,6 +148,7 @@ function DeveloperListPage({
                 </div>
 
                 <Link
+                  className="admin-action admin-action--secondary"
                   to={`/admin/developers/${developer.id}`}
                 >
                   View / Edit

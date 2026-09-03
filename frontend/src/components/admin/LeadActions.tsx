@@ -26,8 +26,8 @@ export function LeadActions({ lead }: { lead: AdminLead }) {
 
   return (
     <div className="admin-lead-actions" aria-label={`Actions for ${lead.name}`}>
-      <a href={whatsappUrl} target="_blank" rel="noreferrer">WhatsApp</a>
-      <a href={`tel:${lead.phone}`}>Call</a>
+      <a className="admin-action admin-action--communication" href={whatsappUrl} target="_blank" rel="noreferrer">WhatsApp</a>
+      <a className="admin-action admin-action--communication" href={`tel:${lead.phone}`}>Call</a>
     </div>
   );
 }

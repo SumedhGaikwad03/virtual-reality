@@ -37,10 +37,34 @@
   max-width: 36rem;
 }
 
+.admin-configuration-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
 .admin-import-configuration {
   display: grid;
   gap: 1rem;
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #dbe2ef;
+}
+
+@media (max-width: 640px) {
+  .admin-configuration-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-configuration-actions .admin-action--secondary,
+  .admin-configuration-actions .admin-action-secondary {
+    width: 100%;
+  }
+
+  .admin-configuration-row {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
 }

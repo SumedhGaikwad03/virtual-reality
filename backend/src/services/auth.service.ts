@@ -84,14 +84,19 @@ function hashResetToken(token: string) {
 function getJwtConfiguration() {
   const secret = process.env.JWT_SECRET;
 
-  if (!secret) {
+  if (!secret || secret.trim().length === 0) {
     throw new Error("JWT_SECRET is not configured");
+  }
+
+  if (process.env.NODE_ENV === "production" && secret.length < 32) {
+    throw new Error("JWT_SECRET must be at least 32 characters long in production");
   }
 
   const expiresIn = process.env.JWT_EXPIRES_IN ?? "15m";
 
   return {
     secret,
+    algorithm: "HS256" as const,
     expiresIn: expiresIn as SignOptions["expiresIn"],
   };
 }
@@ -118,6 +123,7 @@ export async function login(email: string, password: string) {
     },
     jwtConfiguration.secret,
     {
+      algorithm: jwtConfiguration.algorithm,
       expiresIn: jwtConfiguration.expiresIn,
     },
   );

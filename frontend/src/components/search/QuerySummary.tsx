@@ -6,12 +6,13 @@
  * Public Search Flow: SearchAssistant -> QuerySummary.
  *
  * RESPONSIBILITY:
- * Displays active interpreted query constraints (e.g. [3 BHK ×], [Wakad ×], [Under ₹1.5 Cr ×])
+ * Displays active interpreted query constraints (e.g. [3 BHK ×], [Wakad ×], [Under ₹2 Cr+ ×])
  * as subtle conversational chips, allowing users to remove individual constraints.
  */
 
 import type { PropertySearchQuery } from "../../services/query-builder";
 import type { SearchCatalogProject } from "../../types/search-catalog";
+import { formatPrice } from "../../services/query-builder";
 
 type QuerySummaryProps = {
   query: PropertySearchQuery;
@@ -47,30 +48,49 @@ export function QuerySummary({
   }
 
   if (query.maxPrice) {
-    try {
-      const paise = BigInt(query.maxPrice);
-      const rupees = Number(paise / 100n);
-      const priceText =
-        rupees >= 10000000
-          ? `Under ₹${(rupees / 10000000).toFixed(1)} Cr`
-          : `Under ₹${(rupees / 100000).toFixed(0)} Lakhs`;
-      chips.push({ key: "maxPrice", label: priceText });
-    } catch {
-      chips.push({ key: "maxPrice", label: "Budget filter" });
-    }
-  }
-
-  if (query.availabilityStatus) {
-    chips.push({
-      key: "availabilityStatus",
-      label: query.availabilityStatus.replace("_", " "),
-    });
+    chips.push({ key: "maxPrice", label: `Max ${formatPrice(query.maxPrice)}` });
   }
 
   if (query.projectStatus) {
+    let statusLabel = query.projectStatus;
+    switch (query.projectStatus) {
+      case "READY_TO_MOVE":
+        statusLabel = "Ready to Move";
+        break;
+      case "ONGOING":
+        statusLabel = "Under Construction";
+        break;
+      case "UPCOMING":
+        statusLabel = "New Launch";
+        break;
+      case "COMPLETED":
+        statusLabel = "Completed";
+        break;
+      default:
+        statusLabel = query.projectStatus.replaceAll("_", " ");
+    }
     chips.push({
       key: "projectStatus",
-      label: query.projectStatus.replaceAll("_", " "),
+      label: statusLabel,
+    });
+  }
+
+  if (query.availabilityStatus) {
+    let availLabel: string = query.availabilityStatus;
+    switch (query.availabilityStatus) {
+      case "AVAILABLE":
+        availLabel = "Available";
+        break;
+      case "LIMITED":
+        availLabel = "Limited Units";
+        break;
+      case "SOLD_OUT":
+        availLabel = "Sold Out";
+        break;
+    }
+    chips.push({
+      key: "availabilityStatus",
+      label: availLabel,
     });
   }
 

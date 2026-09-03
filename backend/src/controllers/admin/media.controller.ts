@@ -55,6 +55,7 @@ type ContextMediaParams = {
 };
 
 type ContextMediaQuery = {
+  context?: MediaContext;
   slot?: string;
 };
 
@@ -207,9 +208,35 @@ export async function listContextMediaController(
   next: NextFunction,
 ) {
   try {
+    const context = req.params.context ?? req.query.context;
+    if (!context) {
+      const error = new Error("Media context is required");
+      error.name = "MediaValidationError";
+      Object.assign(error, { code: "INVALID_MEDIA_REQUEST", statusCode: 400 });
+      next(error);
+      return;
+    }
+
     res.status(200).json(
       await listContextMedia(
-        req.params.context,
+        context,
+        req.query.slot,
+      ),
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function listHomeMediaController(
+  req: Request<unknown, unknown, unknown, { slot?: string }>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    res.status(200).json(
+      await listContextMedia(
+        "HOME",
         req.query.slot,
       ),
     );

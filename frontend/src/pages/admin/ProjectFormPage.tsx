@@ -28,6 +28,7 @@ import {
   updateProjectHighlight,
 } from "../../api/admin-projects";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { ProjectWorkspaceNav } from "../../components/admin/ProjectWorkspaceNav";
 import type { AdminDeveloper, PublishStatus } from "../../types/admin-developer";
 import type {
   AdminProject,
@@ -130,6 +131,8 @@ export function ProjectFormPage() {
   const [isLoadingDevelopers, setIsLoadingDevelopers] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [initialForm, setInitialForm] = useState<FormState>(emptyForm);
   const [developerError, setDeveloperError] = useState<string | null>(null);
 
   // Amenity Management State
@@ -169,7 +172,10 @@ export function ProjectFormPage() {
     getProject(id)
       .then((response) => {
         if (active) {
-          setForm(toForm(response.data));
+          const loadedForm = toForm(response.data);
+          setForm(loadedForm);
+          setInitialForm(loadedForm);
+          setInitialForm(toForm(response.data));
           setAmenities(response.data.amenities ?? []);
           const loadedHighlights = response.data.highlights ?? [];
           setHighlights(loadedHighlights);
@@ -272,6 +278,7 @@ export function ProjectFormPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+    setSuccess(null);
     const payload = cleanPayload(form);
     if (!payload.developerId) {
       setError("Select a developer before saving the project.");
@@ -292,7 +299,12 @@ export function ProjectFormPage() {
       }
 
       if (projectId) await persistHighlights(projectId);
-      navigate("/admin/projects", { replace: true });
+      if (id) {
+        setInitialForm(form);
+        setSuccess("Project saved successfully. Preview reflects saved data.");
+      } else if (projectId) {
+        navigate(`/admin/projects/${projectId}`, { replace: true });
+      }
     } catch (requestError) {
       setError(errorMessage(requestError, "save"));
     } finally {
@@ -315,6 +327,7 @@ export function ProjectFormPage() {
       setAmenities((prev) => [...prev, response.data].sort((a, b) => a.sortOrder - b.sortOrder));
       setNewAmenityName("");
       setIsAddingAmenity(false);
+      setSuccess("Amenity saved successfully.");
     } catch (requestError) {
       if (requestError instanceof AdminApiError && requestError.status === 400) {
         setAmenityError(requestError.message || "An amenity with this name already exists.");
@@ -344,6 +357,7 @@ export function ProjectFormPage() {
       );
       setEditingAmenityId(null);
       setEditingAmenityName("");
+      setSuccess("Amenity saved successfully.");
     } catch (requestError) {
       if (requestError instanceof AdminApiError && requestError.status === 400) {
         setAmenityError(requestError.message || "Unable to update amenity.");
@@ -361,6 +375,7 @@ export function ProjectFormPage() {
     try {
       await deleteProjectAmenity(id, amenityId);
       setAmenities((prev) => prev.filter((item) => item.id !== amenityId));
+      setSuccess("Amenity removed successfully.");
     } catch {
       setAmenityError("Unable to delete amenity. Please try again.");
     }
@@ -370,18 +385,45 @@ export function ProjectFormPage() {
     return <AdminLayout><p>Loading project...</p></AdminLayout>;
   }
 
+  const highlightsDirty =
+    JSON.stringify(highlights.map(({ id: _id, ...highlight }) => highlight)) !==
+    JSON.stringify(originalHighlights.map(({ id: _id, ...highlight }) => highlight));
+
   return (
     <AdminLayout>
-      <p><Link to="/admin/projects">← Projects</Link></p>
-      <h1>{id ? "Edit Project" : "Add Project"}</h1>
+      <div className="admin-top-bar">
+        <Link className="admin-action admin-action--secondary" to="/admin/projects">
+          ← Back to Projects
+        </Link>
+      </div>
       {id && (
-        <p>
-          <Link to={`/admin/projects/${id}/configurations`}>Manage configurations</Link>
-          {" · "}
-          <Link to={`/admin/projects/${id}/media`}>Manage media</Link>
-        </p>
+        <ProjectWorkspaceNav
+          projectId={id}
+          projectName={form.name}
+          active="overview"
+          previewHref={
+            form.developerId && form.slug && form.locationSlug
+              ? `/${developers.find((developer) => developer.id === form.developerId)?.slug ?? ""}/${form.locationSlug}/${form.slug}`
+              : undefined
+          }
+        />
+      )}
+      {!id && <h1>Add Project</h1>}
+      {id && (
+        <>
+          <h2>Project details</h2>
+          <p className="admin-form-guidance">Required fields are marked by the browser. Save this section before opening the public preview.</p>
+          {JSON.stringify(form) !== JSON.stringify(initialForm) && <p className="admin-unsaved-state">Unsaved project changes</p>}
+          <div className="admin-project-readiness" aria-label="Project workspace status">
+            <div><strong>Project details</strong><span className="admin-status-ready">Ready to edit</span></div>
+            <div><strong>Highlights</strong><span>{highlights.length ? `${highlights.length} added` : "Optional · none added"}</span></div>
+            <div><strong>Amenities</strong><span>{amenities.length ? `${amenities.length} added` : "Optional · none added"}</span></div>
+            <div><strong>Media & configurations</strong><span>Manage from workspace sections</span></div>
+          </div>
+        </>
       )}
       {error && <p role="alert">{error}</p>}
+      {success && <p role="status">{success}</p>}
       {developerError && <p role="alert">{developerError}</p>}
       {!developerError && developers.length === 0 && (
         <p role="alert">No developers available. Create a developer first.</p>
@@ -422,14 +464,15 @@ export function ProjectFormPage() {
           </small>
         </label>
         <label className="admin-checkbox"><input type="checkbox" checked={form.featured} onChange={(event) => setField("featured", event.target.checked)} /> Featured</label>
-        <button type="submit" disabled={isSubmitting || isHighlightsSubmitting || developers.length === 0}>{isSubmitting ? "Saving..." : "Save Project"}</button>
+        <button className="admin-action admin-action--primary" type="submit" disabled={isSubmitting || isHighlightsSubmitting || developers.length === 0}>{isSubmitting ? "Saving..." : "Save Project"}</button>
       </form>
 
-      <section className="admin-highlights-section">
+      <section className="admin-highlights-section" id="highlights">
         <h2>Key Highlights</h2>
-        <p>Enter concise, manually authored facts to show on the public project page.</p>
+        <p>Optional selling points shown on the public project page. Save this section independently.</p>
         {highlightError && <p role="alert">{highlightError}</p>}
         {highlightSuccess && <p role="status">{highlightSuccess}</p>}
+        {highlightsDirty && <p className="admin-unsaved-state">Unsaved highlight changes</p>}
         {highlights.length === 0 ? (
           <p>No highlights added yet.</p>
         ) : (
@@ -489,36 +532,40 @@ export function ProjectFormPage() {
             ))}
           </ol>
         )}
-        <button
-          type="button"
-          disabled={highlights.length >= 12}
-          onClick={() => {
-            if (highlights.length >= 12) {
-              setHighlightError("A project may have at most 12 highlights.");
-              return;
-            }
-            setHighlights((current) => [
-              ...current,
-              { id: `new-${Date.now()}-${current.length}`, text: "", sortOrder: current.length },
-            ]);
-            setHighlightError(null);
-          }}
-        >
-          + Add Highlight
-        </button>
-        <button
-          type="button"
-          onClick={handleSaveHighlights}
-          disabled={!id || isSubmitting || isHighlightsSubmitting}
-        >
-          {isHighlightsSubmitting ? "Saving Highlights..." : "Save Highlights"}
-        </button>
+        <div className="admin-highlights-actions">
+          <button
+            className="admin-action admin-action--secondary"
+            type="button"
+            disabled={highlights.length >= 12}
+            onClick={() => {
+              if (highlights.length >= 12) {
+                setHighlightError("A project may have at most 12 highlights.");
+                return;
+              }
+              setHighlights((current) => [
+                ...current,
+                { id: `new-${Date.now()}-${current.length}`, text: "", sortOrder: current.length },
+              ]);
+              setHighlightError(null);
+            }}
+          >
+            + Add Highlight
+          </button>
+          <button
+            className="admin-action admin-action--primary"
+            type="button"
+            onClick={handleSaveHighlights}
+            disabled={!id || isSubmitting || isHighlightsSubmitting}
+          >
+            {isHighlightsSubmitting ? "Saving Highlights..." : "Save Highlights"}
+          </button>
+        </div>
         {!id && <p>Save the project first to persist its highlights.</p>}
         <p>Highlights are optional. Blank unsaved rows are ignored when saved.</p>
       </section>
 
       {id && (
-        <section className="admin-amenities-section">
+        <section className="admin-amenities-section" id="amenities">
           <h2>Project Amenities</h2>
           <p className="admin-amenities-subtitle">
             Manage lifestyle features and community amenities for this project.
@@ -545,14 +592,15 @@ export function ProjectFormPage() {
                         value={editingAmenityName}
                         onChange={(e) => setEditingAmenityName(e.target.value)}
                       />
-                      <button type="submit" disabled={isAmenitySubmitting}>Save</button>
-                      <button type="button" onClick={() => setEditingAmenityId(null)}>Cancel</button>
+                      <button className="admin-action admin-action--primary admin-action--utility" type="submit" disabled={isAmenitySubmitting}>Save</button>
+                      <button className="admin-action admin-action--secondary admin-action--utility" type="button" onClick={() => setEditingAmenityId(null)}>Cancel</button>
                     </form>
                   ) : (
                     <>
                       <span className="admin-amenity-name">{amenity.name}</span>
                       <div className="admin-amenity-actions">
                         <button
+                          className="admin-action admin-action--utility"
                           type="button"
                           onClick={() => {
                             setEditingAmenityId(amenity.id);
@@ -562,9 +610,9 @@ export function ProjectFormPage() {
                           Edit
                         </button>
                         <button
+                          className="admin-action admin-action--utility admin-action--danger"
                           type="button"
                           onClick={() => handleDeleteAmenity(amenity.id)}
-                          style={{ color: "#ef4444" }}
                         >
                           Delete
                         </button>
@@ -589,16 +637,17 @@ export function ProjectFormPage() {
                 />
               </label>
               <div className="admin-amenity-form-actions">
-                <button type="submit" disabled={isAmenitySubmitting}>
+                <button className="admin-action admin-action--primary" type="submit" disabled={isAmenitySubmitting}>
                   {isAmenitySubmitting ? "Saving..." : "Save Amenity"}
                 </button>
-                <button type="button" onClick={() => setIsAddingAmenity(false)}>
+                <button className="admin-action admin-action--secondary" type="button" onClick={() => setIsAddingAmenity(false)}>
                   Cancel
                 </button>
               </div>
             </form>
           ) : (
             <button
+              className="admin-action admin-action--secondary"
               type="button"
               onClick={() => setIsAddingAmenity(true)}
             >

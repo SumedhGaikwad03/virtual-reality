@@ -4,6 +4,7 @@ import { AdminApiError } from "../../api/admin-client";
 import { getLeads } from "../../api/admin-leads";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { LeadActions } from "../../components/admin/LeadActions";
+import { LeadNotificationControl } from "../../components/admin/LeadNotificationControl";
 import type { AdminLead } from "../../types/admin-lead";
 
 function errorMessage(error: unknown) {
@@ -51,6 +52,9 @@ export function LeadsPage() {
           <p>Review and manage enquiries from the public site.</p>
         </div>
       </div>
+      <section className="admin-card admin-lead-notifications">
+        <LeadNotificationControl />
+      </section>
       {isLoading && <p>Loading leads...</p>}
       {error && <p role="alert">{error}</p>}
       {!isLoading && !error && leads.length === 0 && (
@@ -66,7 +70,7 @@ export function LeadsPage() {
               <p>{lead.configuration?.name ?? "—"}</p>
               <p><span className={`admin-lead-status status-${lead.status.toLowerCase()}`}>{statusLabel(lead.status)}</span></p>
               <p>{formatDate(lead.createdAt)}</p>
-              <div className="admin-lead-row-actions"><Link to={`/admin/leads/${lead.id}`}>View</Link><LeadActions lead={lead} /></div>
+              <div className="admin-lead-row-actions"><Link className="admin-action admin-action--secondary" to={`/admin/leads/${lead.id}`}>View</Link><LeadActions lead={lead} /></div>
             </article>
           ))}
         </div>

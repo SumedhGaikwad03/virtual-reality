@@ -75,6 +75,12 @@ export type SiteDeveloper = {
   name: string;
   slug: string;
   logoUrl: string | null;
+  bannerMedia: {
+    id: string;
+    url: string;
+    thumbnailUrl: string | null;
+    altText: string | null;
+  } | null;
 };
 
 export type Site = {
