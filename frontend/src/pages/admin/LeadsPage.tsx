@@ -109,34 +109,34 @@ export function LeadsPage() {
       </section>
 
       {/* Search & Filter Toolbar */}
-      <section className="admin-card" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", flex: "1 1 280px", gap: "0.5rem" }}>
-            <input
-              type="search"
-              placeholder="Search by name, phone, email, notes..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "0.375rem", border: "1px solid #cbd5e1" }}
-              aria-label="Search leads"
-            />
-          </div>
+      <section className="admin-card admin-lead-toolbar">
+        <div className="admin-lead-search-wrapper">
+          <input
+            type="search"
+            className="admin-lead-search-input"
+            placeholder="Search by name, phone, email, notes..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            aria-label="Search leads"
+          />
+        </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <label htmlFor="lead-status-filter" style={{ fontSize: "0.875rem", fontWeight: 600, color: "#475569" }}>
-              Status:
-            </label>
+        <div className="admin-lead-filter-wrapper">
+          <label htmlFor="lead-status-filter" className="admin-lead-filter-label">
+            Status
+          </label>
+          <div className="admin-lead-select-wrapper">
             <select
               id="lead-status-filter"
+              className="admin-lead-filter-select"
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value as LeadStatus | "ALL");
                 setPage(1);
               }}
-              style={{ padding: "0.45rem 0.75rem", borderRadius: "0.375rem", border: "1px solid #cbd5e1" }}
             >
               <option value="ALL">All Statuses</option>
               <option value="NEW">New</option>
