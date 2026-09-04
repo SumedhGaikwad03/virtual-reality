@@ -27,7 +27,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { AboutFooter } from "../components/home/AboutFooter";
-import { FloatingSearchControl } from "../components/home/FloatingSearchControl";
 import { useSite } from "../components/home/hooks/useSite";
 import { ContextualEnquiryModal } from "../components/common/ContextualEnquiryModal";
 import { ConfigurationMediaSection } from "../components/project/ConfigurationMediaSection";
@@ -73,8 +72,11 @@ export function ProjectPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const configurationId = searchParams.get("configuration");
 
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const leadSectionRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLFormElement | null>(null);
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [showStickyEnquiry, setShowStickyEnquiry] = useState(false);
   const enquiryTriggerRef = useRef<HTMLElement | null>(null);
 
   const { project, isLoading, loadError } = useProject(
@@ -100,6 +102,7 @@ export function ProjectPage() {
     ? project.configurations.find((c) => c.id === configurationId)
     : undefined;
 
+  // Handle configuration selection and smooth scroll to Photos section
   function handleSelectConfiguration(id: string) {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -110,7 +113,43 @@ export function ProjectPage() {
       }
       return next;
     });
+
+    if (configurationId !== id) {
+      window.location.hash = "photos";
+    }
   }
+
+  // Handle URL hash #photos deep link or on-demand scroll
+  useEffect(() => {
+    if (window.location.hash === "#photos" && selectedConfiguration) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById("photos");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [configurationId, selectedConfiguration]);
+
+  // Restrain mobile sticky enquiry bar so it only appears when scrolled past hero and before lead form
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const heroHeight = heroRef.current?.offsetHeight || 450;
+      const leadTop = leadSectionRef.current?.offsetTop || document.body.scrollHeight;
+      const windowHeight = window.innerHeight;
+
+      const isPastHero = scrollY > heroHeight - 120;
+      const isBeforeLead = scrollY + windowHeight < leadTop + 100;
+
+      setShowStickyEnquiry(isPastHero && isBeforeLead);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [project]);
 
   const openEnquiryModal = (triggerElement?: HTMLElement | null) => {
     if (triggerElement) enquiryTriggerRef.current = triggerElement;
@@ -165,11 +204,13 @@ export function ProjectPage() {
     <div className="project-page-container">
       <main className="project-page-main">
         {/* 1. Static Top Hero (IMAGE / EMOTION & Primary CTA) */}
-        <ProjectHero
-          project={project}
-          contactRef={contactRef}
-          onOpenEnquiry={openEnquiryModal}
-        />
+        <div ref={heroRef}>
+          <ProjectHero
+            project={project}
+            contactRef={contactRef}
+            onOpenEnquiry={openEnquiryModal}
+          />
+        </div>
 
         {/* Sticky Contextual Sub-Navigation */}
         <ProjectSubNav
@@ -228,15 +269,17 @@ export function ProjectPage() {
         <ProjectDeveloper developer={project.developer} />
 
         {/* 12. Lead Enquiry Section — final conversion step */}
-        <LeadSection
-          project={project}
-          selectedConfigurationId={selectedConfiguration?.id ?? null}
-          contactRef={contactRef}
-        />
+        <div ref={leadSectionRef}>
+          <LeadSection
+            project={project}
+            selectedConfigurationId={selectedConfiguration?.id ?? null}
+            contactRef={contactRef}
+          />
+        </div>
       </main>
 
       {/* Restrained Mobile Sticky Enquiry Action Bar */}
-      {!isEnquiryModalOpen && (
+      {!isEnquiryModalOpen && showStickyEnquiry && (
         <aside className="mobile-sticky-enquiry-bar" aria-label="Mobile quick enquiry">
           <div className="mobile-sticky-enquiry-content">
             <span className="mobile-sticky-project-name">{project.name}</span>
@@ -266,9 +309,6 @@ export function ProjectPage() {
 
       {/* 13. Site Footer */}
       <AboutFooter site={site || defaultSiteFallback} />
-
-      {/* 14. Persistent Floating Assistant Control */}
-      <FloatingSearchControl />
     </div>
   );
 }

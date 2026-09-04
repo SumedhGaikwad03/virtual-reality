@@ -6,6 +6,11 @@ import { adminRepository } from "../repositories/admin.repository.js";
 const PASSWORD_SALT_ROUNDS = 12;
 const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
 const MIN_PASSWORD_LENGTH = 8;
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function isValidUuid(id: string): boolean {
+  return typeof id === "string" && UUID_REGEX.test(id);
+}
 
 export function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
@@ -135,6 +140,7 @@ export async function login(email: string, password: string) {
         id: admin.id,
         email: admin.email,
         name: admin.name,
+        role: admin.role,
         isActive: admin.isActive,
       },
     },
@@ -204,6 +210,176 @@ export async function resetPassword(token: string, newPassword: string) {
   return {
     data: {
       message: "Password has been reset successfully.",
+    },
+  };
+}
+
+export async function listAdmins() {
+  const admins = await adminRepository.findAll();
+  return {
+    data: admins.map((admin) => ({
+      id: admin.id,
+      email: admin.email,
+      name: admin.name,
+      role: admin.role,
+      isActive: admin.isActive,
+      createdAt: admin.createdAt,
+      updatedAt: admin.updatedAt,
+    })),
+  };
+}
+
+export async function getAdminById(id: string) {
+  if (!isValidUuid(id)) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+  const admin = await adminRepository.findById(id);
+  if (!admin) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+  return {
+    data: {
+      id: admin.id,
+      email: admin.email,
+      name: admin.name,
+      role: admin.role,
+      isActive: admin.isActive,
+      createdAt: admin.createdAt,
+      updatedAt: admin.updatedAt,
+    },
+  };
+}
+
+export async function updateAdminProfile(
+  _actorAdminId: string,
+  targetAdminId: string,
+  input: { name?: string | null; email?: string },
+) {
+  if (!isValidUuid(targetAdminId)) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+  const targetAdmin = await adminRepository.findById(targetAdminId);
+  if (!targetAdmin) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+
+  const updateData: { name?: string | null; email?: string } = {};
+
+  if (input.name !== undefined) {
+    updateData.name = input.name ? input.name.trim() : null;
+  }
+
+  if (input.email !== undefined) {
+    const normalized = normalizeEmail(input.email);
+    if (normalized !== targetAdmin.email) {
+      const existing = await adminRepository.findByEmail(normalized);
+      if (existing && existing.id !== targetAdminId) {
+        throw new AuthError("ADMIN_EXISTS", 409, "An administrator with this email already exists");
+      }
+      updateData.email = normalized;
+    }
+  }
+
+  try {
+    const updated = await adminRepository.updateProfile(targetAdminId, updateData);
+    return {
+      data: {
+        id: updated.id,
+        email: updated.email,
+        name: updated.name,
+        role: updated.role,
+        isActive: updated.isActive,
+        createdAt: updated.createdAt,
+        updatedAt: updated.updatedAt,
+      },
+    };
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      throw new AuthError("ADMIN_EXISTS", 409, "An administrator with this email already exists");
+    }
+    throw error;
+  }
+}
+
+export async function updateAdminStatus(
+  actorAdminId: string,
+  targetAdminId: string,
+  isActive: boolean,
+) {
+  if (!isValidUuid(targetAdminId)) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+  const targetAdmin = await adminRepository.findById(targetAdminId);
+  if (!targetAdmin) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+
+  if (actorAdminId === targetAdminId && !isActive) {
+    throw new AuthError(
+      "ADMIN_CANNOT_DISABLE_SELF",
+      400,
+      "Administrators cannot deactivate their own account",
+    );
+  }
+
+  if (targetAdmin.isActive && !isActive) {
+    const activeCount = await adminRepository.countActive();
+    if (activeCount <= 1) {
+      throw new AuthError(
+        "ADMIN_LAST_ACTIVE_ACCOUNT",
+        400,
+        "Cannot deactivate the last active administrator account",
+      );
+    }
+  }
+
+  const updated = await adminRepository.updateStatus(targetAdminId, isActive);
+  return {
+    data: {
+      id: updated.id,
+      email: updated.email,
+      name: updated.name,
+      role: updated.role,
+      isActive: updated.isActive,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt,
+    },
+  };
+}
+
+export async function changeAdminPassword(
+  actorAdminId: string,
+  targetAdminId: string,
+  input: { currentPassword?: string; newPassword: string },
+) {
+  if (!isValidUuid(targetAdminId)) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+  const targetAdmin = await adminRepository.findById(targetAdminId);
+  if (!targetAdmin) {
+    throw new AuthError("ADMIN_NOT_FOUND", 404, "Administrator not found");
+  }
+
+  if (input.newPassword.length < MIN_PASSWORD_LENGTH) {
+    throw new AuthError("INVALID_AUTH_REQUEST", 400, "Password must be at least 8 characters");
+  }
+
+  if (actorAdminId === targetAdminId) {
+    if (!input.currentPassword) {
+      throw new AuthError("INVALID_CREDENTIALS", 400, "Current password is required to change password");
+    }
+    const isCurrentValid = await bcrypt.compare(input.currentPassword, targetAdmin.passwordHash);
+    if (!isCurrentValid) {
+      throw new AuthError("INVALID_CREDENTIALS", 400, "Current password is incorrect");
+    }
+  }
+
+  const newHash = await bcrypt.hash(input.newPassword, PASSWORD_SALT_ROUNDS);
+  await adminRepository.updatePassword(targetAdminId, newHash);
+
+  return {
+    data: {
+      message: "Password updated successfully.",
     },
   };
 }

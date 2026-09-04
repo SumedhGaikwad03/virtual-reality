@@ -83,7 +83,7 @@ export type Lead = Prisma.LeadModel
 export type Admin = Prisma.AdminModel
 /**
  * Model PushSubscription
- *
+ * 
  */
 export type PushSubscription = Prisma.PushSubscriptionModel
 /**
@@ -91,3 +91,13 @@ export type PushSubscription = Prisma.PushSubscriptionModel
  * 
  */
 export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
+ * Model FirmContact
+ * 
+ */
+export type FirmContact = Prisma.FirmContactModel
+/**
+ * Model FirmProfile
+ * 
+ */
+export type FirmProfile = Prisma.FirmProfileModel

@@ -6,14 +6,16 @@
  * PublicShell -> GlobalHeader -> Navigation links & Assistant trigger.
  *
  * RESPONSIBILITY:
- * Renders consistent site-wide header across public routes:
+ * Renders consistent, minimal, and premium site-wide header across public routes:
  * - Displays prominent Developer Name on Developer & Project pages for maximum user trust
  * - Displays Virtual Reality platform brand on Home & Search pages
- * - Renders desktop navigation links, mobile hamburger menu drawer, and primary "✦ Ask Assistant" button
+ * - Renders refined desktop navigation (Home, About) and unified Contact & Advisory CTA
+ * - Renders accessible mobile drawer with smooth section scroll
+ * - Houses prominent "✦ Ask Assistant" discovery trigger
  */
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAssistant } from "../../context/AssistantContext";
 import { useHeader } from "../../context/HeaderContext";
 
@@ -22,6 +24,7 @@ export function GlobalHeader() {
   const { openAssistant } = useAssistant();
   const { developerName } = useHeader();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => setMobileMenuOpen((prev) => !prev);
   const closeMobileMenu = () => setMobileMenuOpen(false);
@@ -31,16 +34,56 @@ export function GlobalHeader() {
     openAssistant();
   };
 
+  const isFirmPage = location.pathname === "/" || location.pathname === "/firm";
+
+  const handleHomeClick = () => {
+    closeMobileMenu();
+    if (isFirmPage) {
+      if (location.hash) {
+        navigate(location.pathname);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    navigate("/");
+  };
+
+  const handleAboutClick = () => {
+    closeMobileMenu();
+    if (isFirmPage) {
+      const element = document.getElementById("about");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.replaceState(null, "", `${location.pathname}#about`);
+        return;
+      }
+    }
+    navigate("/firm#about");
+  };
+
+  const handleContactAdvisoryClick = () => {
+    closeMobileMenu();
+    if (isFirmPage) {
+      const element = document.getElementById("contact");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.replaceState(null, "", `${location.pathname}#contact`);
+        return;
+      }
+    }
+    navigate("/firm#contact");
+  };
+
   const headerTitle = developerName || "Virtual Reality";
 
   return (
     <header className="global-header" aria-label="Site Header">
       <div className="global-header-container">
-        {/* Contextual Brand Identity: Developer Name on Developer/Project pages, Platform Name on Home/Search */}
+        {/* Contextual Brand Identity */}
         <Link
           to="/"
           className="global-brand-link"
-          onClick={closeMobileMenu}
+          onClick={handleHomeClick}
           title={headerTitle}
         >
           <span className={`global-brand-name ${developerName ? "is-developer-context" : ""}`}>
@@ -50,22 +93,35 @@ export function GlobalHeader() {
 
         {/* Desktop Primary Navigation */}
         <nav className="desktop-primary-nav" aria-label="Primary navigation">
-          <Link
-            to="/"
-            className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
+          <button
+            type="button"
+            onClick={handleHomeClick}
+            className={`nav-link-btn ${isFirmPage && !location.hash ? "active" : ""}`}
           >
             Home
-          </Link>
-          <Link
-            to="/search"
-            className={`nav-link ${location.pathname === "/search" ? "active" : ""}`}
+          </button>
+          <button
+            type="button"
+            onClick={handleAboutClick}
+            className={`nav-link-btn ${location.hash === "#about" ? "active" : ""}`}
           >
-            Discover
-          </Link>
+            About
+          </button>
         </nav>
 
         {/* Primary Action & Mobile Menu Toggle */}
         <div className="global-header-actions">
+          <button
+            type="button"
+            onClick={handleContactAdvisoryClick}
+            className={`global-contact-advisory-btn ${
+              location.hash === "#contact" || location.hash === "#advisory" ? "active" : ""
+            }`}
+            aria-label="Contact and Advisory Consultation"
+          >
+            Contact & Advisory
+          </button>
+
           <button
             type="button"
             onClick={handleAssistantClick}
@@ -97,12 +153,27 @@ export function GlobalHeader() {
           aria-label="Mobile Navigation"
         >
           <nav className="mobile-nav-links">
-            <Link to="/" onClick={closeMobileMenu} className="mobile-nav-link">
+            <button
+              type="button"
+              onClick={handleHomeClick}
+              className="mobile-nav-link-btn"
+            >
               Home
-            </Link>
-            <Link to="/search" onClick={closeMobileMenu} className="mobile-nav-link">
-              Discover Properties
-            </Link>
+            </button>
+            <button
+              type="button"
+              onClick={handleAboutClick}
+              className="mobile-nav-link-btn"
+            >
+              About Firm
+            </button>
+            <button
+              type="button"
+              onClick={handleContactAdvisoryClick}
+              className="mobile-nav-link-btn mobile-nav-highlight"
+            >
+              Contact & Advisory
+            </button>
             <button
               type="button"
               onClick={handleAssistantClick}

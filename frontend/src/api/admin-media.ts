@@ -141,3 +141,12 @@ export function updateMedia(
     },
   );
 }
+
+export function deleteMedia(id: string) {
+  return adminRequest<AdminMediaResponse>(
+    `/admin/media/${id}`,
+    {
+      method: "DELETE",
+    },
+  );
+}

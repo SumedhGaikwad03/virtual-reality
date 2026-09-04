@@ -13,14 +13,28 @@
 import express, { Router } from "express";
 import rateLimit from "express-rate-limit";
 import {
+  changeAdminPasswordController,
+  createAdminController,
   forgotPasswordController,
+  getAdminController,
+  listAdminsController,
   loginController,
   resetPasswordController,
+  updateAdminProfileController,
+  updateAdminStatusController,
 } from "../../controllers/admin/auth.controller.js";
 import {
+  requireAdminAuthentication,
+  requireFounderAuthentication,
+} from "../../middleware/auth.middleware.js";
+import {
+  validateChangeAdminPasswordBody,
+  validateCreateAdminBody,
   validateForgotPasswordBody,
   validateLoginBody,
   validateResetPasswordBody,
+  validateUpdateAdminProfileBody,
+  validateUpdateAdminStatusBody,
 } from "../../validators/auth.validator.js";
 
 /*
@@ -72,9 +86,78 @@ router.post(
 );
 router.post(
   "/reset-password",
+  forgotPasswordLimiter,
   validateResetPasswordBody,
   resetPasswordController,
 );
 
-export default router;
+/*
+ * Admin Account Management Routes:
+ * Protected exclusively by requireFounderAuthentication (FOUNDER role required).
+ * Mounted under both /admins and /accounts for naming flexibility and backwards compatibility.
+ */
+// 1. List all administrators
+router.get("/admins", requireFounderAuthentication, listAdminsController);
+router.get("/accounts", requireFounderAuthentication, listAdminsController);
 
+// 2. Create an administrator
+router.post(
+  "/admins",
+  requireFounderAuthentication,
+  validateCreateAdminBody,
+  createAdminController,
+);
+router.post(
+  "/accounts",
+  requireFounderAuthentication,
+  validateCreateAdminBody,
+  createAdminController,
+);
+
+// 3. Get single administrator
+router.get("/admins/:id", requireFounderAuthentication, getAdminController);
+router.get("/accounts/:id", requireFounderAuthentication, getAdminController);
+
+// 4. Update administrator profile (name, email)
+router.patch(
+  "/admins/:id",
+  requireFounderAuthentication,
+  validateUpdateAdminProfileBody,
+  updateAdminProfileController,
+);
+router.patch(
+  "/accounts/:id",
+  requireFounderAuthentication,
+  validateUpdateAdminProfileBody,
+  updateAdminProfileController,
+);
+
+// 5. Update administrator status (activate / deactivate)
+router.patch(
+  "/admins/:id/status",
+  requireFounderAuthentication,
+  validateUpdateAdminStatusBody,
+  updateAdminStatusController,
+);
+router.patch(
+  "/accounts/:id/status",
+  requireFounderAuthentication,
+  validateUpdateAdminStatusBody,
+  updateAdminStatusController,
+);
+
+// 6. Change administrator password
+router.patch(
+  "/admins/:id/password",
+  requireFounderAuthentication,
+  validateChangeAdminPasswordBody,
+  changeAdminPasswordController,
+);
+router.patch(
+  "/accounts/:id/password",
+  requireFounderAuthentication,
+  validateChangeAdminPasswordBody,
+  changeAdminPasswordController,
+);
+
+export default router;

@@ -14,26 +14,51 @@ import { useEffect, useState } from "react";
 import { getProject, ProjectApiError } from "../../../api/project";
 import type { Project } from "../../../types/project";
 
+const projectCache = new Map<string, Project>();
+
+export function invalidateProjectCache(cacheKey?: string) {
+  if (cacheKey) {
+    projectCache.delete(cacheKey);
+  } else {
+    projectCache.clear();
+  }
+}
+
 export function useProject(
   developerSlug: string | undefined,
   locationSlug: string | undefined,
   projectSlug: string | undefined,
 ) {
-  const [project, setProject] = useState<Project | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const cacheKey =
+    developerSlug && locationSlug && projectSlug
+      ? `${developerSlug}/${locationSlug}/${projectSlug}`
+      : null;
+
+  const [project, setProject] = useState<Project | null>(() =>
+    cacheKey ? projectCache.get(cacheKey) ?? null : null,
+  );
+  const [isLoading, setIsLoading] = useState(() =>
+    cacheKey ? !projectCache.has(cacheKey) : false,
+  );
   const [loadError, setLoadError] = useState<"not-found" | "error" | null>(
     null,
   );
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    if (!developerSlug || !locationSlug || !projectSlug) {
+    if (!developerSlug || !locationSlug || !projectSlug || !cacheKey) {
       setIsLoading(false);
       setLoadError("error");
-      return () => controller.abort();
+      return;
     }
 
+    if (projectCache.has(cacheKey)) {
+      setProject(projectCache.get(cacheKey)!);
+      setIsLoading(false);
+      setLoadError(null);
+      return;
+    }
+
+    const controller = new AbortController();
     setIsLoading(true);
     setLoadError(null);
     setProject(null);
@@ -44,7 +69,10 @@ export function useProject(
       projectSlug,
       controller.signal,
     )
-      .then(setProject)
+      .then((data) => {
+        projectCache.set(cacheKey, data);
+        setProject(data);
+      })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError") {
           return;
@@ -63,7 +91,7 @@ export function useProject(
       });
 
     return () => controller.abort();
-  }, [developerSlug, locationSlug, projectSlug]);
+  }, [developerSlug, locationSlug, projectSlug, cacheKey]);
 
   return { project, isLoading, loadError };
 }

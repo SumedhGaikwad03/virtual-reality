@@ -19,6 +19,7 @@ import { developerRepository } from "../repositories/developer.repository.js";
 import { leadRepository } from "../repositories/lead.repository.js";
 import { projectRepository } from "../repositories/project.repository.js";
 import { notifyNewLead } from "./notification.service.js";
+import { normalizeIndianPhone } from "../validators/lead.validator.js";
 
 export type CreateLeadInput = {
   name: string;
@@ -176,7 +177,7 @@ export async function createLead(input: CreateLeadInput) {
 
   const lead = await leadRepository.create({
     name: input.name,
-    phone: input.phone,
+    phone: normalizeIndianPhone(input.phone) || input.phone,
     email: input.email,
     developerId: context.developerId,
     projectId: context.projectId,

@@ -308,8 +308,12 @@
 .developer-row-logo {
   width: 100%;
   height: 8rem;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center center;
   background: #f8fafc;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border-radius: 0.35rem;
 }
 
 @media (max-width: 640px) {
@@ -318,7 +322,9 @@
   }
 
   .developer-row-logo {
-    height: clamp(7rem, 32vw, 9rem);
+    height: clamp(6.5rem, 28vw, 8.5rem);
+    object-fit: contain;
+    padding: 0.5rem;
   }
 }
 
@@ -635,6 +641,378 @@
 .compact-control-link:hover {
   color: #0f172a;
   text-decoration: underline;
+}
+
+/* ==========================================================================
+   4b. Connect & Advisory Experience
+   ========================================================================== */
+.contact-advisory-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 3.5rem;
+  scroll-margin-top: 5.5rem;
+}
+
+.contact-advisory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.advisory-card,
+.direct-contact-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3.5vw, 2.25rem);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  scroll-margin-top: 5.5rem;
+}
+
+.card-badge-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2b4c96;
+  margin-bottom: 0.5rem;
+}
+
+.card-heading {
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+}
+
+.card-description {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.55;
+}
+
+/* Branch 1: Fast Tara Discovery Callout */
+.tara-discovery-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  padding: 1.15rem 1.35rem;
+  border-radius: 0.85rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+
+.tara-callout-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.tara-callout-text strong {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.tara-callout-text span {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.tara-launch-btn {
+  padding: 0.65rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background-color: #38bdf8;
+  color: #0f172a;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.tara-launch-btn:hover {
+  background-color: #7dd3fc;
+  transform: translateY(-1px);
+}
+
+.tara-launch-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.advisory-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.advisory-divider::before,
+.advisory-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.advisory-divider span {
+  padding: 0 0.85rem;
+}
+
+/* Branch 1: Consultation Form */
+.advisory-consultation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.advisory-submit-btn {
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background-color: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  min-height: 44px;
+}
+
+.advisory-submit-btn:hover:not(:disabled) {
+  background-color: #1e293b;
+  transform: translateY(-1px);
+}
+
+.advisory-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.advisory-success-banner {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.advisory-success-banner strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.advisory-success-banner p {
+  margin: 0;
+}
+
+.advisory-error-banner {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 0.85rem 1.15rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.advisory-error-banner p {
+  margin: 0;
+}
+
+/* Branch 2: Direct Contact Details */
+.direct-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.contact-person-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 0.85rem 1.15rem;
+  border-radius: 0.75rem;
+}
+
+.person-icon {
+  font-size: 1.25rem;
+}
+
+.person-role {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.contact-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.detail-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+}
+
+.detail-value-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.detail-link {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.detail-link:hover {
+  color: #2b4c96;
+  text-decoration: underline;
+}
+
+.detail-copy-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.detail-copy-btn:hover {
+  background: #e2e8f0;
+}
+
+.detail-address {
+  font-style: normal;
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.address-line {
+  display: block;
+}
+
+/* Branch 2: Direct Action Suite */
+.direct-action-suite {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+  margin-top: auto;
+}
+
+.action-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.action-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.action-tile--call {
+  border-left: 3px solid #0f172a;
+}
+
+.action-tile--whatsapp {
+  border-left: 3px solid #25d366;
+}
+
+.action-tile--email {
+  border-left: 3px solid #3b82f6;
+}
+
+.action-tile--maps {
+  border-left: 3px solid #ea4335;
+}
+
+.action-icon {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.action-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.action-meta {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .contact-advisory-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tara-discovery-callout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .tara-launch-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .direct-action-suite {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ==========================================================================
@@ -959,8 +1337,486 @@
   .developer-row-arrow,
   .featured-project-card,
   .featured-project-media img,
-  .floating-search-btn {
+  .floating-search-btn,
+  .firm-gallery-slide,
+  .footer-action-pill {
     transition: none !important;
     transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   Firm Gallery Rotating Hero Carousel
+   ========================================================================== */
+.home-firm-gallery-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.home-firm-gallery-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.firm-gallery-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #172f68;
+  margin-bottom: 0.35rem;
+}
+
+.firm-gallery-title {
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.firm-gallery-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0.35rem 0 0;
+  max-width: 36rem;
+}
+
+.firm-gallery-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.firm-gallery-nav-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.firm-gallery-nav-btn:hover {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.firm-gallery-counter {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.firm-gallery-viewport {
+  position: relative;
+  width: 100%;
+  height: clamp(18rem, 40vw, 30rem);
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #0f172a;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+
+.firm-gallery-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.firm-gallery-slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
+  pointer-events: none;
+}
+
+.firm-gallery-slide.is-active {
+  opacity: 1;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.firm-gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.firm-gallery-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3rem 1.75rem 1.5rem;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%);
+  color: #ffffff;
+  z-index: 2;
+}
+
+.firm-gallery-caption-title {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.firm-gallery-caption-desc {
+  font-size: 0.88rem;
+  color: #e2e8f0;
+  margin: 0.25rem 0 0;
+  max-width: 40rem;
+}
+
+.firm-gallery-dots {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  z-index: 3;
+}
+
+.firm-gallery-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.45);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.firm-gallery-dot.is-active {
+  background-color: #ffffff;
+  width: 1.5rem;
+}
+
+/* ==========================================================================
+   Footer Persisted Contact & Quick Action Pills
+   ========================================================================== */
+.footer-contact-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-contact-person {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #0f172a;
+  margin: 0;
+}
+
+.footer-person-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.4rem;
+  background-color: #e2e8f0;
+  border-radius: 0.25rem;
+  color: #334155;
+}
+
+.footer-contact-address {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.footer-address-line {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.footer-action-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.footer-action-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0f172a;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.45rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.footer-action-pill:hover {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Firm Overview & Founder Leadership Showcase
+   ========================================================================== */
+.firm-overview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  scroll-margin-top: 5.5rem;
+}
+
+.firm-overview-card {
+  display: grid;
+  grid-template-columns: minmax(13rem, 16rem) 1fr;
+  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  align-items: flex-start;
+}
+
+.founder-identity-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.founder-portrait-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-width: 15rem;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background-color: #0f172a;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+.founder-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.founder-monogram-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.founder-badge-pill {
+  position: absolute;
+  bottom: 0.65rem;
+  left: 0.65rem;
+  right: 0.65rem;
+  background-color: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(8px);
+  color: #f8fafc;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  line-height: 1.25;
+}
+
+.founder-badge-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background-color: #eab308;
+  flex-shrink: 0;
+}
+
+.founder-name-group {
+  text-align: center;
+}
+
+.founder-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.founder-title {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0.2rem 0 0;
+  font-weight: 500;
+}
+
+.founder-narrative-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.founder-quote-block {
+  position: relative;
+  padding-left: 1.25rem;
+  border-left: 3px solid #172f68;
+}
+
+.founder-bio-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #1e293b;
+  font-style: italic;
+  margin: 0;
+}
+
+.company-philosophy-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.company-overview-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.company-description-text {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.firm-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.firm-pillar-item {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.pillar-index {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #172f68;
+  background-color: #e0e7ff;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  flex-shrink: 0;
+}
+
+.pillar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pillar-content strong {
+  font-size: 0.85rem;
+  color: #0f172a;
+}
+
+.pillar-content span {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+@media (max-width: 768px) {
+  .firm-overview-card {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .founder-identity-col {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 1.25rem;
+  }
+
+  .founder-portrait-frame {
+    width: 7.5rem;
+    max-width: 7.5rem;
+  }
+
+  .founder-name-group {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+
+  .founder-badge-pill {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .founder-identity-col {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .founder-portrait-frame {
+    width: 9rem;
+    max-width: 9rem;
+  }
+
+  .founder-name-group {
+    text-align: center;
   }
 }

@@ -14,10 +14,12 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import {
+  deleteMedia,
   getDeveloperMedia,
   updateMedia,
   uploadMedia,
 } from "../../api/admin-media";
+import { DeleteMediaModal } from "./DeleteMediaModal";
 import type { AdminMedia } from "../../types/admin-media";
 
 type DeveloperMediaSectionProps = {
@@ -36,6 +38,10 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const [itemToDelete, setItemToDelete] = useState<AdminMedia | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const loadMedia = async () => {
     try {
@@ -74,14 +80,13 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
         developerId,
         type: "IMAGE",
         category: "DEVELOPER_BANNER",
-        isPrimary: true,
       });
 
       setBannerFile(null);
-      setSuccess("Brand banner uploaded successfully.");
+      setSuccess("Developer banner uploaded successfully.");
       await loadMedia();
     } catch {
-      setError("Failed to upload brand banner. Please try again.");
+      setError("Failed to upload developer banner. Please try again.");
     } finally {
       setIsUploadingBanner(false);
     }
@@ -114,20 +119,26 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
     }
   }
 
-  async function handleRemoveMedia(mediaId: string, slotName: string) {
-    if (!window.confirm(`Are you sure you want to remove the current ${slotName}?`)) {
-      return;
-    }
-
-    setError(null);
-    setSuccess(null);
+  async function handleConfirmDelete() {
+    if (!itemToDelete) return;
 
     try {
-      await updateMedia(mediaId, { isActive: false });
-      setSuccess(`${slotName} removed.`);
+      setIsDeleting(true);
+      setDeleteError(null);
+
+      await deleteMedia(itemToDelete.id);
+      setSuccess("Media asset deleted.");
+      setItemToDelete(null);
       await loadMedia();
-    } catch {
-      setError(`Failed to remove ${slotName}. Please try again.`);
+    } catch (err: any) {
+      if (err?.status === 404) {
+        setItemToDelete(null);
+        await loadMedia();
+      } else {
+        setDeleteError(err?.message || "Failed to delete media asset. Please try again.");
+      }
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -162,9 +173,12 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
                 <button
                   type="button"
                   className="admin-action admin-action--danger"
-                  onClick={() => handleRemoveMedia(activeBanner.id, "Brand Banner")}
+                  onClick={() => {
+                    setDeleteError(null);
+                    setItemToDelete(activeBanner);
+                  }}
                 >
-                  Remove Banner
+                  Delete Banner
                 </button>
               </div>
             </div>
@@ -211,9 +225,12 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
                 <button
                   type="button"
                   className="admin-action admin-action--danger"
-                  onClick={() => handleRemoveMedia(activeHero.id, "Developer Hero")}
+                  onClick={() => {
+                    setDeleteError(null);
+                    setItemToDelete(activeHero);
+                  }}
                 >
-                  Remove Hero
+                  Delete Hero
                 </button>
               </div>
             </div>
@@ -244,6 +261,19 @@ export function DeveloperMediaSection({ developerId }: DeveloperMediaSectionProp
           </form>
         </div>
       </div>
+
+      <DeleteMediaModal
+        media={itemToDelete}
+        isDeleting={isDeleting}
+        errorMessage={deleteError}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          if (!isDeleting) {
+            setItemToDelete(null);
+            setDeleteError(null);
+          }
+        }}
+      />
     </section>
   );
 }

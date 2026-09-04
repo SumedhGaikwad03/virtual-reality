@@ -12,14 +12,12 @@
  * 3. DeveloperProjects (Portfolio carousel & zero-project state)
  * 4. DeveloperLeadSection (Developer Enquiry)
  * 5. AboutFooter (Site Footer)
- * 6. FloatingSearchControl (Persistent Assistant Access)
- * 7. Communicates developer.name context to GlobalHeader for developer brand attribution.
+ * 6. Communicates developer.name context to GlobalHeader for developer brand attribution.
  */
 
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AboutFooter } from "../components/home/AboutFooter";
-import { FloatingSearchControl } from "../components/home/FloatingSearchControl";
 import { useSite } from "../components/home/hooks/useSite";
 import { DeveloperHero } from "../components/developer/DeveloperHero";
 import { DeveloperIntro } from "../components/developer/DeveloperIntro";
@@ -94,9 +92,6 @@ export function DeveloperPage() {
 
       {/* 5. Footer */}
       <AboutFooter site={site || defaultSiteFallback} />
-
-      {/* 6. Persistent Floating Control */}
-      <FloatingSearchControl />
     </div>
   );
 }

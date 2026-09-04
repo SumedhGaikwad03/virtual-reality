@@ -24,6 +24,17 @@ type PushPayload = {
   url: string;
 };
 
+export class NotificationServiceError extends Error {
+  constructor(
+    public readonly code: "PUSH_SERVICE_NOT_CONFIGURED",
+    public readonly statusCode: 503,
+    message: string,
+  ) {
+    super(message);
+    this.name = "NotificationServiceError";
+  }
+}
+
 function vapidConfiguration() {
   const publicKey = process.env.VAPID_PUBLIC_KEY;
   const privateKey = process.env.VAPID_PRIVATE_KEY;
@@ -40,7 +51,13 @@ async function sendToSubscriptions(
   if (subscriptions.length === 0) return false;
 
   const vapid = vapidConfiguration();
-  if (!vapid) throw new Error("Web Push VAPID configuration is incomplete");
+  if (!vapid) {
+    throw new NotificationServiceError(
+      "PUSH_SERVICE_NOT_CONFIGURED",
+      503,
+      "Web Push VAPID configuration is incomplete",
+    );
+  }
 
   webpush.setVapidDetails(vapid.subject, vapid.publicKey, vapid.privateKey);
   const payload = JSON.stringify(payloadData);
@@ -79,8 +96,8 @@ export async function notifyNewLead(lead: NewLeadNotification) {
 export async function notifyTestPush(adminId: string) {
   const subscriptions = await pushSubscriptionRepository.findForAdmin(adminId);
   await sendToSubscriptions(subscriptions, {
-    title: "Lead Manager",
-    body: "Push notifications are working.",
+    title: "Virtual Reality — Test Notification",
+    body: "Push notifications are working correctly on this device.",
     url: "/admin/leads",
   });
   return subscriptions.length;

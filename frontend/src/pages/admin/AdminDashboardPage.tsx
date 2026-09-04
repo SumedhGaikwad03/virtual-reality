@@ -50,14 +50,32 @@ function errorMessage(error: unknown) {
   return "Unable to load dashboard data. Please try again.";
 }
 
-function getAdminGreetingName(admin: AdminUser | null): string {
-  if (!admin) return "Admin";
-  if (admin.name && admin.name.trim()) return admin.name.trim();
+function getAdminFirstName(admin: AdminUser | null): string | null {
+  if (!admin) return null;
+  if (admin.name && admin.name.trim()) {
+    const parts = admin.name.trim().split(/\s+/);
+    if (parts.length > 0 && parts[0]) {
+      return parts[0];
+    }
+  }
   if (admin.email && admin.email.includes("@")) {
     const localPart = admin.email.split("@")[0];
-    return localPart.charAt(0).toUpperCase() + localPart.slice(1);
+    if (localPart && !localPart.toLowerCase().startsWith("admin")) {
+      return localPart.charAt(0).toUpperCase() + localPart.slice(1);
+    }
   }
-  return "Admin";
+  return null;
+}
+
+function getTimeOfDayGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) {
+    return "Good morning";
+  }
+  if (hour >= 12 && hour < 17) {
+    return "Good afternoon";
+  }
+  return "Good evening";
 }
 
 export function AdminDashboardPage() {
@@ -94,14 +112,16 @@ export function AdminDashboardPage() {
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   const activeProjects = projects.filter((project) => project.publishStatus === "PUBLISHED");
 
-  const greetingName = getAdminGreetingName(admin);
+  const firstName = getAdminFirstName(admin);
+  const timeGreeting = getTimeOfDayGreeting();
+  const greetingHeadline = firstName ? `${timeGreeting}, ${firstName}.` : "Welcome back.";
 
   return (
     <AdminLayout>
       <header className="admin-dashboard-heading">
         <p className="admin-dashboard-eyebrow">Admin Dashboard</p>
-        <h1>Hello, {greetingName}</h1>
-        <p>Here&apos;s what needs your attention today.</p>
+        <h1>{greetingHeadline}</h1>
+        <p>Here’s what’s happening across your platform.</p>
       </header>
 
       {error && <p className="admin-alert admin-alert-error" role="alert">{error}</p>}

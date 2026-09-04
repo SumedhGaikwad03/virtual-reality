@@ -11,6 +11,15 @@ export class AdminApiError extends Error {
   }
 }
 
+export function buildAdminApiUrl(path: string): string {
+  const base = (API_BASE_URL ?? "/api").replace(/\/+$/, "");
+  let cleanPath = path.startsWith("/") ? path : `/${path}`;
+  if (base.endsWith("/api") && cleanPath.startsWith("/api/")) {
+    cleanPath = cleanPath.slice(4);
+  }
+  return `${base}${cleanPath}`;
+}
+
 export async function adminRequest<T>(
   path: string,
   options: RequestInit = {},
@@ -25,7 +34,7 @@ export async function adminRequest<T>(
   let response: Response;
 
   try {
-    response = await fetch(`${API_BASE_URL}${path}`, {
+    response = await fetch(buildAdminApiUrl(path), {
       ...options,
       headers,
     });
@@ -40,7 +49,18 @@ export async function adminRequest<T>(
   }
 
   if (!response.ok) {
-    throw new AdminApiError("Admin request failed", response.status);
+    let errorMessage = "Admin request failed";
+    try {
+      const errBody = await response.json();
+      if (errBody?.error?.message) {
+        errorMessage = errBody.error.message;
+      } else if (errBody?.message) {
+        errorMessage = errBody.message;
+      }
+    } catch {
+      // Use fallback
+    }
+    throw new AdminApiError(errorMessage, response.status);
   }
 
   return (await response.json()) as T;

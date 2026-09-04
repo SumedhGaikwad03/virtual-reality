@@ -11,6 +11,8 @@
  */
 
 import { siteRepository } from "../repositories/site.repository.js";
+import { contactRepository } from "../repositories/contact.repository.js";
+import { firmProfileRepository } from "../repositories/firm-profile.repository.js";
 
 function siteConfiguration() {
   return {
@@ -18,11 +20,6 @@ function siteConfiguration() {
     tagline: process.env.SITE_TAGLINE ?? null,
     description: process.env.SITE_DESCRIPTION ?? null,
     logoUrl: process.env.SITE_LOGO_URL ?? null,
-    contact: {
-      phone: process.env.SITE_PHONE ?? null,
-      email: process.env.SITE_EMAIL ?? null,
-      address: process.env.SITE_ADDRESS ?? null,
-    },
   };
 }
 
@@ -46,15 +43,44 @@ function selectHeroImage(
 }
 
 export async function getSite() {
-  const [homeMedia, projects, developers] = await Promise.all([
+  const [homeMedia, projects, developers, contact, profile] = await Promise.all([
     siteRepository.findHomeMedia(),
     siteRepository.findFeaturedProjects(),
     siteRepository.findPublishedDevelopers(),
+    contactRepository.findContact(),
+    firmProfileRepository.findProfile(),
   ]);
 
   return {
     data: {
       ...siteConfiguration(),
+
+      contact: {
+        contactPersonName: contact.contactPersonName,
+        phone: contact.phone,
+        email: contact.email,
+        address: contact.address,
+        googleMapsUrl: contact.googleMapsUrl,
+        whatsappUrl: contact.whatsappUrl,
+      },
+
+      firmProfile: {
+        founderName: profile.founderName,
+        founderTitle: profile.founderTitle,
+        founderExperience: profile.founderExperience,
+        founderBio: profile.founderBio,
+        companyDescription: profile.companyDescription,
+        founderImageMediaId: profile.founderImageMediaId,
+        founderImage: profile.founderImageMedia
+          ? {
+              id: profile.founderImageMedia.id,
+              url: profile.founderImageMedia.url,
+              thumbnailUrl: profile.founderImageMedia.thumbnailUrl,
+              altText: profile.founderImageMedia.altText,
+              title: profile.founderImageMedia.title,
+            }
+          : null,
+      },
 
       homeMedia: homeMedia.map((media) => ({
         id: media.id,

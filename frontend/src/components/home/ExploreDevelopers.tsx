@@ -19,7 +19,7 @@ type ExploreDevelopersProps = {
 
 export function ExploreDevelopers({ developers = [] }: ExploreDevelopersProps) {
   return (
-    <section className="explore-developers-section" aria-labelledby="developers-heading">
+    <section id="developers" className="explore-developers-section" aria-labelledby="developers-heading">
       <div className="section-header-editorial">
         <span className="section-eyebrow">PARTNERS & BUILDERS</span>
         <h2 id="developers-heading" className="section-title">

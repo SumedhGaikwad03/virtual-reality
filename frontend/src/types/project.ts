@@ -46,7 +46,9 @@ export type Developer = {
   id: string;
   name: string;
   slug: string;
+  description?: string | null;
   logoUrl: string | null;
+  bannerMedia?: Media | null;
 };
 
 export type Location = {

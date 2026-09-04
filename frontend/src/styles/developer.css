@@ -48,7 +48,9 @@
 .developer-hero {
   position: relative;
   width: 100%;
-  min-height: clamp(450px, 65vh, 660px);
+  min-height: clamp(380px, 48vh, 560px);
+  aspect-ratio: 21 / 9;
+  max-height: 600px;
   overflow: hidden;
   background-color: #0b1320;
   margin-bottom: 0;
@@ -66,7 +68,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 35%;
+  object-position: center center;
   transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -742,6 +744,11 @@
 }
 
 @media (max-width: 768px) {
+  .developer-hero {
+    aspect-ratio: auto;
+    min-height: clamp(340px, 55vh, 460px);
+  }
+
   .developer-media-carousel-stage {
     /* A taller mobile stage avoids a tiny image inside a cinematic frame. */
     aspect-ratio: 4 / 3;

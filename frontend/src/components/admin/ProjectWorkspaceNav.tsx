@@ -50,6 +50,19 @@ export function ProjectWorkspaceNav({
             className={section.key === active ? "is-active" : undefined}
             aria-current={section.key === active ? "page" : undefined}
             to={section.to}
+            onClick={(event) => {
+              if (section.key === "highlights") {
+                const el = document.getElementById("highlights");
+                if (el) {
+                  el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              } else if (
+                section.key === "overview" &&
+                window.location.pathname === `/admin/projects/${projectId}`
+              ) {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
           >
             {section.label}
           </Link>

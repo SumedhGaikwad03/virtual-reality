@@ -666,3 +666,53 @@ export async function updateMedia(
     data: toMediaResponse(media),
   };
 }
+
+function extractCloudinaryPublicId(url: string): string | null {
+  try {
+    if (!url || !url.includes("res.cloudinary.com")) return null;
+    const uploadIndex = url.indexOf("/upload/");
+    if (uploadIndex === -1) return null;
+    let path = url.substring(uploadIndex + 8);
+    path = path.replace(/^v\d+\//, "");
+    const dotIndex = path.lastIndexOf(".");
+    if (dotIndex !== -1) {
+      path = path.substring(0, dotIndex);
+    }
+    return path || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteMedia(id: string) {
+  const existing = await mediaRepository.findById(id);
+
+  if (!existing) {
+    throw new MediaServiceError(
+      "MEDIA_NOT_FOUND",
+      404,
+      "Media not found",
+    );
+  }
+
+  const deleted = await mediaRepository.delete(id);
+
+  if (deleted.url) {
+    const publicId = extractCloudinaryPublicId(deleted.url);
+    if (publicId) {
+      const cType = resourceType(deleted.type);
+      try {
+        await deleteUploadedAsset(publicId, cType);
+      } catch (cloudErr) {
+        console.warn(
+          `[MediaService] Cloudinary asset cleanup skipped or failed for media ${id} (${publicId}):`,
+          cloudErr,
+        );
+      }
+    }
+  }
+
+  return {
+    data: toMediaResponse(deleted),
+  };
+}

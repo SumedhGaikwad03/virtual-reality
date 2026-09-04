@@ -11,6 +11,7 @@ import "dotenv/config";
 import http from "node:http";
 import jwt from "jsonwebtoken";
 import app from "../app.js";
+import { prisma } from "../lib/prisma.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "test-jwt-secret-key-must-be-long-enough-for-hs256-32chars";
 process.env.JWT_SECRET = JWT_SECRET;
@@ -36,6 +37,10 @@ async function runTests() {
     results.push({ test, passed, details });
     console.log(`${passed ? "✓ PASS" : "✗ FAIL"}: ${test} (${details})`);
   }
+
+  const dbAdmin = await prisma.admin.findFirst({ where: { isActive: true } });
+  const validAdminId = dbAdmin?.id ?? "admin-1";
+  const validAdminEmail = dbAdmin?.email ?? "admin@example.com";
 
   try {
     // 1. Missing Authorization header -> 401
@@ -146,7 +151,7 @@ async function runTests() {
     }
 
     // 8. Valid admin token -> Authorized
-    const validToken = createToken({ sub: "admin-1", email: "admin@example.com" });
+    const validToken = createToken({ sub: validAdminId, email: validAdminEmail });
     {
       const res = await fetch(`${baseUrl}/api/admin/projects`, {
         headers: { Authorization: `Bearer ${validToken}` },

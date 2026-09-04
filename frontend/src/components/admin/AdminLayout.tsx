@@ -22,7 +22,7 @@ type AdminLayoutProps = {
 export function AdminLayout({
   children,
 }: AdminLayoutProps) {
-  const { logout } = useAuth();
+  const { admin, logout } = useAuth();
   const [isOnline, setIsOnline] = useState(() => navigator.onLine);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement | null>(null);
@@ -104,6 +104,17 @@ export function AdminLayout({
               <NavLink to="/admin/media" role="menuitem" onClick={closeMore}>
                 Home Media
               </NavLink>
+              <NavLink to="/admin/contact" role="menuitem" onClick={closeMore}>
+                Contact Info
+              </NavLink>
+              <NavLink to="/admin/firm-profile" role="menuitem" onClick={closeMore}>
+                Firm Profile
+              </NavLink>
+              {admin?.role === "FOUNDER" && (
+                <NavLink to="/admin/accounts" role="menuitem" onClick={closeMore}>
+                  Admin Accounts
+                </NavLink>
+              )}
               <NavLink to="/admin/import" role="menuitem" onClick={closeMore}>
                 Import
               </NavLink>

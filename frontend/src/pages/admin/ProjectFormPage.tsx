@@ -13,7 +13,7 @@
 
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
 import { getDevelopers } from "../../api/admin-developers";
 import {
@@ -125,6 +125,7 @@ function cleanPayload(form: FormState): AdminProjectInput {
 export function ProjectFormPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [form, setForm] = useState<FormState>(emptyForm);
   const [developers, setDevelopers] = useState<AdminDeveloper[]>([]);
   const [isLoading, setIsLoading] = useState(Boolean(id));
@@ -175,7 +176,6 @@ export function ProjectFormPage() {
           const loadedForm = toForm(response.data);
           setForm(loadedForm);
           setInitialForm(loadedForm);
-          setInitialForm(toForm(response.data));
           setAmenities(response.data.amenities ?? []);
           const loadedHighlights = response.data.highlights ?? [];
           setHighlights(loadedHighlights);
@@ -192,6 +192,17 @@ export function ProjectFormPage() {
       active = false;
     };
   }, [id]);
+
+  useEffect(() => {
+    if (!isLoading && !isLoadingDevelopers && location.hash === "#highlights") {
+      const el = document.getElementById("highlights");
+      if (el) {
+        requestAnimationFrame(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+    }
+  }, [isLoading, isLoadingDevelopers, location.hash]);
 
   function setField<K extends keyof FormState>(field: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -389,6 +400,8 @@ export function ProjectFormPage() {
     JSON.stringify(highlights.map(({ id: _id, ...highlight }) => highlight)) !==
     JSON.stringify(originalHighlights.map(({ id: _id, ...highlight }) => highlight));
 
+  const activeNav = location.hash === "#highlights" ? "highlights" : "overview";
+
   return (
     <AdminLayout>
       <div className="admin-top-bar">
@@ -400,7 +413,7 @@ export function ProjectFormPage() {
         <ProjectWorkspaceNav
           projectId={id}
           projectName={form.name}
-          active="overview"
+          active={activeNav}
           previewHref={
             form.developerId && form.slug && form.locationSlug
               ? `/${developers.find((developer) => developer.id === form.developerId)?.slug ?? ""}/${form.locationSlug}/${form.slug}`

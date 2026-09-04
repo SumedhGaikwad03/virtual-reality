@@ -14,26 +14,49 @@ import { useEffect, useState } from "react";
 import { DeveloperApiError, getDeveloper } from "../../../api/developer";
 import type { PublicDeveloper } from "../../../types/developer";
 
+const developerCache = new Map<string, PublicDeveloper>();
+
+export function invalidateDeveloperCache(slug?: string) {
+  if (slug) {
+    developerCache.delete(slug);
+  } else {
+    developerCache.clear();
+  }
+}
+
 export function useDeveloper(developerSlug: string | undefined) {
-  const [developer, setDeveloper] = useState<PublicDeveloper | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [developer, setDeveloper] = useState<PublicDeveloper | null>(() =>
+    developerSlug ? developerCache.get(developerSlug) ?? null : null,
+  );
+  const [isLoading, setIsLoading] = useState(() =>
+    developerSlug ? !developerCache.has(developerSlug) : false,
+  );
   const [loadError, setLoadError] = useState<"not-found" | "error" | null>(null);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     if (!developerSlug) {
       setIsLoading(false);
       setLoadError("error");
-      return () => controller.abort();
+      return;
     }
 
+    if (developerCache.has(developerSlug)) {
+      setDeveloper(developerCache.get(developerSlug)!);
+      setIsLoading(false);
+      setLoadError(null);
+      return;
+    }
+
+    const controller = new AbortController();
     setIsLoading(true);
     setLoadError(null);
     setDeveloper(null);
 
     getDeveloper(developerSlug, controller.signal)
-      .then(setDeveloper)
+      .then((data) => {
+        developerCache.set(developerSlug, data);
+        setDeveloper(data);
+      })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError") {
           return;

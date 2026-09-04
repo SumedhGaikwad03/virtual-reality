@@ -64,7 +64,17 @@ export function LeadsPage() {
         <div className="admin-card admin-lead-list">
           {leads.map((lead) => (
             <article className={`admin-lead-row ${lead.status === "NEW" ? "is-new" : ""}`} key={lead.id}>
-              <div><h2>{lead.name}</h2><p>{lead.phone}{lead.email ? ` · ${lead.email}` : ""}</p></div>
+              <div>
+                <h2>
+                  {lead.name}
+                  {lead.status === "NEW" && (
+                    <span className="admin-new-badge" aria-label="New lead">
+                      NEW
+                    </span>
+                  )}
+                </h2>
+                <p>{lead.phone}{lead.email ? ` · ${lead.email}` : ""}</p>
+              </div>
               <p>{lead.developer?.name ?? "—"}</p>
               <p>{lead.project?.name ?? "General enquiry"}</p>
               <p>{lead.configuration?.name ?? "—"}</p>

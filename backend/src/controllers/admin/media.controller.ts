@@ -19,6 +19,7 @@ import type {
 
 import {
   createMediaFromUrl,
+  deleteMedia,
   getMediaById,
   listConfigurationMedia,
   listContextMedia,
@@ -270,6 +271,20 @@ export async function updateMediaController(
         req.params.id,
         req.body as MediaUpdateInput,
       ),
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteMediaController(
+  req: Request<MediaIdParams>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    res.status(200).json(
+      await deleteMedia(req.params.id),
     );
   } catch (error) {
     next(error);

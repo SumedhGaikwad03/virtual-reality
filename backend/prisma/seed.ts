@@ -52,17 +52,55 @@ async function main() {
     update: {
       passwordHash,
       name: process.env.ADMIN_SEED_NAME ?? "Admin",
+      role: "FOUNDER",
       isActive: true,
     },
     create: {
       email,
       passwordHash,
       name: process.env.ADMIN_SEED_NAME ?? "Admin",
+      role: "FOUNDER",
       isActive: true,
     },
   });
 
   console.log(`Development admin ready: ${admin.email}`);
+
+  const firmContact = await prisma.firmContact.upsert({
+    where: {
+      id: "default",
+    },
+    update: {},
+    create: {
+      id: "default",
+      contactPersonName: "Dipankar Jagtap",
+      phone: "+91 89996 43665",
+      email: "dipankarjagtap@virtual2reality.in",
+      address: "Office No. 202, 2nd Floor\nMspace Mall, Near Mahindra Antheia\nPimpri, Pune 411018",
+      googleMapsUrl: null,
+      whatsappUrl: "https://api.whatsapp.com/send/?phone=918999643665&text&type=phone_number&app_absent=0",
+    },
+  });
+
+  console.log(`Firm contact initialized: ${firmContact.contactPersonName} (${firmContact.phone})`);
+
+  const firmProfile = await prisma.firmProfile.upsert({
+    where: {
+      id: "default",
+    },
+    update: {},
+    create: {
+      id: "default",
+      founderName: "Dipankar Jagtap",
+      founderTitle: "Founder of Virtual Reality",
+      founderExperience: "20+ years of experience in the real estate industry",
+      founderBio: "Dipankar Jagtap has shaped the real estate landscape across Pune, delivering distinguished residential and commercial landmarks with exceptional architectural integrity.",
+      founderImageMediaId: null,
+      companyDescription: "Virtual Reality is a real-estate discovery platform showcasing prime residential developments and architectural landmarks.",
+    },
+  });
+
+  console.log(`Firm profile initialized: ${firmProfile.founderName} - ${firmProfile.founderTitle}`);
 }
 
 main()

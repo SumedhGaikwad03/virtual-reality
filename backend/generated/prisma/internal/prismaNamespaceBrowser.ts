@@ -60,7 +60,9 @@ export const ModelName = {
   Lead: 'Lead',
   Admin: 'Admin',
   PushSubscription: 'PushSubscription',
-  PasswordResetToken: 'PasswordResetToken'
+  PasswordResetToken: 'PasswordResetToken',
+  FirmContact: 'FirmContact',
+  FirmProfile: 'FirmProfile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -203,6 +205,7 @@ export const AdminScalarFieldEnum = {
   email: 'email',
   passwordHash: 'passwordHash',
   name: 'name',
+  role: 'role',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -237,6 +240,36 @@ export const PasswordResetTokenScalarFieldEnum = {
 } as const
 
 export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const FirmContactScalarFieldEnum = {
+  id: 'id',
+  contactPersonName: 'contactPersonName',
+  phone: 'phone',
+  email: 'email',
+  address: 'address',
+  googleMapsUrl: 'googleMapsUrl',
+  whatsappUrl: 'whatsappUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FirmContactScalarFieldEnum = (typeof FirmContactScalarFieldEnum)[keyof typeof FirmContactScalarFieldEnum]
+
+
+export const FirmProfileScalarFieldEnum = {
+  id: 'id',
+  founderName: 'founderName',
+  founderTitle: 'founderTitle',
+  founderExperience: 'founderExperience',
+  founderBio: 'founderBio',
+  founderImageMediaId: 'founderImageMediaId',
+  companyDescription: 'companyDescription',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FirmProfileScalarFieldEnum = (typeof FirmProfileScalarFieldEnum)[keyof typeof FirmProfileScalarFieldEnum]
 
 
 export const SortOrder = {

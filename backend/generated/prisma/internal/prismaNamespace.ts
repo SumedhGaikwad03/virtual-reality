@@ -406,7 +406,9 @@ export const ModelName = {
   Lead: 'Lead',
   Admin: 'Admin',
   PushSubscription: 'PushSubscription',
-  PasswordResetToken: 'PasswordResetToken'
+  PasswordResetToken: 'PasswordResetToken',
+  FirmContact: 'FirmContact',
+  FirmProfile: 'FirmProfile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -422,7 +424,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "developer" | "configuration" | "project" | "projectHighlight" | "projectAmenity" | "media" | "lead" | "admin" | "pushSubscription" | "passwordResetToken"
+    modelProps: "developer" | "configuration" | "project" | "projectHighlight" | "projectAmenity" | "media" | "lead" | "admin" | "pushSubscription" | "passwordResetToken" | "firmContact" | "firmProfile"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1166,6 +1168,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FirmContact: {
+      payload: Prisma.$FirmContactPayload<ExtArgs>
+      fields: Prisma.FirmContactFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FirmContactFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FirmContactFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>
+        }
+        findFirst: {
+          args: Prisma.FirmContactFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FirmContactFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>
+        }
+        findMany: {
+          args: Prisma.FirmContactFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>[]
+        }
+        create: {
+          args: Prisma.FirmContactCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>
+        }
+        createMany: {
+          args: Prisma.FirmContactCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FirmContactCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>[]
+        }
+        delete: {
+          args: Prisma.FirmContactDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>
+        }
+        update: {
+          args: Prisma.FirmContactUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>
+        }
+        deleteMany: {
+          args: Prisma.FirmContactDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FirmContactUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FirmContactUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>[]
+        }
+        upsert: {
+          args: Prisma.FirmContactUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmContactPayload>
+        }
+        aggregate: {
+          args: Prisma.FirmContactAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFirmContact>
+        }
+        groupBy: {
+          args: Prisma.FirmContactGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FirmContactGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FirmContactCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FirmContactCountAggregateOutputType> | number
+        }
+      }
+    }
+    FirmProfile: {
+      payload: Prisma.$FirmProfilePayload<ExtArgs>
+      fields: Prisma.FirmProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FirmProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FirmProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.FirmProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FirmProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>
+        }
+        findMany: {
+          args: Prisma.FirmProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>[]
+        }
+        create: {
+          args: Prisma.FirmProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>
+        }
+        createMany: {
+          args: Prisma.FirmProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FirmProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.FirmProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>
+        }
+        update: {
+          args: Prisma.FirmProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.FirmProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FirmProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FirmProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.FirmProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FirmProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.FirmProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFirmProfile>
+        }
+        groupBy: {
+          args: Prisma.FirmProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FirmProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FirmProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FirmProfileCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1329,6 +1479,7 @@ export const AdminScalarFieldEnum = {
   email: 'email',
   passwordHash: 'passwordHash',
   name: 'name',
+  role: 'role',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1363,6 +1514,36 @@ export const PasswordResetTokenScalarFieldEnum = {
 } as const
 
 export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const FirmContactScalarFieldEnum = {
+  id: 'id',
+  contactPersonName: 'contactPersonName',
+  phone: 'phone',
+  email: 'email',
+  address: 'address',
+  googleMapsUrl: 'googleMapsUrl',
+  whatsappUrl: 'whatsappUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FirmContactScalarFieldEnum = (typeof FirmContactScalarFieldEnum)[keyof typeof FirmContactScalarFieldEnum]
+
+
+export const FirmProfileScalarFieldEnum = {
+  id: 'id',
+  founderName: 'founderName',
+  founderTitle: 'founderTitle',
+  founderExperience: 'founderExperience',
+  founderBio: 'founderBio',
+  founderImageMediaId: 'founderImageMediaId',
+  companyDescription: 'companyDescription',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FirmProfileScalarFieldEnum = (typeof FirmProfileScalarFieldEnum)[keyof typeof FirmProfileScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1571,6 +1752,20 @@ export type ListEnumLeadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'AdminRole'
+ */
+export type EnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminRole'>
+    
+
+
+/**
+ * Reference to a field of type 'AdminRole[]'
+ */
+export type ListEnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminRole[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1744,6 +1939,8 @@ export type GlobalOmitConfig = {
   admin?: Prisma.AdminOmit
   pushSubscription?: Prisma.PushSubscriptionOmit
   passwordResetToken?: Prisma.PasswordResetTokenOmit
+  firmContact?: Prisma.FirmContactOmit
+  firmProfile?: Prisma.FirmProfileOmit
 }
 
 /* Types for Logging */

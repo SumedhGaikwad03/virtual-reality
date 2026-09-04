@@ -234,6 +234,25 @@ function toPublicMedia(media: {
   };
 }
 
+function selectDeveloperBannerMedia(
+  media: Array<{
+    id: string;
+    type: string;
+    category: string;
+    url: string;
+    thumbnailUrl: string | null;
+    altText: string | null;
+    sortOrder: number;
+    isPrimary: boolean;
+  }>,
+) {
+  const banner =
+    media.find((item) => item.category === "DEVELOPER_BANNER") ??
+    media.find((item) => item.category === "CARD") ??
+    media[0];
+  return banner ? toPublicMedia(banner) : null;
+}
+
 export class ProjectNotFoundError extends Error {
   code = "PROJECT_NOT_FOUND";
   statusCode = 404;
@@ -259,6 +278,10 @@ export async function getPublicProject(
     throw new ProjectNotFoundError();
   }
 
+  const developerBannerMedia = selectDeveloperBannerMedia(
+    project.developer.media ?? [],
+  );
+
   return {
     data: {
       id: project.id,
@@ -280,7 +303,9 @@ export async function getPublicProject(
         id: project.developer.id,
         name: project.developer.name,
         slug: project.developer.slug,
+        description: project.developer.description ?? null,
         logoUrl: project.developer.logoUrl,
+        bannerMedia: developerBannerMedia,
       },
 
       highlights: project.highlights.map((highlight) => ({

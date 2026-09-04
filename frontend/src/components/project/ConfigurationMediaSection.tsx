@@ -78,6 +78,7 @@ export function ConfigurationMediaSection({
 
   return (
     <section
+      id="photos"
       className="configuration-media-section"
       aria-label={`${configuration.name} Media`}
     >

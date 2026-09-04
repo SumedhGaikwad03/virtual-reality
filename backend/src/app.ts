@@ -21,6 +21,8 @@ import adminMediaRoutes from "./routes/admin/media.routes.js";
 import adminLeadRoutes from "./routes/admin/lead.routes.js";
 import adminPushSubscriptionRoutes from "./routes/admin/push-subscription.routes.js";
 import adminImportRoutes from "./routes/admin/import.routes.js";
+import adminContactRoutes from "./routes/admin/contact.routes.js";
+import adminFirmProfileRoutes from "./routes/admin/firm-profile.routes.js";
 import {
   configurationRouter,
   projectRouter as projectConfigurationRouter,
@@ -124,6 +126,8 @@ app.use("/api/admin/media", adminMediaRoutes);
 app.use("/api/admin/leads", adminLeadRoutes);
 app.use("/api/admin/push-subscriptions", adminPushSubscriptionRoutes);
 app.use("/api/admin/import", adminImportRoutes);
+app.use("/api/admin/contact", adminContactRoutes);
+app.use("/api/admin/firm-profile", adminFirmProfileRoutes);
 
 // Public SEO and search engine directives router (registered after all /api/* routes)
 app.use(seoRoutes);
@@ -204,6 +208,76 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
       error: {
         code: "AUTHENTICATION_REQUIRED",
         message: "Authentication required",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "FORBIDDEN") {
+    res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: error.message || "Founder privileges required",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "ADMIN_EXISTS") {
+    res.status(409).json({
+      error: {
+        code: "ADMIN_EXISTS",
+        message: error.message || "An admin with this email already exists",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "ADMIN_NOT_FOUND") {
+    res.status(404).json({
+      error: {
+        code: "ADMIN_NOT_FOUND",
+        message: error.message || "Administrator not found",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "ADMIN_CANNOT_DISABLE_SELF") {
+    res.status(400).json({
+      error: {
+        code: "ADMIN_CANNOT_DISABLE_SELF",
+        message: error.message || "Administrators cannot deactivate their own account",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "ADMIN_LAST_ACTIVE_ACCOUNT") {
+    res.status(400).json({
+      error: {
+        code: "ADMIN_LAST_ACTIVE_ACCOUNT",
+        message: error.message || "Cannot deactivate the last active administrator account",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "INVALID_CREDENTIALS") {
+    res.status(400).json({
+      error: {
+        code: "INVALID_CREDENTIALS",
+        message: error.message || "Invalid credentials provided",
+      },
+    });
+    return;
+  }
+
+  if (error?.code === "INVALID_AUTH_REQUEST") {
+    res.status(400).json({
+      error: {
+        code: "INVALID_AUTH_REQUEST",
+        message: error.message || "Invalid authentication request",
       },
     });
     return;
@@ -390,9 +464,37 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
     return;
   }
 
+  if (error?.code === "INVALID_PUSH_SUBSCRIPTION") {
+    res.status(400).json({
+      error: { code: "INVALID_PUSH_SUBSCRIPTION", message: error.message || "Invalid push subscription" },
+    });
+    return;
+  }
+
+  if (error?.code === "PUSH_SERVICE_NOT_CONFIGURED") {
+    res.status(503).json({
+      error: { code: "PUSH_SERVICE_NOT_CONFIGURED", message: error.message || "Push notification service is not configured" },
+    });
+    return;
+  }
+
   if (error?.code === "INVALID_IMPORT_REQUEST") {
     res.status(400).json({
       error: { code: "INVALID_IMPORT_REQUEST", message: error.message },
+    });
+    return;
+  }
+
+  if (error?.code === "INVALID_CONTACT_REQUEST") {
+    res.status(400).json({
+      error: { code: "INVALID_CONTACT_REQUEST", message: error.message },
+    });
+    return;
+  }
+
+  if (error?.code === "INVALID_FIRM_PROFILE_REQUEST") {
+    res.status(400).json({
+      error: { code: "INVALID_FIRM_PROFILE_REQUEST", message: error.message },
     });
     return;
   }

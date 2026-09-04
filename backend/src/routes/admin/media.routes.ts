@@ -21,6 +21,7 @@ import multer from "multer";
 
 import {
   createMediaFromUrlController,
+  deleteMediaController,
   getMediaController,
   listConfigurationMediaController,
   listContextMediaController,
@@ -168,6 +169,17 @@ router.patch(
   validateMediaId,
   validateMediaUpdate,
   updateMediaController,
+);
+
+/*
+ * Delete media
+ *
+ * DELETE /admin/media/:id
+ */
+router.delete(
+  "/:id",
+  validateMediaId,
+  deleteMediaController,
 );
 
 export default router;

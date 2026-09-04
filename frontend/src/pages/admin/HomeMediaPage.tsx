@@ -16,7 +16,9 @@ import {
   getHomeMedia,
   uploadMedia,
   updateMedia,
+  deleteMedia,
 } from "../../api/admin-media";
+import { DeleteMediaModal } from "../../components/admin/DeleteMediaModal";
 import type {
   AdminMedia,
   MediaCategory,
@@ -58,6 +60,10 @@ export function HomeMediaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [itemToDelete, setItemToDelete] = useState<AdminMedia | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function loadMedia() {
     try {
@@ -129,6 +135,31 @@ export function HomeMediaPage() {
       );
     } catch {
       setError("Unable to update media.");
+    }
+  }
+
+  async function handleConfirmDelete() {
+    if (!itemToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+
+      await deleteMedia(itemToDelete.id);
+
+      // Remove from local list without requiring full page reload
+      setMedia((current) => current.filter((item) => item.id !== itemToDelete.id));
+      setItemToDelete(null);
+    } catch (err: any) {
+      if (err?.status === 404) {
+        // Already deleted elsewhere, reconcile local list
+        setMedia((current) => current.filter((item) => item.id !== itemToDelete.id));
+        setItemToDelete(null);
+      } else {
+        setDeleteError(err?.message || "Unable to delete media. Please try again.");
+      }
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -227,12 +258,29 @@ export function HomeMediaPage() {
                     key={item.id}
                     media={item}
                     onToggle={handleToggle}
+                    onDelete={(targetMedia) => {
+                      setDeleteError(null);
+                      setItemToDelete(targetMedia);
+                    }}
                   />
                 ))}
               </div>
             )}
           </section>
         ))}
+
+      <DeleteMediaModal
+        media={itemToDelete}
+        isDeleting={isDeleting}
+        errorMessage={deleteError}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          if (!isDeleting) {
+            setItemToDelete(null);
+            setDeleteError(null);
+          }
+        }}
+      />
     </AdminLayout>
   );
 }
@@ -240,11 +288,15 @@ export function HomeMediaPage() {
 function HomeMediaCard({
   media,
   onToggle,
+  onDelete,
 }: {
   media: AdminMedia;
   onToggle: (
     media: AdminMedia,
   ) => Promise<void>;
+  onDelete: (
+    media: AdminMedia,
+  ) => void;
 }) {
   return (
     <article
@@ -316,21 +368,30 @@ function HomeMediaCard({
           </div>
         </dl>
 
-        <button
-          type="button"
-          className={`admin-action ${
-            media.isActive
-              ? "admin-action--secondary"
-              : "admin-action--primary"
-          }`}
-          onClick={() =>
-            void onToggle(media)
-          }
-        >
-          {media.isActive
-            ? "Deactivate"
-            : "Activate"}
-        </button>
+        <div className="admin-media-card-actions">
+          <button
+            type="button"
+            className={`admin-action ${
+              media.isActive
+                ? "admin-action--secondary"
+                : "admin-action--primary"
+            }`}
+            onClick={() =>
+              void onToggle(media)
+            }
+          >
+            {media.isActive
+              ? "Deactivate"
+              : "Activate"}
+          </button>
+          <button
+            type="button"
+            className="admin-action admin-action--danger"
+            onClick={() => onDelete(media)}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </article>
   );

@@ -72,7 +72,12 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const targetUrl = new URL(event.notification.data?.url ?? "/admin/leads", self.location.origin).href;
+  const rawUrl = event.notification.data?.url ?? "/admin/leads";
+  let safePath = "/admin/leads";
+  if (typeof rawUrl === "string" && (rawUrl.startsWith("/admin/") || rawUrl === "/admin")) {
+    safePath = rawUrl;
+  }
+  const targetUrl = new URL(safePath, self.location.origin).href;
 
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {

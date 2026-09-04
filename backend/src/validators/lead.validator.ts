@@ -48,6 +48,14 @@ function hasOnlyFields(value: unknown, fields: string[]) {
   return isRecord(value) && Object.keys(value).every((key) => fields.includes(key));
 }
 
+export function normalizeIndianPhone(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const cleaned = raw.trim().replace(/[\s\-\(\)\.]/g, "");
+  const match = cleaned.match(/^(?:\+?91|0)?([6-9]\d{9})$/);
+  if (!match) return null;
+  return `+91${match[1]}`;
+}
+
 export function validatePublicLead(
   req: Request,
   _res: Response,
@@ -58,10 +66,7 @@ export function validatePublicLead(
     body?.email === undefined ||
     (typeof body?.email === "string" &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email));
-  const validPhone =
-    typeof body?.phone === "string" &&
-    body.phone.trim().length >= 3 &&
-    body.phone.trim().length <= 30;
+  const normalizedPhone = normalizeIndianPhone(body?.phone);
 
   if (
     !hasOnlyFields(body, [
@@ -74,7 +79,7 @@ export function validatePublicLead(
       "message",
     ]) ||
     !isNonEmptyString(body?.name) ||
-    !validPhone ||
+    !normalizedPhone ||
     !validEmail ||
     (body?.developerId !== undefined && !isNonEmptyString(body.developerId)) ||
     (body?.projectId !== undefined && !isNonEmptyString(body.projectId)) ||
@@ -85,6 +90,7 @@ export function validatePublicLead(
     next(validationError("Name and a valid phone number are required"));
     return;
   }
+  body.phone = normalizedPhone;
   next();
 }
 

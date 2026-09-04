@@ -110,7 +110,30 @@ export class ProjectRepository {
             id: true,
             name: true,
             slug: true,
+            description: true,
             logoUrl: true,
+            media: {
+              where: {
+                isActive: true,
+                context: "DEVELOPER",
+              },
+              orderBy: [
+                { sortOrder: "asc" as const },
+                { createdAt: "asc" as const },
+                { id: "asc" as const },
+              ],
+              take: 10,
+              select: {
+                id: true,
+                type: true,
+                category: true,
+                url: true,
+                thumbnailUrl: true,
+                altText: true,
+                sortOrder: true,
+                isPrimary: true,
+              },
+            },
           },
         },
 

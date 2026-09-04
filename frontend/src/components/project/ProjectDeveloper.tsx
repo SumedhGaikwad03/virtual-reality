@@ -28,7 +28,15 @@ export function ProjectDeveloper({ developer }: ProjectDeveloperProps) {
         </h2>
 
         <div className="project-developer-card">
-          {developer.logoUrl ? (
+          {developer.bannerMedia ? (
+            <div className="project-developer-banner-container">
+              <img
+                src={developer.bannerMedia.url}
+                alt={developer.bannerMedia.altText || `${developer.name} banner`}
+                className="project-developer-banner-img"
+              />
+            </div>
+          ) : developer.logoUrl ? (
             <img
               src={developer.logoUrl}
               alt={`${developer.name} logo`}
@@ -42,7 +50,9 @@ export function ProjectDeveloper({ developer }: ProjectDeveloperProps) {
 
           <div className="project-developer-info">
             <h3 className="developer-name-heading">{developer.name}</h3>
-            <p className="developer-tagline">Explore full developer portfolio and active developments.</p>
+            <p className="developer-tagline">
+              {developer.description || "Explore full developer portfolio and active developments."}
+            </p>
             <Link to={`/${developer.slug}`} className="project-developer-link">
               Explore Developer Profile →
             </Link>

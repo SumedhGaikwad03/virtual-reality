@@ -171,6 +171,13 @@ export class MediaRepository {
       select: mediaSelect,
     });
   }
+
+  delete(id: string) {
+    return prisma.media.delete({
+      where: { id },
+      select: mediaSelect,
+    });
+  }
 }
 
 export const mediaRepository = new MediaRepository();

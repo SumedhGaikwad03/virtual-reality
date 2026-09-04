@@ -331,6 +331,7 @@ export type MediaWhereInput = {
   developer?: Prisma.XOR<Prisma.DeveloperNullableScalarRelationFilter, Prisma.DeveloperWhereInput> | null
   project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
   configuration?: Prisma.XOR<Prisma.ConfigurationNullableScalarRelationFilter, Prisma.ConfigurationWhereInput> | null
+  firmProfiles?: Prisma.FirmProfileListRelationFilter
 }
 
 export type MediaOrderByWithRelationInput = {
@@ -356,6 +357,7 @@ export type MediaOrderByWithRelationInput = {
   developer?: Prisma.DeveloperOrderByWithRelationInput
   project?: Prisma.ProjectOrderByWithRelationInput
   configuration?: Prisma.ConfigurationOrderByWithRelationInput
+  firmProfiles?: Prisma.FirmProfileOrderByRelationAggregateInput
 }
 
 export type MediaWhereUniqueInput = Prisma.AtLeast<{
@@ -384,6 +386,7 @@ export type MediaWhereUniqueInput = Prisma.AtLeast<{
   developer?: Prisma.XOR<Prisma.DeveloperNullableScalarRelationFilter, Prisma.DeveloperWhereInput> | null
   project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
   configuration?: Prisma.XOR<Prisma.ConfigurationNullableScalarRelationFilter, Prisma.ConfigurationWhereInput> | null
+  firmProfiles?: Prisma.FirmProfileListRelationFilter
 }, "id">
 
 export type MediaOrderByWithAggregationInput = {
@@ -458,6 +461,7 @@ export type MediaCreateInput = {
   developer?: Prisma.DeveloperCreateNestedOneWithoutMediaInput
   project?: Prisma.ProjectCreateNestedOneWithoutMediaInput
   configuration?: Prisma.ConfigurationCreateNestedOneWithoutMediaInput
+  firmProfiles?: Prisma.FirmProfileCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaUncheckedCreateInput = {
@@ -480,6 +484,7 @@ export type MediaUncheckedCreateInput = {
   sourceUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaUpdateInput = {
@@ -502,6 +507,7 @@ export type MediaUpdateInput = {
   developer?: Prisma.DeveloperUpdateOneWithoutMediaNestedInput
   project?: Prisma.ProjectUpdateOneWithoutMediaNestedInput
   configuration?: Prisma.ConfigurationUpdateOneWithoutMediaNestedInput
+  firmProfiles?: Prisma.FirmProfileUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaUncheckedUpdateInput = {
@@ -524,6 +530,7 @@ export type MediaUncheckedUpdateInput = {
   sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaCreateManyInput = {
@@ -673,6 +680,11 @@ export type MediaSumOrderByAggregateInput = {
   sortOrder?: Prisma.SortOrder
 }
 
+export type MediaNullableScalarRelationFilter = {
+  is?: Prisma.MediaWhereInput | null
+  isNot?: Prisma.MediaWhereInput | null
+}
+
 export type MediaCreateNestedManyWithoutDeveloperInput = {
   create?: Prisma.XOR<Prisma.MediaCreateWithoutDeveloperInput, Prisma.MediaUncheckedCreateWithoutDeveloperInput> | Prisma.MediaCreateWithoutDeveloperInput[] | Prisma.MediaUncheckedCreateWithoutDeveloperInput[]
   connectOrCreate?: Prisma.MediaCreateOrConnectWithoutDeveloperInput | Prisma.MediaCreateOrConnectWithoutDeveloperInput[]
@@ -815,6 +827,22 @@ export type EnumMediaSourceFieldUpdateOperationsInput = {
   set?: $Enums.MediaSource
 }
 
+export type MediaCreateNestedOneWithoutFirmProfilesInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutFirmProfilesInput, Prisma.MediaUncheckedCreateWithoutFirmProfilesInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutFirmProfilesInput
+  connect?: Prisma.MediaWhereUniqueInput
+}
+
+export type MediaUpdateOneWithoutFirmProfilesNestedInput = {
+  create?: Prisma.XOR<Prisma.MediaCreateWithoutFirmProfilesInput, Prisma.MediaUncheckedCreateWithoutFirmProfilesInput>
+  connectOrCreate?: Prisma.MediaCreateOrConnectWithoutFirmProfilesInput
+  upsert?: Prisma.MediaUpsertWithoutFirmProfilesInput
+  disconnect?: Prisma.MediaWhereInput | boolean
+  delete?: Prisma.MediaWhereInput | boolean
+  connect?: Prisma.MediaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MediaUpdateToOneWithWhereWithoutFirmProfilesInput, Prisma.MediaUpdateWithoutFirmProfilesInput>, Prisma.MediaUncheckedUpdateWithoutFirmProfilesInput>
+}
+
 export type MediaCreateWithoutDeveloperInput = {
   id?: string
   context: $Enums.MediaContext
@@ -834,6 +862,7 @@ export type MediaCreateWithoutDeveloperInput = {
   updatedAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutMediaInput
   configuration?: Prisma.ConfigurationCreateNestedOneWithoutMediaInput
+  firmProfiles?: Prisma.FirmProfileCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaUncheckedCreateWithoutDeveloperInput = {
@@ -855,6 +884,7 @@ export type MediaUncheckedCreateWithoutDeveloperInput = {
   sourceUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaCreateOrConnectWithoutDeveloperInput = {
@@ -927,6 +957,7 @@ export type MediaCreateWithoutConfigurationInput = {
   updatedAt?: Date | string
   developer?: Prisma.DeveloperCreateNestedOneWithoutMediaInput
   project?: Prisma.ProjectCreateNestedOneWithoutMediaInput
+  firmProfiles?: Prisma.FirmProfileCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaUncheckedCreateWithoutConfigurationInput = {
@@ -948,6 +979,7 @@ export type MediaUncheckedCreateWithoutConfigurationInput = {
   sourceUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaCreateOrConnectWithoutConfigurationInput = {
@@ -995,6 +1027,7 @@ export type MediaCreateWithoutProjectInput = {
   updatedAt?: Date | string
   developer?: Prisma.DeveloperCreateNestedOneWithoutMediaInput
   configuration?: Prisma.ConfigurationCreateNestedOneWithoutMediaInput
+  firmProfiles?: Prisma.FirmProfileCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaUncheckedCreateWithoutProjectInput = {
@@ -1016,6 +1049,7 @@ export type MediaUncheckedCreateWithoutProjectInput = {
   sourceUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedCreateNestedManyWithoutFounderImageMediaInput
 }
 
 export type MediaCreateOrConnectWithoutProjectInput = {
@@ -1042,6 +1076,110 @@ export type MediaUpdateWithWhereUniqueWithoutProjectInput = {
 export type MediaUpdateManyWithWhereWithoutProjectInput = {
   where: Prisma.MediaScalarWhereInput
   data: Prisma.XOR<Prisma.MediaUpdateManyMutationInput, Prisma.MediaUncheckedUpdateManyWithoutProjectInput>
+}
+
+export type MediaCreateWithoutFirmProfilesInput = {
+  id?: string
+  context: $Enums.MediaContext
+  slot?: string | null
+  type: $Enums.MediaType
+  category: $Enums.MediaCategory
+  title?: string | null
+  url: string
+  thumbnailUrl?: string | null
+  altText?: string | null
+  sortOrder?: number
+  isPrimary?: boolean
+  isActive?: boolean
+  source: $Enums.MediaSource
+  sourceUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  developer?: Prisma.DeveloperCreateNestedOneWithoutMediaInput
+  project?: Prisma.ProjectCreateNestedOneWithoutMediaInput
+  configuration?: Prisma.ConfigurationCreateNestedOneWithoutMediaInput
+}
+
+export type MediaUncheckedCreateWithoutFirmProfilesInput = {
+  id?: string
+  developerId?: string | null
+  projectId?: string | null
+  configurationId?: string | null
+  context: $Enums.MediaContext
+  slot?: string | null
+  type: $Enums.MediaType
+  category: $Enums.MediaCategory
+  title?: string | null
+  url: string
+  thumbnailUrl?: string | null
+  altText?: string | null
+  sortOrder?: number
+  isPrimary?: boolean
+  isActive?: boolean
+  source: $Enums.MediaSource
+  sourceUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MediaCreateOrConnectWithoutFirmProfilesInput = {
+  where: Prisma.MediaWhereUniqueInput
+  create: Prisma.XOR<Prisma.MediaCreateWithoutFirmProfilesInput, Prisma.MediaUncheckedCreateWithoutFirmProfilesInput>
+}
+
+export type MediaUpsertWithoutFirmProfilesInput = {
+  update: Prisma.XOR<Prisma.MediaUpdateWithoutFirmProfilesInput, Prisma.MediaUncheckedUpdateWithoutFirmProfilesInput>
+  create: Prisma.XOR<Prisma.MediaCreateWithoutFirmProfilesInput, Prisma.MediaUncheckedCreateWithoutFirmProfilesInput>
+  where?: Prisma.MediaWhereInput
+}
+
+export type MediaUpdateToOneWithWhereWithoutFirmProfilesInput = {
+  where?: Prisma.MediaWhereInput
+  data: Prisma.XOR<Prisma.MediaUpdateWithoutFirmProfilesInput, Prisma.MediaUncheckedUpdateWithoutFirmProfilesInput>
+}
+
+export type MediaUpdateWithoutFirmProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  context?: Prisma.EnumMediaContextFieldUpdateOperationsInput | $Enums.MediaContext
+  slot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  category?: Prisma.EnumMediaCategoryFieldUpdateOperationsInput | $Enums.MediaCategory
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumMediaSourceFieldUpdateOperationsInput | $Enums.MediaSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  developer?: Prisma.DeveloperUpdateOneWithoutMediaNestedInput
+  project?: Prisma.ProjectUpdateOneWithoutMediaNestedInput
+  configuration?: Prisma.ConfigurationUpdateOneWithoutMediaNestedInput
+}
+
+export type MediaUncheckedUpdateWithoutFirmProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  developerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  configurationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  context?: Prisma.EnumMediaContextFieldUpdateOperationsInput | $Enums.MediaContext
+  slot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  category?: Prisma.EnumMediaCategoryFieldUpdateOperationsInput | $Enums.MediaCategory
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumMediaSourceFieldUpdateOperationsInput | $Enums.MediaSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MediaCreateManyDeveloperInput = {
@@ -1084,6 +1222,7 @@ export type MediaUpdateWithoutDeveloperInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutMediaNestedInput
   configuration?: Prisma.ConfigurationUpdateOneWithoutMediaNestedInput
+  firmProfiles?: Prisma.FirmProfileUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaUncheckedUpdateWithoutDeveloperInput = {
@@ -1105,6 +1244,7 @@ export type MediaUncheckedUpdateWithoutDeveloperInput = {
   sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaUncheckedUpdateManyWithoutDeveloperInput = {
@@ -1168,6 +1308,7 @@ export type MediaUpdateWithoutConfigurationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   developer?: Prisma.DeveloperUpdateOneWithoutMediaNestedInput
   project?: Prisma.ProjectUpdateOneWithoutMediaNestedInput
+  firmProfiles?: Prisma.FirmProfileUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaUncheckedUpdateWithoutConfigurationInput = {
@@ -1189,6 +1330,7 @@ export type MediaUncheckedUpdateWithoutConfigurationInput = {
   sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaUncheckedUpdateManyWithoutConfigurationInput = {
@@ -1252,6 +1394,7 @@ export type MediaUpdateWithoutProjectInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   developer?: Prisma.DeveloperUpdateOneWithoutMediaNestedInput
   configuration?: Prisma.ConfigurationUpdateOneWithoutMediaNestedInput
+  firmProfiles?: Prisma.FirmProfileUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaUncheckedUpdateWithoutProjectInput = {
@@ -1273,6 +1416,7 @@ export type MediaUncheckedUpdateWithoutProjectInput = {
   sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  firmProfiles?: Prisma.FirmProfileUncheckedUpdateManyWithoutFounderImageMediaNestedInput
 }
 
 export type MediaUncheckedUpdateManyWithoutProjectInput = {
@@ -1296,6 +1440,35 @@ export type MediaUncheckedUpdateManyWithoutProjectInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type MediaCountOutputType
+ */
+
+export type MediaCountOutputType = {
+  firmProfiles: number
+}
+
+export type MediaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  firmProfiles?: boolean | MediaCountOutputTypeCountFirmProfilesArgs
+}
+
+/**
+ * MediaCountOutputType without action
+ */
+export type MediaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MediaCountOutputType
+   */
+  select?: Prisma.MediaCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * MediaCountOutputType without action
+ */
+export type MediaCountOutputTypeCountFirmProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FirmProfileWhereInput
+}
 
 
 export type MediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1321,6 +1494,8 @@ export type MediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   developer?: boolean | Prisma.Media$developerArgs<ExtArgs>
   project?: boolean | Prisma.Media$projectArgs<ExtArgs>
   configuration?: boolean | Prisma.Media$configurationArgs<ExtArgs>
+  firmProfiles?: boolean | Prisma.Media$firmProfilesArgs<ExtArgs>
+  _count?: boolean | Prisma.MediaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["media"]>
 
 export type MediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1400,6 +1575,8 @@ export type MediaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   developer?: boolean | Prisma.Media$developerArgs<ExtArgs>
   project?: boolean | Prisma.Media$projectArgs<ExtArgs>
   configuration?: boolean | Prisma.Media$configurationArgs<ExtArgs>
+  firmProfiles?: boolean | Prisma.Media$firmProfilesArgs<ExtArgs>
+  _count?: boolean | Prisma.MediaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MediaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   developer?: boolean | Prisma.Media$developerArgs<ExtArgs>
@@ -1418,6 +1595,7 @@ export type $MediaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     developer: Prisma.$DeveloperPayload<ExtArgs> | null
     project: Prisma.$ProjectPayload<ExtArgs> | null
     configuration: Prisma.$ConfigurationPayload<ExtArgs> | null
+    firmProfiles: Prisma.$FirmProfilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1836,6 +2014,7 @@ export interface Prisma__MediaClient<T, Null = never, ExtArgs extends runtime.Ty
   developer<T extends Prisma.Media$developerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$developerArgs<ExtArgs>>): Prisma.Prisma__DeveloperClient<runtime.Types.Result.GetResult<Prisma.$DeveloperPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   project<T extends Prisma.Media$projectArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$projectArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   configuration<T extends Prisma.Media$configurationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$configurationArgs<ExtArgs>>): Prisma.Prisma__ConfigurationClient<runtime.Types.Result.GetResult<Prisma.$ConfigurationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  firmProfiles<T extends Prisma.Media$firmProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Media$firmProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FirmProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2339,6 +2518,30 @@ export type Media$configurationArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.ConfigurationInclude<ExtArgs> | null
   where?: Prisma.ConfigurationWhereInput
+}
+
+/**
+ * Media.firmProfiles
+ */
+export type Media$firmProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FirmProfile
+   */
+  select?: Prisma.FirmProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FirmProfile
+   */
+  omit?: Prisma.FirmProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FirmProfileInclude<ExtArgs> | null
+  where?: Prisma.FirmProfileWhereInput
+  orderBy?: Prisma.FirmProfileOrderByWithRelationInput | Prisma.FirmProfileOrderByWithRelationInput[]
+  cursor?: Prisma.FirmProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FirmProfileScalarFieldEnum | Prisma.FirmProfileScalarFieldEnum[]
 }
 
 /**

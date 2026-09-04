@@ -84,6 +84,14 @@ export const LeadStatus = {
 export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
 
 
+export const AdminRole = {
+  FOUNDER: 'FOUNDER',
+  EMPLOYEE: 'EMPLOYEE'
+} as const
+
+export type AdminRole = (typeof AdminRole)[keyof typeof AdminRole]
+
+
 export const MediaContext = {
   HOME: 'HOME',
   DEVELOPER: 'DEVELOPER',

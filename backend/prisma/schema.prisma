@@ -64,6 +64,11 @@ enum LeadStatus {
   DONE
 }
 
+enum AdminRole {
+  FOUNDER
+  EMPLOYEE
+}
+
 model Developer {
   id            String        @id @default(uuid())
   name          String
@@ -194,6 +199,8 @@ model Media {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
+  firmProfiles    FirmProfile[]
+
   @@index([developerId])
   @@index([projectId])
   @@index([configurationId])
@@ -233,6 +240,7 @@ model Admin {
   email               String              @unique
   passwordHash        String
   name                String?
+  role                AdminRole           @default(EMPLOYEE)
   isActive            Boolean             @default(true)
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
@@ -266,6 +274,35 @@ model PasswordResetToken {
   createdAt DateTime  @default(now())
 
   @@index([adminId])
+}
+
+model FirmContact {
+  id                String   @id @default("default")
+  contactPersonName String   @default("Dipankar Jagtap")
+  phone             String   @default("+91 89996 43665")
+  email             String   @default("dipankarjagtap@virtual2reality.in")
+  address           String   @default("Office No. 202, 2nd Floor\nMspace Mall, Near Mahindra Antheia\nPimpri, Pune 411018")
+  googleMapsUrl     String?
+  whatsappUrl       String   @default("https://api.whatsapp.com/send/?phone=918999643665&text&type=phone_number&app_absent=0")
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model FirmProfile {
+  id                  String   @id @default("default")
+  founderName         String   @default("Dipankar Jagtap")
+  founderTitle        String   @default("Founder of Virtual Reality")
+  founderExperience   String   @default("20+ years of experience in the real estate industry")
+  founderBio          String?
+  founderImageMediaId String?
+  founderImageMedia   Media?   @relation(fields: [founderImageMediaId], references: [id], onDelete: SetNull)
+  companyDescription  String?  @default("Virtual Reality is a real-estate discovery platform showcasing prime residential developments and architectural landmarks.")
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([founderImageMediaId])
 }
 
 enum MediaContext {

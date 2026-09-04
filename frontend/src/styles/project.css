@@ -708,6 +708,7 @@
   margin-inline: auto;
   padding: clamp(2rem, 4vw, 3.5rem) var(--gutter);
   box-sizing: border-box;
+  scroll-margin-top: 5.5rem;
 }
 
 .configuration-media-container {
@@ -997,6 +998,24 @@
   box-shadow: var(--shadow-card);
   max-width: var(--w-reading);
   box-sizing: border-box;
+}
+
+.project-developer-banner-container {
+  max-width: 14rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+
+.project-developer-banner-img {
+  max-width: 100%;
+  max-height: 4.5rem;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .project-developer-logo {
@@ -1315,6 +1334,15 @@
     gap: 1rem;
     padding: 1.5rem;
     text-align: left;
+  }
+
+  .project-developer-banner-container {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+
+  .project-developer-banner-img {
+    max-height: 3.5rem;
   }
 
   /* Lead form: single column */

@@ -18,11 +18,13 @@ import { AdminApiError } from "../../api/admin-client";
 import { getConfiguration } from "../../api/admin-configurations";
 import { getProject } from "../../api/admin-projects";
 import {
+  deleteMedia,
   getConfigurationMedia,
   updateMedia,
   uploadMedia,
 } from "../../api/admin-media";
 import { AdminLayout } from "../../components/admin/AdminLayout";
+import { DeleteMediaModal } from "../../components/admin/DeleteMediaModal";
 import { ProjectWorkspaceNav } from "../../components/admin/ProjectWorkspaceNav";
 
 import type { AdminConfiguration } from "../../types/admin-configuration";
@@ -117,6 +119,9 @@ export function ConfigurationMediaPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<AdminMedia | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function loadMedia() {
     if (!configurationId) return;
@@ -261,6 +266,30 @@ export function ConfigurationMediaPage() {
     }
   }
 
+  async function handleConfirmDelete() {
+    if (!itemToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+
+      await deleteMedia(itemToDelete.id);
+
+      setMedia((current) => current.filter((item) => item.id !== itemToDelete.id));
+      setItemToDelete(null);
+      setSuccess("Media deleted successfully.");
+    } catch (err: any) {
+      if (err?.status === 404) {
+        setMedia((current) => current.filter((item) => item.id !== itemToDelete.id));
+        setItemToDelete(null);
+      } else {
+        setDeleteError(err?.message || "Unable to delete media. Please try again.");
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   const groupedMedia = useMemo(() => {
     return configurationCategories.map((category) => ({
       category,
@@ -379,6 +408,10 @@ export function ConfigurationMediaPage() {
                           onCancel={() => setEditingId(null)}
                           onToggle={() => handleToggle(item)}
                           onUpdate={handleUpdate}
+                          onDelete={(targetMedia) => {
+                            setDeleteError(null);
+                            setItemToDelete(targetMedia);
+                          }}
                         />
                       ))}
                     </div>
@@ -412,6 +445,10 @@ export function ConfigurationMediaPage() {
                         onCancel={() => setEditingId(null)}
                         onToggle={() => handleToggle(item)}
                         onUpdate={handleUpdate}
+                        onDelete={(targetMedia) => {
+                          setDeleteError(null);
+                          setItemToDelete(targetMedia);
+                        }}
                       />
                     ))}
                   </div>
@@ -419,6 +456,19 @@ export function ConfigurationMediaPage() {
               )}
             </>
           )}
+
+          <DeleteMediaModal
+            media={itemToDelete}
+            isDeleting={isDeleting}
+            errorMessage={deleteError}
+            onConfirm={handleConfirmDelete}
+            onCancel={() => {
+              if (!isDeleting) {
+                setItemToDelete(null);
+                setDeleteError(null);
+              }
+            }}
+          />
         </>
       )}
     </AdminLayout>
@@ -626,6 +676,7 @@ function ConfigurationMediaCard({
   onCancel,
   onToggle,
   onUpdate,
+  onDelete,
 }: {
   media: AdminMedia;
   isEditing: boolean;
@@ -636,6 +687,7 @@ function ConfigurationMediaCard({
     id: string,
     payload: MediaMetadataInput,
   ) => Promise<void>;
+  onDelete: (media: AdminMedia) => void;
 }) {
   return (
     <article
@@ -701,13 +753,17 @@ function ConfigurationMediaCard({
           onSubmit={onUpdate}
         />
       ) : (
-        <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
-          <button type="button" onClick={onEdit}>
+        <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem", flexWrap: "wrap" }}>
+          <button type="button" className="admin-action admin-action--secondary" onClick={onEdit}>
             Edit metadata
           </button>
 
-          <button type="button" onClick={onToggle}>
+          <button type="button" className="admin-action admin-action--secondary" onClick={onToggle}>
             {media.isActive ? "Deactivate" : "Activate"}
+          </button>
+
+          <button type="button" className="admin-action admin-action--danger" onClick={() => onDelete(media)}>
+            Delete
           </button>
         </div>
       )}

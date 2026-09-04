@@ -10,9 +10,12 @@
  */
 
 export type SiteContact = {
+  contactPersonName?: string | null;
   phone: string | null;
   email: string | null;
   address: string | null;
+  googleMapsUrl?: string | null;
+  whatsappUrl?: string | null;
 };
 
 export type SiteHeroImage = {
@@ -83,12 +86,31 @@ export type SiteDeveloper = {
   } | null;
 };
 
+export type FirmFounderImage = {
+  id: string;
+  url: string;
+  thumbnailUrl: string | null;
+  altText: string | null;
+  title: string | null;
+} | null;
+
+export type FirmProfile = {
+  founderName: string;
+  founderTitle: string;
+  founderExperience: string;
+  founderBio: string | null;
+  companyDescription: string | null;
+  founderImageMediaId: string | null;
+  founderImage: FirmFounderImage;
+};
+
 export type Site = {
   name: string | null;
   tagline: string | null;
   description: string | null;
   logoUrl: string | null;
   contact: SiteContact;
+  firmProfile?: FirmProfile;
   homeMedia: HomeMedia[];
   featuredProjects: FeaturedProject[];
   developers?: SiteDeveloper[];
