@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node --import dotenv/config dist/src/server.js",
     "build": "tsc -p tsconfig.json",
-    "admin:create": "tsc -p tsconfig.json && node dist/src/scripts/create-admin.js"
+    "admin:create": "tsc -p tsconfig.json && node dist/src/scripts/create-admin.js",
+    "audit:db": "tsx src/scripts/audit-db.ts",
+    "import:catalog": "tsx src/scripts/import-property-catalog.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",

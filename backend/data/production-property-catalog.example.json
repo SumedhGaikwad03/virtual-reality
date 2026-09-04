@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Virtual Reality Platform: Production Real-Estate Catalog Data Ingestion Template. Populate this file with officially verified builder and project facts.",
+  "developers": [
+    {
+      "name": "Official Developer Name",
+      "slug": "official-developer-slug",
+      "description": "Detailed background and architectural credentials of the developer.",
+      "websiteUrl": "https://www.exampledeveloper.com",
+      "logoUrl": "https://res.cloudinary.com/example/image/upload/v1/developer-logo.png",
+      "publishStatus": "PUBLISHED",
+      "media": [
+        {
+          "context": "DEVELOPER",
+          "type": "IMAGE",
+          "category": "DEVELOPER_BANNER",
+          "title": "Developer Corporate Brand Banner",
+          "url": "https://res.cloudinary.com/example/image/upload/v1/developer-banner.jpg",
+          "altText": "Official Developer Brand Banner",
+          "sortOrder": 0,
+          "isPrimary": true,
+          "isActive": true
+        }
+      ],
+      "projects": [
+        {
+          "name": "Official Project Name",
+          "slug": "official-project-slug",
+          "description": "Comprehensive project overview, architectural highlights, and lifestyle positioning.",
+          "locationName": "Locality Name (e.g., Baner)",
+          "locationSlug": "locality-slug (e.g., baner)",
+          "address": "Complete Postal Site Address, Pune, Maharashtra 411000",
+          "mapsUrl": "https://maps.google.com/?q=Verified+Location+Pune",
+          "status": "ONGOING",
+          "featured": true,
+          "publishStatus": "PUBLISHED",
+          "highlights": [
+            "Verified key selling point 1 (e.g., Ultra-luxury clubhouse and landscaped podiums)",
+            "Verified key selling point 2 (e.g., Strategic connectivity 500m from metro)",
+            "Verified key selling point 3 (e.g., MIVAN construction with IGBC Gold certification)"
+          ],
+          "amenities": [
+            "Swimming Pool",
+            "Gymnasium",
+            "Clubhouse",
+            "EV Charging Bays",
+            "Children's Play Area"
+          ],
+          "media": [
+            {
+              "context": "PROJECT",
+              "type": "IMAGE",
+              "category": "HERO",
+              "title": "Project Architectural Elevation Render",
+              "url": "https://res.cloudinary.com/example/image/upload/v1/project-hero.jpg",
+              "altText": "Project Main Architectural Elevation",
+              "sortOrder": 0,
+              "isPrimary": true,
+              "isActive": true
+            },
+            {
+              "context": "PROJECT",
+              "type": "IMAGE",
+              "category": "GALLERY",
+              "title": "Clubhouse & Leisure Amenities",
+              "url": "https://res.cloudinary.com/example/image/upload/v1/project-gallery-1.jpg",
+              "altText": "Clubhouse and Pool Area",
+              "sortOrder": 1,
+              "isPrimary": false,
+              "isActive": true
+            }
+          ],
+          "configurations": [
+            {
+              "name": "2 BHK Luxury",
+              "bhk": 2,
+              "carpetArea": 780,
+              "builtUpArea": 1014,
+              "superBuiltUpArea": 1170,
+              "priceFrom": 7500000,
+              "availabilityStatus": "AVAILABLE",
+              "media": [
+                {
+                  "context": "CONFIGURATION",
+                  "type": "IMAGE",
+                  "category": "FLOOR_PLAN",
+                  "title": "2 BHK Unit Floor Plan",
+                  "url": "https://res.cloudinary.com/example/image/upload/v1/2bhk-floorplan.jpg",
+                  "altText": "2 BHK Detailed Unit Layout",
+                  "sortOrder": 0,
+                  "isPrimary": true,
+                  "isActive": true
+                }
+              ]
+            },
+            {
+              "name": "3 BHK Premium",
+              "bhk": 3,
+              "carpetArea": 1150,
+              "builtUpArea": 1495,
+              "superBuiltUpArea": 1725,
+              "priceFrom": 11800000,
+              "availabilityStatus": "AVAILABLE"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
