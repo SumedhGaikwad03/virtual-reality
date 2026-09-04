@@ -39,6 +39,9 @@ const LeadsPage = lazy(() =>
 const LeadDetailPage = lazy(() =>
   import("../pages/admin/LeadDetailPage").then((m) => ({ default: m.LeadDetailPage })),
 );
+const LeadFormPage = lazy(() =>
+  import("../pages/admin/LeadFormPage").then((m) => ({ default: m.LeadFormPage })),
+);
 const ImportPage = lazy(() =>
   import("../pages/admin/ImportPage").then((m) => ({ default: m.ImportPage })),
 );
@@ -212,11 +215,33 @@ export function AppRouter() {
       />
 
       <Route
+        path="/admin/leads/new"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <LeadFormPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
         path="/admin/leads/:id"
         element={
           <ProtectedRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <LeadDetailPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/leads/:id/edit"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <LeadFormPage />
             </Suspense>
           </ProtectedRoute>
         }

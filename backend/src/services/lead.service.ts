@@ -3,20 +3,20 @@
  * Lead capture, validation, context resolution, and administrative lifecycle service.
  *
  * FLOW:
- * Public Lead Capture Flow & Admin Lead Triage Flow
+ * Public Lead Capture Flow & Admin Lead Triage/CRUD Flow
  *
  * RESPONSIBILITY:
  * - Validates public lead submissions and enforces relational integrity.
  * - Auto-populates parent developerId and projectId context based on configuration/project relationships.
  * - Supports developer-level enquiries (where developerId is supplied directly).
  * - Prevents cross-developer / cross-project / cross-configuration ownership mismatches.
- * - Manages lead status transitions and administrative triage notes.
+ * - Manages lead creation (public & admin), full updates, deletion, search, filtering, and pagination.
  */
 
 import type { LeadStatus } from "../../generated/prisma/enums.js";
 import { configurationRepository } from "../repositories/configuration.repository.js";
 import { developerRepository } from "../repositories/developer.repository.js";
-import { leadRepository } from "../repositories/lead.repository.js";
+import { leadRepository, type LeadFindManyOptions, type LeadUpdateData } from "../repositories/lead.repository.js";
 import { projectRepository } from "../repositories/project.repository.js";
 import { notifyNewLead } from "./notification.service.js";
 import { normalizeIndianPhone } from "../validators/lead.validator.js";
@@ -31,7 +31,29 @@ export type CreateLeadInput = {
   message?: string;
 };
 
-export type UpdateLeadInput = { status?: LeadStatus; notes?: string | null };
+export type CreateAdminLeadInput = {
+  name: string;
+  phone: string;
+  email?: string | null;
+  developerId?: string | null;
+  projectId?: string | null;
+  configurationId?: string | null;
+  message?: string | null;
+  status?: LeadStatus;
+  notes?: string | null;
+};
+
+export type UpdateAdminLeadInput = {
+  name?: string;
+  phone?: string;
+  email?: string | null;
+  developerId?: string | null;
+  projectId?: string | null;
+  configurationId?: string | null;
+  message?: string | null;
+  status?: LeadStatus;
+  notes?: string | null;
+};
 
 export class LeadServiceError extends Error {
   constructor(
@@ -92,16 +114,18 @@ type ResolvedLeadContext = {
   configurationId?: string;
 };
 
-async function resolveLeadContext(
-  input: CreateLeadInput,
-): Promise<ResolvedLeadContext> {
-  let resolvedDeveloperId = input.developerId;
-  let resolvedProjectId = input.projectId;
-  let resolvedConfigurationId = input.configurationId;
+async function resolveLeadContext(input: {
+  developerId?: string | null;
+  projectId?: string | null;
+  configurationId?: string | null;
+}): Promise<ResolvedLeadContext> {
+  let resolvedDeveloperId = input.developerId || undefined;
+  let resolvedProjectId = input.projectId || undefined;
+  let resolvedConfigurationId = input.configurationId || undefined;
 
-  if (input.configurationId) {
+  if (resolvedConfigurationId) {
     const configuration = await configurationRepository.findById(
-      input.configurationId,
+      resolvedConfigurationId,
     );
     if (!configuration) {
       throw new LeadServiceError(
@@ -111,7 +135,7 @@ async function resolveLeadContext(
       );
     }
 
-    if (input.projectId && configuration.projectId !== input.projectId) {
+    if (resolvedProjectId && configuration.projectId !== resolvedProjectId) {
       throw new LeadServiceError(
         "CONFIGURATION_PROJECT_MISMATCH",
         400,
@@ -119,13 +143,13 @@ async function resolveLeadContext(
       );
     }
 
-    // Authoritatively auto-populate the parent projectId from the verified Configuration
+    // Authoritatively auto-populate parent projectId from verified Configuration
     resolvedProjectId = configuration.projectId;
 
     // Retrieve project to derive owning developerId
     const project = await projectRepository.findById(configuration.projectId);
     if (project) {
-      if (input.developerId && project.developerId !== input.developerId) {
+      if (resolvedDeveloperId && project.developerId !== resolvedDeveloperId) {
         throw new LeadServiceError(
           "DEVELOPER_PROJECT_MISMATCH",
           400,
@@ -134,8 +158,8 @@ async function resolveLeadContext(
       }
       resolvedDeveloperId = project.developerId;
     }
-  } else if (input.projectId) {
-    const project = await projectRepository.findById(input.projectId);
+  } else if (resolvedProjectId) {
+    const project = await projectRepository.findById(resolvedProjectId);
     if (!project) {
       throw new LeadServiceError(
         "PROJECT_NOT_FOUND",
@@ -144,7 +168,7 @@ async function resolveLeadContext(
       );
     }
 
-    if (input.developerId && project.developerId !== input.developerId) {
+    if (resolvedDeveloperId && project.developerId !== resolvedDeveloperId) {
       throw new LeadServiceError(
         "DEVELOPER_PROJECT_MISMATCH",
         400,
@@ -152,10 +176,10 @@ async function resolveLeadContext(
       );
     }
 
-    // Authoritatively auto-populate owning developerId from the verified Project
+    // Authoritatively auto-populate owning developerId from verified Project
     resolvedDeveloperId = project.developerId;
-  } else if (input.developerId) {
-    const developer = await developerRepository.findById(input.developerId);
+  } else if (resolvedDeveloperId) {
+    const developer = await developerRepository.findById(resolvedDeveloperId);
     if (!developer) {
       throw new LeadServiceError(
         "DEVELOPER_NOT_FOUND",
@@ -198,9 +222,41 @@ export async function createLead(input: CreateLeadInput) {
   };
 }
 
-export async function listLeads() {
-  const leads = await leadRepository.findMany();
-  return { data: leads.map(toAdminLead) };
+export async function createAdminLead(input: CreateAdminLeadInput) {
+  const context = await resolveLeadContext({
+    developerId: input.developerId,
+    projectId: input.projectId,
+    configurationId: input.configurationId,
+  });
+
+  const lead = await leadRepository.create({
+    name: input.name,
+    phone: normalizeIndianPhone(input.phone) || input.phone,
+    email: input.email || undefined,
+    developerId: context.developerId,
+    projectId: context.projectId,
+    configurationId: context.configurationId,
+    message: input.message || undefined,
+    status: input.status || "NEW",
+    notes: input.notes || undefined,
+  });
+
+  return {
+    data: toAdminLead(lead),
+  };
+}
+
+export async function listLeads(options?: LeadFindManyOptions) {
+  const result = await leadRepository.findMany(options);
+  return {
+    data: result.leads.map(toAdminLead),
+    pagination: {
+      page: result.page,
+      limit: result.limit,
+      total: result.total,
+      totalPages: result.totalPages,
+    },
+  };
 }
 
 export async function getLeadById(id: string) {
@@ -209,9 +265,53 @@ export async function getLeadById(id: string) {
   return { data: toAdminLead(lead) };
 }
 
-export async function updateLead(id: string, input: UpdateLeadInput) {
-  if (!(await leadRepository.findById(id))) {
+export async function updateLead(id: string, input: UpdateAdminLeadInput) {
+  const existing = await leadRepository.findById(id);
+  if (!existing) {
     throw new LeadServiceError("LEAD_NOT_FOUND", 404, "Lead not found");
   }
-  return { data: toAdminLead(await leadRepository.update(id, input)) };
+
+  const updateData: LeadUpdateData = {};
+
+  if (input.name !== undefined) updateData.name = input.name;
+  if (input.phone !== undefined) updateData.phone = input.phone;
+  if (input.email !== undefined) updateData.email = input.email;
+  if (input.message !== undefined) updateData.message = input.message;
+  if (input.status !== undefined) updateData.status = input.status;
+  if (input.notes !== undefined) updateData.notes = input.notes;
+
+  // If any relationship is explicitly provided or modified, resolve it
+  const hasRelationshipChange =
+    input.developerId !== undefined ||
+    input.projectId !== undefined ||
+    input.configurationId !== undefined;
+
+  if (hasRelationshipChange) {
+    const targetDeveloperId = input.developerId !== undefined ? input.developerId : existing.developerId;
+    const targetProjectId = input.projectId !== undefined ? input.projectId : existing.projectId;
+    const targetConfigurationId = input.configurationId !== undefined ? input.configurationId : existing.configurationId;
+
+    const resolved = await resolveLeadContext({
+      developerId: targetDeveloperId,
+      projectId: targetProjectId,
+      configurationId: targetConfigurationId,
+    });
+
+    updateData.developerId = resolved.developerId ?? null;
+    updateData.projectId = resolved.projectId ?? null;
+    updateData.configurationId = resolved.configurationId ?? null;
+  }
+
+  const updated = await leadRepository.update(id, updateData);
+  return { data: toAdminLead(updated) };
+}
+
+export async function deleteLead(id: string) {
+  const existing = await leadRepository.findById(id);
+  if (!existing) {
+    throw new LeadServiceError("LEAD_NOT_FOUND", 404, "Lead not found");
+  }
+
+  await leadRepository.delete(id);
+  return { data: { deleted: true, id } };
 }
