@@ -1,5 +1,6 @@
 import { API_BASE_URL } from "./config";
 import { adminRequest } from "./admin-client";
+import { getAccessToken } from "../auth/auth-storage";
 import type { AdminAccount, AdminLoginResponse, AdminRole } from "../auth/types";
 
 export class AdminAuthApiError extends Error {
@@ -91,7 +92,7 @@ export type CreatedAdminAccountResponse = {
 export async function createAdminAccount(
   input: CreateAdminAccountInput,
 ): Promise<CreatedAdminAccountResponse> {
-  const accessToken = window.localStorage.getItem("virtual-reality.admin.access-token");
+  const accessToken = getAccessToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };

@@ -97,7 +97,7 @@ function getJwtConfiguration() {
     throw new Error("JWT_SECRET must be at least 32 characters long in production");
   }
 
-  const expiresIn = process.env.JWT_EXPIRES_IN ?? "15m";
+  const expiresIn = process.env.JWT_EXPIRES_IN ?? "24h";
 
   return {
     secret,
