@@ -38,9 +38,22 @@ async function runTests() {
     console.log(`${passed ? "✓ PASS" : "✗ FAIL"}: ${test} (${details})`);
   }
 
-  const dbAdmin = await prisma.admin.findFirst({ where: { isActive: true } });
-  const validAdminId = dbAdmin?.id ?? "admin-1";
-  const validAdminEmail = dbAdmin?.email ?? "admin@example.com";
+  let createdTempAdmin = false;
+  let dbAdmin = await prisma.admin.findFirst({ where: { isActive: true } });
+  if (!dbAdmin) {
+    dbAdmin = await prisma.admin.create({
+      data: {
+        id: "a0000000-0000-4000-8000-000000000001",
+        email: "security-test@example.com",
+        passwordHash: "test-hash",
+        role: "FOUNDER",
+        isActive: true,
+      },
+    });
+    createdTempAdmin = true;
+  }
+  const validAdminId = dbAdmin.id;
+  const validAdminEmail = dbAdmin.email;
 
   try {
     // 1. Missing Authorization header -> 401
@@ -301,6 +314,9 @@ async function runTests() {
       process.exit(1);
     }
   } finally {
+    if (createdTempAdmin && dbAdmin) {
+      await prisma.admin.delete({ where: { id: dbAdmin.id } }).catch(() => {});
+    }
     server.close();
   }
 }
