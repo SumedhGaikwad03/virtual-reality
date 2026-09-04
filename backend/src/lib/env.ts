@@ -41,6 +41,22 @@ export function validateEnvironment(): void {
     }
   }
 
+  // VAPID Web Push configuration (if any VAPID variable is provided, all required components must be present)
+  const vapidPublic = process.env.VAPID_PUBLIC_KEY;
+  const vapidPrivate = process.env.VAPID_PRIVATE_KEY;
+  const vapidSubject = process.env.VAPID_SUBJECT;
+  if (vapidPublic || vapidPrivate || vapidSubject) {
+    if (!vapidPublic || vapidPublic.trim() === "") {
+      errors.push("VAPID_PUBLIC_KEY is required when Web Push is configured.");
+    }
+    if (!vapidPrivate || vapidPrivate.trim() === "") {
+      errors.push("VAPID_PRIVATE_KEY is required when Web Push is configured.");
+    }
+    if (!vapidSubject || vapidSubject.trim() === "") {
+      errors.push("VAPID_SUBJECT is required when Web Push is configured (e.g. mailto:admin@virtual2reality.in).");
+    }
+  }
+
   if (errors.length > 0) {
     const message = `[FATAL] Startup environment validation failed:\n- ${errors.join("\n- ")}`;
     console.error(message);

@@ -1,3 +1,12 @@
+# ==============================================================================
+# NOTE: This Docker production configuration is currently retained for future
+# deployment. The project is presently using a free hosting strategy, so the
+# Docker/VPS production deployment is intentionally paused to avoid infrastructure
+# costs. The containers have been locally built and verified successfully.
+# Do not remove or modify this configuration unless the Docker production
+# deployment is resumed. The existing live deployment remains active.
+# ==============================================================================
+
 services:
   backend:
     build:
@@ -14,6 +23,9 @@ services:
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY:-}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY:-}
+      - VAPID_SUBJECT=${VAPID_SUBJECT:-mailto:admin@virtual2reality.in}
       - CORS_ORIGIN=${CORS_ORIGIN:-*}
       - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
       - RATE_LIMIT_MAX=${RATE_LIMIT_MAX:-100}
@@ -32,6 +44,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VITE_API_BASE_URL=${VITE_API_BASE_URL:-/api}
+        - VITE_VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY:-}
     container_name: vr-frontend-prod
     restart: unless-stopped
     ports:

@@ -1,4 +1,12 @@
 # syntax=docker/dockerfile:1
+# ==============================================================================
+# NOTE: This Docker production configuration is currently retained for future
+# deployment. The project is presently using a free hosting strategy, so the
+# Docker/VPS production deployment is intentionally paused to avoid infrastructure
+# costs. The containers have been locally built and verified successfully.
+# Do not remove or modify this configuration unless the Docker production
+# deployment is resumed. The existing live deployment remains active.
+# ==============================================================================
 
 # Stage 1: Build stage
 FROM node:22-alpine AS builder

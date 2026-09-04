@@ -1,8 +1,17 @@
-const STATIC_CACHE = "virtual-reality-admin-shell-v1";
+const STATIC_CACHE = "virtual-reality-admin-shell-v2";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(["/", "/index.html", "/manifest.webmanifest", "/icons/app-icon.svg"])),
+    caches.open(STATIC_CACHE).then((cache) => cache.addAll([
+      "/",
+      "/index.html",
+      "/manifest.webmanifest",
+      "/favicon.ico",
+      "/favicon-32x32.png",
+      "/icons/icon-192x192.png",
+      "/icons/icon-512x512.png",
+      "/icons/app-icon.svg"
+    ])),
   );
   self.skipWaiting();
 });
@@ -65,8 +74,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(self.registration.showNotification(title, {
     body,
     data: { url },
-    icon: "/icons/app-icon.svg",
-    badge: "/icons/app-icon.svg",
+    icon: "/icons/icon-192x192.png",
+    badge: "/icons/icon-192x192.png",
   }));
 });
 
