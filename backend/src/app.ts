@@ -56,54 +56,86 @@ app.use(
 /*
  * Cross-Origin Resource Sharing (CORS):
  * Restricts browser-initiated requests to authorized frontend origins.
- * - In production: checks environment-defined ALLOWED_ORIGINS/CORS_ORIGIN, falling back to official production domains.
- * - In development: permits standard Vite local development origins (localhost / 127.0.0.1 on any local port).
+ * - Checks environment-defined ALLOWED_ORIGINS / CORS_ORIGIN / FRONTEND_URL / CLIENT_URL.
+ * - Always trusts official production custom domains (https://www.virtual2reality.in, https://virtual2reality.in).
+ * - Always trusts the project Vercel domains (https://virtual-reality-iiew.vercel.app and preview deployment subdomains).
+ * - In development: permits standard Vite local development origins (localhost / 127.0.0.1 on any port).
  * - Supports preflight caching (24h) and standard methods/headers used by public and admin API clients.
  */
-function getCorsOrigins(): string[] {
-  const envOrigins = process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGIN;
-  if (envOrigins) {
-    return envOrigins
-      .split(",")
-      .map((origin) => origin.trim())
-      .filter(Boolean);
-  }
-
-  return [
+function getStaticAllowedOrigins(): Set<string> {
+  const defaultOrigins = [
     "https://www.virtual2reality.in",
     "https://virtual2reality.in",
+    "https://virtual-reality-iiew.vercel.app",
     "http://localhost:5173",
     "http://localhost:4173",
     "http://localhost:3000",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:4173",
+    "http://127.0.0.1:3000",
   ];
+
+  const envOrigins =
+    process.env.ALLOWED_ORIGINS ||
+    process.env.CORS_ORIGIN ||
+    process.env.FRONTEND_URL ||
+    process.env.CLIENT_URL;
+
+  const parsedEnv = envOrigins
+    ? envOrigins
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean)
+    : [];
+
+  return new Set([...defaultOrigins, ...parsedEnv]);
 }
 
-const allowedOrigins = getCorsOrigins();
+function isOriginAllowed(origin: string): boolean {
+  const staticOrigins = getStaticAllowedOrigins();
+  if (staticOrigins.has(origin)) {
+    return true;
+  }
+
+  const isDev = process.env.NODE_ENV !== "production";
+  const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  if (isDev && isLocalhost) {
+    return true;
+  }
+
+  // Allow project-specific Vercel preview & production deployments
+  const isVercelProjectDeployment =
+    /^https:\/\/virtual-reality-iiew(-[a-z0-9-]+)*\.vercel\.app$/i.test(origin);
+  if (isVercelProjectDeployment) {
+    return true;
+  }
+
+  return false;
+}
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow non-browser requests (e.g. server-to-server, curl, Postman) where origin is undefined
+      // Allow non-browser requests (e.g. server-to-server, curl, Postman, health probes) where origin is undefined
       if (!origin) {
         callback(null, true);
         return;
       }
 
-      const isDev = process.env.NODE_ENV !== "production";
-      const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(
-        origin,
-      );
-
-      if (allowedOrigins.includes(origin) || (isDev && isLocalhost)) {
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
         // Disallow origin by omitting CORS headers (clean browser-side blocking without 500 crashes)
         callback(null, false);
       }
     },
-    methods: ["GET", "POST", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+    ],
     maxAge: 86400,
   }),
 );
