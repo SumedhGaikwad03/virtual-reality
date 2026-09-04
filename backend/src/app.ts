@@ -109,6 +109,16 @@ app.use(
 );
 
 
+/**
+ * Unauthenticated lightweight health check endpoint for cloud orchestrators, liveness, and readiness probes.
+ */
+app.get(["/health", "/api/health"], (_req: express.Request, res: express.Response) => {
+  res.status(200).json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use("/api/developers", projectRoutes);
 app.use("/api/developers", developerRoutes);
 app.use("/api/search", searchRoutes);

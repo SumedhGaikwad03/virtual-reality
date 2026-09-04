@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "VR Backend for enquiry form",
-  "main": "server.js",
+  "main": "dist/src/server.js",
   "type": "module",
   "scripts": {
     "start": "node --import dotenv/config dist/src/server.js",

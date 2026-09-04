@@ -28,9 +28,97 @@ const DEFAULT_DESCRIPTION =
   "Virtual Reality is a premier architectural real-estate platform showcasing curated residential landmarks and luxury developments in Pune and Mumbai.";
 const DEFAULT_OG_IMAGE = `${CANONICAL_ORIGIN}/icons/app-icon.svg`;
 
-// Production compiled bundle filenames from Vite build
-const DEFAULT_BUNDLE_SCRIPT = "/assets/index-CeJ6m_xO.js";
-const DEFAULT_BUNDLE_STYLE = "/assets/index-DResmAw8.css";
+import fs from "node:fs";
+import path from "node:path";
+
+// Production compiled bundle fallback filenames
+const DEFAULT_BUNDLE_SCRIPT = "/assets/index-BQHX-fUx.js";
+const DEFAULT_BUNDLE_STYLE = "/assets/index-DYHmTRZz.css";
+
+// In-memory cache for dynamically detected assets
+let cachedAssets: { scriptSrc: string; styleHref: string } | null = null;
+
+/**
+ * Dynamically resolves the current production client bundle paths.
+ * Checks:
+ * 1. Explicit environment variables (VITE_ASSET_SCRIPT, VITE_ASSET_STYLE)
+ * 2. In-memory cached filesystem scan
+ * 3. Filesystem inspection of frontend/dist/index.html or frontend/dist/assets
+ * 4. Safe fallback bundle hashes
+ */
+export function resolveProductionAssets(): { scriptSrc: string; styleHref: string } {
+  const envScript = process.env.VITE_ASSET_SCRIPT?.trim();
+  const envStyle = process.env.VITE_ASSET_STYLE?.trim();
+
+  // 1. Full environment variable override
+  if (envScript && envStyle) {
+    return { scriptSrc: envScript, styleHref: envStyle };
+  }
+
+  // 2. Return cached filesystem scan if available
+  if (cachedAssets) {
+    return {
+      scriptSrc: envScript || cachedAssets.scriptSrc,
+      styleHref: envStyle || cachedAssets.styleHref,
+    };
+  }
+
+  // 3. Dynamic filesystem detection
+  try {
+    const candidatePaths = [
+      path.resolve(process.cwd(), "../frontend/dist"),
+      path.resolve(process.cwd(), "frontend/dist"),
+      path.resolve(process.cwd(), "dist/frontend"),
+      path.resolve(process.cwd(), "../dist"),
+    ];
+
+    for (const distPath of candidatePaths) {
+      const indexHtmlPath = path.join(distPath, "index.html");
+      if (fs.existsSync(indexHtmlPath)) {
+        const htmlContent = fs.readFileSync(indexHtmlPath, "utf-8");
+        const scriptMatch = htmlContent.match(/<script[^>]+src=["']([^"']+\.js)["']/i);
+        const styleMatch = htmlContent.match(/<link[^>]+href=["']([^"']+\.css)["']/i);
+
+        if (scriptMatch?.[1] && styleMatch?.[1]) {
+          cachedAssets = {
+            scriptSrc: scriptMatch[1],
+            styleHref: styleMatch[1],
+          };
+          return {
+            scriptSrc: envScript || cachedAssets.scriptSrc,
+            styleHref: envStyle || cachedAssets.styleHref,
+          };
+        }
+      }
+
+      const assetsDir = path.join(distPath, "assets");
+      if (fs.existsSync(assetsDir)) {
+        const files = fs.readdirSync(assetsDir);
+        const scriptFile = files.find((f) => /^index-.*\.js$/i.test(f));
+        const styleFile = files.find((f) => /^index-.*\.css$/i.test(f));
+
+        if (scriptFile && styleFile) {
+          cachedAssets = {
+            scriptSrc: `/assets/${scriptFile}`,
+            styleHref: `/assets/${styleFile}`,
+          };
+          return {
+            scriptSrc: envScript || cachedAssets.scriptSrc,
+            styleHref: envStyle || cachedAssets.styleHref,
+          };
+        }
+      }
+    }
+  } catch {
+    // Non-blocking fallback if filesystem is inaccessible in sandbox
+  }
+
+  // 4. Safe fallback
+  return {
+    scriptSrc: envScript || DEFAULT_BUNDLE_SCRIPT,
+    styleHref: envStyle || DEFAULT_BUNDLE_STYLE,
+  };
+}
 
 /**
  * Escapes characters that have special meaning in HTML text and attribute nodes.
@@ -81,8 +169,7 @@ export function formatPriceFromPaise(
  * Resolves production client script and stylesheet asset tags.
  */
 function getClientAssetTags(): string {
-  const scriptSrc = process.env.VITE_ASSET_SCRIPT || DEFAULT_BUNDLE_SCRIPT;
-  const styleHref = process.env.VITE_ASSET_STYLE || DEFAULT_BUNDLE_STYLE;
+  const { scriptSrc, styleHref } = resolveProductionAssets();
 
   return `
     <script type="module" crossorigin src="${escapeHtml(scriptSrc)}"></script>
