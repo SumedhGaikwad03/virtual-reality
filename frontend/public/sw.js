@@ -1,4 +1,4 @@
-const STATIC_CACHE = "virtual-reality-admin-shell-v2";
+const STATIC_CACHE = "virtual-reality-admin-shell-v3";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -9,8 +9,7 @@ self.addEventListener("install", (event) => {
       "/favicon.ico",
       "/favicon-32x32.png",
       "/icons/icon-192x192.png",
-      "/icons/icon-512x512.png",
-      "/icons/app-icon.svg"
+      "/icons/icon-512x512.png"
     ])),
   );
   self.skipWaiting();
