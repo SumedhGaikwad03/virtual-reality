@@ -47,9 +47,12 @@ export function FirmOverview({ site }: FirmOverviewProps) {
       className="firm-overview-section"
       aria-label="Firm Leadership and Overview"
     >
-      <div className="firm-overview-header">
-        <span className="section-eyebrow">Leadership & Vision</span>
-        <h2 className="section-title">Architectural Integrity & Experience</h2>
+      <div className="section-header-editorial">
+        <span className="section-eyebrow">BRAND PHILOSOPHY & LEADERSHIP</span>
+        <h2 className="section-title">More than spaces. A better way of living.</h2>
+        <p className="section-subtitle">
+          Shaping Pune's real estate landscape through architectural discernment, verified inventory, and consultative advisory.
+        </p>
       </div>
 
       <div className="firm-overview-card">
@@ -120,8 +123,8 @@ export function FirmOverview({ site }: FirmOverviewProps) {
             <div className="firm-pillar-item">
               <span className="pillar-index">03</span>
               <div className="pillar-content">
-                <strong>Conversational Discovery</strong>
-                <span>Instant requirement matching powered by Tara assistant</span>
+                <strong>Preference Discovery</strong>
+                <span>Curated requirement matching powered by Tara, our property discovery advisor</span>
               </div>
             </div>
           </div>

@@ -11,7 +11,7 @@
  * - Displays Virtual Reality platform brand on Home & Search pages
  * - Renders refined desktop navigation (Home, About) and unified Contact & Advisory CTA
  * - Renders accessible mobile drawer with smooth section scroll
- * - Houses prominent "✦ Ask Assistant" discovery trigger
+ * - Houses prominent "✦ Tara" discovery trigger
  */
 
 import { useState } from "react";
@@ -96,7 +96,7 @@ export function GlobalHeader() {
           <button
             type="button"
             onClick={handleHomeClick}
-            className={`nav-link-btn ${isFirmPage && !location.hash ? "active" : ""}`}
+            className={`nav-link-btn ${isFirmPage && !location.hash && location.pathname !== "/privacy-policy" ? "active" : ""}`}
           >
             Home
           </button>
@@ -107,6 +107,12 @@ export function GlobalHeader() {
           >
             About
           </button>
+          <Link
+            to="/privacy-policy"
+            className={`nav-link ${location.pathname === "/privacy-policy" ? "active" : ""}`}
+          >
+            Privacy Policy
+          </Link>
         </nav>
 
         {/* Primary Action & Mobile Menu Toggle */}
@@ -126,9 +132,9 @@ export function GlobalHeader() {
             type="button"
             onClick={handleAssistantClick}
             className="global-assistant-btn"
-            aria-label="Ask Property Discovery Assistant"
+            aria-label="Explore properties with Tara"
           >
-            ✦ Ask Assistant
+            ✦ Tara
           </button>
 
           <button
@@ -167,6 +173,13 @@ export function GlobalHeader() {
             >
               About Firm
             </button>
+            <Link
+              to="/privacy-policy"
+              onClick={closeMobileMenu}
+              className={`mobile-nav-link ${location.pathname === "/privacy-policy" ? "active" : ""}`}
+            >
+              Privacy Policy
+            </Link>
             <button
               type="button"
               onClick={handleContactAdvisoryClick}
@@ -178,8 +191,9 @@ export function GlobalHeader() {
               type="button"
               onClick={handleAssistantClick}
               className="mobile-assistant-trigger-btn"
+              aria-label="Explore properties with Tara"
             >
-              ✦ Ask Assistant
+              ✦ Tara
             </button>
           </nav>
         </div>

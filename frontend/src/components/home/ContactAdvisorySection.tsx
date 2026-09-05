@@ -140,23 +140,23 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
             <span className="card-badge-eyebrow">CONSULTATION & DISCOVERY</span>
             <h3 className="card-heading">Property Advisory</h3>
             <p className="card-description">
-              Get bespoke architectural recommendations or explore prime inventory with our conversational assistant.
+              Get bespoke architectural recommendations or explore prime inventory with Tara, our property discovery advisor.
             </p>
           </div>
 
-          {/* Path B: Fast Conversational Entry */}
+          {/* Path B: Fast Option-Based Discovery Entry */}
           <div className="tara-discovery-callout">
             <div className="tara-callout-text">
-              <strong>Prefer instant discovery?</strong>
-              <span>Explore matching Pune homes with Tara in real time.</span>
+              <strong>Prefer guided discovery?</strong>
+              <span>Explore matching Pune residences step by step with Tara.</span>
             </div>
             <button
               type="button"
               onClick={openAssistant}
               className="tara-launch-btn"
-              aria-label="Launch Tara Property Assistant"
+              aria-label="Explore properties with Tara"
             >
-              ✦ Ask Tara →
+              ✦ Explore with Tara →
             </button>
           </div>
 
@@ -181,7 +181,9 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
           <form onSubmit={handleSubmit} className="advisory-consultation-form">
             <div className="form-group-row">
               <label className="form-label">
-                Name <span className="required-star">*</span>
+                <span className="form-label-text">
+                  Name <span className="required-star" aria-hidden="true">*</span>
+                </span>
                 <input
                   type="text"
                   required
@@ -193,7 +195,9 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
               </label>
 
               <label className="form-label">
-                Phone <span className="required-star">*</span>
+                <span className="form-label-text">
+                  Phone <span className="required-star" aria-hidden="true">*</span>
+                </span>
                 <input
                   type="tel"
                   required
@@ -206,7 +210,9 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
             </div>
 
             <label className="form-label">
-              Email <span className="optional-tag">(optional)</span>
+              <span className="form-label-text">
+                Email <span className="optional-tag">(optional)</span>
+              </span>
               <input
                 type="email"
                 value={form.email}
@@ -217,12 +223,14 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
             </label>
 
             <label className="form-label">
-              Requirements or Questions <span className="optional-tag">(optional)</span>
+              <span className="form-label-text">
+                Requirements or Questions <span className="optional-tag">(optional)</span>
+              </span>
               <textarea
                 rows={3}
                 value={form.message}
                 onChange={(e) => updateField("message", e.target.value)}
-                placeholder="Tell us what you're looking for (e.g. 3 BHK in Baner, budget ₹2-3 Cr)..."
+                placeholder="Please share your preferred configurations, locations, or questions (e.g. 3 BHK in Baner, budget preferences)..."
                 className="form-textarea"
               />
             </label>

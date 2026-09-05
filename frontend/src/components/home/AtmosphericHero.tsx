@@ -10,6 +10,7 @@
  * and floating editorial typography (eyebrow, primary headline, supporting line) without CTA buttons.
  */
 
+import { useAssistant } from "../../context/AssistantContext";
 import type { HomeMedia } from "../../types/site";
 
 type AtmosphericHeroProps = {
@@ -25,6 +26,8 @@ export function AtmosphericHero({
   description,
   heroMedia = [],
 }: AtmosphericHeroProps) {
+  const { openAssistant } = useAssistant();
+
   // Extract primary HERO media assets or fall back to first active HERO item
   const heroItems = heroMedia.filter((item) => item.category === "HERO");
   const primaryHero = heroItems.find((item) => item.isPrimary) || heroItems[0];
@@ -34,11 +37,11 @@ export function AtmosphericHero({
   const mobileHero = heroItems.find((item) => item.slot === "mobile") || primaryHero;
   const mobileImageUrl = mobileHero?.url || desktopImageUrl;
 
-  const eyebrowText = tagline || "REDEFINING REAL ESTATE DISCOVERY";
-  const headlineText = name || "Find a place that feels like home.";
+  const eyebrowText = tagline || "Curated Real Estate & Architectural Landmarks";
+  const headlineText = name || "Find a Better Tomorrow";
   const supportingText =
     description ||
-    "Explore architectural landmarks and curated luxury residences across prime locations.";
+    "Discover verified residential developments, signature penthouses, and bespoke villas crafted by leading developers.";
 
   return (
     <section className="atmospheric-hero" aria-label="Hero">
@@ -63,9 +66,61 @@ export function AtmosphericHero({
       </div>
 
       <div className="floating-hero-text">
-        <span className="hero-eyebrow">{eyebrowText}</span>
+        <div className="hero-badge-row">
+          <span className="hero-eyebrow">{eyebrowText}</span>
+        </div>
         <h1 className="hero-headline">{headlineText}</h1>
         {supportingText && <p className="hero-supporting">{supportingText}</p>}
+
+        <div className="hero-action-cluster">
+          <button
+            type="button"
+            className="hero-primary-cta"
+            onClick={openAssistant}
+            aria-label="Explore properties with Tara"
+          >
+            <span>✦ Explore with Tara</span>
+          </button>
+          <a href="#featured" className="hero-secondary-link">
+            <span>Explore Portfolio ↓</span>
+          </a>
+        </div>
+
+        <div className="hero-discovery-tags" role="group" aria-label="Quick property discovery preferences with Tara">
+          <span className="discovery-tag-label">Quick Preferences:</span>
+          <button
+            type="button"
+            className="hero-discovery-chip"
+            onClick={openAssistant}
+            aria-label="Explore Pune developments with Tara"
+          >
+            Pune Developments
+          </button>
+          <button
+            type="button"
+            className="hero-discovery-chip"
+            onClick={openAssistant}
+            aria-label="Explore ready to move residences with Tara"
+          >
+            Ready to Move
+          </button>
+          <button
+            type="button"
+            className="hero-discovery-chip"
+            onClick={openAssistant}
+            aria-label="Explore luxury residences with Tara"
+          >
+            Luxury Residences
+          </button>
+          <button
+            type="button"
+            className="hero-discovery-chip"
+            onClick={openAssistant}
+            aria-label="Explore private villas with Tara"
+          >
+            Private Villas
+          </button>
+        </div>
       </div>
     </section>
   );

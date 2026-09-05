@@ -4,6 +4,7 @@ import { FounderRoute, ProtectedRoute } from "../auth/ProtectedRoute";
 
 import { DeveloperPage } from "../pages/DeveloperPage";
 import { HomePage } from "../pages/HomePage";
+import { PrivacyPolicyPage } from "../pages/PrivacyPolicyPage";
 import { ProjectPage } from "../pages/ProjectPage";
 import { SearchPage } from "../pages/SearchPage";
 import { PublicShell } from "../components/shell/PublicShell";
@@ -344,6 +345,7 @@ export function AppRouter() {
       <Route element={<PublicShell />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/firm" element={<HomePage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route
           path="/:developerSlug/:locationSlug/:projectSlug"

@@ -37,7 +37,7 @@ export function PropertyAssistantOverlay() {
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="Property Discovery Assistant"
+        aria-label="Tara · Property Discovery Advisor"
       >
         <div className="assistant-overlay-header-bar">
           <div className="assistant-overlay-identity">
@@ -51,7 +51,7 @@ export function PropertyAssistantOverlay() {
             type="button"
             onClick={closeAssistant}
             className="assistant-overlay-close-btn"
-            aria-label="Close Assistant"
+            aria-label="Close Tara assistant"
           >
             ✕
           </button>

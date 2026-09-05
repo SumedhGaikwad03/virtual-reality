@@ -45,13 +45,16 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   }
 
   return (
-    <section className="featured-projects-section" aria-labelledby="featured-heading">
+    <section id="featured" className="featured-projects-section" aria-labelledby="featured-heading">
       <div className="section-header-with-controls">
         <div>
-          <span className="section-eyebrow">CURATED PORTFOLIO</span>
+          <span className="section-eyebrow">CURATED RESIDENTIAL PORTFOLIO</span>
           <h2 id="featured-heading" className="section-title">
-            Featured Projects
+            Featured Developments
           </h2>
+          <p className="section-subtitle">
+            Distinctive architectural residences, boutique towers, and private villas in prime locations.
+          </p>
         </div>
         <div className="featured-carousel-controls" aria-label="Carousel navigation">
           <button

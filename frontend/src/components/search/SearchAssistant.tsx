@@ -42,7 +42,7 @@ export function SearchAssistant({
 
   if (isLoading) {
     return (
-      <section className="search-assistant-card" aria-label="Property Discovery Assistant">
+      <section className="search-assistant-card" aria-label="Tara · Property Discovery Advisor">
         <AssistantHeader />
         <div className="search-assistant-loading-box">
           <p>Loading available property inventory...</p>
@@ -53,7 +53,7 @@ export function SearchAssistant({
 
   if (error) {
     return (
-      <section className="search-assistant-card" aria-label="Property Discovery Assistant">
+      <section className="search-assistant-card" aria-label="Tara · Property Discovery Advisor">
         <AssistantHeader />
         <div className="search-assistant-error-box">
           <p className="search-assistant-error-text">{error}</p>
@@ -73,7 +73,7 @@ export function SearchAssistant({
 
   if (catalog.length === 0) {
     return (
-      <section className="search-assistant-card" aria-label="Property Discovery Assistant">
+      <section className="search-assistant-card" aria-label="Tara · Property Discovery Advisor">
         <AssistantHeader />
         <div className="search-assistant-empty-catalog-box">
           <p>There are currently no published properties available to explore.</p>
@@ -124,7 +124,7 @@ export function SearchAssistant({
   return (
     <section
       className={`search-assistant-card ${hasStarted ? "search-assistant-card--active" : "search-assistant-card--initial"}`}
-      aria-label="Property Discovery Assistant"
+      aria-label="Tara · Property Discovery Advisor"
     >
       <AssistantHeader />
 

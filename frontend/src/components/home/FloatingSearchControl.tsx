@@ -1,13 +1,13 @@
 /*
  * PURPOSE:
- * Persistent global floating "✦ Ask Assistant" CTA control component.
+ * Persistent global floating "✦ Tara" CTA control component.
  *
  * FLOW:
  * PublicShell -> FloatingSearchControl -> openAssistant().
  *
  * RESPONSIBILITY:
  * Renders a high-affordance, elegant floating action button across all public pages
- * providing instant one-click access to the conversational property assistant overlay.
+ * providing instant one-click access to the property discovery advisor overlay.
  */
 
 import { useEffect, useState } from "react";
@@ -83,7 +83,7 @@ export function FloatingSearchControl() {
         >
           <div className="floating-search-prompt-text">
             <span className="floating-search-prompt-sparkle" aria-hidden="true">✦</span>
-            <span>Let's find what you need...</span>
+            <span>Select preferences to find homes...</span>
           </div>
           <button
             type="button"
@@ -101,11 +101,11 @@ export function FloatingSearchControl() {
         type="button"
         onClick={handleOpen}
         className="floating-search-btn"
-        aria-label="Ask Property Discovery Assistant"
-        title="Ask Property Discovery Assistant"
+        aria-label="Explore Properties with Tara"
+        title="Explore Properties with Tara"
       >
         <span className="floating-search-sparkle" aria-hidden="true">✦</span>
-        <span className="floating-search-label">Ask Assistant</span>
+        <span className="floating-search-label">Tara</span>
       </button>
     </div>
   );

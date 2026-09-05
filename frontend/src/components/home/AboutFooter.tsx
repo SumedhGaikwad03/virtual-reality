@@ -78,7 +78,10 @@ export function AboutFooter({ site }: AboutFooterProps) {
               <Link to="/projects-in-pune">Pune Developments</Link>
             </li>
             <li>
-              <Link to="/search">Ask Tara Assistant</Link>
+              <Link to="/search">Discover with Tara</Link>
+            </li>
+            <li>
+              <Link to="/privacy-policy">Privacy Policy</Link>
             </li>
           </ul>
         </div>
@@ -169,7 +172,13 @@ export function AboutFooter({ site }: AboutFooterProps) {
         <p className="footer-copyright">
           © {currentYear} {companyName}. All rights reserved.
         </p>
-        <p className="footer-attribution">Architectural Real Estate Platform</p>
+        <div className="footer-bottom-links">
+          <Link to="/privacy-policy" className="footer-bottom-privacy-link">
+            Privacy Policy
+          </Link>
+          <span className="footer-bottom-separator" aria-hidden="true">·</span>
+          <span className="footer-attribution">Architectural Real Estate Platform</span>
+        </div>
       </div>
     </footer>
   );

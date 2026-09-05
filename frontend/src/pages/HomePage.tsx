@@ -22,6 +22,7 @@ import { ExploreDevelopers } from "../components/home/ExploreDevelopers";
 import { FeaturedProjects } from "../components/home/FeaturedProjects";
 import { FirmOverview } from "../components/home/FirmOverview";
 import { HomeGallery } from "../components/home/HomeGallery";
+import { TrustStatisticsStrip } from "../components/home/TrustStatisticsStrip";
 import { useSite } from "../components/home/hooks/useSite";
 
 export function HomePage() {
@@ -76,25 +77,31 @@ export function HomePage() {
         heroMedia={site.homeMedia}
       />
 
-      {/* 2. DEVELOPERS */}
-      <ExploreDevelopers developers={site.developers} />
+      {/* 2. TRUST & EDITORIAL METRICS STRIP */}
+      <TrustStatisticsStrip
+        developerCount={site.developers?.length}
+        projectCount={site.featuredProjects?.length}
+      />
 
       {/* 3. FEATURED PROJECTS */}
       <FeaturedProjects projects={site.featuredProjects} />
 
-      {/* 4. FIRM GALLERY / MOMENTS */}
+      {/* 4. TRUSTED DEVELOPERS (DEEP FOREST BACKDROP) */}
+      <ExploreDevelopers developers={site.developers} />
+
+      {/* 5. FIRM GALLERY / MOMENTS */}
       <HomeGallery media={site.homeMedia} />
 
-      {/* 5. CONVERSATIONAL SEARCH */}
+      {/* 6. CONVERSATIONAL SEARCH */}
       <ConversationalSearchEntry />
 
-      {/* 6. FIRM OVERVIEW & FOUNDER IDENTITY */}
+      {/* 7. FIRM OVERVIEW & FOUNDER IDENTITY */}
       <FirmOverview site={site} />
 
-      {/* 7. CONNECT & ADVISORY SECTION */}
+      {/* 8. CONNECT & ADVISORY SECTION */}
       <ContactAdvisorySection site={site} />
 
-      {/* 8. ABOUT / COMPANY / FOOTER */}
+      {/* 9. ABOUT / COMPANY / FOOTER */}
       <AboutFooter site={site} />
     </main>
   );
