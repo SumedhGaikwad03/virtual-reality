@@ -1425,7 +1425,7 @@
 .firm-gallery-viewport {
   position: relative;
   width: 100%;
-  height: clamp(18rem, 40vw, 30rem);
+  height: clamp(18rem, 45vw, 32rem);
   border-radius: 1rem;
   overflow: hidden;
   background-color: #0f172a;
@@ -1446,6 +1446,9 @@
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .firm-gallery-slide.is-active {
@@ -1457,7 +1460,8 @@
 .firm-gallery-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   display: block;
 }
 
@@ -1470,6 +1474,7 @@
   background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%);
   color: #ffffff;
   z-index: 2;
+  pointer-events: none;
 }
 
 .firm-gallery-caption-title {
@@ -1819,4 +1824,173 @@
   .founder-name-group {
     text-align: center;
   }
+}
+
+/* ==========================================================================
+   Home Hero Media, Hero Carousel & Home Cards Presentation
+   ========================================================================== */
+.home-hero-media {
+  position: relative;
+  width: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #0f172a;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-hero-media img,
+.home-hero-media video {
+  width: 100%;
+  max-height: clamp(20rem, 50vh, 36rem);
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.home-hero-media-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2.5rem 1.5rem 1.25rem;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, transparent 100%);
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.home-hero-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.home-hero-carousel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.home-hero-carousel-header h2 {
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.home-hero-carousel-counter {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.home-hero-carousel-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(18rem, 45vw, 32rem);
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #0f172a;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+
+.home-hero-carousel-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-hero-carousel-item img,
+.home-hero-carousel-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.home-hero-carousel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2.5rem 1.5rem 1.25rem;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, transparent 100%);
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.home-hero-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.home-hero-carousel-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.home-hero-carousel-btn:hover {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.home-cards-list {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.home-card-item {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.home-card-item img,
+.home-card-item video {
+  width: 100%;
+  height: clamp(12rem, 20vw, 16rem);
+  object-fit: contain;
+  object-position: center;
+  background-color: #f8fafc;
+  display: block;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.home-card-item h3 {
+  padding: 1rem 1.25rem 0.25rem;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.home-card-item p {
+  padding: 0 1.25rem 1rem;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.85rem;
 }
