@@ -326,6 +326,7 @@
   bottom: max(1.5rem, env(safe-area-inset-bottom));
   right: 1.75rem;
   z-index: 950;
+  transition: bottom 0.25s ease;
 }
 
 .floating-search-btn {

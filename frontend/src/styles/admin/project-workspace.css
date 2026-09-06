@@ -1,12 +1,13 @@
 /*
  * PURPOSE:
- * Styles the contextual project workspace navigation.
+ * Styles the contextual project workspace navigation and workspace sub-sections.
  *
  * FLOW:
  * ProjectWorkspaceNav -> project-scoped admin pages -> responsive navigation.
  *
  * RESPONSIBILITY:
- * Keep project section navigation clear, compact, and usable on small screens.
+ * Keep project section navigation clear, compact, and usable on small screens
+ * using the Warm Architectural Admin design system tokens.
  */
 
 .admin-project-workspace {
@@ -14,10 +15,10 @@
   padding: 1.25rem 1.25rem 0;
   min-width: 0;
   max-width: 100%;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(32, 38, 34, 0.04);
 }
 
 .admin-project-workspace-heading p,
@@ -26,18 +27,19 @@
 }
 
 .admin-project-workspace-heading p {
-  color: #64748b;
+  color: var(--admin-text-muted);
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .admin-project-workspace-heading h1 {
-  color: #0f172a;
+  color: var(--admin-text);
   font-size: 1.45rem;
   font-weight: 700;
   margin-top: 0.25rem;
+  letter-spacing: -0.01em;
 }
 
 .admin-project-workspace-nav {
@@ -50,14 +52,14 @@
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: thin;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--admin-border);
 }
 
 .admin-project-workspace-nav a:not(.admin-action) {
   flex: 0 0 auto;
   padding: 0.7rem 0.9rem;
   border-bottom: 2px solid transparent;
-  color: #475569;
+  color: var(--admin-text-muted);
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
@@ -67,13 +69,15 @@
 
 .admin-project-workspace-nav a:not(.admin-action):hover,
 .admin-project-workspace-nav a:not(.admin-action):focus-visible {
-  color: #0f172a;
+  color: var(--admin-text);
+  border-bottom-color: var(--admin-border-strong);
+  outline: none;
 }
 
 .admin-project-workspace-nav a:not(.admin-action).is-active {
-  color: #172f68;
+  color: var(--admin-primary);
   font-weight: 700;
-  border-bottom-color: #172f68;
+  border-bottom-color: var(--admin-primary);
 }
 
 .admin-project-workspace-nav .admin-action--utility {
@@ -82,15 +86,22 @@
 }
 
 .admin-form-guidance {
-  color: #64748b;
-  font-size: 0.9rem;
-  margin-top: 0.25rem;
+  color: var(--admin-text-muted);
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0.75rem;
+  line-height: 1.4;
 }
 
 .admin-unsaved-state {
-  color: #b45309;
+  display: inline-block;
+  color: var(--admin-warning-text);
+  background-color: var(--admin-warning-bg);
+  border: 1px solid #E5D6B8;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.375rem;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
+  margin: 0.25rem 0 0.75rem;
 }
 
 .admin-project-readiness {
@@ -105,24 +116,141 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.85rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--admin-surface-subtle);
+  border: 1px solid var(--admin-border);
   border-radius: 0.375rem;
+  transition: border-color 0.15s ease;
+}
+
+.admin-project-readiness div:hover {
+  border-color: var(--admin-border-strong);
 }
 
 .admin-project-readiness div strong {
-  font-size: 0.9rem;
-  color: #0f172a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--admin-text);
 }
 
 .admin-project-readiness span {
-  color: #64748b;
+  color: var(--admin-text-muted);
   font-size: 0.8rem;
 }
 
 .admin-project-readiness .admin-status-ready {
-  color: #15803d;
+  color: var(--admin-success-text);
   font-weight: 600;
+}
+
+/* Key Highlights Section */
+.admin-highlights-section {
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--admin-border);
+  max-width: 44rem;
+}
+
+.admin-highlights-section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: var(--admin-text);
+  letter-spacing: -0.01em;
+}
+
+.admin-highlights-section > p {
+  font-size: 0.875rem;
+  color: var(--admin-text-muted);
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+.admin-highlights-section ol {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.admin-highlights-section ol li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.admin-highlights-section ol li:hover {
+  border-color: var(--admin-border-strong);
+}
+
+.admin-highlights-section ol li input[type="text"] {
+  flex: 1;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.65rem;
+  background: var(--admin-surface-elevated);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--admin-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-highlights-section ol li input[type="text"]:focus-visible {
+  outline: none;
+  border-color: var(--admin-border-focus);
+  box-shadow: 0 0 0 3px var(--admin-primary-focus);
+}
+
+.admin-highlights-section ol li button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: 0.375rem;
+  color: var(--admin-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-highlights-section ol li button:hover:not(:disabled) {
+  background: var(--admin-surface-subtle);
+  border-color: #A99B89;
+}
+
+.admin-highlights-section ol li button:focus-visible {
+  outline: none;
+  border-color: var(--admin-border-focus);
+  box-shadow: 0 0 0 3px var(--admin-primary-focus);
+}
+
+.admin-highlights-section ol li button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.admin-highlights-section ol li button:first-of-type {
+  background: var(--admin-danger-bg);
+  border-color: #EAC8C1;
+  color: var(--admin-danger-text);
+}
+
+.admin-highlights-section ol li button:first-of-type:hover:not(:disabled) {
+  background: #F7DDD8;
+  border-color: var(--admin-danger-text);
+  color: var(--admin-danger-text);
 }
 
 .admin-highlights-actions {
@@ -146,6 +274,15 @@
   .admin-project-readiness {
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
+  }
+
+  .admin-highlights-section ol li {
+    flex-wrap: wrap;
+  }
+
+  .admin-highlights-section ol li input[type="text"] {
+    width: 100%;
+    flex: 1 1 100%;
   }
 }
 

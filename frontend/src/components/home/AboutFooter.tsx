@@ -180,7 +180,7 @@ export function AboutFooter({ site }: AboutFooterProps) {
           <span className="footer-attribution">
             Platform developed by{" "}
             <a
-              href="https://sumedgaikwad.com"
+              href="https://sumedhgaikwad.com"
               target="_blank"
               rel="noopener noreferrer"
               className="footer-developer-link"

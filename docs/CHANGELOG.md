@@ -386,3 +386,192 @@
   - Implemented `:-webkit-autofill` inset shadow and text fill color overrides across all light and dark forms to prevent browser autofill from turning inputs bright white.
 - **Footer Developer Portfolio Attribution (`AboutFooter.tsx`, `home.css`)**:
   - Added subtle developer credit link ("Platform developed by Sumedh") in the footer bottom bar linking to `https://sumedgaikwad.com` with `target="_blank"`, `rel="noopener noreferrer"`, and accessible focus-visible styling.
+
+---
+
+## Phase 36: Public Hero Height & Image Presentation Refinement
+- **Developer Hero Immersive Height Elevation (`developer.css`)**:
+  - Replaced restrictive letterbox banner constraints (`aspect-ratio: 21 / 9; max-height: 600px; min-height: clamp(380px, 48vh, 560px);`) with an immersive, viewport-relative desktop height: `min-height: clamp(520px, 75vh, 820px);`.
+  - Configured responsive mobile height: `min-height: clamp(420px, 68vh, 560px);` at `@media (max-width: 768px)` to prevent small-screen content overflow while keeping the full brand mark, title, and enquiry CTA prominent.
+  - Refined desktop image focal positioning to `object-position: center 30%;` (`center 25%;` on mobile) with `object-fit: cover;` to preserve architectural crowns and composition.
+  - Eliminated duplicate media query override in `developer.css`.
+- **Project Hero Height Harmonization (`project.css`)**:
+  - Harmonized desktop `.project-hero` height to `min-height: clamp(520px, 75vh, 820px);` and mobile height to `min-height: clamp(420px, 68vh, 560px);` at `@media (max-width: 768px)`.
+  - Preserved sticky `ProjectSubNav` docking behavior seamlessly below the fixed `GlobalHeader` (`top: var(--header-height, 4.5rem)`) with zero layout shift or whitespace gaps when scrolling past the hero.
+  - Maintained transparent navbar overlay and bottom-anchored hero content hierarchy.
+
+---
+
+## Phase 37: Trust & Statistics Strip Responsive Boundary & Layout Fix
+- **CSS Grid & Flexbox Boundary Containment (`home.css`)**:
+  - Fixed divider/text overlap bug by adding `min-width: 0;` to `.trust-stat-item` and `.trust-stat-meta`, with `flex: 1 1 0%;` and `overflow-wrap: break-word;` to guarantee descriptions wrap strictly inside their allocated columns without bleeding across vertical dividers.
+  - Added `flex-shrink: 0;` to `.trust-stat-divider` and `.trust-stat-number` to maintain crisp vertical separator lines and prominent metric numbers.
+  - Configured resilient grid gap spacing: `gap: clamp(0.75rem, 1.5vw, 1.5rem);` on desktop.
+- **Responsive Breakpoint Strategy (`home.css`)**:
+  - **Desktop ($\ge 1100\text{px}$)**: Full 4-item horizontal presentation with 3 vertical dividers (`grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;`) and zero text intersection.
+  - **Tablet ($640\text{px} – 1099\text{px}$)**: Clean 2x2 grid (`grid-template-columns: 1fr 1fr; gap: 1.75rem 2rem;`) with standalone vertical dividers hidden (`display: none;`), giving each stat item ample breathing room.
+  - **Mobile ($< 640\text{px}$, 320px–430px)**: Single-column stack (`grid-template-columns: 1fr; gap: 1.35rem;`) ensuring full readability and zero horizontal overflow.
+
+---
+
+## Phase 38: Admin UI Redesign — Phase A: Design Tokens & Login Experience
+- **Scoped Admin Semantic Design Tokens (`admin.css`)**:
+  - Defined scoped `:root` design token architecture mapped to the platform's warm architectural palette:
+    - Surfaces: `--admin-bg: #F7F4EE` (Warm Ivory), `--admin-surface: #FCFAF6` (Warm White), `--admin-surface-subtle: #F4EFE6`, `--admin-surface-muted: #EDE7DD`, `--admin-surface-elevated: #FFFFFF`.
+    - Borders: `--admin-border: #D9D0C3` (Warm Stone), `--admin-border-strong: #C8BBAA`, `--admin-border-focus: #24483D` (Friendly Forest).
+    - Typography: `--admin-text: #202622` (Charcoal), `--admin-text-muted: #68706A` (Muted Sage), `--admin-text-subtle: #838D85`.
+    - Brand Anchors: `--admin-sidebar-bg: #18382E`, `--admin-sidebar-hover: #1E463A`, `--admin-sidebar-active: #24483D`, `--admin-sidebar-text: #E6ECE8`.
+    - Actions: `--admin-primary: #18382E`, `--admin-primary-hover: #24483D`, `--admin-primary-focus: rgba(36, 72, 61, 0.16)`.
+    - Status: `--admin-success-text: #18382E`, `--admin-success-bg: #E6ECE8`, `--admin-warning-text: #7A5B1E`, `--admin-warning-bg: #F5EEDC`, `--admin-danger-text: #963826`, `--admin-danger-bg: #FBEBE8`.
+- **Admin Login Page Redesign (`admin.css`, `AdminLoginPage.tsx`)**:
+  - Replaced cold slate background with warm ivory canvas (`--admin-bg`).
+  - Replaced stark card with warm white paper card (`--admin-surface`), 1px warm stone border (`--admin-border`), and restrained ambient elevation.
+  - Upgraded input fields with warm white background (`--admin-surface-elevated`), stone borders (`--admin-border-strong`), charcoal text, muted sage placeholders, and friendly forest focus borders with subtle green halo (`rgba(36, 72, 61, 0.16)`).
+  - Implemented browser `:-webkit-autofill` inset box-shadow to prevent harsh blue/yellow background overrides during password manager auto-completion.
+  - Redesigned submit action button with deep forest background (`--admin-primary`), friendly forest hover (`--admin-primary-hover`), and high-contrast text.
+  - Redesigned `.admin-alert` and `.admin-alert-error` with warm terracotta background (`--admin-danger-bg`), subtle clay border (`#EAC8C1`), and deep danger text (`--admin-danger-text`).
+  - Verified zero modification to authentication/JWT logic, API bindings, routes, or public pages.
+
+---
+
+## Phase 39: Admin UI Redesign — Phase B: Admin Shell, Sidebar & Navigation
+- **Desktop Sidebar & Navigation Surfaces (`admin.css`)**:
+  - Replaced legacy cold corporate navy background with deep architectural forest (`--admin-sidebar-bg: #18382E`) and subtle stone border separator (`rgba(217, 208, 195, 0.12)`).
+  - Configured navigation link typography and hover/active states using semantic tokens:
+    - Text: `--admin-sidebar-text: #E6ECE8` (Muted Sage-Ivory).
+    - Hover / Focus-Visible: `--admin-sidebar-hover: #1E463A` (Elevated Forest Surface) with `#FFFFFF` text.
+    - Active Nav Item (`aria-current="page"`): `--admin-sidebar-active: #24483D` (Friendly Forest) with crisp semi-bold weight.
+    - Logout Trigger: Subtle border outline with muted terracotta hover state (`rgba(166, 71, 52, 0.2)`).
+- **Admin Layout Canvas & Top-Level Surfaces (`admin.css`)**:
+  - Set main admin content backdrop to Warm Ivory (`--admin-bg: #F7F4EE`).
+  - Styled shared cards with Warm White paper surface (`--admin-surface: #FCFAF6`) and 1px Warm Stone border (`--admin-border: #D9D0C3`).
+  - Styled page headings in Architectural Charcoal (`--admin-text: #202622`) and subtitles in Muted Sage (`--admin-text-muted: #68706A`).
+  - Styled offline alert banner with Warm Sand background (`--admin-warning-bg: #F5EEDC`) and Warm Brass text (`--admin-warning-text: #7A5B1E`).
+- **Responsive Mobile Navigation Header & Popover Menu (`admin.css`)**:
+  - Replaced mobile navy header bar with Deep Forest (`--admin-sidebar-bg: #18382E`), subtle stone bottom border, and soft elevation.
+  - Redesigned the "More" dropdown popover menu with Deep Forest backdrop, stone borders, and accessible keyboard focus.
+  - Verified zero breaking changes to routes, DOM structure, `AdminLayout.tsx` logic, authentication, or public styling.
+
+---
+
+## Phase 40: Admin UI Redesign — Phase C: Shared Primitives (Forms, Buttons, Tables, Badges & Alerts)
+- **Shared Form Controls & Input Primitives (`admin.css`)**:
+  - Restyled text inputs, selects, and textareas across all admin panels with Warm White elevated backgrounds (`--admin-surface-elevated: #FFFFFF`), Warm Stone Strong borders (`--admin-border-strong: #C8BBAA`), Architectural Charcoal text (`--admin-text: #202622`), and Muted Sage placeholders.
+  - Configured Friendly Forest focus borders (`--admin-border-focus: #24483D`) with soft green glow halos (`box-shadow: 0 0 0 3px rgba(36, 72, 61, 0.16)`), eliminating browser default blue focus rings.
+  - Implemented application-wide browser `:-webkit-autofill` inset box-shadow rules across inputs, textareas, and selects.
+  - Styled labels in Architectural Charcoal, hints in Muted Sage, and native checkboxes/radios with Forest accent colors (`accent-color: var(--admin-primary)`).
+- **Standardized 5-Tier Action Button Hierarchy (`admin.css`)**:
+  - Primary (`.admin-action--primary`): Deep Forest solid background (`--admin-primary: #18382E`), `#FFFFFF` text, friendly forest hover (`--admin-primary-hover: #24483D`).
+  - Secondary (`.admin-action--secondary`): Warm White paper surface (`--admin-surface: #FCFAF6`), stone strong border, charcoal text.
+  - Utility (`.admin-action--utility`, `.admin-action-btn`): Compact stone buttons with crisp typography and responsive tap areas.
+  - Communication (`.admin-action--communication`): Restrained forest tint with crisp borders.
+  - Destructive (`.admin-action--danger`): Soft clay background (`--admin-danger-bg: #FBEBE8`), terracotta border, deep terracotta text.
+  - Success (`.admin-action--success`): Soft sage mist background (`--admin-success-bg: #E6ECE8`), forest border and text.
+  - Ghost (`.admin-action--ghost`): Transparent background with warm sand hover.
+- **Table & Row Primitives (`admin.css`)**:
+  - Styled shared tables (`.admin-table`) with Warm White surface, Warm Stone borders (`--admin-border: #D9D0C3`), and Sand headers (`--admin-surface-muted: #EDE7DD`).
+  - Implemented subtle row hover highlighting (`--admin-surface-subtle: #F4EFE6`).
+  - Restyled account table wrapper (`.admin-accounts-table-wrapper`) and lead rows (`.admin-lead-row`).
+- **Semantic Badges & Status Indicators (`admin.css`)**:
+  - Success (`.admin-badge--success`, `.status-new`, `.admin-badge-active`, `.admin-new-badge`): Sage mist background (`#E6ECE8`), deep forest text (`#18382E`).
+  - Warning (`.admin-badge--warning`): Sand background (`#F5EEDC`), warm brass text (`#7A5B1E`).
+  - Danger (`.admin-badge--danger`): Clay background (`#FBEBE8`), deep terracotta text (`#963826`).
+  - Neutral / Inactive (`.admin-badge--neutral`, `.status-done`): Stone sand background (`#EDE7DD`), muted sage text (`#68706A`).
+  - In Progress (`.status-in_progress`): Soft forest tint (`#E7EFEA`) with forest accent (`#2A5A4C`).
+- **Alert Banners & Feedback Callouts (`admin.css`)**:
+  - Restyled `.admin-alert-banner`, `.admin-alert-banner--success`, `.admin-alert-banner--error`, `.admin-warning-callout`, and `.admin-notification-feedback--*` with semantic tokens.
+  - Restyled lead toolbar search input and filter select dropdown.
+
+---
+
+## Phase 41: Admin UI Redesign — Phase D: Admin Dashboard Experience
+- **Dashboard Heading & Hierarchy (`dashboard.css`)**:
+  - Restyled dashboard eyebrow in Muted Sage (`--admin-text-muted: #68706A`) with refined letter-spacing.
+  - Set greeting heading (`h1`) in Architectural Charcoal (`--admin-text: #202622`) and supporting description in Muted Sage.
+- **KPI Metrics Cards Grid (`dashboard.css`)**:
+  - Restyled metric cards (`.admin-kpi-card`) with Warm White surface (`--admin-surface: #FCFAF6`), Warm Stone border (`--admin-border: #D9D0C3`), and subtle elevation (`box-shadow: 0 1px 3px rgba(32, 38, 34, 0.04)`).
+  - Configured high-contrast metric values (`strong`) in Architectural Charcoal (`--admin-text: #202622`) with tight tracking.
+  - Styled metric labels (`span`) in uppercase Muted Sage with letter-spacing (`0.06em`).
+- **Dashboard Sections & Lead Activity Cards (`dashboard.css`)**:
+  - Restyled section headings (`.admin-dashboard-section-heading`) with Architectural Charcoal titles and Muted Sage subtitles.
+  - Restyled lead triage cards (`.admin-dashboard-lead`) with Warm White background, stone borders, and subtle stone hover highlighting (`--admin-surface-subtle: #F4EFE6`).
+  - Restyled lead names, project metadata, and relative timestamps (`.admin-dashboard-lead-time`) using semantic typography tokens.
+  - Restyled empty states (`.admin-empty-card`) with dashed stone strong borders and centered muted guidance.
+- **Responsive Layout & Visual Integrity (`dashboard.css`)**:
+  - Configured fluid KPI grid layout scaling: 4 columns on desktop ($\ge 1024\text{px}$), 2 columns on tablet ($640\text{px}–1024\text{px}$), and single-column stack on mobile ($< 640\text{px}$).
+  - Verified full tap target sizes, zero text collisions, and zero horizontal page overflow down to 320px.
+  - Preserved 100% of data fetching, API bindings, greeting logic, authentication, and routing without modifications.
+
+---
+
+## Phase 42: Admin UI Redesign — Phase E: Projects Index & Project Workspace
+- **Projects List & Index Layout (`projects.css`)**:
+  - Restyled `.admin-project-list` and `.admin-project-row` using Warm Architectural design system tokens (`--admin-bg`, `--admin-surface: #FCFAF6`, `--admin-border: #D9D0C3`).
+  - Set project names (`h2`) in Architectural Charcoal (`--admin-text: #202622`) with refined tracking and project slug labels in Muted Slate-Sage (`--admin-text-subtle: #838D85`).
+  - Styled developer name and location metadata with high legibility and contrast hierarchy.
+  - Configured responsive grid for project rows: 5-column grid on desktop, 4-column layout on tablet, and single-column stacked card format on mobile ($\le 640\text{px}$) with full-width primary action buttons.
+- **Project Workspace Header & Navigation (`project-workspace.css`)**:
+  - Restyled `.admin-project-workspace` container with Warm White surface, Stone borders, and subtle shadow elevation.
+  - Formatted workspace eyebrow heading in uppercase Muted Sage with tracked letter-spacing and project title in Architectural Charcoal.
+  - Styled `.admin-project-workspace-nav` with Warm Stone bottom border, Muted Sage inactive section links, and Deep Forest (`--admin-primary: #18382E`) active tab indicator with `border-bottom: 2px solid var(--admin-primary)`.
+  - Positioned preview utility action with compact secondary styling and proper external link attributes.
+  - Ensured smooth horizontal scrolling on mobile viewports with `-webkit-overflow-scrolling: touch` and thin scrollbars.
+- **Project Readiness & Metadata Status Cards (`project-workspace.css`)**:
+  - Restyled `.admin-project-readiness` grid with Warm Stone Subtle surfaces (`--admin-surface-subtle: #F4EFE6`), Warm Stone borders, and subtle hover highlighting.
+  - Formatted status metrics with Charcoal card titles, Muted Sage helper text, and Deep Forest text for ready indicators (`.admin-status-ready`).
+  - Restyled `.admin-unsaved-state` badge using warm brass warning tokens (`--admin-warning-text: #7A5B1E`, `--admin-warning-bg: #F5EEDC`).
+- **Key Highlights Authoring Section (`project-workspace.css`)**:
+  - Restyled `.admin-highlights-section` with clean stone separators and architectural typography.
+  - Formatted reorderable highlight items (`ol li`) with Warm White cards, Stone strong borders, elevated white inputs, and compact utility actions.
+  - Configured danger tint styling for item removal and disabled states for boundary reorder actions.
+- **Project Amenities Management Section (`projects.css`)**:
+  - Restyled `.admin-amenities-section` and `.admin-amenity-row` with Warm White surfaces, Stone borders, and hover highlighting.
+  - Formatted inline amenity edit forms and add amenity form with Warm Stone Subtle surface, proper field gap spacing, and semantic action buttons.
+- **Responsive & Accessibility Integrity**:
+  - Verified responsive layouts across 320px, 375px, 430px, 768px, 1024px, and 1440px viewports with zero horizontal overflow.
+  - Preserved 100% of CRUD operations, API contracts, validations, state management, routing, and access controls.
+
+---
+
+## Phase 43: Admin UI Redesign — Phase F: Developers Admin Experience
+- **Developers List & Row Layout (`developers.css`)**:
+  - Restyled `.admin-developer-list` and `.admin-developer-row` using Warm Architectural design system tokens (`--admin-bg`, `--admin-surface: #FCFAF6`, `--admin-border: #D9D0C3`).
+  - Set developer title (`h2`) in Architectural Charcoal (`--admin-text: #202622`) with $-0.01\text{em}$ letter-spacing and metadata/status in Muted Slate-Sage (`--admin-text-muted: #68706A`).
+  - Restyled developer logo containers and fallback initial avatars (`.admin-developer-logo-fallback`) with Warm Stone borders and Deep Forest (`--admin-primary: #18382E`) monogram text on Warm Stone Subtle surface.
+  - Configured responsive stacked layouts on mobile ($\le 640\text{px}$) with full-width secondary action buttons.
+- **Developer Creation & Edit Form (`developers.css`)**:
+  - Maintained seamless integration with Phase C shared form controls (Warm White elevated inputs, Stone borders, Forest focus glow halos, and webkit autofill styling).
+  - Preserved developer form structure (`.admin-developer-form`) with max-width bounding, charcoal labels, and muted helper guidance.
+- **Developer Media Management Slots (`developers.css`)**:
+  - Restyled `.admin-developer-media-section` and section headings with architectural typography and Stone divider borders.
+  - Formatted `.admin-media-slot-card` panels with Warm White surface, Stone borders, and subtle shadow elevation.
+  - Styled Brand Banner and Developer Hero image previews (`.preview-image-wrapper`, `.banner-preview`, `.hero-preview`) with dashed stone strong outlines and Warm Stone Subtle backgrounds.
+  - Styled slot empty states (`.slot-empty-state`) with dashed borders and centered muted guidance.
+  - Restyled slot upload forms with top stone separators and semantic primary action buttons.
+- **Feedback & Actions Hierarchy (`developers.css`)**:
+  - Restyled alerts (`.admin-alert-error`, `.admin-alert-success`) using semantic status tokens (`--admin-danger-*`, `--admin-success-*`).
+  - Updated legacy button fallback rules (`.admin-btn-primary`, `.admin-btn-secondary-danger`) to maintain visual harmony with the 5-tier action system.
+- **Responsive & Accessibility Integrity**:
+  - Verified responsive layouts across 320px, 375px, 430px, 768px, 1024px, and 1440px viewports with zero horizontal overflow.
+  - Preserved 100% of CRUD operations, API contracts, validations, state management, and media uploads.
+
+---
+
+## Phase 44: Public Hero Photography Warm Scrim Realignment & Footer URL Correction
+- **Public Hero Image Overlays (`home.css`, `developer.css`, `project.css`)**:
+  - Removed heavy green/forest gradient washes (`#18382e`, `#112821`) across all public hero components (`FirmHero`, `DeveloperHero`, `ProjectHero`).
+  - Replaced tint overlays with neutral warm charcoal gradients (`rgba(18, 22, 20, ...)`), preserving natural photograph warmth while maintaining high text contrast and legibility.
+- **Trust & Statistics Metric Formatting (`home.css`)**:
+  - Fixed mobile word-wrapping for multi-word stat labels (`"Partner Developers"`, `"Curated Inventory"`) using `white-space: normal` and responsive typography.
+- **Footer Attribution Link Correction (`AboutFooter.tsx`)**:
+  - Updated developer portfolio attribution destination URL to `https://sumedhgaikwad.com` with `target="_blank"` and `rel="noopener noreferrer"`.
+
+---
+
+## Phase 45: Public Project Page Mobile Sticky Enquiry Bar & Assistant Stacking Fix
+- **Mobile Sticky Action Bar & Floating Assistant Separation (`project.css`, `layout.css`)**:
+  - Resolved selector mismatch for `.floating-search-control-container` by utilizing `:has(.mobile-sticky-enquiry-bar)` at $\le 768\text{px}$.
+  - Dynamically elevated floating Tara assistant button to `bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px))` when the sticky enquiry bar is present.
+  - Added smooth CSS transition (`transition: bottom 0.25s ease`) for floating control vertical repositioning.
+  - Aligned z-index stacking hierarchy: `GlobalHeader` ($900$) < `MobileStickyEnquiryBar` ($940$) < `FloatingSearchControl` ($950$) < `FloatingSearchPrompt` ($951$) < `PropertyAssistantOverlay` ($1000$) < `ContextualEnquiryModal` ($9999$).
+  - Eliminated UI collision between "Enquire Now →" action button and Tara assistant without modifying component logic or business workflows.

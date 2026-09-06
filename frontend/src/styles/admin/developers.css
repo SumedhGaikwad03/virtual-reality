@@ -6,21 +6,27 @@
  * DevelopersPage / DeveloperFormPage -> Developer admin components -> Developer admin selectors.
  *
  * RESPONSIBILITY:
- * Isolate Developer admin list, row, logo fallback, and form presentation rules.
+ * Isolate Developer admin list, row, logo fallback, form, and developer media slots
+ * using the Warm Architectural Admin design system tokens.
  */
 
 .admin-developer-list {
   display: grid;
-  gap: 1rem;
+  gap: 0;
+  padding: 0;
 }
 
 .admin-developer-row {
   display: grid;
-  grid-template-columns: 3rem 1fr auto;
+  grid-template-columns: 3.5rem 1fr auto;
   align-items: center;
-  gap: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #dbe2ef;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-developer-row:first-child {
+  padding-top: 0;
 }
 
 .admin-developer-row:last-child {
@@ -28,68 +34,77 @@
   border-bottom: 0;
 }
 
-.admin-developer-row h2,
+.admin-developer-row h2 {
+  margin: 0 0 0.15rem 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--admin-text);
+  letter-spacing: -0.01em;
+}
+
 .admin-developer-row p {
   margin: 0;
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
 }
 
 .admin-developer-logo {
-  width: 3rem;
-  height: 3rem;
+  width: 3.25rem;
+  height: 3.25rem;
   object-fit: contain;
+  border-radius: 0.375rem;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-elevated);
+  padding: 0.25rem;
+  box-sizing: border-box;
 }
 
 .admin-developer-logo-fallback {
   display: grid;
   place-items: center;
-  background: #e8eef9;
-  color: #172f68;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-subtle);
+  color: var(--admin-primary);
   font-size: 1.25rem;
   font-weight: 700;
+  box-sizing: border-box;
+}
+
+.admin-developer-row .admin-action {
+  white-space: nowrap;
 }
 
 .admin-developer-form {
-  max-width: 36rem;
+  max-width: 44rem;
   margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 /* Developer Media Section */
 .admin-developer-media-section {
   margin-top: 2.5rem;
   padding-top: 2rem;
-  border-top: 1px solid #dbe2ef;
+  border-top: 1px solid var(--admin-border);
 }
 
 .admin-section-heading h2 {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--admin-text);
   margin: 0 0 0.25rem 0;
+  letter-spacing: -0.01em;
 }
 
 .admin-section-heading p {
-  color: #64748b;
-  font-size: 0.95rem;
-  margin: 0 0 1.5rem 0;
-}
-
-.admin-alert {
-  padding: 0.75rem 1rem;
-  border-radius: 0.375rem;
-  margin-bottom: 1.5rem;
+  color: var(--admin-text-muted);
   font-size: 0.9rem;
-}
-
-.admin-alert-error {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-}
-
-.admin-alert-success {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.4;
 }
 
 .admin-developer-media-grid {
@@ -99,25 +114,26 @@
 }
 
 .admin-media-slot-card {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
   border-radius: 0.5rem;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  box-shadow: 0 1px 3px rgba(32, 38, 34, 0.04);
 }
 
 .slot-header h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--admin-text);
   margin: 0 0 0.25rem 0;
 }
 
 .slot-header p {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--admin-text-muted);
   margin: 0;
   line-height: 1.4;
 }
@@ -130,9 +146,9 @@
 
 .preview-image-wrapper {
   width: 100%;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--admin-border-strong);
   border-radius: 0.375rem;
-  background-color: #f8fafc;
+  background-color: var(--admin-surface-subtle);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -142,6 +158,7 @@
 .banner-preview {
   height: 6rem;
   padding: 0.5rem;
+  box-sizing: border-box;
 }
 
 .banner-preview img {
@@ -152,27 +169,28 @@
 
 .hero-preview {
   height: 10rem;
+  box-sizing: border-box;
 }
 
 .hero-preview img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  background-color: #0f172a;
+  background-color: var(--admin-sidebar-bg);
 }
 
 .slot-empty-state {
   padding: 2rem 1rem;
-  background-color: #f8fafc;
-  border: 1px dashed #cbd5e1;
+  background-color: var(--admin-surface-subtle);
+  border: 1px dashed var(--admin-border-strong);
   border-radius: 0.375rem;
   text-align: center;
 }
 
 .empty-state-text {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: var(--admin-text-muted);
   margin: 0;
 }
 
@@ -181,29 +199,31 @@
   flex-direction: column;
   gap: 0.75rem;
   margin-top: auto;
-  padding-top: 0.75rem;
-  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+  border-top: 1px solid var(--admin-border);
 }
 
 .file-input {
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--admin-text-muted);
 }
 
+/* Fallback button class definitions for legacy compatibility */
 .admin-btn-primary {
   padding: 0.5rem 1rem;
-  background-color: #0f172a;
+  background-color: var(--admin-primary);
   color: #ffffff;
-  border: none;
+  border: 1px solid var(--admin-primary);
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .admin-btn-primary:hover:not(:disabled) {
-  background-color: #1e293b;
+  background-color: var(--admin-primary-hover);
+  border-color: var(--admin-primary-hover);
 }
 
 .admin-btn-primary:disabled {
@@ -213,22 +233,41 @@
 
 .admin-btn-secondary-danger {
   padding: 0.375rem 0.75rem;
-  background-color: #ffffff;
-  color: #dc2626;
-  border: 1px solid #fca5a5;
+  background-color: var(--admin-danger-bg);
+  color: var(--admin-danger-text);
+  border: 1px solid #EAC8C1;
   border-radius: 0.375rem;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   align-self: flex-start;
 }
 
 .admin-btn-secondary-danger:hover {
-  background-color: #fef2f2;
+  background-color: #F7DDD8;
+  border-color: var(--admin-danger-text);
 }
 
 @media (max-width: 640px) {
+  .admin-developer-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem 0;
+  }
+
+  .admin-developer-logo,
+  .admin-developer-logo-fallback {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .admin-developer-row .admin-action {
+    justify-self: start;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
   .admin-developer-media-grid {
     grid-template-columns: 1fr;
   }

@@ -6,21 +6,27 @@
  * ProjectsPage / ProjectFormPage -> Project admin components -> Project admin selectors.
  *
  * RESPONSIBILITY:
- * Isolate Project admin list, row grid, form, and amenities management presentation rules.
+ * Isolate Project admin list, row grid, form, and amenities management presentation rules
+ * using the Warm Architectural Admin design system tokens.
  */
 
 .admin-project-list {
   display: grid;
-  gap: 1rem;
+  gap: 0;
+  padding: 0;
 }
 
 .admin-project-row {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr auto;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr auto;
   align-items: center;
   gap: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #dbe2ef;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-project-row:first-child {
+  padding-top: 0;
 }
 
 .admin-project-row:last-child {
@@ -28,33 +34,60 @@
   border-bottom: 0;
 }
 
-.admin-project-row h2,
+.admin-project-row h2 {
+  margin: 0 0 0.15rem 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--admin-text);
+  letter-spacing: -0.01em;
+}
+
 .admin-project-row p {
   margin: 0;
+  font-size: 0.875rem;
+  color: var(--admin-text-muted);
+}
+
+.admin-project-row > div p {
+  font-size: 0.8rem;
+  color: var(--admin-text-subtle);
+  font-family: inherit;
+}
+
+.admin-project-row > p:first-of-type {
+  color: var(--admin-text);
+  font-weight: 500;
+}
+
+.admin-project-row .admin-action {
+  white-space: nowrap;
 }
 
 .admin-project-form {
-  max-width: 42rem;
+  max-width: 44rem;
 }
 
 /* Amenities Section Styles */
 .admin-amenities-section {
   margin-top: 2.5rem;
   padding-top: 1.75rem;
-  border-top: 1px solid #dbe2ef;
-  max-width: 42rem;
+  border-top: 1px solid var(--admin-border);
+  max-width: 44rem;
 }
 
 .admin-amenities-section h2 {
   font-size: 1.25rem;
+  font-weight: 700;
   margin: 0 0 0.5rem 0;
-  color: #0f172a;
+  color: var(--admin-text);
+  letter-spacing: -0.01em;
 }
 
 .admin-amenities-subtitle {
-  font-size: 0.9rem;
-  color: #64748b;
+  font-size: 0.875rem;
+  color: var(--admin-text-muted);
   margin: 0 0 1.25rem 0;
+  line-height: 1.4;
 }
 
 .admin-amenities-list {
@@ -72,15 +105,21 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.65rem 0.85rem;
-  background-color: #ffffff;
-  border: 1px solid #dbe2ef;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
   border-radius: 0.375rem;
   box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.admin-amenity-row:hover {
+  border-color: var(--admin-border-strong);
 }
 
 .admin-amenity-name {
-  font-weight: 500;
-  color: #0f172a;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--admin-text);
   word-break: break-word;
 }
 
@@ -99,14 +138,25 @@
   box-sizing: border-box;
 }
 
+.admin-amenity-edit-form input {
+  flex: 1;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.65rem;
+  background: var(--admin-surface-elevated);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--admin-text);
+}
+
 .admin-amenity-add-form {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   margin-top: 1rem;
-  padding: 1rem;
-  background-color: #f8fafc;
-  border: 1px solid #dbe2ef;
+  padding: 1.25rem;
+  background-color: var(--admin-surface-subtle);
+  border: 1px solid var(--admin-border);
   border-radius: 0.375rem;
   max-width: 28rem;
   box-sizing: border-box;
@@ -119,15 +169,29 @@
 }
 
 .empty-amenities-text {
-  color: #64748b;
-  font-size: 0.95rem;
+  color: var(--admin-text-muted);
+  font-size: 0.9rem;
   margin: 0 0 1rem 0;
+}
+
+@media (max-width: 900px) {
+  .admin-project-row {
+    grid-template-columns: 1.4fr 1fr 1fr auto;
+    gap: 0.75rem;
+  }
 }
 
 @media (max-width: 640px) {
   .admin-project-row {
     grid-template-columns: 1fr;
-    gap: 0.6rem;
+    gap: 0.5rem;
+    padding: 1rem 0;
+  }
+
+  .admin-project-row .admin-action {
+    justify-self: start;
+    width: 100%;
+    margin-top: 0.35rem;
   }
 
   .admin-amenity-row {
