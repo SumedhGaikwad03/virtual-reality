@@ -31,13 +31,14 @@ export function PropertyAssistantOverlay() {
   const matchesCount = searchChat.state ? searchChat.state.matches.length : 0;
 
   return (
-    <div className="assistant-overlay-backdrop" onClick={closeAssistant}>
+    <div className="assistant-overlay-backdrop" onClick={() => closeAssistant()}>
       <div
         className="assistant-overlay-card"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label="Tara · Property Discovery Advisor"
+        data-lenis-prevent
       >
         <div className="assistant-overlay-header-bar">
           <div className="assistant-overlay-identity">
@@ -49,7 +50,7 @@ export function PropertyAssistantOverlay() {
           </div>
           <button
             type="button"
-            onClick={closeAssistant}
+            onClick={() => closeAssistant()}
             className="assistant-overlay-close-btn"
             aria-label="Close Tara assistant"
           >

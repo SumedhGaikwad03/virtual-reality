@@ -12,6 +12,7 @@
  */
 
 import type { PublicDeveloper } from "../../types/developer";
+import { scrollToElement } from "../../scroll/scrollTo";
 
 type DeveloperHeroProps = {
   developer: PublicDeveloper;
@@ -66,8 +67,8 @@ export function DeveloperHero({ developer }: DeveloperHeroProps) {
             type="button"
             className="developer-hero-contact-btn"
             onClick={() => {
+              scrollToElement("developer-enquiry-heading");
               const el = document.getElementById("developer-enquiry-heading");
-              el?.scrollIntoView({ behavior: "smooth", block: "start" });
               el?.parentElement?.querySelector<HTMLInputElement>("input")?.focus();
             }}
           >

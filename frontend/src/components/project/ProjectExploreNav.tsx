@@ -9,6 +9,8 @@
  * Offers progressive-disclosure navigation without creating duplicate project content or routes.
  */
 
+import { scrollToElement } from "../../scroll/scrollTo";
+
 type ProjectExploreNavProps = {
   hasConfigurations: boolean;
   hasShowcase: boolean;
@@ -62,10 +64,7 @@ export function ProjectExploreNav({
   }>;
 
   function scrollToSection(id: string) {
-    document.getElementById(id)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    scrollToElement(id);
   }
 
   return (

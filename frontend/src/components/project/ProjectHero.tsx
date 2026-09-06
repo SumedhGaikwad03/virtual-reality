@@ -13,6 +13,7 @@
 import type { RefObject } from "react";
 import { Link } from "react-router-dom";
 import type { Project } from "../../types/project";
+import { scrollToElement } from "../../scroll/scrollTo";
 
 type ProjectHeroProps = {
   project: Project;
@@ -69,10 +70,9 @@ export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroP
     if (onOpenEnquiry) {
       onOpenEnquiry(e.currentTarget);
     } else {
-      contactRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      if (contactRef.current) {
+        scrollToElement(contactRef.current);
+      }
       contactRef.current?.querySelector<HTMLInputElement>("input")?.focus();
     }
   }

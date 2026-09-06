@@ -28,13 +28,11 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { AboutFooter } from "../components/home/AboutFooter";
 import { useSite } from "../components/home/hooks/useSite";
-import { ContextualEnquiryModal } from "../components/common/ContextualEnquiryModal";
 import { ConfigurationMediaSection } from "../components/project/ConfigurationMediaSection";
 import { ConfigurationSection } from "../components/project/ConfigurationSection";
 import { LeadSection } from "../components/project/LeadSection";
 import { ProjectAmenities } from "../components/project/ProjectAmenities";
 import { ProjectDeveloper } from "../components/project/ProjectDeveloper";
-import { ProjectExploreNav } from "../components/project/ProjectExploreNav";
 import { ProjectHero } from "../components/project/ProjectHero";
 import { ProjectHeroCarousel } from "../components/project/ProjectHeroCarousel";
 import { ProjectInteriorExteriorCarousel } from "../components/project/ProjectInteriorExteriorCarousel";
@@ -43,7 +41,10 @@ import { ProjectOverview } from "../components/project/ProjectOverview";
 import { ProjectSubNav } from "../components/project/ProjectSubNav";
 import { ProjectVideoSection } from "../components/project/ProjectVideoSection";
 import { TapToExploreGallery } from "../components/project/TapToExploreGallery";
+import { ContextualEnquiryModal } from "../components/common/ContextualEnquiryModal";
 import { useProject } from "../components/project/hooks/useProject";
+import { scrollToElement } from "../scroll/scrollTo";
+import { ProjectExploreNav } from "../components/project/ProjectExploreNav";
 import { useHeader } from "../context/HeaderContext";
 
 const defaultSiteFallback = {
@@ -125,7 +126,7 @@ export function ProjectPage() {
       const timer = setTimeout(() => {
         const el = document.getElementById("photos");
         if (el) {
-          el.scrollIntoView({ behavior: "smooth" });
+          scrollToElement(el);
         }
       }, 60);
       return () => clearTimeout(timer);

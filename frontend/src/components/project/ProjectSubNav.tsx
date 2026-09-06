@@ -10,6 +10,8 @@
  * Amenities, Location, Developer, and Enquiry sections.
  */
 
+import { scrollToElement } from "../../scroll/scrollTo";
+
 type ProjectSubNavProps = {
   hasConfigurations: boolean;
   hasAmenities: boolean;
@@ -17,10 +19,7 @@ type ProjectSubNavProps = {
 
 export function ProjectSubNav({ hasConfigurations, hasAmenities }: ProjectSubNavProps) {
   function scrollToSection(id: string) {
-    const target = document.getElementById(id);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    scrollToElement(id);
   }
 
   return (

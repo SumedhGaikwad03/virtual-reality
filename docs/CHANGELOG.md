@@ -296,3 +296,93 @@
   - All existing `/api/*` routes verified intact with zero interference.
 - **Comprehensive Quality Gates**:
   - Passed complete automated verification: Backend build (0 errors), Frontend build (0 errors), Phase 1 SEO E2E (8/8), Step 2.5 Integration (33/33), Security Suite (15/15), Tara Lifecycle (8/8), Tara Redesign (15/15), and Local Final Gate (49/49).
+
+---
+
+## Phase 30: Homepage Tara Discovery Presentation & Messaging Refinement
+- **Dedicated Tara Avatar & Profile Presentation (`ConversationalSearchEntry.tsx`)**:
+  - Replaced generic corporate headline with Tara's signature warm greeting structure (*"Hello, I'm Tara. Let's look for your home."*).
+  - Integrated `TaraAvatar` (`size="md"`) alongside name (*Tara*) and role (*Property Discovery Advisor*), establishing immediate, clear companion identity.
+- **Polished Conversational Invitation & Option Chips**:
+  - Formatted clear message hierarchy with Playfair editorial serif headline, warm subline, and concise discovery invitation (*"What are you looking for? Select a starting preference or begin exploring."*).
+  - Preserved option-based discovery interaction model across 4 quick preference buttons with accessible aria labels and smooth hover lift.
+- **Responsive Layout & Visual Hierarchy (`home.css`)**:
+  - Structured card layout with balanced desktop two-column distribution and fluid mobile stacking.
+  - Eliminated awkward line-wrapping, excessive text, and form-like styling, ensuring an elegant invitation into the assistant across all screen sizes (320px–1920px).
+- **Intact Engine Guarantee**:
+  - Zero modifications to client-side deterministic search engine, catalog projection, stopping thresholds, or assistant overlay lifecycle.
+
+---
+
+## Phase 31: Lenis Smooth Scrolling Infrastructure
+- **Lenis Smooth Scrolling Infrastructure**:
+  - Integrated `lenis` into the public website layout tree via `SmoothScrollProvider` in `PublicShell.tsx`.
+  - Built `scrollTo.ts` utility providing dynamic sticky navigation/header offset calculations for smooth anchor and page scrolling.
+  - Added `data-lenis-prevent` to Tara Assistant Overlay, Lead Enquiry Modal, and Mobile Nav Drawer to isolate nested scrolling containers.
+  - Enabled native touch scroll physics preservation (`syncTouch: false`) for mobile viewports (320px–430px).
+  - Added automatic OS-level `prefers-reduced-motion` detection to disable smooth scrolling when requested.
+  - Preserved 100% native scrolling for the Admin portal (`/admin/*`) and `AdminLayout`.
+
+---
+
+## Phase 32: Public Navbar Glass Overlay & Dynamic Scrolled Transition
+- **Fixed Overlay Header Architecture (`GlobalHeader.tsx`)**:
+  - Changed `GlobalHeader` to a fixed overlay header sitting directly on top of atmospheric heros (`AtmosphericHero`, `ProjectHero`, `DeveloperHero`).
+  - Implemented lightweight `isScrolled` scroll detection threshold (24px) via passive scroll listener (zero per-pixel re-renders).
+- **Restrained Glass Visual Aesthetic (`layout.css`)**:
+  - **Top of Page**: Translucent glass (`rgba(10, 25, 20, 0.22)`, 12px blur, crisp white/ivory text, thin border) showcasing hero imagery underneath.
+  - **Scrolled State**: Opaque deep forest architectural glass (`rgba(10, 35, 26, 0.92)`, 16px blur, elevated shadow) with smooth 0.3s CSS cubic-bezier transition.
+- **Shared Header Token & Zero Occlusion**:
+  - Unified header height and offset across all public pages via shared `:root` design token `--header-height: 4.5rem` (`4rem` on mobile).
+  - Positioned non-hero pages (`/search`, `/privacy-policy`) and sticky sub-navigation (`ProjectSubNav`) using the `--header-height` token with zero magic numbers or content occlusion.
+  - Preserved high-contrast mobile drawer surface and `prefers-reduced-motion: reduce` compliance.
+
+---
+
+## Phase 33: Warm Architectural Colour System Implementation
+- **Centralized Design Token Architecture (`globals.css`)**:
+  - Established semantic `:root` tokens for Core Architectural Neutrals: `--color-bg: #F7F4EE` (Warm ivory), `--color-surface: #FCFAF6` (Warm white for cards), `--color-surface-muted: #EDE7DD` (Soft sand/stone for alternating sections).
+  - Defined warm borders and typography: `--color-border: #D9D0C3`, `--color-border-strong: #C8BBAA`, `--color-text: #202622` (Warm charcoal), `--color-text-muted: #68706A` (Muted slate/sage).
+  - Refined deep brand forest palette: `--color-forest: #18382E` (Deep warm forest), `--color-forest-dark: #112821` (Anchor forest), `--color-forest-surface: #1E463A`, `--color-forest-light: #718276`.
+  - Added restrained architectural accents: `--color-clay: #B86F55` (Muted terracotta), `--color-brass: #A99168` (Subtle brass).
+- **Public Layout & Navigation Harmonization (`layout.css`)**:
+  - Updated public container canvas to `var(--color-bg)`.
+  - Harmonized fixed glass navbar and scrolled background to `rgba(24, 56, 46, 0.94)` and mobile drawer to `rgba(17, 40, 33, 0.98)`.
+  - Mapped primary header actions to `--color-surface` and `--color-forest`.
+- **Domain Stylesheet Synchronization (`home.css`, `project.css`, `developer.css`, `search.css`)**:
+  - `home.css`: Mapped all `--home-*` CSS variables to the centralized `--color-*` token system across sections, cards, and footer.
+  - `project.css`: Mapped `--c-canvas`, `--c-surface`, `--c-border`, `--c-ink`, and `--c-hero-bg` tokens to warm architectural tokens.
+  - `developer.css`: Updated `.developer-page-container`, `.developer-intro-section`, `.developer-lead-card`, and fallback hero gradients to warm forest and ivory palette.
+  - `search.css`: Updated `.search-page-container`, `.search-assistant-card`, conversation bubbles, rule options, query chips, property result cards, compact summary cards, and assistant overlay.
+- **Accessibility & Contrast Verification**:
+  - WCAG AAA compliance verified: `#202622` on `#F7F4EE` (13.5:1 ratio) and `#FCFAF6` on `#18382E` (11.2:1 ratio).
+  - Preserved 100% of backend architecture, database schemas, APIs, deterministic search rules, and admin isolation.
+
+---
+
+## Phase 34: True Transparent Hero Navbar & Refined Navigation Grouping
+- **Pure Transparent Top-of-Page Navbar (`layout.css`)**:
+  - Eliminated frosted glass bar, blur (`backdrop-filter: none`), border, and drop shadows at the top of the page.
+  - Enabled hero photography to extend fully underneath the navbar without horizontal bar cutoff.
+- **Right-Aligned Navigation Cluster (`GlobalHeader.tsx`, `layout.css`)**:
+  - Grouped desktop primary links (`Home`, `About`, `Privacy Policy`) and CTAs (`Contact & Advisory`, `✦ Tara`) in a right-aligned flex cluster (`.global-header-right`).
+- **Refined CTA Button Hierarchy**:
+  - `Contact & Advisory`: Transparent background, subtle white border (`rgba(255, 255, 255, 0.40)`), white text, no heavy shadow.
+  - `✦ Tara`: Warm ivory surface (`--color-surface`), deep forest text (`--color-forest`), subtle elevation.
+- **Subtle Readability Scrolled State**:
+  - Transitioned scrolled state to a restrained tint (`rgba(17, 40, 33, 0.40)`) with minimal 8px blur, 8% border, and soft shadow for readability over body content.
+- **Subtle Hero-Top Gradient Readability Layer (`home.css`, `project.css`, `developer.css`)**:
+  - Added ultra-subtle top layer (`rgba(17, 40, 33, 0.22)` fading smoothly to `0.04` at 20%) to hero overlays, ensuring white navbar text legibility without darkening hero photography.
+
+---
+
+## Phase 35: Focused UX Cleanup Pass (Mobile Tara Prompt, Form Focus/Autofill & Developer Attribution)
+- **Tara Mobile Prompt Multi-Line Word Wrapping (`layout.css`)**:
+  - Fixed character-by-character vertical text collapse bug on mobile viewports (320px–430px) by setting `width: max-content; max-width: min(calc(100vw - 2.5rem), 20rem);` on `.floating-search-prompt-bubble` and `white-space: normal;` on `.floating-search-prompt-text`.
+  - Upgraded prompt bubble and button styling to warm dark forest (`var(--color-forest-dark, #112821)`), warm ivory text, and subtle brass sparkle.
+- **Public Form Field Styling & Browser Autofill Normalization (`home.css`, `project.css`, `developer.css`)**:
+  - Scoped all public form CSS selectors to their respective parent classes (`.advisory-consultation-form`, `.project-lead-form`, `.developer-lead-form`, `.contextual-enquiry-form`) to eliminate cross-stylesheet CSS leakage.
+  - Ensured dark forest cards (`LeadSection`, `DeveloperLeadSection`) retain dark forest background (`var(--color-forest-surface, #1E463A)`) on input focus with warm sand borders.
+  - Implemented `:-webkit-autofill` inset shadow and text fill color overrides across all light and dark forms to prevent browser autofill from turning inputs bright white.
+- **Footer Developer Portfolio Attribution (`AboutFooter.tsx`, `home.css`)**:
+  - Added subtle developer credit link ("Platform developed by Sumedh") in the footer bottom bar linking to `https://sumedgaikwad.com` with `target="_blank"`, `rel="noopener noreferrer"`, and accessible focus-visible styling.

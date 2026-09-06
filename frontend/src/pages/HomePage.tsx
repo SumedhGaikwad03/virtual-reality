@@ -24,6 +24,7 @@ import { FirmOverview } from "../components/home/FirmOverview";
 import { HomeGallery } from "../components/home/HomeGallery";
 import { TrustStatisticsStrip } from "../components/home/TrustStatisticsStrip";
 import { useSite } from "../components/home/hooks/useSite";
+import { scrollToElement } from "../scroll/scrollTo";
 
 export function HomePage() {
   const { site, isLoading, hasError } = useSite();
@@ -40,7 +41,7 @@ export function HomePage() {
         attempts += 1;
         const el = document.getElementById(targetId);
         if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          scrollToElement(el);
           clearInterval(scrollInterval);
         } else if (attempts >= maxAttempts) {
           clearInterval(scrollInterval);

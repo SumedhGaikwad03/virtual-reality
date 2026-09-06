@@ -21,8 +21,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: var(--color-bg, #F7F4EE);
+  color: var(--color-text, #202622);
   overflow-x: hidden;
 }
 
@@ -38,7 +38,7 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--color-forest-light, #718276);
   margin-bottom: 0.5rem;
 }
 
@@ -52,7 +52,7 @@
   aspect-ratio: 21 / 9;
   max-height: 600px;
   overflow: hidden;
-  background-color: #0b1320;
+  background-color: var(--color-forest-dark, #112821);
   margin-bottom: 0;
   box-sizing: border-box;
 }
@@ -79,7 +79,7 @@
 .developer-hero-fallback-bg {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0b1320 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #112821 0%, #18382E 50%, #1E463A 100%);
 }
 
 .developer-hero-gradient-overlay {
@@ -87,9 +87,10 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(11, 19, 32, 0.15) 0%,
-    rgba(11, 19, 32, 0.55) 60%,
-    rgba(11, 19, 32, 0.85) 100%
+    rgba(17, 40, 33, 0.22) 0%,
+    rgba(17, 40, 33, 0.04) 20%,
+    rgba(17, 40, 33, 0.50) 60%,
+    rgba(17, 40, 33, 0.90) 100%
   );
 }
 
@@ -220,7 +221,7 @@
    ========================================================================== */
 .developer-intro-section {
   width: 100%;
-  background-color: #ffffff;
+  background-color: var(--color-bg, #F7F4EE);
   padding: clamp(3.5rem, 7vw, 5.5rem) 1.5rem clamp(2.5rem, 5vw, 4rem);
   box-sizing: border-box;
 }
@@ -233,7 +234,7 @@
 .developer-intro-title {
   font-size: clamp(1.85rem, 3.5vw, 2.75rem);
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text, #202622);
   margin: 0.5rem 0 1.5rem;
   letter-spacing: -0.025em;
   font-family: var(--font-serif, "Playfair Display", Georgia, serif);
@@ -243,12 +244,12 @@
 .developer-intro-description {
   font-size: clamp(1.05rem, 1.6vw, 1.2rem);
   line-height: 1.85;
-  color: #334155;
+  color: var(--color-text-muted, #68706A);
   margin-bottom: 2rem;
 }
 
 .developer-intro-description.fallback {
-  color: #64748b;
+  color: var(--color-text-muted, #68706A);
   font-style: italic;
 }
 
@@ -261,9 +262,9 @@
   align-items: center;
   font-size: 1rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-forest, #18382E);
   text-decoration: none;
-  border-bottom: 2px solid #0f172a;
+  border-bottom: 2px solid var(--color-forest, #18382E);
   padding-bottom: 0.35rem;
   transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
@@ -274,7 +275,7 @@
 }
 
 .developer-website-link:focus-visible {
-  outline: 2px solid #0f172a;
+  outline: 2px solid var(--color-forest, #18382E);
   outline-offset: 4px;
 }
 
@@ -290,7 +291,8 @@
 }
 
 .zero-projects-card {
-  background-color: #f8fafc;
+  background-color: var(--color-surface, #FCFAF6);
+  border: 1px solid var(--color-border, #D9D0C3);
   border-radius: 1rem;
   padding: clamp(3.5rem, 6vw, 5rem) 2rem;
   text-align: center;
@@ -303,7 +305,7 @@
 .zero-projects-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text, #202622);
   margin: 0 0 0.75rem 0;
   font-family: var(--font-serif, "Playfair Display", Georgia, serif);
 }
@@ -311,7 +313,7 @@
 .zero-projects-description {
   font-size: 1rem;
   line-height: 1.65;
-  color: #64748b;
+  color: var(--color-text-muted, #68706A);
   margin: 0;
 }
 
@@ -327,19 +329,19 @@
 }
 
 .developer-lead-card {
-  background-color: #0b1320;
+  background-color: var(--color-forest-dark, #112821);
   color: #ffffff;
   border-radius: 1.5rem;
   padding: clamp(2.5rem, 5vw, 4rem);
   max-width: 50rem;
   margin: 0 auto;
-  box-shadow: 0 25px 50px -12px rgba(11, 19, 32, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(17, 40, 33, 0.35);
   box-sizing: border-box;
   width: 100%;
 }
 
 .developer-lead-card .section-eyebrow {
-  color: #94a3b8;
+  color: var(--color-border, #D9D0C3);
 }
 
 .developer-lead-title {
@@ -354,7 +356,7 @@
 .developer-lead-subtitle {
   font-size: 1rem;
   line-height: 1.6;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.78);
   margin-bottom: 2.25rem;
 }
 
@@ -366,7 +368,7 @@
   box-sizing: border-box;
 }
 
-.form-group-row {
+.developer-lead-form .form-group-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
@@ -374,7 +376,7 @@
   box-sizing: border-box;
 }
 
-.form-label {
+.developer-lead-form .form-label {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -385,42 +387,55 @@
   box-sizing: border-box;
 }
 
-.required-star {
+.developer-lead-form .required-star {
   color: #f87171;
 }
 
-.optional-tag {
+.developer-lead-form .optional-tag {
   font-size: 0.75rem;
   color: #64748b;
   font-weight: 400;
 }
 
-.form-input,
-.form-textarea {
+.developer-lead-form .form-input,
+.developer-lead-form .form-textarea {
   width: 100%;
   padding: 0.85rem 1.15rem;
-  background-color: #1e293b;
-  border: 1px solid #334155;
+  background-color: var(--color-forest-surface, #1E463A);
+  border: 1px solid rgba(217, 208, 195, 0.28);
   border-radius: 0.5rem;
-  color: #ffffff;
+  color: var(--color-surface, #FCFAF6);
   font-size: 0.95rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   box-sizing: border-box;
 }
 
-.form-input::placeholder,
-.form-textarea::placeholder {
-  color: #64748b;
+.developer-lead-form .form-input::placeholder,
+.developer-lead-form .form-textarea::placeholder {
+  color: rgba(217, 208, 195, 0.55);
 }
 
-.form-input:focus,
-.form-textarea:focus {
+.developer-lead-form .form-input:focus,
+.developer-lead-form .form-textarea:focus {
   outline: none;
-  border-color: #94a3b8;
-  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.25);
+  background-color: var(--color-forest-surface, #1E463A);
+  border-color: var(--color-sand, #D9C9A8);
+  box-shadow: 0 0 0 2.5px rgba(217, 201, 168, 0.25);
+  color: var(--color-surface, #FCFAF6);
 }
 
-.form-textarea {
+.developer-lead-form .form-input:-webkit-autofill,
+.developer-lead-form .form-input:-webkit-autofill:hover,
+.developer-lead-form .form-input:-webkit-autofill:focus,
+.developer-lead-form .form-textarea:-webkit-autofill {
+  -webkit-text-fill-color: #FCFAF6 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #1E463A inset !important;
+  box-shadow: 0 0 0px 1000px #1E463A inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: #FCFAF6;
+}
+
+.developer-lead-form .form-textarea {
   resize: vertical;
   min-height: 6rem;
 }

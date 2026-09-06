@@ -11,9 +11,31 @@
  */
 
 :root {
+  /* Core Architectural Neutrals */
+  --color-bg: #F7F4EE;              /* Warm ivory page background */
+  --color-surface: #FCFAF6;         /* Warm white for cards and elevated surfaces */
+  --color-surface-muted: #EDE7DD;   /* Soft sand/stone for alternating sections */
+  --color-border: #D9D0C3;          /* Warm stone border */
+  --color-border-strong: #C8BBAA;   /* Enhanced border definition */
+  --color-white: #FFFFFF;           /* Crisp white for high-contrast accents */
+
+  /* Architectural Typography */
+  --color-text: #202622;            /* Warm charcoal body and headings */
+  --color-text-muted: #68706A;      /* Muted slate-sage secondary text */
+
+  /* Brand Palette (Warm Deep Forest) */
+  --color-forest: #18382E;          /* Deep warm forest */
+  --color-forest-dark: #112821;     /* Deep anchor forest / footer / hero backdrop */
+  --color-forest-surface: #1E463A;  /* Soft elevated forest surface */
+  --color-forest-light: #718276;    /* Muted sage secondary accent */
+
+  /* Restrained Architectural Accents */
+  --color-clay: #B86F55;            /* Muted terracotta accent */
+  --color-brass: #A99168;           /* Subtle brass accent */
+
   font-family: Arial, sans-serif;
-  color: #172033;
-  background: #ffffff;
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
 *,
@@ -29,7 +51,8 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   -webkit-text-size-adjust: 100%;
 }
 

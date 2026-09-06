@@ -6,29 +6,47 @@
  * Homepage Content Flow: HomePage -> ConversationalSearchEntry -> openAssistant().
  *
  * RESPONSIBILITY:
- * Presents an invitation to launch the option-based property discovery advisor overlay.
- * Uses accurate option-based discovery wording instead of conversational prompt language.
+ * Presents a warm, concise conversational invitation to meet Tara and launch the
+ * option-based property discovery advisor overlay.
  */
 
 import { useAssistant } from "../../context/AssistantContext";
+import { TaraAvatar } from "../search/TaraAvatar";
 
 export function ConversationalSearchEntry() {
   const { openAssistant } = useAssistant();
 
   return (
-    <section className="conversational-search-entry" aria-labelledby="assistant-entry-heading">
+    <section className="conversational-search-entry" aria-labelledby="tara-entry-heading">
       <div className="conversational-search-card">
-        <div className="conversational-search-content">
-          <span className="section-eyebrow">PROPERTY DISCOVERY ADVISOR</span>
-          <h2 id="assistant-entry-heading" className="conversational-search-title">
-            Find a home that fits your life.
-          </h2>
-          <p className="conversational-search-subtitle">
-            Explore curated developments and bespoke residences with Tara through step-by-step preference matching.
-          </p>
+        {/* Left / Main Conversational Column */}
+        <div className="conversational-search-main">
+          {/* Profile Identity Bar */}
+          <div className="tara-entry-profile">
+            <TaraAvatar size="md" />
+            <div className="tara-entry-identity">
+              <span className="tara-entry-name">Tara</span>
+              <span className="tara-entry-role">Property Discovery Advisor</span>
+            </div>
+          </div>
 
-          <div className="conversational-prompt-chips" role="group" aria-label="Preference discovery options with Tara">
-            <span className="prompt-chip-intro">Explore by Preference:</span>
+          {/* Conversational Greeting Message */}
+          <div className="tara-entry-message-group">
+            <h2 id="tara-entry-heading" className="tara-entry-speech">
+              <span>Hello, I'm Tara.</span>
+              <span className="tara-speech-subline">Let's look for your home.</span>
+            </h2>
+            <p className="tara-entry-invitation">
+              What are you looking for? Select a starting preference or begin exploring.
+            </p>
+          </div>
+
+          {/* Option-Based Preference Discovery Chips */}
+          <div
+            className="conversational-prompt-chips"
+            role="group"
+            aria-label="Preference discovery options with Tara"
+          >
             <button
               type="button"
               className="conversational-chip"
@@ -64,6 +82,7 @@ export function ConversationalSearchEntry() {
           </div>
         </div>
 
+        {/* Action Column */}
         <div className="conversational-entry-action">
           <button
             type="button"

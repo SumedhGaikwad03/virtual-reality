@@ -12,6 +12,7 @@
 
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
+import { scrollToElement, scrollToTop } from "../../scroll/scrollTo";
 
 export function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -33,7 +34,7 @@ export function ScrollToTop() {
         attempts += 1;
         const element = document.getElementById(targetId);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          scrollToElement(element);
           clearInterval(scrollInterval);
         } else if (attempts >= maxAttempts) {
           clearInterval(scrollInterval);
@@ -51,9 +52,9 @@ export function ScrollToTop() {
     }
 
     // 3. On PUSH / REPLACE navigation to a new page without hash:
-    // Reset scroll position to top.
+    // Reset scroll position to top immediately.
     if (pathnameChanged) {
-      window.scrollTo(0, 0);
+      scrollToTop(true);
     }
   }, [pathname, hash, navigationType]);
 

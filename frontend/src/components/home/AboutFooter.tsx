@@ -177,7 +177,17 @@ export function AboutFooter({ site }: AboutFooterProps) {
             Privacy Policy
           </Link>
           <span className="footer-bottom-separator" aria-hidden="true">·</span>
-          <span className="footer-attribution">Architectural Real Estate Platform</span>
+          <span className="footer-attribution">
+            Platform developed by{" "}
+            <a
+              href="https://sumedgaikwad.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-developer-link"
+            >
+              Sumedh
+            </a>
+          </span>
         </div>
       </div>
     </footer>

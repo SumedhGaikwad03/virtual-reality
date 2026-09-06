@@ -20,27 +20,28 @@
  */
 
 :root {
-  --home-forest-deep: #0F3D2E;
-  --home-forest-dark: #0A291E;
-  --home-forest-surface: #154D3B;
-  --home-forest-light: #1E6B52;
-  --home-sand-warm: #D9C9A8;
-  --home-sand-light: #F4EFE6;
-  --home-sand-dark: #BFA880;
-  --home-ivory-soft: #FAF9F6;
-  --home-white: #FFFFFF;
-  --home-charcoal: #20262B;
+  --home-forest-deep: var(--color-forest, #18382E);
+  --home-forest-dark: var(--color-forest-dark, #112821);
+  --home-forest-surface: var(--color-forest-surface, #1E463A);
+  --home-forest-light: var(--color-forest-light, #718276);
+  --home-sand-warm: var(--color-border, #D9D0C3);
+  --home-sand-light: var(--color-surface-muted, #EDE7DD);
+  --home-sand-dark: var(--color-border-strong, #C8BBAA);
+  --home-ivory-soft: var(--color-bg, #F7F4EE);
+  --home-white: var(--color-surface, #FCFAF6);
+  --home-charcoal: var(--color-text, #202622);
   --home-charcoal-dark: #14181B;
-  --home-muted-gray: #6B7280;
-  --home-gold-warm: #C9A96A;
-  --home-gold-dark: #A68545;
-  --home-border-light: #E8E3DA;
-  --home-border-sand: rgba(217, 201, 168, 0.35);
+  --home-muted-gray: var(--color-text-muted, #68706A);
+  --home-gold-warm: var(--color-brass, #A99168);
+  --home-gold-dark: #8C734B;
+  --home-border-light: var(--color-border, #D9D0C3);
+  --home-border-sand: rgba(217, 208, 195, 0.45);
+  --home-clay: var(--color-clay, #B86F55);
   --home-font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
   --home-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --home-shadow-subtle: 0 4px 20px rgba(15, 61, 46, 0.05);
-  --home-shadow-lift: 0 12px 32px rgba(15, 61, 46, 0.09);
-  --home-shadow-deep: 0 16px 48px rgba(10, 41, 30, 0.16);
+  --home-shadow-subtle: 0 4px 20px rgba(24, 56, 46, 0.05);
+  --home-shadow-lift: 0 12px 32px rgba(24, 56, 46, 0.09);
+  --home-shadow-deep: 0 16px 48px rgba(17, 40, 33, 0.16);
   --home-r-card: 0.85rem;
   --home-r-hero: 1.25rem;
   --home-r-pill: 9999px;
@@ -147,12 +148,12 @@
 .atmospheric-hero {
   position: relative;
   width: 100%;
-  min-height: clamp(30rem, 65vh, 44rem);
+  min-height: clamp(32rem, 70vh, 46rem);
   border-radius: var(--home-r-hero);
   overflow: hidden;
   background: var(--home-forest-dark);
   color: var(--home-ivory-soft);
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   box-shadow: var(--home-shadow-deep);
 }
 
@@ -193,9 +194,10 @@
   height: 100%;
   background: linear-gradient(
     180deg,
-    rgba(10, 41, 30, 0.35) 0%,
-    rgba(10, 41, 30, 0.65) 45%,
-    rgba(10, 41, 30, 0.92) 100%
+    rgba(17, 40, 33, 0.22) 0%,
+    rgba(17, 40, 33, 0.04) 20%,
+    rgba(17, 40, 33, 0.50) 55%,
+    rgba(17, 40, 33, 0.90) 100%
   );
 }
 
@@ -206,8 +208,8 @@
   flex-direction: column;
   justify-content: flex-end;
   height: 100%;
-  min-height: clamp(30rem, 65vh, 44rem);
-  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(2rem, 4vw, 4rem);
+  min-height: clamp(32rem, 70vh, 46rem);
+  padding: clamp(5.5rem, 9vw, 7.5rem) clamp(2rem, 4vw, 4rem) clamp(2.5rem, 5vw, 4.5rem);
   box-sizing: border-box;
   max-width: 48rem;
 }
@@ -907,7 +909,7 @@
 }
 
 /* ==========================================================================
-   6. Conversational Search Entry Card
+   6. Conversational Search Entry Card (Tara Discovery Invitation)
    ========================================================================== */
 .conversational-search-entry {
   width: 100%;
@@ -917,65 +919,101 @@
   background: linear-gradient(135deg, #FAF9F6 0%, #F4EFE6 100%);
   border: 1px solid var(--home-sand-dark);
   border-radius: var(--home-r-hero);
-  padding: clamp(2rem, 4.5vw, 3.25rem);
+  padding: clamp(2rem, 3.8vw, 3rem);
   box-shadow: var(--home-shadow-lift);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 2.5rem;
   box-sizing: border-box;
 }
 
-.conversational-search-content {
+.conversational-search-main {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  max-width: 44rem;
+  gap: 1.25rem;
+  max-width: 46rem;
 }
 
-.conversational-search-title {
-  margin: 0;
-  font-family: var(--home-font-serif);
-  font-size: clamp(1.65rem, 2.8vw, 2.35rem);
+/* Tara Identity Profile Header */
+.tara-entry-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.tara-entry-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.tara-entry-name {
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--home-charcoal);
   line-height: 1.2;
 }
 
-.conversational-search-subtitle {
+.tara-entry-role {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--home-forest-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
+/* Conversational Speech / Headline */
+.tara-entry-message-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.tara-entry-speech {
   margin: 0;
-  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  font-family: var(--home-font-serif);
+  font-size: clamp(1.65rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  color: var(--home-charcoal);
+  line-height: 1.25;
+  display: flex;
+  flex-direction: column;
+}
+
+.tara-speech-subline {
+  color: var(--home-forest-deep);
+}
+
+.tara-entry-invitation {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.25vw, 1.05rem);
   color: var(--home-muted-gray);
   line-height: 1.6;
 }
 
+/* Option-Based Preference Discovery Chips */
 .conversational-prompt-chips {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
-  margin-top: 0.85rem;
-}
-
-.prompt-chip-intro {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--home-forest-deep);
+  margin-top: 0.25rem;
 }
 
 .conversational-chip {
   background: var(--home-white);
   border: 1px solid var(--home-sand-warm);
   color: var(--home-charcoal);
-  padding: 0.35rem 0.85rem;
+  padding: 0.45rem 1rem;
   border-radius: var(--home-r-pill);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
   font-family: var(--home-font-sans);
+  line-height: 1.3;
 }
 
 .conversational-chip:hover {
@@ -983,8 +1021,15 @@
   color: var(--home-white);
   border-color: var(--home-forest-deep);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 61, 46, 0.15);
 }
 
+.conversational-chip:focus-visible {
+  outline: 2px solid var(--home-forest-deep);
+  outline-offset: 2px;
+}
+
+/* Action CTA */
 .conversational-entry-action {
   flex-shrink: 0;
 }
@@ -993,7 +1038,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem 1.85rem;
+  padding: 1.1rem 2rem;
   background: var(--home-forest-deep);
   color: var(--home-ivory-soft);
   font-size: 0.95rem;
@@ -1376,7 +1421,7 @@
   width: 100%;
 }
 
-.form-label {
+.advisory-consultation-form .form-label {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -1387,7 +1432,7 @@
   box-sizing: border-box;
 }
 
-.form-label-text {
+.advisory-consultation-form .form-label-text {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1398,23 +1443,23 @@
   line-height: 1.35;
 }
 
-.required-star {
+.advisory-consultation-form .required-star {
   color: #DC2626;
   font-weight: 700;
   margin-left: 0.2rem;
 }
 
-.optional-tag {
+.advisory-consultation-form .optional-tag {
   font-size: 0.76rem;
   color: var(--home-muted-gray);
   font-weight: 400;
 }
 
-.form-input,
-.form-textarea {
+.advisory-consultation-form .form-input,
+.advisory-consultation-form .form-textarea {
   width: 100%;
   padding: 0.82rem 1rem;
-  border: 1.5px solid #CBD5E1;
+  border: 1.5px solid var(--color-border, #D9D0C3);
   border-radius: 0.55rem;
   background-color: var(--home-white);
   color: var(--home-charcoal-dark);
@@ -1424,18 +1469,29 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.form-input::placeholder,
-.form-textarea::placeholder {
-  color: #94A3B8;
+.advisory-consultation-form .form-input::placeholder,
+.advisory-consultation-form .form-textarea::placeholder {
+  color: var(--home-muted-gray);
   font-weight: 400;
 }
 
-.form-input:focus,
-.form-textarea:focus {
+.advisory-consultation-form .form-input:focus,
+.advisory-consultation-form .form-textarea:focus {
   outline: none;
   border-color: var(--home-forest-deep);
   background-color: var(--home-white);
-  box-shadow: 0 0 0 3px rgba(15, 61, 46, 0.14);
+  box-shadow: 0 0 0 3px rgba(24, 56, 46, 0.14);
+}
+
+.advisory-consultation-form .form-input:-webkit-autofill,
+.advisory-consultation-form .form-input:-webkit-autofill:hover,
+.advisory-consultation-form .form-input:-webkit-autofill:focus,
+.advisory-consultation-form .form-textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-text, #202622) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-surface, #FCFAF6) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-surface, #FCFAF6) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: var(--color-text, #202622);
 }
 
 .form-textarea {
@@ -2032,6 +2088,24 @@
   margin: 0;
 }
 
+.footer-developer-link {
+  color: var(--home-sand-warm);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+.footer-developer-link:hover {
+  color: var(--home-ivory-soft);
+  text-decoration: underline;
+}
+
+.footer-developer-link:focus-visible {
+  outline: 2px solid var(--home-sand-warm);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* ==========================================================================
    11. Privacy Policy Page Styles
    ========================================================================== */
@@ -2039,7 +2113,7 @@
   width: 100%;
   max-width: 54rem;
   margin: 0 auto;
-  padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 1.75rem) 6rem;
+  padding: calc(var(--header-height, 4.5rem) + clamp(1.5rem, 3vw, 2.5rem)) clamp(1rem, 3vw, 1.75rem) 6rem;
   box-sizing: border-box;
   background-color: var(--home-ivory-soft);
 }
@@ -2239,13 +2313,19 @@
     flex-direction: column;
     align-items: stretch;
     padding: 1.75rem 1.25rem;
-    gap: 1.25rem;
+    gap: 1.5rem;
+  }
+
+  .conversational-search-main {
+    max-width: 100%;
+    gap: 1rem;
   }
 
   .entry-launch-assistant-btn {
     width: 100%;
     text-align: center;
     justify-content: center;
+    padding: 1rem 1.5rem;
   }
 
   .firm-overview-card {

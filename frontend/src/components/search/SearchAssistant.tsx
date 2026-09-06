@@ -20,6 +20,7 @@ import { SearchAssistantEmptyState } from "./SearchAssistantEmptyState";
 import { TaraCompactProjectCard } from "./TaraCompactProjectCard";
 import { useAssistant } from "../../context/AssistantContext";
 import type { useSearchChat } from "../../hooks/useSearchChat";
+import { scrollToElement } from "../../scroll/scrollTo";
 
 type SearchAssistantProps = ReturnType<typeof useSearchChat>;
 
@@ -112,9 +113,9 @@ export function SearchAssistant({
   function handleViewAllResults() {
     closeAssistant({ reset: false });
     if (location.pathname === "/search") {
-      const resultsElem = document.querySelector(".search-results-section");
+      const resultsElem = document.querySelector<HTMLElement>(".search-results-section");
       if (resultsElem) {
-        resultsElem.scrollIntoView({ behavior: "smooth" });
+        scrollToElement(resultsElem);
       }
     } else {
       navigate("/search");

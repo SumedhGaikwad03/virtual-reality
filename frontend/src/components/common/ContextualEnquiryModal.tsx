@@ -172,6 +172,7 @@ export function ContextualEnquiryModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-enquiry-title"
+        data-lenis-prevent
       >
         <button
           type="button"

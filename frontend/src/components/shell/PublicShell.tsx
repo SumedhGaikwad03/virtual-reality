@@ -15,19 +15,22 @@ import { GlobalHeader } from "./GlobalHeader";
 import { PropertyAssistantOverlay } from "../search/PropertyAssistantOverlay";
 import { FloatingSearchControl } from "../home/FloatingSearchControl";
 import { ScrollToTop } from "../common/ScrollToTop";
+import { SmoothScrollProvider } from "../../scroll/SmoothScrollProvider";
 
 export function PublicShell() {
   return (
-    <div className="public-shell-container">
-      <ScrollToTop />
-      <GlobalHeader />
-      <div className="public-shell-content">
-        <div className="page-transition-wrapper">
-          <Outlet />
+    <SmoothScrollProvider>
+      <div className="public-shell-container">
+        <ScrollToTop />
+        <GlobalHeader />
+        <div className="public-shell-content">
+          <div className="page-transition-wrapper">
+            <Outlet />
+          </div>
         </div>
+        <FloatingSearchControl />
+        <PropertyAssistantOverlay />
       </div>
-      <FloatingSearchControl />
-      <PropertyAssistantOverlay />
-    </div>
+    </SmoothScrollProvider>
   );
 }

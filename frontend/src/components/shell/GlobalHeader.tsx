@@ -14,17 +14,30 @@
  * - Houses prominent "✦ Tara" discovery trigger
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAssistant } from "../../context/AssistantContext";
 import { useHeader } from "../../context/HeaderContext";
+import { scrollToElement, scrollToTop } from "../../scroll/scrollTo";
 
 export function GlobalHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { openAssistant } = useAssistant();
   const { developerName } = useHeader();
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 24;
+      setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleMobileMenu = () => setMobileMenuOpen((prev) => !prev);
   const closeMobileMenu = () => setMobileMenuOpen(false);
@@ -42,7 +55,7 @@ export function GlobalHeader() {
       if (location.hash) {
         navigate(location.pathname);
       }
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      scrollToTop();
       return;
     }
     navigate("/");
@@ -53,7 +66,7 @@ export function GlobalHeader() {
     if (isFirmPage) {
       const element = document.getElementById("about");
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        scrollToElement("about");
         window.history.replaceState(null, "", `${location.pathname}#about`);
         return;
       }
@@ -66,7 +79,7 @@ export function GlobalHeader() {
     if (isFirmPage) {
       const element = document.getElementById("contact");
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        scrollToElement("contact");
         window.history.replaceState(null, "", `${location.pathname}#contact`);
         return;
       }
@@ -77,7 +90,12 @@ export function GlobalHeader() {
   const headerTitle = developerName || "Virtual Reality";
 
   return (
-    <header className="global-header" aria-label="Site Header">
+    <header
+      className={`global-header ${isScrolled ? "global-header--scrolled" : "global-header--transparent"} ${
+        mobileMenuOpen ? "global-header--menu-open" : ""
+      }`}
+      aria-label="Site Header"
+    >
       <div className="global-header-container">
         {/* Contextual Brand Identity */}
         <Link
@@ -91,62 +109,65 @@ export function GlobalHeader() {
           </span>
         </Link>
 
-        {/* Desktop Primary Navigation */}
-        <nav className="desktop-primary-nav" aria-label="Primary navigation">
-          <button
-            type="button"
-            onClick={handleHomeClick}
-            className={`nav-link-btn ${isFirmPage && !location.hash && location.pathname !== "/privacy-policy" ? "active" : ""}`}
-          >
-            Home
-          </button>
-          <button
-            type="button"
-            onClick={handleAboutClick}
-            className={`nav-link-btn ${location.hash === "#about" ? "active" : ""}`}
-          >
-            About
-          </button>
-          <Link
-            to="/privacy-policy"
-            className={`nav-link ${location.pathname === "/privacy-policy" ? "active" : ""}`}
-          >
-            Privacy Policy
-          </Link>
-        </nav>
+        {/* Right Navigation & Actions Cluster */}
+        <div className="global-header-right">
+          {/* Desktop Primary Navigation */}
+          <nav className="desktop-primary-nav" aria-label="Primary navigation">
+            <button
+              type="button"
+              onClick={handleHomeClick}
+              className={`nav-link-btn ${isFirmPage && !location.hash && location.pathname !== "/privacy-policy" ? "active" : ""}`}
+            >
+              Home
+            </button>
+            <button
+              type="button"
+              onClick={handleAboutClick}
+              className={`nav-link-btn ${location.hash === "#about" ? "active" : ""}`}
+            >
+              About
+            </button>
+            <Link
+              to="/privacy-policy"
+              className={`nav-link ${location.pathname === "/privacy-policy" ? "active" : ""}`}
+            >
+              Privacy Policy
+            </Link>
+          </nav>
 
-        {/* Primary Action & Mobile Menu Toggle */}
-        <div className="global-header-actions">
-          <button
-            type="button"
-            onClick={handleContactAdvisoryClick}
-            className={`global-contact-advisory-btn ${
-              location.hash === "#contact" || location.hash === "#advisory" ? "active" : ""
-            }`}
-            aria-label="Contact and Advisory Consultation"
-          >
-            Contact & Advisory
-          </button>
+          {/* Primary Action & Mobile Menu Toggle */}
+          <div className="global-header-actions">
+            <button
+              type="button"
+              onClick={handleContactAdvisoryClick}
+              className={`global-contact-advisory-btn ${
+                location.hash === "#contact" || location.hash === "#advisory" ? "active" : ""
+              }`}
+              aria-label="Contact and Advisory Consultation"
+            >
+              Contact & Advisory
+            </button>
 
-          <button
-            type="button"
-            onClick={handleAssistantClick}
-            className="global-assistant-btn"
-            aria-label="Explore properties with Tara"
-          >
-            ✦ Tara
-          </button>
+            <button
+              type="button"
+              onClick={handleAssistantClick}
+              className="global-assistant-btn"
+              aria-label="Explore properties with Tara"
+            >
+              ✦ Tara
+            </button>
 
-          <button
-            type="button"
-            onClick={toggleMobileMenu}
-            className="mobile-menu-toggle-btn"
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-navigation-drawer"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? "✕" : "☰"}
-          </button>
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              className="mobile-menu-toggle-btn"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-drawer"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? "✕" : "☰"}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -157,6 +178,7 @@ export function GlobalHeader() {
           className="mobile-nav-drawer"
           role="region"
           aria-label="Mobile Navigation"
+          data-lenis-prevent
         >
           <nav className="mobile-nav-links">
             <button
