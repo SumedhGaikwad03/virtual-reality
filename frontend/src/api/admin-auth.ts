@@ -29,12 +29,12 @@ export async function loginAdmin(
     throw new AdminAuthApiError("Admin login request failed", null);
   }
 
-  if (!response.ok) {
+  if (!response.ok) { // we have to pop up the response to user admin will make  sense to user 
     throw new AdminAuthApiError(
       response.status === 401 ? "Invalid admin credentials" : "Admin login failed",
       response.status,
     );
-  }
+  } 
 
   let body: unknown;
   try {

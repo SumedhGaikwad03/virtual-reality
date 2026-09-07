@@ -575,3 +575,16 @@
   - Added smooth CSS transition (`transition: bottom 0.25s ease`) for floating control vertical repositioning.
   - Aligned z-index stacking hierarchy: `GlobalHeader` ($900$) < `MobileStickyEnquiryBar` ($940$) < `FloatingSearchControl` ($950$) < `FloatingSearchPrompt` ($951$) < `PropertyAssistantOverlay` ($1000$) < `ContextualEnquiryModal` ($9999$).
   - Eliminated UI collision between "Enquire Now →" action button and Tara assistant without modifying component logic or business workflows.
+
+---
+
+## Phase 46: Production Deployment Hardening — Phase 1A: Service Worker Reliability
+- **Hardened Fetch Error Handling & Guaranteed Response (`frontend/public/sw.js`)**:
+  - Eliminated `Uncaught (in promise) TypeError: Failed to convert value to 'Response'` by ensuring `event.respondWith()` always receives a guaranteed `Response` object.
+  - Implemented offline fallback response (`createOfflineResponse()`) with status 503 and clean user-facing HTML when network and cache are unavailable during navigation.
+  - Added safe error response (`createAssetErrorResponse()`) with status 504 for failed static asset network fetches, preventing unhandled promise rejections.
+- **Resilient Precache Installation (`frontend/public/sw.js`)**:
+  - Replaced all-or-nothing `cache.addAll()` with `Promise.allSettled()` and per-asset try/catch handling, preventing individual optional asset fetch hiccups from failing Service Worker installation.
+- **Cache Lifecycle Isolation (`frontend/public/sw.js`)**:
+  - Scoped cache cleanup during activation to delete only matching `virtual-reality-*` stale versions (`STATIC_CACHE = "virtual-reality-admin-shell-v4"`).
+  - Maintained complete `/api/` endpoint bypass, push notification listener, and notification click navigation behaviors.
