@@ -49,6 +49,7 @@ app.use(
   helmet({
     contentSecurityPolicy: false,
     crossOriginResourcePolicy: { policy: "cross-origin" },
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
     hsts: process.env.NODE_ENV === "production" ? undefined : false,
   }),
 );

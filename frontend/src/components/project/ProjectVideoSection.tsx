@@ -21,54 +21,103 @@ type VideoEmbedConfig = {
   embedUrl: string;
 };
 
+const YOUTUBE_ID_REGEX = /^[a-zA-Z0-9_-]{11}$/;
+
+function extractYouTubeVideoId(rawUrl: string): string | null {
+  try {
+    const parsed = new URL(rawUrl.trim());
+    const hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+
+    // 1. youtu.be shortlinks: https://youtu.be/VIDEO_ID
+    if (hostname === "youtu.be") {
+      const id = parsed.pathname.slice(1).split("/")[0]?.split("?")[0];
+      if (id && YOUTUBE_ID_REGEX.test(id)) {
+        return id;
+      }
+    }
+
+    // 2. youtube.com & youtube-nocookie.com (including m.youtube.com, etc.)
+    if (
+      hostname === "youtube.com" ||
+      hostname.endsWith(".youtube.com") ||
+      hostname === "youtube-nocookie.com" ||
+      hostname.endsWith(".youtube-nocookie.com")
+    ) {
+      // /watch?v=VIDEO_ID (or any query param order: /watch?feature=shared&v=VIDEO_ID)
+      if (parsed.pathname === "/watch") {
+        const v = parsed.searchParams.get("v");
+        if (v && YOUTUBE_ID_REGEX.test(v)) {
+          return v;
+        }
+      }
+
+      // /embed/VIDEO_ID, /shorts/VIDEO_ID, /live/VIDEO_ID, /v/VIDEO_ID
+      const pathSegments = parsed.pathname.split("/").filter(Boolean);
+      if (
+        pathSegments.length >= 2 &&
+        ["embed", "shorts", "live", "v"].includes(pathSegments[0])
+      ) {
+        const id = pathSegments[1];
+        if (id && YOUTUBE_ID_REGEX.test(id)) {
+          return id;
+        }
+      }
+    }
+  } catch {
+    // Non-standard URL string fallback regex
+    const regexFallback =
+      /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/|youtube-nocookie\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
+    const match = rawUrl.match(regexFallback);
+    if (match?.[1] && YOUTUBE_ID_REGEX.test(match[1])) {
+      return match[1];
+    }
+  }
+
+  return null;
+}
+
+function extractVimeoVideoId(rawUrl: string): string | null {
+  try {
+    const parsed = new URL(rawUrl.trim());
+    const hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+    if (hostname === "vimeo.com" || hostname === "player.vimeo.com") {
+      const match = parsed.pathname.match(/\/(?:video\/)?([0-9]+)/);
+      if (match?.[1]) {
+        return match[1];
+      }
+    }
+  } catch {
+    const match = rawUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]+)/);
+    if (match?.[1]) {
+      return match[1];
+    }
+  }
+  return null;
+}
+
 // Converts YouTube, Vimeo, and direct video URLs into normalized embed configurations
 function getEmbedConfig(rawUrl: string): VideoEmbedConfig {
   const url = rawUrl.trim();
 
-  // YouTube Watch URL: https://www.youtube.com/watch?v=XYZ
-  const ytWatchMatch = url.match(/(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
-  if (ytWatchMatch?.[1]) {
+  // 1. YouTube video (normalized to privacy-enhanced youtube-nocookie embed)
+  const ytId = extractYouTubeVideoId(url);
+  if (ytId) {
     return {
       kind: "iframe",
-      embedUrl: `https://www.youtube.com/embed/${ytWatchMatch[1]}`,
+      embedUrl: `https://www.youtube-nocookie.com/embed/${ytId}`,
     };
   }
 
-  // YouTube Short URL: https://youtu.be/XYZ
-  const ytShortMatch = url.match(/(?:youtu\.be\/)([a-zA-Z0-9_-]+)/);
-  if (ytShortMatch?.[1]) {
+  // 2. Vimeo video
+  const vimeoId = extractVimeoVideoId(url);
+  if (vimeoId) {
     return {
       kind: "iframe",
-      embedUrl: `https://www.youtube.com/embed/${ytShortMatch[1]}`,
+      embedUrl: `https://player.vimeo.com/video/${vimeoId}`,
     };
   }
 
-  // YouTube Embed URL already: https://www.youtube.com/embed/XYZ
-  if (url.includes("youtube.com/embed/")) {
-    return {
-      kind: "iframe",
-      embedUrl: url,
-    };
-  }
-
-  // Vimeo URL: https://vimeo.com/XYZ
-  const vimeoMatch = url.match(/(?:vimeo\.com\/)([0-9]+)/);
-  if (vimeoMatch?.[1]) {
-    return {
-      kind: "iframe",
-      embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}`,
-    };
-  }
-
-  // Vimeo Player URL already: https://player.vimeo.com/video/XYZ
-  if (url.includes("player.vimeo.com/video/")) {
-    return {
-      kind: "iframe",
-      embedUrl: url,
-    };
-  }
-
-  // Native MP4 / WebM video file
+  // 3. Native MP4 / WebM video file
   return {
     kind: "native",
     embedUrl: url,
@@ -92,17 +141,18 @@ export function ProjectVideoSection({ media }: ProjectVideoSectionProps) {
       <div className="project-video-container">
         <span className="section-eyebrow">CINEMATIC TOUR</span>
         <h2 id="project-video-heading" className="project-video-title">
-          {videoMedia.title ?? "Project Showcase Video"}
+          {videoMedia.altText ?? "Project Showcase Video"}
         </h2>
 
         <div className="project-video-embed-wrapper">
           {embedConfig.kind === "iframe" ? (
             <iframe
               src={embedConfig.embedUrl}
-              title={videoMedia.title ?? "Project video tour"}
+              title={videoMedia.altText ?? "Project video tour"}
               className="project-video-iframe"
               loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           ) : (
@@ -111,7 +161,7 @@ export function ProjectVideoSection({ media }: ProjectVideoSectionProps) {
               src={embedConfig.embedUrl}
               preload="metadata"
               className="project-video-native"
-              aria-label={videoMedia.title ?? "Project video tour"}
+              aria-label={videoMedia.altText ?? "Project video tour"}
             />
           )}
         </div>
