@@ -21,7 +21,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-bg, #F7F4EE);
+  background-color: var(--color-bg, #FAFAF8);
   color: var(--color-text, #202622);
   overflow-x: hidden;
 }
@@ -220,7 +220,7 @@
    ========================================================================== */
 .developer-intro-section {
   width: 100%;
-  background-color: var(--color-bg, #F7F4EE);
+  background-color: var(--color-bg, #FAFAF8);
   padding: clamp(3.5rem, 7vw, 5.5rem) 1.5rem clamp(2.5rem, 5vw, 4rem);
   box-sizing: border-box;
 }
@@ -290,8 +290,8 @@
 }
 
 .zero-projects-card {
-  background-color: var(--color-surface, #FCFAF6);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
   border-radius: 1rem;
   padding: clamp(3.5rem, 6vw, 5rem) 2rem;
   text-align: center;
@@ -340,7 +340,7 @@
 }
 
 .developer-lead-card .section-eyebrow {
-  color: var(--color-border, #D9D0C3);
+  color: var(--color-border, #E6E6E2);
 }
 
 .developer-lead-title {
@@ -362,38 +362,22 @@
 .developer-lead-form {
   display: flex;
   flex-direction: column;
-  gap: 1.35rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.developer-lead-form .form-group-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
   width: 100%;
-  box-sizing: border-box;
 }
 
-.developer-lead-form .form-label {
+.developer-lead-form .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #cbd5e1;
   width: 100%;
-  box-sizing: border-box;
 }
 
-.developer-lead-form .required-star {
-  color: #f87171;
-}
-
-.developer-lead-form .optional-tag {
-  font-size: 0.75rem;
-  color: #64748b;
-  font-weight: 400;
+.developer-lead-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.02em;
 }
 
 .developer-lead-form .form-input,
@@ -403,7 +387,7 @@
   background-color: var(--color-forest-surface, #1E463A);
   border: 1px solid rgba(217, 208, 195, 0.28);
   border-radius: 0.5rem;
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
   font-size: 0.95rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   box-sizing: border-box;
@@ -420,18 +404,18 @@
   background-color: var(--color-forest-surface, #1E463A);
   border-color: var(--color-sand, #D9C9A8);
   box-shadow: 0 0 0 2.5px rgba(217, 201, 168, 0.25);
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
 }
 
 .developer-lead-form .form-input:-webkit-autofill,
 .developer-lead-form .form-input:-webkit-autofill:hover,
 .developer-lead-form .form-input:-webkit-autofill:focus,
 .developer-lead-form .form-textarea:-webkit-autofill {
-  -webkit-text-fill-color: #FCFAF6 !important;
+  -webkit-text-fill-color: #FFFFFF !important;
   -webkit-box-shadow: 0 0 0px 1000px #1E463A inset !important;
   box-shadow: 0 0 0px 1000px #1E463A inset !important;
   transition: background-color 5000s ease-in-out 0s;
-  caret-color: #FCFAF6;
+  caret-color: #FFFFFF;
 }
 
 .developer-lead-form .form-textarea {

@@ -21,7 +21,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-bg, #F7F4EE);
+  background-color: var(--color-bg, #FAFAF8);
   color: var(--color-text, #202622);
   overflow-x: hidden;
   padding-top: var(--header-height, 4.5rem);
@@ -87,8 +87,8 @@
    2. Conversational Assistant Card Container
    ========================================================================== */
 .search-assistant-card {
-  background-color: var(--color-surface, #FCFAF6);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
   border-radius: 1.25rem;
   padding: clamp(1.5rem, 3.5vw, 2.5rem);
   box-shadow: 0 4px 24px rgba(24, 56, 46, 0.04);
@@ -100,7 +100,7 @@
 .assistant-header {
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border, #D9D0C3);
+  border-bottom: 1px solid var(--color-border, #E6E6E2);
   transition: all 0.2s ease;
 }
 
@@ -127,7 +127,7 @@
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--color-text-muted, #68706A);
-  border-left: 1px solid var(--color-border, #D9D0C3);
+  border-left: 1px solid var(--color-border, #E6E6E2);
   padding-left: 0.5rem;
   line-height: 1.2;
 }
@@ -203,8 +203,8 @@
 }
 
 .conversation-bubble.assistant {
-  background-color: var(--color-surface-muted, #EDE7DD);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface-muted, #F6F6F3);
+  border: 1px solid var(--color-border, #E6E6E2);
   color: var(--color-text, #202622);
   border-top-left-radius: 0.2rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
@@ -212,7 +212,7 @@
 
 .conversation-bubble.user {
   background-color: var(--color-forest, #18382E);
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
   border-top-right-radius: 0.2rem;
   box-shadow: 0 2px 6px rgba(24, 56, 46, 0.15);
   font-weight: 500;
@@ -255,8 +255,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  background-color: var(--color-surface-muted, #EDE7DD);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface-muted, #F6F6F3);
+  border: 1px solid var(--color-border, #E6E6E2);
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   font-size: 0.78rem;
@@ -266,7 +266,7 @@
 }
 
 .summary-chip:hover {
-  background-color: var(--color-border, #D9D0C3);
+  background-color: var(--color-border, #E6E6E2);
   color: var(--color-text, #202622);
 }
 
@@ -315,8 +315,8 @@
   padding: 0.75rem 1.15rem;
   font-size: 0.9rem;
   font-weight: 600;
-  background-color: var(--color-surface, #FCFAF6);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
   border-radius: 0.65rem;
   color: var(--color-text, #202622);
   cursor: pointer;
@@ -345,8 +345,8 @@
 }
 
 .rule-option-btn:hover {
-  border-color: var(--color-border-strong, #C8BBAA);
-  background-color: var(--color-surface-muted, #EDE7DD);
+  border-color: var(--color-border-strong, #D9D9D4);
+  background-color: var(--color-surface-muted, #F6F6F3);
   transform: translateY(-1px);
   box-shadow: 0 3px 8px rgba(24, 56, 46, 0.05);
 }
@@ -357,7 +357,7 @@
 }
 
 .rule-option-btn:active {
-  background-color: var(--color-border, #D9D0C3);
+  background-color: var(--color-border, #E6E6E2);
   transform: translateY(0);
 }
 
@@ -375,7 +375,7 @@
   justify-content: space-between;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px solid var(--color-border, #D9D0C3);
+  border-top: 1px solid var(--color-border, #E6E6E2);
 }
 
 .assistant-control-btn {
@@ -461,8 +461,8 @@
 }
 
 .property-result-card {
-  background-color: var(--color-surface, #FCFAF6);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
   border-radius: 1rem;
   padding: 1.5rem;
   display: flex;
@@ -474,7 +474,7 @@
 }
 
 .property-result-card:hover {
-  border-color: var(--color-border-strong, #C8BBAA);
+  border-color: var(--color-border-strong, #D9D9D4);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(24, 56, 46, 0.06);
 }
@@ -499,8 +499,8 @@
   gap: 0.85rem;
   margin: 1.25rem 0;
   padding: 1rem 0;
-  border-top: 1px solid var(--color-border, #D9D0C3);
-  border-bottom: 1px solid var(--color-border, #D9D0C3);
+  border-top: 1px solid var(--color-border, #E6E6E2);
+  border-bottom: 1px solid var(--color-border, #E6E6E2);
 }
 
 .property-result-card-details div {
@@ -569,8 +569,8 @@
 
 .tara-compact-project-card {
   display: flex;
-  background-color: var(--color-surface, #FCFAF6);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
   border-radius: 0.85rem;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(24, 56, 46, 0.04);
@@ -580,7 +580,7 @@
 }
 
 .tara-compact-project-card:hover {
-  border-color: var(--color-border-strong, #C8BBAA);
+  border-color: var(--color-border-strong, #D9D9D4);
   box-shadow: 0 6px 20px rgba(24, 56, 46, 0.08);
   transform: translateY(-2px);
 }
@@ -589,7 +589,7 @@
   width: 6.5rem;
   min-height: 100%;
   flex-shrink: 0;
-  background-color: var(--color-surface-muted, #EDE7DD);
+  background-color: var(--color-surface-muted, #F6F6F3);
   display: flex;
   align-items: stretch;
 }
@@ -613,7 +613,7 @@
   font-family: var(--font-serif, "Playfair Display", Georgia, serif);
   font-size: 1.5rem;
   font-weight: 700;
-  color: #FCFAF6;
+  color: #FFFFFF;
   line-height: 1;
   margin-bottom: 0.25rem;
 }
@@ -623,7 +623,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-border, #D9D0C3);
+  color: var(--color-border, #E6E6E2);
   max-width: 5.5rem;
   white-space: nowrap;
   overflow: hidden;
@@ -672,7 +672,7 @@
 }
 
 .tara-compact-bullet {
-  color: var(--color-border, #D9D0C3);
+  color: var(--color-border, #E6E6E2);
 }
 
 .tara-compact-status-badge {
@@ -680,7 +680,7 @@
   font-weight: 600;
   padding: 0.2rem 0.5rem;
   border-radius: 9999px;
-  background-color: var(--color-surface-muted, #EDE7DD);
+  background-color: var(--color-surface-muted, #F6F6F3);
   color: var(--color-text, #202622);
   white-space: nowrap;
   flex-shrink: 0;
@@ -697,8 +697,8 @@
 .tara-compact-spec-pill {
   font-weight: 600;
   color: var(--color-text, #202622);
-  background-color: var(--color-surface-muted, #EDE7DD);
-  border: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface-muted, #F6F6F3);
+  border: 1px solid var(--color-border, #E6E6E2);
   padding: 0.15rem 0.45rem;
   border-radius: 0.35rem;
 }
@@ -753,7 +753,7 @@
   font-size: 0.92rem;
   font-weight: 600;
   background-color: var(--color-forest, #18382E);
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
   border: 1px solid var(--color-forest, #18382E);
   border-radius: 0.65rem;
   cursor: pointer;
@@ -798,7 +798,7 @@
   width: 100%;
   max-width: 32rem;
   max-height: calc(100vh - 2.5rem);
-  background-color: var(--color-surface, #FCFAF6);
+  background-color: var(--color-surface, #FFFFFF);
   border-radius: 1.25rem;
   box-shadow: 0 20px 50px rgba(17, 40, 33, 0.22);
   display: flex;
@@ -812,8 +812,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1.25rem;
-  background-color: var(--color-surface, #FCFAF6);
-  border-bottom: 1px solid var(--color-border, #D9D0C3);
+  background-color: var(--color-surface, #FFFFFF);
+  border-bottom: 1px solid var(--color-border, #E6E6E2);
 }
 
 .assistant-overlay-identity {
@@ -838,7 +838,7 @@
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--color-text-muted, #68706A);
-  border-left: 1px solid var(--color-border, #D9D0C3);
+  border-left: 1px solid var(--color-border, #E6E6E2);
   padding-left: 0.4rem;
 }
 
@@ -855,7 +855,7 @@
 }
 
 .assistant-overlay-close-btn:hover {
-  background-color: var(--color-surface-muted, #EDE7DD);
+  background-color: var(--color-surface-muted, #F6F6F3);
   color: var(--color-text, #202622);
 }
 
@@ -882,7 +882,7 @@
   font-size: 0.92rem;
   font-weight: 600;
   background-color: var(--color-forest, #18382E);
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
   border: none;
   border-radius: 0.65rem;
   cursor: pointer;

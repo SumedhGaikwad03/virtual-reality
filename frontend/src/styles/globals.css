@@ -12,11 +12,11 @@
 
 :root {
   /* Core Architectural Neutrals */
-  --color-bg: #F7F4EE;              /* Warm ivory page background */
-  --color-surface: #FCFAF6;         /* Warm white for cards and elevated surfaces */
-  --color-surface-muted: #EDE7DD;   /* Soft sand/stone for alternating sections */
-  --color-border: #D9D0C3;          /* Warm stone border */
-  --color-border-strong: #C8BBAA;   /* Enhanced border definition */
+  --color-bg: #FAFAF8;              /* Neutral architectural off-white page canvas */
+  --color-surface: #FFFFFF;         /* Pure white for cards and elevated surfaces */
+  --color-surface-muted: #F6F6F3;   /* Very subtle neutral secondary surface */
+  --color-border: #E6E6E2;          /* Clean neutral border */
+  --color-border-strong: #D9D9D4;   /* Enhanced neutral border definition */
   --color-white: #FFFFFF;           /* Crisp white for high-contrast accents */
 
   /* Architectural Typography */

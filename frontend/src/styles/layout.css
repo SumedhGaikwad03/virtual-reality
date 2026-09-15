@@ -17,7 +17,7 @@
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  background-color: var(--color-bg, #F7F4EE);
+  background-color: var(--color-bg, #FAFAF8);
   box-sizing: border-box;
 }
 
@@ -222,9 +222,9 @@
 }
 
 .global-contact-advisory-btn.active {
-  background-color: var(--color-surface, #FCFAF6);
+  background-color: var(--color-surface, #FFFFFF);
   color: var(--color-forest, #18382E);
-  border-color: var(--color-surface, #FCFAF6);
+  border-color: var(--color-surface, #FFFFFF);
   text-shadow: none;
 }
 
@@ -232,7 +232,7 @@
   padding: 0.55rem 1.15rem;
   font-size: 0.85rem;
   font-weight: 700;
-  background-color: var(--color-surface, #FCFAF6);
+  background-color: var(--color-surface, #FFFFFF);
   color: var(--color-forest, #18382E);
   border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 0.5rem;
@@ -334,8 +334,8 @@
   align-items: center;
   gap: 0.5rem;
   background: var(--color-forest-dark, #112821);
-  color: var(--color-surface, #FCFAF6);
-  border: 1px solid rgba(217, 208, 195, 0.3);
+  color: var(--color-surface, #FFFFFF);
+  border: 1px solid rgba(230, 230, 226, 0.3);
   padding: 0.75rem 1.35rem;
   border-radius: 2rem;
   box-shadow: 0 8px 24px rgba(17, 40, 33, 0.35), 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -355,7 +355,7 @@
 }
 
 .floating-search-btn:focus-visible {
-  outline: 2px solid var(--color-surface, #FCFAF6);
+  outline: 2px solid var(--color-surface, #FFFFFF);
   outline-offset: 2px;
 }
 
@@ -376,8 +376,8 @@
   width: max-content;
   max-width: min(calc(100vw - 2.5rem), 20rem);
   background: var(--color-forest-dark, #112821);
-  color: var(--color-surface, #FCFAF6);
-  border: 1px solid rgba(217, 208, 195, 0.25);
+  color: var(--color-surface, #FFFFFF);
+  border: 1px solid rgba(230, 230, 226, 0.25);
   border-radius: 0.75rem;
   padding: 0.65rem 0.85rem;
   display: flex;
@@ -398,7 +398,7 @@
   gap: 0.45rem;
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
   word-break: normal;
   overflow-wrap: normal;
   white-space: normal;
@@ -413,7 +413,7 @@
 .floating-search-prompt-close {
   background: transparent;
   border: none;
-  color: var(--color-border, #D9D0C3);
+  color: var(--color-border, #E6E6E2);
   font-size: 1.1rem;
   line-height: 1;
   padding: 0.1rem 0.3rem;
@@ -427,7 +427,7 @@
 }
 
 .floating-search-prompt-close:hover {
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
   background: rgba(255, 255, 255, 0.12);
 }
 

@@ -32,11 +32,11 @@
   --c-ink-muted:  var(--color-text-muted, #68706A);
   --c-ink-faint:  #8c968f;
   --c-slate:      #a8b3ab;
-  --c-border:     var(--color-border, #D9D0C3);
-  --c-border-mid: var(--color-border-strong, #C8BBAA);
-  --c-surface:    var(--color-surface, #FCFAF6);
+  --c-border:     var(--color-border, #E6E6E2);
+  --c-border-mid: var(--color-border-strong, #D9D9D4);
+  --c-surface:    var(--color-surface, #FFFFFF);
   --c-white:      var(--color-white, #FFFFFF);
-  --c-canvas:     var(--color-bg, #F7F4EE);
+  --c-canvas:     var(--color-bg, #FAFAF8);
   --c-hero-bg:    var(--color-forest-dark, #112821);
 
   /* Status */
@@ -1189,7 +1189,7 @@
   background-color: var(--color-forest-surface, #1E463A);
   border: 1px solid rgba(217, 208, 195, 0.28);
   border-radius: var(--r-md);
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
   font-size: 0.93rem;
   font-family: inherit;
   transition: border-color var(--t-base), box-shadow var(--t-base), background-color var(--t-base);
@@ -1210,7 +1210,7 @@
   background-color: var(--color-forest-surface, #1E463A);
   border-color: var(--color-sand, #D9C9A8);
   box-shadow: 0 0 0 2.5px rgba(217, 201, 168, 0.25);
-  color: var(--color-surface, #FCFAF6);
+  color: var(--color-surface, #FFFFFF);
 }
 
 .project-lead-form .form-input:-webkit-autofill,
@@ -1218,11 +1218,11 @@
 .project-lead-form .form-input:-webkit-autofill:focus,
 .project-lead-form .form-select:-webkit-autofill,
 .project-lead-form .form-textarea:-webkit-autofill {
-  -webkit-text-fill-color: #FCFAF6 !important;
+  -webkit-text-fill-color: #FFFFFF !important;
   -webkit-box-shadow: 0 0 0px 1000px #1E463A inset !important;
   box-shadow: 0 0 0px 1000px #1E463A inset !important;
   transition: background-color 5000s ease-in-out 0s;
-  caret-color: #FCFAF6;
+  caret-color: #FFFFFF;
 }
 
 .form-select {
@@ -1640,7 +1640,7 @@
   overflow: hidden;
   box-shadow: var(--shadow-card);
   border: 1px solid var(--c-border);
-  background-color: #0b1320;
+  background-color: var(--c-surface, #FFFFFF);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1653,7 +1653,7 @@
   object-fit: contain;
   object-position: center;
   display: block;
-  background-color: #0b1320;
+  background-color: transparent;
 }
 
 .location-media-caption {
@@ -2198,8 +2198,8 @@
 .enquiry-form-textarea {
   width: 100%;
   padding: 0.75rem 0.95rem;
-  background-color: var(--c-surface, #FCFAF6);
-  border: 1px solid var(--c-border, #D9D0C3);
+  background-color: var(--c-surface, #FFFFFF);
+  border: 1px solid var(--c-border, #E6E6E2);
   border-radius: var(--r-md);
   color: var(--c-ink, #202622);
   font-size: max(0.9rem, 16px);
@@ -2212,7 +2212,7 @@
 .enquiry-form-textarea:focus {
   outline: none;
   border-color: var(--color-forest-deep, #0F3D2E);
-  background-color: var(--c-surface, #FCFAF6);
+  background-color: var(--c-surface, #FFFFFF);
   box-shadow: 0 0 0 2.5px rgba(15, 61, 46, 0.14);
 }
 
@@ -2221,8 +2221,8 @@
 .enquiry-form-input:-webkit-autofill:focus,
 .enquiry-form-textarea:-webkit-autofill {
   -webkit-text-fill-color: var(--color-text, #202622) !important;
-  -webkit-box-shadow: 0 0 0px 1000px var(--color-surface, #FCFAF6) inset !important;
-  box-shadow: 0 0 0px 1000px var(--color-surface, #FCFAF6) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-surface, #FFFFFF) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-surface, #FFFFFF) inset !important;
   transition: background-color 5000s ease-in-out 0s;
   caret-color: var(--color-text, #202622);
 }
