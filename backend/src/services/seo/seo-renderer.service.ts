@@ -31,9 +31,9 @@ const DEFAULT_OG_IMAGE = `${CANONICAL_ORIGIN}/icons/icon-512x512.png`;
 import fs from "node:fs";
 import path from "node:path";
 
-// Production compiled bundle fallback filenames
-const DEFAULT_BUNDLE_SCRIPT = "/assets/index-BQHX-fUx.js";
-const DEFAULT_BUNDLE_STYLE = "/assets/index-DYHmTRZz.css";
+// Production compiled bundle deterministic entrypoint paths
+const DEFAULT_BUNDLE_SCRIPT = "/assets/index.js";
+const DEFAULT_BUNDLE_STYLE = "/assets/index.css";
 
 // In-memory cache for dynamically detected assets
 let cachedAssets: { scriptSrc: string; styleHref: string } | null = null;
@@ -44,7 +44,7 @@ let cachedAssets: { scriptSrc: string; styleHref: string } | null = null;
  * 1. Explicit environment variables (VITE_ASSET_SCRIPT, VITE_ASSET_STYLE)
  * 2. In-memory cached filesystem scan
  * 3. Filesystem inspection of frontend/dist/index.html or frontend/dist/assets
- * 4. Safe fallback bundle hashes
+ * 4. Safe deterministic entrypoint defaults (/assets/index.js, /assets/index.css)
  */
 export function resolveProductionAssets(): { scriptSrc: string; styleHref: string } {
   const envScript = process.env.VITE_ASSET_SCRIPT?.trim();
@@ -94,8 +94,8 @@ export function resolveProductionAssets(): { scriptSrc: string; styleHref: strin
       const assetsDir = path.join(distPath, "assets");
       if (fs.existsSync(assetsDir)) {
         const files = fs.readdirSync(assetsDir);
-        const scriptFile = files.find((f) => /^index-.*\.js$/i.test(f));
-        const styleFile = files.find((f) => /^index-.*\.css$/i.test(f));
+        const scriptFile = files.find((f) => /^index(-.*)?\.js$/i.test(f));
+        const styleFile = files.find((f) => /^index(-.*)?\.css$/i.test(f));
 
         if (scriptFile && styleFile) {
           cachedAssets = {
@@ -113,7 +113,7 @@ export function resolveProductionAssets(): { scriptSrc: string; styleHref: strin
     // Non-blocking fallback if filesystem is inaccessible in sandbox
   }
 
-  // 4. Safe fallback
+  // 4. Safe deterministic entrypoint defaults
   return {
     scriptSrc: envScript || DEFAULT_BUNDLE_SCRIPT,
     styleHref: envStyle || DEFAULT_BUNDLE_STYLE,

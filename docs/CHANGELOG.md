@@ -588,3 +588,39 @@
 - **Cache Lifecycle Isolation (`frontend/public/sw.js`)**:
   - Scoped cache cleanup during activation to delete only matching `virtual-reality-*` stale versions (`STATIC_CACHE = "virtual-reality-admin-shell-v4"`).
   - Maintained complete `/api/` endpoint bypass, push notification listener, and notification click navigation behaviors.
+
+---
+
+## Phase 47: Admin-Only PWA Hardening & Scope Isolation
+- **Web App Manifest Scope Isolation (`frontend/public/manifest.webmanifest`)**:
+  - Restricted manifest `scope` from `"/"` to `"/admin"`.
+  - Retained `start_url: "/admin"` with explicit admin identity (`"name": "Virtual Reality Admin"`, `"short_name": "VR Admin"`), preventing the PWA from representing or capturing the public website.
+- **Service Worker Admin-Only Interception (`frontend/public/sw.js`)**:
+  - Added `isAdminPath(pathname)` helper (`/admin`, `/admin/*`).
+  - Restricted navigation interception strictly to admin routes; all public navigation requests (`/`, `/search`, `/:developerSlug`, `/:developerSlug/:locationSlug/:projectSlug`, `/privacy-policy`) completely bypass the Service Worker.
+  - Removed `"/"` from `PRECACHE_ASSETS` to prevent public HTML from entering the admin cache.
+  - Guaranteed the Service Worker never returns the cached admin shell for public routes.
+  - Bumped static cache version to `virtual-reality-admin-shell-v5` and purged obsolete `virtual-reality-*` caches during activation.
+- **Service Worker Registration Scope (`registerServiceWorker.ts`, `push.ts`)**:
+  - Configured Service Worker registration explicitly with `{ scope: "/admin" }`.
+  - Maintained complete `/api/*` endpoint bypass, JWT authentication lifecycle in React, and Web Push event listeners.
+
+---
+
+## Phase 48: Production Deep-Link Styling & Hydration Asset Synchronization
+- **Production Deep-Link Failure Resolution**:
+  - Resolved production issue where direct navigation and hard-refreshes on public SEO routes (`/`, `/:developerSlug`, `/:developerSlug/:locationSlug/:projectSlug`, `/projects-in-pune`, `/location/:locationSlug`) returned unstyled semantic HTML without visual CSS or React hydration.
+  - Addressed root cause: decoupled Vercel frontend CDN and Render backend SEO SSR deployments resulted in Render injecting stale, hardcoded Vite asset hashes (`index-DYHmTRZz.css`, `index-BQHX-fUx.js`) that did not exist on Vercel, causing Vercel's SPA fallback rewrite to return HTML for CSS/JS requests and trigger browser MIME-type rejections.
+- **Deterministic Entry Asset Names (`frontend/vite.config.mts`)**:
+  - Configured Vite `build.rollupOptions.output` to emit stable entrypoint names: `assets/index.js` and `assets/index.css`.
+  - Preserved content hashing for all dynamically imported / lazy-loaded chunks (`assets/[name]-[hash].js`), ensuring code-splitting for admin pages (`AdminDashboardPage-[hash].js`, `LeadsPage-[hash].js`, etc.) retains efficient cache busting.
+  - Preserved content hashing for non-CSS assets (`assets/[name]-[hash][extname]`).
+- **Backend SEO Renderer Asset Resolution (`backend/src/services/seo/seo-renderer.service.ts`)**:
+  - Replaced stale hardcoded hash defaults with deterministic paths: `DEFAULT_BUNDLE_SCRIPT = "/assets/index.js"` and `DEFAULT_BUNDLE_STYLE = "/assets/index.css"`.
+  - Updated filesystem asset detection regex to support deterministic filenames while maintaining optional environment variable overrides (`VITE_ASSET_SCRIPT`, `VITE_ASSET_STYLE`).
+  - Preserved all existing SEO features: Schema.org JSON-LD, Open Graph meta tags, Twitter cards, semantic HTML body, and canonical URLs.
+- **Verification & Invariant Preservation**:
+  - Verified `npm --prefix frontend run build` outputs `dist/assets/index.css` (175.71 kB), `dist/assets/index.js` (398.73 kB), and 27 hashed dynamic chunks.
+  - Verified `dist/index.html` references `/assets/index.js` and `/assets/index.css`.
+  - Verified `npm --prefix backend run build` compiles TypeScript cleanly with zero errors.
+  - Confirmed Admin PWA scope remains strictly `/admin` without regressing Service Worker behavior, JWT authentication, or API endpoints.

@@ -2,7 +2,7 @@
   "name": "Virtual Reality Admin",
   "short_name": "VR Admin",
   "start_url": "/admin",
-  "scope": "/",
+  "scope": "/admin",
   "display": "standalone",
   "theme_color": "#172f68",
   "background_color": "#f4f7fb",

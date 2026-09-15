@@ -24,9 +24,9 @@ function decodeVapidKey(value: string) {
 }
 
 async function ensureServiceWorker(): Promise<ServiceWorkerRegistration> {
-  let registration = await navigator.serviceWorker.getRegistration("/sw.js");
+  let registration = await navigator.serviceWorker.getRegistration("/admin");
   if (!registration) {
-    registration = await navigator.serviceWorker.register("/sw.js");
+    registration = await navigator.serviceWorker.register("/sw.js", { scope: "/admin" });
   }
   await navigator.serviceWorker.ready;
   return registration;
@@ -75,7 +75,7 @@ export async function enableLeadNotifications() {
 export async function disableLeadNotifications() {
   if (!("serviceWorker" in navigator)) return;
 
-  const registration = await navigator.serviceWorker.getRegistration("/sw.js");
+  const registration = await navigator.serviceWorker.getRegistration("/admin");
   if (!registration) return;
 
   const subscription = await registration.pushManager.getSubscription();
@@ -123,7 +123,7 @@ export async function getLeadNotificationState(): Promise<LeadNotificationState>
     };
   }
 
-  const registration = await navigator.serviceWorker.getRegistration("/sw.js");
+  const registration = await navigator.serviceWorker.getRegistration("/admin");
   if (!registration) {
     return {
       supported: true,

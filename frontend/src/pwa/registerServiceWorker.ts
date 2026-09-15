@@ -13,7 +13,7 @@ export function registerServiceWorker() {
   if (import.meta.env.DEV || !("serviceWorker" in navigator)) return;
 
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {
+    navigator.serviceWorker.register("/sw.js", { scope: "/admin" }).catch(() => {
       // The application remains usable online when registration is unavailable.
     });
   });

@@ -1,7 +1,6 @@
-const STATIC_CACHE = "virtual-reality-admin-shell-v4";
+const STATIC_CACHE = "virtual-reality-admin-shell-v5";
 
 const PRECACHE_ASSETS = [
-  "/",
   "/index.html",
   "/manifest.webmanifest",
   "/favicon.ico",
@@ -10,13 +9,17 @@ const PRECACHE_ASSETS = [
   "/icons/icon-512x512.png",
 ];
 
+function isAdminPath(pathname) {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
 // Fallback HTML page when completely offline and /index.html is not in cache
 const OFFLINE_FALLBACK_HTML = `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Offline | Virtual Reality</title>
+  <title>Offline | Virtual Reality Admin</title>
   <style>
     body {
       margin: 0;
@@ -135,8 +138,13 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2. Navigation requests (Network-first with cached shell fallback and guaranteed Response)
+  // 2. Navigation requests: Intercept ONLY admin navigation (/admin, /admin/*)
   if (request.mode === "navigate") {
+    // Public website routes completely bypass Service Worker navigation handling
+    if (!isAdminPath(url.pathname)) {
+      return;
+    }
+
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -151,10 +159,6 @@ self.addEventListener("fetch", (event) => {
             const cachedIndex = await caches.match("/index.html");
             if (cachedIndex) {
               return cachedIndex;
-            }
-            const cachedRoot = await caches.match("/");
-            if (cachedRoot) {
-              return cachedRoot;
             }
           } catch {
             // Cache lookup failure fallback
