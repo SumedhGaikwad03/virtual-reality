@@ -34,8 +34,20 @@ function formatStatus(status: string) {
     case "SOLD_OUT":
       return "Sold Out";
     default:
-      return status;
+      return status.replace(/_/g, " ");
   }
+}
+
+function formatLocationName(name: string): string {
+  if (!name) return "";
+  if (name === name.toUpperCase()) {
+    return name
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+  return name;
 }
 
 export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroProps) {
@@ -95,15 +107,19 @@ export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroP
       </div>
 
       <div className="floating-project-hero-content">
-        <div className="project-hero-meta-badges">
-          <span className="project-hero-status-badge">{formatStatus(project.status)}</span>
+        <div className="project-hero-eyebrow-row">
+          <span className="project-hero-status-label">{formatStatus(project.status)}</span>
+          <span className="project-hero-meta-divider" aria-hidden="true">·</span>
           <Link to={`/${project.developer.slug}`} className="project-hero-developer-link">
-            By {project.developer.name}
+            {project.developer.name}
           </Link>
         </div>
 
         <h1 className="project-hero-headline">{project.name}</h1>
-        <p className="project-hero-location">{project.location.name}</p>
+
+        <div className="project-hero-location-row">
+          <span className="project-hero-location">{formatLocationName(project.location.name)}</span>
+        </div>
 
         <div className="project-hero-actions">
           <button

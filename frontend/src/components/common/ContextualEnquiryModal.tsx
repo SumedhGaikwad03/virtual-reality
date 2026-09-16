@@ -10,8 +10,15 @@
  * Escape key listener, backdrop click dismiss, and submitting inbound lead inquiries.
  */
 
-import { useState, useEffect, useRef, type FormEvent, type ReactNode } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 import { createLead, LeadApiError } from "../../api/lead";
+
+export type ConfigurationContextInfo = {
+  id?: string;
+  name?: string;
+  bhk?: number;
+  carpetArea?: number;
+};
 
 type ContextualEnquiryModalProps = {
   isOpen: boolean;
@@ -22,6 +29,7 @@ type ContextualEnquiryModalProps = {
   projectId?: string;
   developerId?: string;
   configurationId?: string;
+  configurationInfo?: ConfigurationContextInfo | null;
   triggerRef?: React.RefObject<HTMLElement | null>;
 };
 
@@ -43,6 +51,7 @@ export function ContextualEnquiryModal({
   projectId,
   developerId,
   configurationId,
+  configurationInfo,
   triggerRef,
 }: ContextualEnquiryModalProps) {
   const [name, setName] = useState("");
@@ -55,6 +64,7 @@ export function ContextualEnquiryModal({
 
   const modalRef = useRef<HTMLDivElement | null>(null);
   const firstInputRef = useRef<HTMLInputElement | null>(null);
+  const successBtnRef = useRef<HTMLButtonElement | null>(null);
 
   // Lock page scrolling, establish initial focus, trap keyboard focus inside the
   // modal, and restore focus to the triggering control when the modal closes.
@@ -67,9 +77,13 @@ export function ContextualEnquiryModal({
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // Wait for the opened modal subtree to be painted before focusing its first control.
+    // Focus the first interactive control once the opened modal paints
     const timer = setTimeout(() => {
-      firstInputRef.current?.focus();
+      if (isSuccess) {
+        successBtnRef.current?.focus();
+      } else {
+        firstInputRef.current?.focus();
+      }
     }, 50);
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -110,7 +124,7 @@ export function ContextualEnquiryModal({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [isOpen, triggerRef]);
+  }, [isOpen, isSuccess, triggerRef, onClose]);
 
   if (!isOpen) return null;
 
@@ -124,6 +138,8 @@ export function ContextualEnquiryModal({
     setIsSubmitting(true);
     setErrorMsg(null);
 
+    const effectiveConfigId = configurationId || configurationInfo?.id;
+
     try {
       await createLead({
         name: name.trim(),
@@ -132,7 +148,7 @@ export function ContextualEnquiryModal({
         message: message.trim() || undefined,
         projectId,
         developerId,
-        configurationId,
+        configurationId: effectiveConfigId,
       });
 
       setIsSuccess(true);
@@ -190,9 +206,10 @@ export function ContextualEnquiryModal({
               Thank You
             </h2>
             <p className="enquiry-modal-subtitle">
-              Your inquiry for <strong>{entityName}</strong> has been received. Our team will reach out with pricing and availability details.
+              Your enquiry for <strong>{entityName}</strong> has been received. We’ll be in touch shortly.
             </p>
             <button
+              ref={successBtnRef}
               type="button"
               className="enquiry-modal-submit-btn"
               onClick={handleClose}
@@ -202,21 +219,43 @@ export function ContextualEnquiryModal({
           </div>
         ) : (
           <form className="contextual-enquiry-form" onSubmit={handleSubmit}>
-            <span className="enquiry-modal-eyebrow">
-              {isProject ? "DIRECT PROPERTY INQUIRY" : "DEVELOPER PORTFOLIO INQUIRY"}
-            </span>
+            <div className="enquiry-modal-header-block">
+              <span className="enquiry-modal-eyebrow">
+                {isProject ? "ENQUIRE ABOUT" : "DEVELOPER ENQUIRY"}
+              </span>
 
-            <h2 id="modal-enquiry-title" className="enquiry-modal-title">
-              {isProject ? `Interested in ${entityName}?` : `Connect with ${entityName}`}
-            </h2>
+              <h2 id="modal-enquiry-title" className="enquiry-modal-title">
+                {entityName}
+              </h2>
 
-            <p className="enquiry-modal-subtitle">
-              {isProject
-                ? `Get direct pricing, availability, and unit configuration details${developerName ? ` from ${developerName}` : ""}.`
-                : `Request portfolio information, upcoming launches, and direct developer pricing.`}
-            </p>
+              {isProject && developerName && (
+                <div className="enquiry-modal-developer-by">
+                  by {developerName}
+                </div>
+              )}
 
-            {errorMsg && <div className="enquiry-modal-error">{errorMsg}</div>}
+              <p className="enquiry-modal-subtitle">
+                {isProject
+                  ? "Tell us how you'd like to explore this property."
+                  : "Connect directly for portfolio details, upcoming launches, and pricing."}
+              </p>
+            </div>
+
+            {/* Contextual Configuration Information Pill (Informational Only) */}
+            {configurationInfo && (configurationInfo.name || configurationInfo.bhk) && (
+              <div className="enquiry-contextual-config-card">
+                <span className="enquiry-contextual-config-label">Configuration</span>
+                <span className="enquiry-contextual-config-value">
+                  {configurationInfo.name}
+                  {configurationInfo.bhk ? ` · ${configurationInfo.bhk} BHK` : ""}
+                  {configurationInfo.carpetArea
+                    ? ` · ${configurationInfo.carpetArea.toLocaleString()} sq.ft.`
+                    : ""}
+                </span>
+              </div>
+            )}
+
+            {errorMsg && <div className="enquiry-modal-error" role="alert">{errorMsg}</div>}
 
             <div className="enquiry-form-group">
               <label htmlFor="enquiry-name">
@@ -271,7 +310,11 @@ export function ContextualEnquiryModal({
                 id="enquiry-message"
                 className="enquiry-form-textarea"
                 rows={2}
-                placeholder={isProject ? "e.g. Interested in 3 BHK pricing and possession date." : "e.g. Looking for 2 & 3 BHK properties in Baner / Wakad."}
+                placeholder={
+                  isProject
+                    ? `Share what you're looking for at ${entityName}...`
+                    : `Share what you're looking for with ${entityName}...`
+                }
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
@@ -282,7 +325,7 @@ export function ContextualEnquiryModal({
               className="enquiry-modal-submit-btn"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Submitting Inquiry..." : "Submit Inquiry →"}
+              {isSubmitting ? "Submitting..." : "Submit Enquiry →"}
             </button>
           </form>
         )}

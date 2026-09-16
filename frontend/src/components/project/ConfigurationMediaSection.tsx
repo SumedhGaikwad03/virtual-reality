@@ -10,12 +10,13 @@
  * and renders images, videos, and downloadable document links when a configuration is selected.
  */
 
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import type {
   Configuration,
   Media,
   MediaCategory,
 } from "../../types/project";
+import { ProjectImageLightbox } from "./ProjectImageLightbox";
 
 type ConfigurationMediaSectionProps = {
   configuration: Configuration | null | undefined;
@@ -50,6 +51,9 @@ export function ConfigurationMediaSection({
   configuration,
   onOpenEnquiry,
 }: ConfigurationMediaSectionProps) {
+  const [activeLightboxMedia, setActiveLightboxMedia] = useState<Media | null>(null);
+  const lightboxTriggerRef = useRef<HTMLElement | null>(null);
+
   if (!configuration) {
     return null;
   }
@@ -75,6 +79,11 @@ export function ConfigurationMediaSection({
       )
       .sort((a, b) => a.sortOrder - b.sortOrder);
   }, [media]);
+
+  const handleOpenFloorPlan = (item: Media, triggerEl: HTMLElement) => {
+    lightboxTriggerRef.current = triggerEl;
+    setActiveLightboxMedia(item);
+  };
 
   return (
     <section
@@ -116,6 +125,8 @@ export function ConfigurationMediaSection({
                     key={item.id}
                     item={item}
                     categoryLabel={label}
+                    configurationName={configuration.name}
+                    onOpenFloorPlan={handleOpenFloorPlan}
                   />
                 ))}
               </div>
@@ -132,6 +143,8 @@ export function ConfigurationMediaSection({
                     key={item.id}
                     item={item}
                     categoryLabel="Other Media"
+                    configurationName={configuration.name}
+                    onOpenFloorPlan={handleOpenFloorPlan}
                   />
                 ))}
               </div>
@@ -140,6 +153,15 @@ export function ConfigurationMediaSection({
         </>
       )}
       </div>
+
+      <ProjectImageLightbox
+        isOpen={Boolean(activeLightboxMedia)}
+        imageUrl={activeLightboxMedia?.url ?? ""}
+        altText={activeLightboxMedia?.altText ?? `${configuration.name} Floor Plan`}
+        title={`${configuration.name} · Floor Plan`}
+        onClose={() => setActiveLightboxMedia(null)}
+        triggerRef={lightboxTriggerRef}
+      />
     </section>
   );
 }
@@ -147,20 +169,62 @@ export function ConfigurationMediaSection({
 function ConfigurationMediaItem({
   item,
   categoryLabel,
+  configurationName,
+  onOpenFloorPlan,
 }: {
   item: Media;
   categoryLabel: string;
+  configurationName: string;
+  onOpenFloorPlan?: (item: Media, triggerEl: HTMLElement) => void;
 }) {
+  const isFloorPlan = item.category === "FLOOR_PLAN";
+
   return (
     <article className="media-item configuration-media-item">
       {item.type === "IMAGE" && (
-        <img
-          src={item.thumbnailUrl ?? item.url}
-          alt={
-            item.altText ??
-            `${categoryLabel} for this configuration`
-          }
-        />
+        isFloorPlan ? (
+          <button
+            type="button"
+            className="floor-plan-image-trigger"
+            onClick={(e) => onOpenFloorPlan?.(item, e.currentTarget)}
+            aria-label={`Enlarge floor plan for ${configurationName}`}
+          >
+            <img
+              src={item.thumbnailUrl ?? item.url}
+              alt={
+                item.altText ??
+                `${categoryLabel} for this configuration`
+              }
+            />
+            <span className="floor-plan-expand-badge" aria-hidden="true">
+              <svg
+                className="expand-icon"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="15 3 21 3 21 9" />
+                <polyline points="9 21 3 21 3 15" />
+                <line x1="21" y1="3" x2="14" y2="10" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+              <span>Tap to enlarge</span>
+            </span>
+          </button>
+        ) : (
+          <img
+            src={item.thumbnailUrl ?? item.url}
+            alt={
+              item.altText ??
+              `${categoryLabel} for this configuration`
+            }
+          />
+        )
       )}
 
       {item.type === "VIDEO" && (

@@ -46,6 +46,7 @@ import { useProject } from "../components/project/hooks/useProject";
 import { scrollToElement } from "../scroll/scrollTo";
 import { ProjectExploreNav } from "../components/project/ProjectExploreNav";
 import { useHeader } from "../context/HeaderContext";
+import { useAssistant } from "../context/AssistantContext";
 
 const defaultSiteFallback = {
   name: "Virtual Reality",
@@ -77,6 +78,7 @@ export function ProjectPage() {
   const leadSectionRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLFormElement | null>(null);
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [enquiryConfigId, setEnquiryConfigId] = useState<string | null>(null);
   const [showStickyEnquiry, setShowStickyEnquiry] = useState(false);
   const enquiryTriggerRef = useRef<HTMLElement | null>(null);
 
@@ -88,6 +90,7 @@ export function ProjectPage() {
 
   const { site } = useSite();
   const { setDeveloperName } = useHeader();
+  const { isOpen: isAssistantOpen, closeAssistant } = useAssistant();
 
   // Communicate project.developer.name context to GlobalHeader
   useEffect(() => {
@@ -152,9 +155,22 @@ export function ProjectPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [project]);
 
-  const openEnquiryModal = (triggerElement?: HTMLElement | null) => {
+  const openEnquiryModal = (
+    triggerElement?: HTMLElement | null,
+    configId?: string | null,
+  ) => {
+    // If Tara assistant is currently active, dismiss it to avoid overlapping overlays
+    if (isAssistantOpen) {
+      closeAssistant({ reset: false });
+    }
     if (triggerElement) enquiryTriggerRef.current = triggerElement;
+    setEnquiryConfigId(configId ?? selectedConfiguration?.id ?? null);
     setIsEnquiryModalOpen(true);
+  };
+
+  const handleCloseEnquiryModal = () => {
+    setIsEnquiryModalOpen(false);
+    setEnquiryConfigId(null);
   };
 
   if (isLoading) {
@@ -201,6 +217,20 @@ export function ProjectPage() {
     (item) => item.category === "LOCATION",
   );
 
+  // Derive active configuration context for modal
+  const activeModalConfig = project.configurations.find(
+    (c) => c.id === (enquiryConfigId || selectedConfiguration?.id),
+  );
+
+  const modalConfigurationInfo = activeModalConfig
+    ? {
+        id: activeModalConfig.id,
+        name: activeModalConfig.name,
+        bhk: activeModalConfig.bhk,
+        carpetArea: activeModalConfig.carpetArea,
+      }
+    : null;
+
   return (
     <div className="project-page-container">
       <main className="project-page-main">
@@ -217,6 +247,7 @@ export function ProjectPage() {
         <ProjectSubNav
           hasConfigurations={hasConfigurations}
           hasAmenities={hasAmenities}
+          onOpenEnquiry={openEnquiryModal}
         />
 
         {/* 2. Project Overview / Identity Narrative and optional Key Highlights */}
@@ -228,6 +259,7 @@ export function ProjectPage() {
           showcaseTarget={hasInteriorExterior ? "project-showcase-heading" : "project-featured-showcase-heading"}
           hasAmenities={hasAmenities}
           hasGallery={hasGallery}
+          onOpenEnquiry={openEnquiryModal}
         />
 
         {/* 3. Optional project video; the component returns null when unavailable. */}
@@ -253,7 +285,9 @@ export function ProjectPage() {
         {selectedConfiguration && (
           <ConfigurationMediaSection
             configuration={selectedConfiguration}
-            onOpenEnquiry={openEnquiryModal}
+            onOpenEnquiry={(triggerEl) =>
+              openEnquiryModal(triggerEl, selectedConfiguration.id)
+            }
           />
         )}
 
@@ -298,13 +332,14 @@ export function ProjectPage() {
       {/* Contextual Enquiry Modal */}
       <ContextualEnquiryModal
         isOpen={isEnquiryModalOpen}
-        onClose={() => setIsEnquiryModalOpen(false)}
+        onClose={handleCloseEnquiryModal}
         contextType="project"
         entityName={project.name}
         developerName={project.developer.name}
         projectId={project.id}
         developerId={project.developer.id}
-        configurationId={selectedConfiguration?.id}
+        configurationId={modalConfigurationInfo?.id ?? selectedConfiguration?.id}
+        configurationInfo={modalConfigurationInfo}
         triggerRef={enquiryTriggerRef}
       />
 

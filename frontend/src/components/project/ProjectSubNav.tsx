@@ -15,11 +15,24 @@ import { scrollToElement } from "../../scroll/scrollTo";
 type ProjectSubNavProps = {
   hasConfigurations: boolean;
   hasAmenities: boolean;
+  onOpenEnquiry?: (triggerEl?: HTMLElement | null) => void;
 };
 
-export function ProjectSubNav({ hasConfigurations, hasAmenities }: ProjectSubNavProps) {
+export function ProjectSubNav({
+  hasConfigurations,
+  hasAmenities,
+  onOpenEnquiry,
+}: ProjectSubNavProps) {
   function scrollToSection(id: string) {
     scrollToElement(id);
+  }
+
+  function handleEnquireClick(e: React.MouseEvent<HTMLButtonElement>) {
+    if (onOpenEnquiry) {
+      onOpenEnquiry(e.currentTarget);
+    } else {
+      scrollToSection("project-lead-heading");
+    }
   }
 
   return (
@@ -71,7 +84,7 @@ export function ProjectSubNav({ hasConfigurations, hasAmenities }: ProjectSubNav
 
         <button
           type="button"
-          onClick={() => scrollToSection("project-lead-heading")}
+          onClick={handleEnquireClick}
           className="sub-nav-item sub-nav-enquire-btn"
         >
           Enquire

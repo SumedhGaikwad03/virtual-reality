@@ -17,6 +17,7 @@ type ProjectExploreNavProps = {
   showcaseTarget: string;
   hasAmenities: boolean;
   hasGallery: boolean;
+  onOpenEnquiry?: (triggerEl?: HTMLElement | null) => void;
 };
 
 export function ProjectExploreNav({
@@ -25,6 +26,7 @@ export function ProjectExploreNav({
   showcaseTarget,
   hasAmenities,
   hasGallery,
+  onOpenEnquiry,
 }: ProjectExploreNavProps) {
   const items = [
     hasConfigurations && {
@@ -63,8 +65,12 @@ export function ProjectExploreNav({
     target: string;
   }>;
 
-  function scrollToSection(id: string) {
-    scrollToElement(id);
+  function handleItemClick(item: { label: string; target: string }, e: React.MouseEvent<HTMLButtonElement>) {
+    if (item.label === "Enquire" && onOpenEnquiry) {
+      onOpenEnquiry(e.currentTarget);
+    } else {
+      scrollToElement(item.target);
+    }
   }
 
   return (
@@ -80,7 +86,7 @@ export function ProjectExploreNav({
             key={item.label}
             type="button"
             className="project-explore-nav-card"
-            onClick={() => scrollToSection(item.target)}
+            onClick={(e) => handleItemClick(item, e)}
           >
             <span>
               <strong>{item.label}</strong>

@@ -9,7 +9,9 @@
  * Displays locality name, full street address, and an outbound Google Maps link.
  */
 
+import { useRef, useState } from "react";
 import type { Location, Media } from "../../types/project";
+import { ProjectImageLightbox } from "./ProjectImageLightbox";
 
 type ProjectLocationProps = {
   location: Location;
@@ -17,6 +19,9 @@ type ProjectLocationProps = {
 };
 
 export function ProjectLocation({ location, locationMedia }: ProjectLocationProps) {
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+
   return (
     <section className="project-location-section" aria-labelledby="project-location-heading">
       <div className="project-location-container">
@@ -43,17 +48,55 @@ export function ProjectLocation({ location, locationMedia }: ProjectLocationProp
 
         {locationMedia && (
           <div className="project-location-media-card">
-            <img
-              src={locationMedia.url}
-              alt={locationMedia.altText ?? `${location.name} location map and surroundings`}
-              loading="lazy"
-            />
-            {locationMedia.title && (
-              <span className="location-media-caption">{locationMedia.title}</span>
+            <button
+              ref={triggerRef}
+              type="button"
+              className="location-map-image-trigger"
+              onClick={() => setIsLightboxOpen(true)}
+              aria-label={`Enlarge location map for ${location.name}`}
+            >
+              <img
+                src={locationMedia.url}
+                alt={locationMedia.altText ?? `${location.name} location map and surroundings`}
+                loading="lazy"
+              />
+              <span className="location-map-expand-badge" aria-hidden="true">
+                <svg
+                  className="expand-icon"
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="15 3 21 3 21 9" />
+                  <polyline points="9 21 3 21 3 15" />
+                  <line x1="21" y1="3" x2="14" y2="10" />
+                  <line x1="3" y1="21" x2="10" y2="14" />
+                </svg>
+                <span>Tap to enlarge</span>
+              </span>
+            </button>
+            {locationMedia.altText && (
+              <span className="location-media-caption">{locationMedia.altText}</span>
             )}
           </div>
         )}
       </div>
+
+      {locationMedia && (
+        <ProjectImageLightbox
+          isOpen={isLightboxOpen}
+          imageUrl={locationMedia.url}
+          altText={locationMedia.altText ?? `${location.name} location map and surroundings`}
+          title={locationMedia.altText ?? `${location.name} · Location Map`}
+          onClose={() => setIsLightboxOpen(false)}
+          triggerRef={triggerRef}
+        />
+      )}
     </section>
   );
 }

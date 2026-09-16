@@ -22,9 +22,6 @@ export function DeveloperHero({ developer }: DeveloperHeroProps) {
   const heroMedia = developer.heroMedia;
   const heroImageUrl = heroMedia?.url || null;
 
-  const logoUrl = developer.bannerMedia?.url || developer.logoUrl;
-  const initialLetter = developer.name ? developer.name.charAt(0).toUpperCase() : "D";
-
   return (
     <section className="developer-hero" aria-label={`${developer.name} profile hero`}>
       <div className="developer-hero-media-wrapper">
@@ -45,22 +42,6 @@ export function DeveloperHero({ developer }: DeveloperHeroProps) {
       <div className="floating-developer-hero-content">
         <span className="developer-hero-eyebrow">DEVELOPER PROFILE</span>
         <h1 className="developer-hero-headline">{developer.name}</h1>
-
-        {/* Integrated Floating Brand Logo Mark */}
-        <div className="hero-brand-mark">
-          {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={developer.bannerMedia?.altText || `${developer.name} brand mark`}
-              className="hero-brand-logo"
-            />
-          ) : (
-            <div className="hero-brand-badge-fallback">
-              <span className="badge-letter">{initialLetter}</span>
-              <span className="badge-wordmark">{developer.name}</span>
-            </div>
-          )}
-        </div>
 
         <div className="developer-hero-actions">
           <button
