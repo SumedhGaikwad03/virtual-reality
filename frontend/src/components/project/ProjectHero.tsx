@@ -1,13 +1,13 @@
 /*
  * PURPOSE:
- * Renders the full-bleed atmospheric visual hero section for the public Project page.
+ * Renders the visual-first hero section and dedicated editorial information block for the public Project page.
  *
  * FLOW:
  * Public Project Discovery Flow: ProjectPage -> ProjectHero.
  *
  * RESPONSIBILITY:
- * Composes a full-width cinematic hero background with project name, location, developer badge,
- * status indicator, and direct smooth-scroll contact CTA button.
+ * Composes an immersive visual hero image followed by a structured editorial information block
+ * presenting project status, name, developer attribution, location, and contextual enquiry CTA.
  */
 
 import type { RefObject } from "react";
@@ -91,7 +91,8 @@ export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroP
 
   return (
     <section className="project-hero" aria-label={`${project.name} project hero`}>
-      <div className="project-hero-media-wrapper">
+      {/* 1. Immersive Visual-First Hero Image */}
+      <div className="project-hero-media">
         {heroImageUrl ? (
           <img
             src={heroImageUrl}
@@ -103,32 +104,41 @@ export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroP
         ) : (
           <div className="project-hero-fallback-bg" />
         )}
-        <div className="project-hero-gradient-overlay" />
       </div>
 
-      <div className="floating-project-hero-content">
-        <div className="project-hero-eyebrow-row">
-          <span className="project-hero-status-label">{formatStatus(project.status)}</span>
-          <span className="project-hero-meta-divider" aria-hidden="true">·</span>
-          <Link to={`/${project.developer.slug}`} className="project-hero-developer-link">
-            {project.developer.name}
-          </Link>
-        </div>
+      {/* 2. Dedicated Editorial Project Information Block */}
+      <div className="project-hero-info">
+        <div className="project-hero-info-inner">
+          <div className="project-hero-status-row">
+            <span className="project-hero-status-label">{formatStatus(project.status)}</span>
+          </div>
 
-        <h1 className="project-hero-headline">{project.name}</h1>
+          <h1 className="project-hero-headline">{project.name}</h1>
 
-        <div className="project-hero-location-row">
-          <span className="project-hero-location">{formatLocationName(project.location.name)}</span>
-        </div>
+          <div className="project-hero-meta-row">
+            <span className="project-hero-developer">
+              By{" "}
+              <Link to={`/${project.developer.slug}`} className="project-hero-developer-link">
+                {project.developer.name}
+              </Link>
+            </span>
+            {project.location?.name && (
+              <>
+                <span className="project-hero-meta-divider" aria-hidden="true">·</span>
+                <span className="project-hero-location">{formatLocationName(project.location.name)}</span>
+              </>
+            )}
+          </div>
 
-        <div className="project-hero-actions">
-          <button
-            type="button"
-            className="project-hero-contact-btn"
-            onClick={handleContactClick}
-          >
-            Enquire Now →
-          </button>
+          <div className="project-hero-actions">
+            <button
+              type="button"
+              className="project-hero-contact-btn"
+              onClick={handleContactClick}
+            >
+              Enquire Now →
+            </button>
+          </div>
         </div>
       </div>
     </section>
