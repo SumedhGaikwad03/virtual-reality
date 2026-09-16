@@ -200,29 +200,28 @@
 }
 
 /* ==========================================================================
-   2. Project Hero — Visual-First Hero & Editorial Information Block
+   2. Project Hero — Full-Bleed Cinematic Entrance
    ========================================================================== */
 .project-hero {
   position: relative;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--c-canvas);
+  min-height: clamp(520px, 75vh, 820px);
+  overflow: hidden;
+  background-color: var(--c-hero-bg);
   box-sizing: border-box;
 }
 
-.project-hero-media {
-  position: relative;
-  width: 100%;
-  height: clamp(480px, 60vh, 700px);
-  overflow: hidden;
-  background-color: var(--c-hero-bg);
+@media (max-width: 768px) {
+  .project-hero {
+    min-height: clamp(420px, 68vh, 560px);
+  }
 }
 
-@media (max-width: 768px) {
-  .project-hero-media {
-    height: clamp(340px, 48vh, 460px);
-  }
+.project-hero-media-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .project-hero-image {
@@ -235,7 +234,7 @@
 }
 
 .project-hero:hover .project-hero-image {
-  transform: scale(1.02);
+  transform: scale(1.025);
 }
 
 .project-hero-fallback-bg {
@@ -244,90 +243,105 @@
   background: linear-gradient(135deg, #0b1118 0%, #151d26 50%, #1e293b 100%);
 }
 
-.project-hero-info {
-  width: 100%;
-  background-color: var(--c-canvas);
-  border-bottom: 1px solid var(--c-border);
-  box-sizing: border-box;
+/* Neutral Directional Scrim: zero color tint, clear in central architectural focal area, soft top protection for header, rich neutral lower contrast for editorial typography */
+.project-hero-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.32) 0%,
+    rgba(0, 0, 0, 0.12) 16%,
+    rgba(0, 0, 0, 0.0) 32%,
+    rgba(0, 0, 0, 0.0) 58%,
+    rgba(0, 0, 0, 0.22) 74%,
+    rgba(0, 0, 0, 0.52) 88%,
+    rgba(0, 0, 0, 0.72) 100%
+  );
+  pointer-events: none;
 }
 
-.project-hero-info-inner {
+.floating-project-hero-content {
+  position: absolute;
+  bottom: clamp(2.5rem, 5.5vw, 4.5rem);
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
   max-width: var(--w-content);
-  margin-inline: auto;
-  padding: clamp(2rem, 4vw, 3rem) var(--gutter) clamp(1.75rem, 3.5vw, 2.5rem);
+  padding-inline: var(--gutter);
+  z-index: 2;
+  color: var(--c-white);
   box-sizing: border-box;
 }
 
-.project-hero-status-row {
-  display: flex;
+.project-hero-eyebrow-row {
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 0.75rem;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
 }
 
 .project-hero-status-label {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--c-ink-mid);
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  padding: 0.25rem 0.6rem;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 0.22rem 0.55rem;
   border-radius: 3px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   line-height: 1.25;
 }
 
-.project-hero-headline {
-  font-size: clamp(2rem, 3.8vw, 3.25rem);
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--c-ink);
-  margin: 0 0 0.65rem 0;
-  letter-spacing: -0.02em;
-  font-family: var(--font-serif);
-  max-width: 54rem;
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-
-.project-hero-meta-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-  font-size: clamp(0.92rem, 1.3vw, 1.02rem);
-  color: var(--c-ink-muted);
-}
-
-.project-hero-developer {
-  font-weight: 500;
-}
-
-.project-hero-developer-link {
-  color: var(--c-ink);
-  font-weight: 600;
-  text-decoration: none;
-  border-bottom: 1px solid var(--c-border-mid);
-  transition: color var(--t-fast), border-color var(--t-fast);
-}
-
-.project-hero-developer-link:hover {
-  color: var(--color-forest, #18382E);
-  border-bottom-color: var(--color-forest, #18382E);
-}
-
 .project-hero-meta-divider {
-  color: var(--c-slate);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.85rem;
   user-select: none;
 }
 
+.project-hero-developer-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color var(--t-fast), border-color var(--t-fast);
+  border-bottom: 1px solid transparent;
+}
+
+.project-hero-developer-link:hover {
+  color: #ffffff;
+  border-bottom-color: rgba(255, 255, 255, 0.65);
+}
+
+.project-hero-headline {
+  font-size: clamp(2rem, 4.2vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.12;
+  color: #ffffff;
+  margin: 0 0 0.55rem 0;
+  letter-spacing: -0.02em;
+  font-family: var(--font-serif);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+  max-width: 52rem;
+}
+
+.project-hero-location-row {
+  margin-bottom: 1.75rem;
+}
+
 .project-hero-location {
-  color: var(--c-ink-mid);
+  display: inline-block;
+  font-size: clamp(0.95rem, 1.35vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.88);
   font-weight: 500;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
 .project-hero-actions {
@@ -337,33 +351,32 @@
 .project-hero-contact-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
   padding: 0.72rem 1.65rem;
-  background-color: var(--color-forest-dark, #112821);
-  color: #ffffff;
+  background-color: #ffffff;
+  color: var(--color-forest-dark, #112821);
   font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  border: 1px solid var(--color-forest-dark, #112821);
+  border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
-  box-shadow: 0 2px 8px rgba(17, 40, 33, 0.12);
+  transition: background-color var(--t-fast), color var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
   min-height: 2.65rem;
   box-sizing: border-box;
 }
 
 .project-hero-contact-btn:hover {
-  background-color: var(--color-forest, #18382E);
-  border-color: var(--color-forest, #18382E);
+  background-color: var(--color-surface-muted, #F6F6F3);
+  color: var(--color-forest, #18382E);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(17, 40, 33, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24);
 }
 
 .project-hero-contact-btn:focus-visible {
-  outline: 2px solid var(--color-forest, #18382E);
-  outline-offset: 2px;
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
 }
 
 /* ==========================================================================
