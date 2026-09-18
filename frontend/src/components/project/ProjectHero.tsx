@@ -18,7 +18,10 @@ import { scrollToElement } from "../../scroll/scrollTo";
 type ProjectHeroProps = {
   project: Project;
   contactRef: RefObject<HTMLFormElement | null>;
-  onOpenEnquiry?: (triggerEl?: HTMLElement | null) => void;
+  onOpenEnquiry?: (
+    triggerEl?: HTMLElement | null,
+    intent?: "SCHEDULE_VISIT" | "REQUEST_CALLBACK",
+  ) => void;
 };
 
 function formatStatus(status: string) {
@@ -78,9 +81,20 @@ export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroP
 
   const heroImageUrl = heroMedia?.url || null;
 
-  function handleContactClick(e: React.MouseEvent<HTMLButtonElement>) {
+  function handleScheduleVisitClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (onOpenEnquiry) {
-      onOpenEnquiry(e.currentTarget);
+      onOpenEnquiry(e.currentTarget, "SCHEDULE_VISIT");
+    } else {
+      if (contactRef.current) {
+        scrollToElement(contactRef.current);
+      }
+      contactRef.current?.querySelector<HTMLInputElement>("input")?.focus();
+    }
+  }
+
+  function handleRequestCallbackClick(e: React.MouseEvent<HTMLButtonElement>) {
+    if (onOpenEnquiry) {
+      onOpenEnquiry(e.currentTarget, "REQUEST_CALLBACK");
     } else {
       if (contactRef.current) {
         scrollToElement(contactRef.current);
@@ -125,9 +139,16 @@ export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroP
           <button
             type="button"
             className="project-hero-contact-btn"
-            onClick={handleContactClick}
+            onClick={handleScheduleVisitClick}
           >
-            Enquire Now →
+            Schedule a Visit →
+          </button>
+          <button
+            type="button"
+            className="project-hero-secondary-btn"
+            onClick={handleRequestCallbackClick}
+          >
+            Request a Callback
           </button>
         </div>
       </div>

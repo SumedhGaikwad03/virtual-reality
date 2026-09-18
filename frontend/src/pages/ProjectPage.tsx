@@ -78,6 +78,7 @@ export function ProjectPage() {
   const leadSectionRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLFormElement | null>(null);
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [enquiryIntent, setEnquiryIntent] = useState<"SCHEDULE_VISIT" | "REQUEST_CALLBACK">("SCHEDULE_VISIT");
   const [enquiryConfigId, setEnquiryConfigId] = useState<string | null>(null);
   const [showStickyEnquiry, setShowStickyEnquiry] = useState(false);
   const enquiryTriggerRef = useRef<HTMLElement | null>(null);
@@ -158,6 +159,7 @@ export function ProjectPage() {
   const openEnquiryModal = (
     triggerElement?: HTMLElement | null,
     configId?: string | null,
+    intent: "SCHEDULE_VISIT" | "REQUEST_CALLBACK" = "SCHEDULE_VISIT",
   ) => {
     // If Tara assistant is currently active, dismiss it to avoid overlapping overlays
     if (isAssistantOpen) {
@@ -165,6 +167,7 @@ export function ProjectPage() {
     }
     if (triggerElement) enquiryTriggerRef.current = triggerElement;
     setEnquiryConfigId(configId ?? selectedConfiguration?.id ?? null);
+    setEnquiryIntent(intent);
     setIsEnquiryModalOpen(true);
   };
 
@@ -217,6 +220,18 @@ export function ProjectPage() {
     (item) => item.category === "LOCATION",
   );
 
+  // Extract project thumbnail image for modal context
+  const primaryHeroMedia =
+    project.media.find(
+      (item) => item.type === "IMAGE" && item.category === "HERO" && item.isPrimary,
+    ) ??
+    project.media.find(
+      (item) => item.type === "IMAGE" && item.category === "HERO",
+    ) ??
+    project.media.find((item) => item.type === "IMAGE");
+
+  const projectThumbnailUrl = primaryHeroMedia?.thumbnailUrl || primaryHeroMedia?.url || null;
+
   // Derive active configuration context for modal
   const activeModalConfig = project.configurations.find(
     (c) => c.id === (enquiryConfigId || selectedConfiguration?.id),
@@ -239,7 +254,9 @@ export function ProjectPage() {
           <ProjectHero
             project={project}
             contactRef={contactRef}
-            onOpenEnquiry={openEnquiryModal}
+            onOpenEnquiry={(triggerEl, intent) =>
+              openEnquiryModal(triggerEl, null, intent)
+            }
           />
         </div>
 
@@ -247,7 +264,9 @@ export function ProjectPage() {
         <ProjectSubNav
           hasConfigurations={hasConfigurations}
           hasAmenities={hasAmenities}
-          onOpenEnquiry={openEnquiryModal}
+          onOpenEnquiry={(triggerEl, intent) =>
+            openEnquiryModal(triggerEl, null, intent)
+          }
         />
 
         {/* 2. Project Overview / Identity Narrative and optional Key Highlights */}
@@ -259,7 +278,9 @@ export function ProjectPage() {
           showcaseTarget={hasInteriorExterior ? "project-showcase-heading" : "project-featured-showcase-heading"}
           hasAmenities={hasAmenities}
           hasGallery={hasGallery}
-          onOpenEnquiry={openEnquiryModal}
+          onOpenEnquiry={(triggerEl) =>
+            openEnquiryModal(triggerEl, null, "SCHEDULE_VISIT")
+          }
         />
 
         {/* 3. Optional project video; the component returns null when unavailable. */}
@@ -286,7 +307,7 @@ export function ProjectPage() {
           <ConfigurationMediaSection
             configuration={selectedConfiguration}
             onOpenEnquiry={(triggerEl) =>
-              openEnquiryModal(triggerEl, selectedConfiguration.id)
+              openEnquiryModal(triggerEl, selectedConfiguration.id, "SCHEDULE_VISIT")
             }
           />
         )}
@@ -321,9 +342,9 @@ export function ProjectPage() {
             <button
               type="button"
               className="mobile-sticky-enquiry-btn"
-              onClick={(e) => openEnquiryModal(e.currentTarget)}
+              onClick={(e) => openEnquiryModal(e.currentTarget, null, "SCHEDULE_VISIT")}
             >
-              Enquire Now →
+              Schedule a Visit →
             </button>
           </div>
         </aside>
@@ -336,11 +357,14 @@ export function ProjectPage() {
         contextType="project"
         entityName={project.name}
         developerName={project.developer.name}
+        locationName={project.location.name}
+        projectThumbnailUrl={projectThumbnailUrl}
         projectId={project.id}
         developerId={project.developer.id}
         configurationId={modalConfigurationInfo?.id ?? selectedConfiguration?.id}
         configurationInfo={modalConfigurationInfo}
         triggerRef={enquiryTriggerRef}
+        initialIntent={enquiryIntent}
       />
 
       {/* 13. Site Footer */}

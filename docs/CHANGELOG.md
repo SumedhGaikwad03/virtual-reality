@@ -895,6 +895,32 @@
   - Zero modifications to `/rentals`, `/rentals/list-property`, `useSearchChat.ts`, `query-builder.ts`, or backend services.
   - Zero Git commits or pushes.
 
+---
+
+## Phase 63: Contextual Project Enquiry & "Schedule a Visit" Experience
+- **Contextual Enquiry Modal Evolution (`frontend/src/components/common/ContextualEnquiryModal.tsx`)**:
+  - Evolved existing `ContextualEnquiryModal` with discrete `EnquiryIntent = "SCHEDULE_VISIT" | "REQUEST_CALLBACK"` handling without duplicate components.
+  - **Schedule a Visit Flow (2-Step Progressive Disclosure)**:
+    - **Step 1 (Visit Details)**: Eyebrow `PROJECT VISIT`, Title `Schedule a Visit`, Project context card with thumbnail, Project Name, Developer attribution, Location, and Configuration badge; collects Full Name, Mobile Number, optional Email, optional Preferred Visit Date (`min={today}`); Step 1 of 2 indicator with privacy reassurance copy and `Continue →` action.
+    - **Step 2 (Preferences)**: Eyebrow `ALMOST THERE`, Title `When would you prefer to visit?`, 3 selectable time-slot chips (`Morning 10 AM - 1 PM`, `Afternoon 1 PM - 5 PM`, `Evening 5 PM - 8 PM`), optional notes textarea, Step 2 of 2 indicator, `← Back` navigation, and primary `Request Visit →` submission.
+  - **Request a Callback Flow (Streamlined Single-Step)**:
+    - Eyebrow `REQUEST A CALLBACK`, Title `Speak with an Advisor`, project context card, Full Name, Mobile Number, optional Email, optional Message, and `Request Callback →` action.
+  - **Success State**:
+    - Calm confirmation card with `✓ REQUEST RECEIVED` badge, personalized confirmation message, and `[ Continue Exploring ]` dismissal button.
+- **Project Page Contextual Actions (`frontend/src/components/project/ProjectHero.tsx`, `ProjectSubNav.tsx`, `ProjectPage.tsx`)**:
+  - **Project Hero**: Features primary `Schedule a Visit →` and secondary `Request a Callback` action buttons.
+  - **Sticky Sub-Navigation & Explore Nav**: Updated `Enquire` triggers to default to `SCHEDULE_VISIT` intent.
+  - **Mobile Sticky Bar**: Updated primary action to `Schedule a Visit →`.
+  - **Configuration Section**: Floor-plan enquiries seamlessly preserve active `configurationId`.
+- **Architectural Editorial Geometry (`frontend/src/styles/project.css`)**:
+  - **Desktop**: Compact right-side drawer panel (~440px wide) with dimmed backdrop preserving visible project imagery behind.
+  - **Mobile**: Responsive bottom-sheet with safe-area insets (`env(safe-area-inset-bottom)`), touch targets $\ge 44\text{px}$, and `data-lenis-prevent` scroll containment.
+- **Invariants Preserved**:
+  - Zero database schema changes or backend endpoint modifications (structured into existing `createLead` / `POST /api/leads` message field).
+  - Clear UX separation: Tara (property discovery), Let's Connect (generic firm advisory), Schedule a Visit (specific project visit).
+  - Zero Git commits or pushes.
+
+
 
 
 

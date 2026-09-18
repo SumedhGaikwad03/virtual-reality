@@ -361,3 +361,53 @@ Browser / Googlebot Request
 - **JSON-LD Script Break Prevention:** `serializeJsonLd()` escapes `</script>` tags preventing XSS execution in structured data.
 - **Route Collision Protection:** Specific routes (`/projects-in-pune`, `/location/:slug`) are declared before wildcard developer routes (`/:developerSlug`) in `vercel.json` to prevent capture.
 - **Zero API Interception:** `/api/*` routes are handled before SEO rewrites; unregistered API routes return standard API 404 JSON.
+
+---
+
+## 7. Public Enquiry & Advisory Architecture
+
+The platform separates lead capture into three distinct, non-overlapping channels:
+
+```
+                            PUBLIC USER ENTRY POINTS
+                                      │
+     ┌────────────────────────────────┼──────────────────────────────┐
+     │                                │                              │
+     ▼                                ▼                              ▼
+Tara Assistant               "Let's Connect" Popup         Contextual Project Enquiry
+(Property Discovery)         (Human Consultation)          ("Schedule a Visit" / Callback)
+     │                                │                              │
+     ├─ Intent: BUY vs RENT           ├─ 5-second automatic session  ├─ Specific Project/Config
+     ├─ Deterministic Rule Engine     │  timer in PublicShell        ├─ Step 1: Name + Phone + Date
+     ├─ In-memory catalog query       ├─ Desktop/mobile Header CTA   ├─ Step 2: Time Slots + Notes
+     └─ RENT -> /rentals handoff      └─ AdvisoryContext provider    └─ Single-step callback
+     │                                │                              │
+     └────────────────────────────────┼──────────────────────────────┘
+                                      │
+                                      ▼
+                         Inbound Lead Pipeline
+                            (POST /api/leads)
+```
+
+### 7.1 Separation of Concerns
+1. **Tara (`PropertyAssistantOverlay.tsx`)**:
+   - **Role**: Deterministic property discovery assistant.
+   - **Entry**: Persistent global floating launcher (`FloatingSearchControl.tsx`).
+   - **Data**: Read-only public search catalog in browser memory (`search-catalog.service.ts`). Does not submit leads directly.
+2. **Generic Advisory (`AdvisoryPopupModal.tsx`)**:
+   - **Role**: Human advisory consultation and site-level firm inquiry.
+   - **Entry**: 5-second session timer via `PublicShell.tsx` (suppressed after first view via `sessionStorage`) or Header "Contact & Advisory" CTA via `AdvisoryContext`.
+   - **Data**: Generic firm inquiry submitting to `POST /api/leads`.
+3. **Contextual Project Enquiry (`ContextualEnquiryModal.tsx`)**:
+   - **Role**: High-intent project lead generation and visit coordination.
+   - **Entry**: Project page CTAs (*"Schedule a Visit →"*, *"Request a Callback"*, Sticky Nav *"Enquire"*, Mobile Sticky Bar *"Schedule a Visit →"*, Floor-Plan *"Enquire About This Configuration"*).
+   - **Flow**:
+     - `SCHEDULE_VISIT`: 2-step progressive disclosure (Step 1: Name, Phone, optional Email, optional Preferred Visit Date $\ge \text{today}$; Step 2: Selectable Time Slots `Morning`, `Afternoon`, `Evening`, optional notes).
+     - `REQUEST_CALLBACK`: Streamlined single-step callback request.
+   - **Data**: Preserves `projectId`, `developerId`, `configurationId`, and structured scheduling/callback notes into `POST /api/leads`.
+
+### 7.2 Collision Prevention Matrix
+- If a user triggers a Contextual Project Enquiry while Tara is open, `closeAssistant({ reset: false })` immediately closes Tara.
+- If Tara is open or `.contextual-enquiry-backdrop` is present in DOM, the 5-second automatic advisory popup timer is suppressed.
+- If a user opens Tara while the Advisory modal is active, `PublicShell` auto-dismisses the advisory modal to maintain a single-modal viewport.
+

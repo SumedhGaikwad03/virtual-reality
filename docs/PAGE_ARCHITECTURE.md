@@ -72,19 +72,25 @@ The canonical shareable project experience on the platform.
 | Step | Section Component | Narrative Intent / Media Category |
 | :---: | :--- | :--- |
 | **1** | `GlobalHeader` | **IDENTITY** — Displays `[Developer Name]` header attribution. |
-| **2** | `ProjectHero` | **STATIC HERO** — Primary cinematic static image (`category: HERO`). |
-| **3** | `ProjectSubNav` | **NAVIGATION** — Sticky contextual section navigation bar. |
+| **2** | `ProjectHero` | **STATIC HERO** — Primary cinematic static image (`category: HERO`), with primary `Schedule a Visit →` and secondary `Request a Callback` contextual actions. |
+| **3** | `ProjectSubNav` | **NAVIGATION** — Sticky contextual section navigation bar with `Enquire` action opening Schedule a Visit. |
 | **4** | `ProjectOverview` | **WHAT IS THIS PROJECT?** — Narrative description, locality, status, and optional data-backed highlights. |
 | **5** | `ProjectVideoSection` | **OPTIONAL VIDEO** — Project-owned YouTube/Vimeo/MP4 player, omitted when unavailable. |
 | **6** | `ProjectInteriorExteriorCarousel` | **PROJECT SHOWCASE** — Project-owned interior and exterior visual carousel, omitted when unavailable. |
 | **7** | `ProjectAmenities` | **AMENITIES** — Concise project amenities, rendered when amenities exist. |
 | **8** | `ProjectHeroCarousel` | **FEATURED SHOWCASE** — Project-owned `HERO_CAROUSEL` media, omitted when unavailable. |
 | **9** | `ConfigurationSection` | **WHAT CAN I BUY?** — Clean BHK, carpet area, starting price, availability, and `View Details` selection. |
-| **10**| `ConfigurationMediaSection` | **CONFIGURATION DETAILS** — Selected unit floor plans and configuration-owned media. |
+| **10**| `ConfigurationMediaSection` | **CONFIGURATION DETAILS** — Selected unit floor plans and configuration-owned media with `Enquire for [Config] →` action. |
 | **11**| `ProjectLocation` | **WHERE IS IT?** — Locality address, Google Maps link, and project-owned `LOCATION` media image. |
 | **12**| `TapToExploreGallery` | **PROJECT GALLERY** — Lightbox gallery for active project-context `IMAGE` media. |
 | **13**| `ProjectDeveloper` | **DEVELOPER** — Developer attribution before the final conversion step. |
 | **14**| `LeadSection` | **INQUIRY** — Pre-bound project & configuration lead form; official footer follows. |
+
+### Contextual Project Enquiry Modal
+The project page integrates `ContextualEnquiryModal.tsx` as a right-side compact drawer on desktop (~440px wide) and bottom-sheet on mobile. It supports:
+- **`SCHEDULE_VISIT`**: 2-step progressive disclosure. Step 1 collects Name, Phone, optional Email, and optional Preferred Visit Date ($\ge \text{today}$) with project thumbnail and configuration badges. Step 2 presents selectable time-slot chips (`Morning`, `Afternoon`, `Evening`) and optional message notes.
+- **`REQUEST_CALLBACK`**: Streamlined single-step callback request.
+- Submits structured lead context into `POST /api/leads` while preserving active `configurationId`.
 
 `ProjectOverview` renders Key Highlights only when the project has persisted highlight records; it does not create a placeholder section. Configuration media is returned under `project.configurations[].media` and is not included in the top-level `project.media` relation.
 
@@ -101,6 +107,7 @@ Homepage developer discovery uses the direct `DEVELOPER`-context `DEVELOPER_BANN
 Project pages include an `Explore this project` anchor navigation area after the overview. It exposes only destinations whose content exists (plus Enquire), uses the existing section IDs, and collapses from a desktop grid to two columns and then one column on narrow screens. Public developer official website links are intentionally omitted; the URL remains available to authenticated admin workflows.
 
 Authenticated configuration administration remains project-scoped: configuration list and edit pages preserve the owning project context, use primary save/create actions, and use secondary Back and Manage Configuration Media actions. The public configuration selection contract is unchanged.
+
 
 ---
 
