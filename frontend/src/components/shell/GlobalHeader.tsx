@@ -16,15 +16,15 @@
 
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAssistant } from "../../context/AssistantContext";
 import { useHeader } from "../../context/HeaderContext";
-import { scrollToElement, scrollToTop } from "../../scroll/scrollTo";
+import { useAdvisory } from "../../context/AdvisoryContext";
+import { scrollToTop } from "../../scroll/scrollTo";
 
 export function GlobalHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { openAssistant } = useAssistant();
   const { developerName } = useHeader();
+  const { openAdvisory } = useAdvisory();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -41,11 +41,6 @@ export function GlobalHeader() {
 
   const toggleMobileMenu = () => setMobileMenuOpen((prev) => !prev);
   const closeMobileMenu = () => setMobileMenuOpen(false);
-
-  const handleAssistantClick = () => {
-    closeMobileMenu();
-    openAssistant();
-  };
 
   const isFirmPage = location.pathname === "/" || location.pathname === "/firm";
 
@@ -66,7 +61,7 @@ export function GlobalHeader() {
     if (isFirmPage) {
       const element = document.getElementById("about");
       if (element) {
-        scrollToElement("about");
+        element.scrollIntoView({ behavior: "smooth" });
         window.history.replaceState(null, "", `${location.pathname}#about`);
         return;
       }
@@ -76,15 +71,7 @@ export function GlobalHeader() {
 
   const handleContactAdvisoryClick = () => {
     closeMobileMenu();
-    if (isFirmPage) {
-      const element = document.getElementById("contact");
-      if (element) {
-        scrollToElement("contact");
-        window.history.replaceState(null, "", `${location.pathname}#contact`);
-        return;
-      }
-    }
-    navigate("/firm#contact");
+    openAdvisory();
   };
 
   const headerTitle = developerName || "Virtual Reality";
@@ -124,10 +111,7 @@ export function GlobalHeader() {
               type="button"
               onClick={handleHomeClick}
               className={`nav-link-btn ${
-                isFirmPage &&
-                !location.hash &&
-                location.pathname !== "/privacy-policy" &&
-                !location.pathname.startsWith("/rentals")
+                isFirmPage && !location.hash && location.pathname !== "/privacy-policy"
                   ? "active"
                   : ""
               }`}
@@ -141,16 +125,6 @@ export function GlobalHeader() {
             >
               About
             </button>
-            <Link
-              to="/rentals"
-              className={`nav-link ${
-                location.pathname === "/rentals" || location.pathname === "/rentals/list-property"
-                  ? "active"
-                  : ""
-              }`}
-            >
-              Rentals
-            </Link>
             <Link
               to="/privacy-policy"
               className={`nav-link ${location.pathname === "/privacy-policy" ? "active" : ""}`}
@@ -170,15 +144,6 @@ export function GlobalHeader() {
               aria-label="Contact and Advisory Consultation"
             >
               Contact & Advisory
-            </button>
-
-            <button
-              type="button"
-              onClick={handleAssistantClick}
-              className="global-assistant-btn"
-              aria-label="Explore properties with Tara"
-            >
-              ✦ Tara
             </button>
 
             <button
@@ -220,17 +185,6 @@ export function GlobalHeader() {
               About Firm
             </button>
             <Link
-              to="/rentals"
-              onClick={closeMobileMenu}
-              className={`mobile-nav-link ${
-                location.pathname === "/rentals" || location.pathname === "/rentals/list-property"
-                  ? "active"
-                  : ""
-              }`}
-            >
-              Rental Desk
-            </Link>
-            <Link
               to="/privacy-policy"
               onClick={closeMobileMenu}
               className={`mobile-nav-link ${location.pathname === "/privacy-policy" ? "active" : ""}`}
@@ -243,14 +197,6 @@ export function GlobalHeader() {
               className="mobile-nav-link-btn mobile-nav-highlight"
             >
               Contact & Advisory
-            </button>
-            <button
-              type="button"
-              onClick={handleAssistantClick}
-              className="mobile-assistant-trigger-btn"
-              aria-label="Explore properties with Tara"
-            >
-              ✦ Tara
             </button>
           </nav>
         </div>

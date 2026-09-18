@@ -16,7 +16,6 @@
 
 import { FormEvent, useState } from "react";
 import { createLead, LeadApiError } from "../../api/lead";
-import { useAssistant } from "../../context/AssistantContext";
 import type { Site } from "../../types/site";
 
 type ContactAdvisorySectionProps = {
@@ -38,7 +37,6 @@ const initialForm: AdvisoryFormState = {
 };
 
 export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
-  const { openAssistant } = useAssistant();
   const [form, setForm] = useState<AdvisoryFormState>(initialForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -137,34 +135,14 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
            ==================================================================== */}
         <div id="advisory" className="advisory-card">
           <div className="advisory-card-header">
-            <span className="card-badge-eyebrow">CONSULTATION & DISCOVERY</span>
+            <span className="card-badge-eyebrow">CONSULTATION & ADVISORY</span>
             <h3 className="card-heading">Property Advisory</h3>
             <p className="card-description">
-              Get bespoke architectural recommendations or explore prime inventory with Tara, our property discovery advisor.
+              Request a bespoke architectural consultation and verified property guidance with our senior advisory team.
             </p>
           </div>
 
-          {/* Path B: Fast Option-Based Discovery Entry */}
-          <div className="tara-discovery-callout">
-            <div className="tara-callout-text">
-              <strong>Prefer guided discovery?</strong>
-              <span>Explore matching Pune residences step by step with Tara.</span>
-            </div>
-            <button
-              type="button"
-              onClick={openAssistant}
-              className="tara-launch-btn"
-              aria-label="Explore properties with Tara"
-            >
-              ✦ Explore with Tara →
-            </button>
-          </div>
-
-          <div className="advisory-divider">
-            <span>or request a personalized consultation</span>
-          </div>
-
-          {/* Path A: Human Advisory Consultation Request Form */}
+          {/* Human Advisory Consultation Request Form */}
           {submitted && (
             <div className="advisory-success-banner" role="status">
               <strong>Consultation Request Received</strong>

@@ -52,9 +52,9 @@ export function PropertyAssistantOverlay() {
             type="button"
             onClick={() => closeAssistant()}
             className="assistant-overlay-close-btn"
-            aria-label="Close Tara assistant"
+            aria-label="Close Tara advisor"
           >
-            ✕
+            <span aria-hidden="true">✕</span>
           </button>
         </div>
 

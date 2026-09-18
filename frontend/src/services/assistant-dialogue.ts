@@ -21,20 +21,27 @@ export type SelectionContext = {
 };
 
 /**
- * Initial greeting for Tara on search session start.
+ * Initial greeting for Tara on fresh session start prompting intent (Buy vs Rent).
+ */
+export function getTaraIntentOpeningMessage(): string {
+  return "Hello, I'm Tara. What are you looking to do?";
+}
+
+/**
+ * Initial greeting for Tara on property search start.
  * Kept concise to avoid verbose paragraphs before the first choice.
  */
 export function getTaraInitialMessage(firstRule: QueryRule | null): string {
   if (!firstRule) {
-    return "Hello, I'm Tara.\nLet's look for your home.\n\nWhat are you looking for?";
+    return "What kind of home are you looking for?";
   }
 
   // First rule is typically BHK
   if (firstRule.id === "bhk") {
-    return "Hello, I'm Tara.\nLet's look for your home.\n\nWhat are you looking for?";
+    return "What kind of home are you looking for?";
   }
 
-  return `Hello, I'm Tara.\nLet's look for your home.\n\n${firstRule.question}`;
+  return firstRule.question;
 }
 
 /**

@@ -18,7 +18,7 @@ import { FloatingSearchControl } from "../components/home/FloatingSearchControl"
 import { useSite } from "../components/home/hooks/useSite";
 import { SearchAssistant } from "../components/search/SearchAssistant";
 import { SearchResults } from "../components/search/SearchResults";
-import { useAssistant } from "../context/AssistantContext";
+import { useSearchChat } from "../hooks/useSearchChat";
 
 const defaultSiteFallback = {
   name: "Virtual Reality",
@@ -36,7 +36,7 @@ const defaultSiteFallback = {
 };
 
 export function SearchPage() {
-  const { searchChat } = useAssistant();
+  const searchChat = useSearchChat("BUY");
   const { site } = useSite();
 
   const matches = searchChat.state ? searchChat.state.matches : [];

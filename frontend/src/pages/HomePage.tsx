@@ -4,7 +4,7 @@
  *
  * FLOW:
  * Homepage Journey Flow:
- * AtmosphericHero -> ExploreDevelopers -> FeaturedProjects -> HomeGallery -> ConversationalSearchEntry -> FirmOverview -> ContactAdvisorySection -> AboutFooter.
+ * AtmosphericHero -> ExploreDevelopers -> FeaturedProjects -> HomeGallery -> FirmOverview -> ContactAdvisorySection -> AboutFooter.
  *
  * RESPONSIBILITY:
  * Coordinates homepage state, executes destination-owned hash scrolling once DOM mounts,
@@ -17,7 +17,6 @@ import { useLocation } from "react-router-dom";
 import { AboutFooter } from "../components/home/AboutFooter";
 import { AtmosphericHero } from "../components/home/AtmosphericHero";
 import { ContactAdvisorySection } from "../components/home/ContactAdvisorySection";
-import { ConversationalSearchEntry } from "../components/home/ConversationalSearchEntry";
 import { ExploreDevelopers } from "../components/home/ExploreDevelopers";
 import { FeaturedProjects } from "../components/home/FeaturedProjects";
 import { FirmOverview } from "../components/home/FirmOverview";
@@ -93,16 +92,13 @@ export function HomePage() {
       {/* 5. FIRM GALLERY / MOMENTS */}
       <HomeGallery media={site.homeMedia} />
 
-      {/* 6. CONVERSATIONAL SEARCH */}
-      <ConversationalSearchEntry />
-
-      {/* 7. FIRM OVERVIEW & FOUNDER IDENTITY */}
+      {/* 6. FIRM OVERVIEW & FOUNDER IDENTITY */}
       <FirmOverview site={site} />
 
-      {/* 8. CONNECT & ADVISORY SECTION */}
+      {/* 7. CONNECT & ADVISORY SECTION */}
       <ContactAdvisorySection site={site} />
 
-      {/* 9. ABOUT / COMPANY / FOOTER */}
+      {/* 8. ABOUT / COMPANY / FOOTER */}
       <AboutFooter site={site} />
     </main>
   );

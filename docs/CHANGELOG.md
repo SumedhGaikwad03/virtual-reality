@@ -762,4 +762,143 @@
   - Zero cascading writes in database tables.
   - No disruption to Leads, Rentals, or admin workflows.
 
+---
+
+## Phase 56: Tara Refactor Phase 1 — Redundant Entry Point Removal
+- **Global Header Streamlining (`frontend/src/components/shell/GlobalHeader.tsx`, `layout.css`)**:
+  - Removed desktop `✦ Tara` button (`.global-assistant-btn`) and mobile drawer trigger (`.mobile-assistant-trigger-btn`).
+  - Removed unused `useAssistant` imports and event handlers while preserving all navigation links, Contact & Advisory CTA, Rentals, and mobile menu behaviors.
+- **Homepage Editorial Focus (`frontend/src/components/home/AtmosphericHero.tsx`, `frontend/src/components/home/TrustStatisticsStrip.tsx`, `frontend/src/components/home/ContactAdvisorySection.tsx`, `home.css`)**:
+  - Removed `.hero-primary-cta` ("✦ Explore with Tara") and the 4 quick preference discovery chips from `AtmosphericHero.tsx`.
+  - Removed dedicated conversational search entry card (`ConversationalSearchEntry.tsx`) from `HomePage.tsx` and removed the orphaned file.
+  - Converted `TrustStatisticsStrip.tsx` to a purely static 4-pillar trust and metrics section by removing interactive "Explore with Tara →" action button.
+  - Removed `.tara-discovery-callout` and `.advisory-divider` from `ContactAdvisorySection.tsx`, focusing the section on personalized human advisory and direct contact channels.
+  - Cleaned up corresponding orphaned CSS classes from `home.css` and `layout.css` without breaking surrounding layouts.
+- **Persistent Global Launcher Intact (`frontend/src/components/home/FloatingSearchControl.tsx`)**:
+  - Retained `FloatingSearchControl` as the single primary global interactive entry point to launch `PropertyAssistantOverlay.tsx` across all public pages.
+  - Canonical full-page property discovery route `/search` (`SearchPage.tsx`, `SearchAssistant.tsx`, `SearchResults.tsx`) and footer link to `/search` remain 100% operational.
+## Phase 57: Tara Refactor Phase 2 — Premium Popup / Overlay Redesign
+- **Assistant Header Hierarchy Refinement (`frontend/src/components/search/AssistantHeader.tsx`)**:
+  - Replaced raw inline title with an editorial architectural header hierarchy:
+    - Eyebrow: `PROPERTY DISCOVERY ADVISOR` (brass `#A99168`, uppercase letter-spaced) alongside the small visual identity token (`TaraAvatar`).
+    - Title: `Tara` (editorial serif typography `Playfair Display`, Georgia).
+    - Subline: `"Find a home that fits what you're looking for."` in muted architectural slate (`#68706A`).
+- **Overlay & Mobile Sheet Presentation (`frontend/src/components/search/PropertyAssistantOverlay.tsx`, `search.css`)**:
+  - Desktop: Bottom-right card layout with refined dimensions (`max-width: 32rem`, `max-height: min(44rem, calc(100vh - 3rem))`), deep forest shadow (`rgba(17, 40, 33, 0.24)`), crisp border (`#E6E6E2`), and warm ivory/white surfaces (`#FFFFFF`, `#F6F6F3`).
+  - Mobile: Bottom-sheet presentation (`max-height: 90vh`), top rounded corners (`1rem 1rem 0 0`), safe-area-inset padding, and touch targets $\ge 44\text{px}$.
+  - Quiet, accessible close button `✕` with focus ring and clear aria label (`"Close Tara advisor"`).
+  - Preserved backdrop dismiss, Escape key dismiss, body scroll lock, and `data-lenis-prevent`.
+- **Architectural UI & Design System Alignment (`frontend/src/styles/search.css`)**:
+  - Applied brand color tokens: Deep Forest `#18382E` / `#112821`, Brass `#A99168`, Neutral borders `#E6E6E2` / `#D9D9D4`, Charcoal `#202622`, Muted slate `#68706A`, and Warm ivory `#F6F6F3` / `#FAFAF8`.
+  - Upgraded Tara & user conversation bubbles: Assistant messages render in warm neutral cards with subtle border and crisp typography; User selections render in deep forest `#18382E` pills.
+  - Refined Query Summary: Clear `"LOOKING FOR"` header with discrete removable constraint chips.
+  - Refined Rule Option buttons: Premium minimal cards with subtle hover elevation (`-1px`), brass chevron arrows, and active state feedback.
+  - Refined Compact Project Cards: Architectural thumbnail monogram in deep forest gradient, BHK pill badges, starting price, project status, and deep-link navigation.
+  - Refined Empty State: Calm, helpful filter-loosening recovery actions with left brass border accent.
+- **Invariants Preserved**:
+  - Zero modifications to backend APIs, database schema, or search catalog service.
+  - Zero modifications to `useSearchChat.ts`, `query-builder.ts`, or `assistant-dialogue.ts`.
+  - Full-page `/search` and shared assistant state remain 100% operational.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 58: Tara Refactor Phase 3 — Buy vs Rent Entry Decision
+- **Deterministic Intent Entry Step (`frontend/src/services/assistant-dialogue.ts`, `frontend/src/hooks/useSearchChat.ts`)**:
+  - Added discrete `DiscoveryIntent = "BUY" | "RENT" | null` state tracking to `useSearchChat.ts`.
+  - When Tara opens in a fresh session (`intent === null`), Tara opens with the introductory prompt:
+    - `"Hello, I'm Tara. What are you looking to do?"` (`getTaraIntentOpeningMessage()`).
+  - Added `selectIntent(intent: "BUY" | "RENT")` action.
+- **Intent Options Presentation (`frontend/src/components/search/SearchAssistant.tsx`, `frontend/src/styles/search.css`)**:
+  - Implemented initial intent selection screen rendering two discrete choices:
+    - `[ Buy a Home ]` — "Find your next home to purchase" (with right arrow indicator).
+    - `[ Rent a Home ]` — "Explore verified rental desk listings" (with right arrow indicator).
+  - Styled with architectural design system tokens: Warm Ivory surface `#FFFFFF`, Soft sand hover `#F6F6F3`, Deep Forest title `#18382E`, Muted Slate subline `#68706A`, Brass arrow `#A99168`, and Stone borders `#E6E6E2`.
+- **Clean Behavioral Branching**:
+  - **BUY PATH (`handleSelectBuy`)**: Calls `selectIntent("BUY")`, immediately transitioning into the existing deterministic property search flow (*"What kind of home are you looking for?"* followed by BHK options $\rightarrow$ Location $\rightarrow$ Budget $\rightarrow$ Status $\rightarrow$ Results).
+  - **RENT PATH (`handleSelectRent`)**: Executes `closeAssistant({ reset: true })` and triggers React Router `navigate("/rentals")` directly to the public Rental Desk. Tara never searches rental inventory or invokes rental backend services.
+- **Session Reset & Rollback Ergonomics**:
+  - Clicking "Start over" / `reset()` or closing/re-opening the overlay resets `intent` back to `null`, presenting the fresh intent choice.
+  - Clicking "← Previous" at the first question of the property search flow rolls back to the initial `"What are you looking to do?"` intent screen without losing catalog state.
+- **Invariants Preserved**:
+  - Zero modifications to `query-builder.ts`, `search-catalog.service.ts`, backend APIs, database schema, or rental endpoints.
+  - Zero LLMs, AI APIs, or free-text search.
+  - Public `/search` page and `/rentals` desk operate cleanly with zero conflicts.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 59: Public Navigation Bar Contextual Brand Name Layout Robustness Fix
+- **Root Cause Resolution (`frontend/src/styles/layout.css`)**:
+  - Eliminated arbitrary, premature desktop `max-width: 20rem` (320px) and mobile `max-width: 11.5rem` (184px) constraints on `.global-brand-name`.
+  - Configured flexible, content-driven layout constraints:
+    - `.global-brand-link`: `flex: 0 1 auto; max-width: 100%; min-width: 0;`
+    - `.global-brand-name`: `max-width: 100%; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;`
+    - `.global-header-right`: `flex-shrink: 0;` (protects navigation links and action buttons from being squeezed).
+- **Graceful Multi-Viewport Responsive Behavior**:
+  - **Desktop ($\ge 1024\text{px}$)**: Long developer and project names (e.g., *"Mahalaxmi Kohinoor Developers Private Limited"*, *"Godrej Properties Premium Residences"*) now naturally consume all available header space (~550px–750px) without premature clipping.
+  - **Mobile ($\le 768\text{px}$)**: Name flexes up to the exact boundary of the hamburger toggle, truncating with clean ellipsis only when required by narrow physical viewport limits (320px–430px).
+  - **Zero Layout Collisions**: Guaranteed zero horizontal page overflow, no button overlaps, and full title visibility via native `title={headerTitle}` attribute.
+- **Invariants Preserved**:
+  - Zero database or data modifications.
+  - Transparent hero scrim and scrolled header states remain 100% intact.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 60: Automatic "Let's Connect" Advisory Popup Implementation
+- **Centralized Public Shell Lifecycle (`frontend/src/components/shell/PublicShell.tsx`)**:
+  - Implemented exactly one 5-second `setTimeout` timer per visitor session attached to the persistent `PublicShell` wrapper.
+  - Enforced session-level suppression via `sessionStorage.getItem("vr_advisory_popup_shown")`. Once shown or dismissed, the popup does not repeat across route transitions (`/` $\rightarrow$ `/search` $\rightarrow$ `/rentals` $\rightarrow$ `/:devSlug`).
+  - Implemented automatic non-conflict coordination: suppressed if Tara (`isAssistantOpen`) or a contextual enquiry modal is active at the 5-second mark, and auto-dismisses if Tara is subsequently launched.
+- **Concierge Invitation Modal (`frontend/src/components/common/AdvisoryPopupModal.tsx`, `advisory-modal.css`)**:
+  - **Stage 1 (Invitation)**: Warm, compact card (*"LET'S CONNECT"*, *"A more personal way to find the right home"*, and *"Tell us what you're looking for..."*). Includes primary `[ Let's Connect → ]` action, direct reach links (`Call {phone}`, `WhatsApp`), and a "Maybe later" dismissal.
+  - **Stage 2 (Enquiry Form)**: Clicking `[ Let's Connect → ]` transitions within the same modal to the lead inquiry form (Name, Phone, optional Email, optional Message/Preferences).
+  - **Stage 3 (Confirmation)**: Submits through the existing lead pipeline (`createLead` $\rightarrow$ `POST /api/leads`) and presents clear *"✓ REQUEST RECEIVED"* confirmation with a `[ Done ]` close button.
+- **Accessibility & Responsive Geometry**:
+  - `role="dialog"`, `aria-modal="true"`, `aria-labelledby="advisory-popup-title"`, focus trapping, Escape key dismiss, backdrop click dismiss, touch targets $\ge 44\text{px}$, and `data-lenis-prevent`.
+  - Max-width 31rem on desktop; bottom-sheet presentation on mobile ($\le 640\text{px}$) with safe-area padding.
+- **Invariants Preserved**:
+  - Completely separate from Tara (no property search, no catalog query, no LLMs).
+  - No network requests on popup trigger; network activity occurs solely upon form submission.
+  - Zero database or backend changes.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 61: Advisory Popup CTA Integration & Route Scope Hardening
+- **Global Header CTA Unification (`frontend/src/context/AdvisoryContext.tsx`, `frontend/src/components/shell/GlobalHeader.tsx`)**:
+  - Created lightweight `AdvisoryProvider` context (`isAdvisoryOpen`, `openAdvisory`, `closeAdvisory`).
+  - Wired desktop and mobile "Contact & Advisory" header buttons to `openAdvisory()`, triggering the unified `AdvisoryPopupModal` concierge invitation experience directly from any public page.
+- **Route-Scoped Auto-Trigger Exclusions (`frontend/src/components/shell/PublicShell.tsx`)**:
+  - Explicitly excluded owner submission page (`/rentals/list-property`) from the 5-second automatic advisory popup timer to prevent misaligned consumer prompts on owner-focused workflows.
+  - General consumer routes (`/`, `/firm`, `/search`, `/rentals`, `/:developerSlug`, `/:developerSlug/:locationSlug/:projectSlug`, `/privacy-policy`) remain enabled with session-level suppression.
+- **Contextual Inquiries Preserved**:
+  - Project and Developer pages continue using `ContextualEnquiryModal` for property-specific lead attribution (`projectId`, `developerId`, `configurationId`, configuration badges).
+- **Invariants Preserved**:
+  - Zero database or backend modifications.
+  - Zero modifications to Tara discovery rules, catalog queries, or rental logic.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 62: Removal of Rentals Link from Public Global Navigation
+- **Public Navigation Streamlining (`frontend/src/components/shell/GlobalHeader.tsx`)**:
+  - Removed the `Rentals` navigation link from the desktop primary navigation bar (`.desktop-primary-nav`).
+  - Removed the `Rental Desk` navigation link from the mobile navigation drawer (`.mobile-nav-links`).
+  - Public global navigation now displays a focused 3-item link set: `Home`, `About`, and `Privacy Policy`, alongside the `Contact & Advisory` action button.
+- **Rental Functionality & Direct Routes Preserved**:
+  - Public Seeker Rental Desk (`/rentals`) and Owner Property Desk (`/rentals/list-property`) remain 100% active, accessible, and operational via direct URL navigation and contextual links.
+  - Tara's `RENT A HOME` intent choice continues to navigate directly to `/rentals` seamlessly.
+  - Backend rental APIs (`/api/rentals/enquiries`, `/api/rentals/properties`), Prisma schema, and admin rental workspaces remain completely untouched.
+- **Invariants Preserved**:
+  - Zero modifications to `/rentals`, `/rentals/list-property`, `useSearchChat.ts`, `query-builder.ts`, or backend services.
+  - Zero Git commits or pushes.
+
+
+
+
+
+
+
 

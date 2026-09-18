@@ -11,8 +11,6 @@
  * with refined typography and warm sand separators.
  */
 
-import { useAssistant } from "../../context/AssistantContext";
-
 type TrustStatisticsStripProps = {
   developerCount?: number;
   projectCount?: number;
@@ -22,8 +20,6 @@ export function TrustStatisticsStrip({
   developerCount = 0,
   projectCount = 0,
 }: TrustStatisticsStripProps) {
-  const { openAssistant } = useAssistant();
-
   const devDisplay = developerCount > 0 ? `${developerCount}+` : "Top";
   const projDisplay = projectCount > 0 ? `${projectCount}+` : "Curated";
 
@@ -60,18 +56,11 @@ export function TrustStatisticsStrip({
 
         <div className="trust-stat-divider" aria-hidden="true" />
 
-        <div className="trust-stat-item trust-stat-item--action">
+        <div className="trust-stat-item">
           <span className="trust-stat-number trust-stat-number--sparkle">✦</span>
           <div className="trust-stat-meta">
-            <strong className="trust-stat-label">Property Discovery</strong>
-            <button
-              type="button"
-              className="trust-stat-action-btn"
-              onClick={openAssistant}
-              aria-label="Explore properties with Tara"
-            >
-              Explore with Tara →
-            </button>
+            <strong className="trust-stat-label">Bespoke Advisory</strong>
+            <span className="trust-stat-desc">Direct consultation without sales pressure</span>
           </div>
         </div>
       </div>

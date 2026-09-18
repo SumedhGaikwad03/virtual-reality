@@ -1,0 +1,381 @@
+/* ==========================================================================
+   Advisory "Let's Connect" Proactive Popup Modal Styles
+   ========================================================================== */
+
+.advisory-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background-color: rgba(17, 24, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3.5vw, 2.5rem);
+  box-sizing: border-box;
+  animation: advisoryPopupFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.advisory-popup-card {
+  position: relative;
+  width: 100%;
+  max-width: 31rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 8px;
+  padding: clamp(1.75rem, 3.5vw, 2.25rem);
+  box-shadow: 0 20px 48px rgba(17, 40, 33, 0.22);
+  color: var(--color-text, #202622);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.advisory-popup-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--color-surface-muted, #F6F6F3);
+  border: 1px solid var(--color-border, #E6E6E2);
+  color: var(--color-text-muted, #68706A);
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  z-index: 2;
+}
+
+.advisory-popup-close-btn:hover {
+  color: var(--color-text, #202622);
+  background-color: #EBEBE7;
+  border-color: var(--color-border-strong, #D9D9D4);
+}
+
+.advisory-popup-close-btn:focus-visible {
+  outline: 2px solid var(--color-forest, #18382E);
+  outline-offset: 2px;
+}
+
+/* Header typography */
+.advisory-popup-header-block {
+  margin-bottom: 1.25rem;
+  padding-right: 2rem;
+}
+
+.advisory-popup-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-brass, #A99168);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.advisory-popup-title {
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  color: var(--color-forest-dark, #112821);
+  margin: 0 0 0.45rem 0;
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.advisory-popup-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-text-muted, #68706A);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Primary Action */
+.advisory-popup-primary-action {
+  margin-top: 1.25rem;
+}
+
+.advisory-popup-primary-btn {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.85rem 1.25rem;
+  background-color: var(--color-forest, #18382E);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 2px 6px rgba(24, 56, 46, 0.15);
+}
+
+.advisory-popup-primary-btn:hover:not(:disabled) {
+  background-color: var(--color-forest-dark, #112821);
+  transform: translateY(-1px);
+}
+
+.advisory-popup-primary-btn:focus-visible {
+  outline: 2px solid var(--color-forest, #18382E);
+  outline-offset: 2px;
+}
+
+.advisory-popup-primary-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Direct Reach Channels */
+.advisory-popup-direct-reach {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border, #E6E6E2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.advisory-popup-direct-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #68706A);
+}
+
+.advisory-popup-direct-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.advisory-popup-channel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  min-height: 44px;
+  background-color: var(--color-surface-muted, #F6F6F3);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-forest, #18382E);
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.advisory-popup-channel-link:hover {
+  background-color: #EBEBE7;
+  border-color: var(--color-border-strong, #D9D9D4);
+  color: var(--color-forest-dark, #112821);
+}
+
+.advisory-popup-channel-link:focus-visible {
+  outline: 2px solid var(--color-forest, #18382E);
+  outline-offset: 2px;
+}
+
+.channel-icon {
+  font-size: 0.95rem;
+}
+
+.advisory-popup-dismiss-row {
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+.advisory-popup-maybe-later-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted, #68706A);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.5rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.advisory-popup-maybe-later-btn:hover {
+  color: var(--color-text, #202622);
+}
+
+.advisory-popup-maybe-later-btn:focus-visible {
+  outline: 2px solid var(--color-forest, #18382E);
+  outline-offset: 2px;
+}
+
+/* Form View */
+.advisory-popup-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.advisory-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.85rem;
+}
+
+.advisory-form-field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text, #202622);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.required-star {
+  color: #B86F55;
+}
+
+.optional-tag {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-text-muted, #68706A);
+}
+
+.advisory-form-input,
+.advisory-form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  background-color: #FFFFFF;
+  color: var(--color-text, #202622);
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.advisory-form-input:focus,
+.advisory-form-textarea:focus {
+  outline: none;
+  border-color: var(--color-forest, #18382E);
+  box-shadow: 0 0 0 3px rgba(24, 56, 46, 0.12);
+}
+
+.advisory-form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.advisory-popup-back-btn {
+  background: none;
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #68706A);
+  font-family: inherit;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.advisory-popup-back-btn:hover {
+  background-color: var(--color-surface-muted, #F6F6F3);
+  color: var(--color-text, #202622);
+}
+
+.advisory-popup-back-btn:focus-visible {
+  outline: 2px solid var(--color-forest, #18382E);
+  outline-offset: 2px;
+}
+
+.advisory-popup-error {
+  background-color: #FBEBE8;
+  border: 1px solid #EAC8C1;
+  color: #963826;
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  margin-bottom: 0.85rem;
+}
+
+/* Success View */
+.advisory-popup-success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.advisory-popup-success-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-forest, #18382E);
+  background-color: #E6ECE8;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.advisory-popup-success-container .advisory-popup-title {
+  margin-bottom: 0.5rem;
+}
+
+.advisory-popup-success-container .advisory-popup-subtitle {
+  margin-bottom: 1.5rem;
+}
+
+@keyframes advisoryPopupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile responsive constraints */
+@media (max-width: 640px) {
+  .advisory-popup-backdrop {
+    padding: 0.75rem;
+    align-items: flex-end;
+  }
+
+  .advisory-popup-card {
+    border-radius: 12px 12px 0 0;
+    max-height: 88vh;
+    padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .advisory-popup-direct-links {
+    flex-direction: column;
+  }
+
+  .advisory-popup-channel-link {
+    width: 100%;
+    justify-content: center;
+  }
+}

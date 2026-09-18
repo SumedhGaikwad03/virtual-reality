@@ -127,8 +127,8 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 
 ## Locked Public Pages & Section Narratives
 
-1. **Homepage (`/`)**: `AtmosphericHero` $\rightarrow$ `ExploreDevelopers` $\rightarrow$ `FeaturedProjects` $\rightarrow$ `ConversationalSearchEntry` $\rightarrow$ `FirmOverview` $\rightarrow$ `ContactSection` $\rightarrow$ `AboutFooter`.
-2. **Search Page (`/search`)**: `SearchAssistant` (Tara advisor identity & avatar, messages, context trail, rule options) $\rightarrow$ `SearchResults` (`PropertyResultCard`).
+1. **Homepage (`/`)**: `AtmosphericHero` $\rightarrow$ `TrustStatisticsStrip` $\rightarrow$ `FeaturedProjects` $\rightarrow$ `ExploreDevelopers` $\rightarrow$ `HomeGallery` $\rightarrow$ `FirmOverview` $\rightarrow$ `ContactAdvisorySection` $\rightarrow$ `AboutFooter`.
+2. **Search Page (`/search`)**: `SearchAssistant` (Tara advisor identity & avatar, messages, context trail, rule options) $\rightarrow$ `SearchResults` (`PropertyResultCard`). Canonical full-page property search destination.
 3. **Developer Page (`/:developerSlug`)**: `DeveloperHero` $\rightarrow$ `DeveloperIntro` $\rightarrow$ `DeveloperProjects` $\rightarrow$ `DeveloperLeadSection` $\rightarrow$ `AboutFooter`.
 4. **Project Page (`/:developerSlug/:locationSlug/:projectSlug`)**:
    - `ProjectHero` (Static Top Hero)
@@ -224,7 +224,25 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 
 ---
 
+### Public Discovery & Tara Architecture Refactor (Phases 1, 2 & 3)
+  - **Primary Entry Point (Phase 1)**: The global persistent floating control (`FloatingSearchControl.tsx`) is now the sole interactive entry point for launching the Tara property discovery overlay (`PropertyAssistantOverlay.tsx`).
+  - **Navbar Streamlining (Phase 1)**: Removed the `✦ Tara` action button from desktop header actions and the mobile drawer (`GlobalHeader.tsx`), ensuring a clean navigation hierarchy focusing on primary firm pages and Contact & Advisory.
+  - **Homepage Focus (Phase 1)**: Removed redundant conversational CTA card (`ConversationalSearchEntry.tsx`), hero buttons and quick preference chips (`AtmosphericHero.tsx`), trust strip action buttons (`TrustStatisticsStrip.tsx`), and advisory callouts (`ContactAdvisorySection.tsx`), allowing the homepage to present an uninterrupted architectural journey.
+  - **Premium Editorial Overlay UI (Phase 2 & 2.1)**: Redesigned the Tara popup and mobile bottom-sheet with brand architectural design system tokens (`#18382E`, `#A99168`, `#202622`, `#F6F6F3`, `#E6E6E2`), Playfair serif headers, clean message bubbles, refined option cards, responsive touch targets ($\ge 44\text{px}$), and smart compact project cards for 1-2 matches.
+  - **Buy vs Rent Intent Entry (Phase 3)**: When a session begins, Tara prompts `"Hello, I'm Tara. What are you looking to do?"` with two discrete choices: `[ Buy a Home ]` and `[ Rent a Home ]`. Selecting **Buy** transitions into the existing deterministic property search sequence. Selecting **Rent** immediately navigates via React Router to `/rentals` and closes the overlay without querying rental inventory or invoking backend rental services.
+  - **Canonical Search Route**: `/search` remains the dedicated, full-page property discovery destination rendering `SearchAssistant` and `SearchResults`.
+  - **Navigation Bar Layout Robustness (Phase 59)**: Replaced artificial fixed widths (`max-width: 20rem` / `11.5rem`) on `.global-brand-name` with flexible flexbox allocation (`flex: 0 1 auto; min-width: 0; max-width: 100%`) alongside protected right controls (`flex-shrink: 0`), allowing arbitrarily long developer and project names to render gracefully without premature ellipsis.
+  - **Automatic "Let's Connect" Advisory Popup (Phases 60 & 61)**: Proactive, non-intrusive concierge advisory invitation (`AdvisoryPopupModal.tsx`) mounting in `PublicShell.tsx` on a 5-second session timer with `sessionStorage` suppression (explicitly excluding `/rentals/list-property`). Desktop and mobile "Contact & Advisory" header buttons (`GlobalHeader.tsx`) trigger the same experience via `AdvisoryContext`. Clicking `[ Let's Connect → ]` smoothly reveals the inquiry form submitting to `createLead` (`POST /api/leads`), with phone/WhatsApp shortcuts, full accessibility (`role="dialog"`, focus trap, Escape dismiss), and zero conflict with Tara.
+  - **Public Global Navigation Streamlining (Phase 62)**: Removed the `Rentals` navigation link from desktop primary navigation and the mobile drawer (`GlobalHeader.tsx`), establishing a clean 3-link primary header (`Home`, `About`, `Privacy Policy`) and `Contact & Advisory` action button. The Seeker Rental Desk (`/rentals`), Owner Property Desk (`/rentals/list-property`), Tara `RENT A HOME` handoff, and backend rental services remain 100% active and accessible.
+
+---
+
 ## Current Status & Next Steps
-- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Operations (Steps 4A-4C), Admin Sales Leads Multi-Token Search, and Hierarchical Developer/Project Activation & Public Visibility (Steps 1-3).
-- **Branch**: All core platform, rental capabilities, and admin hierarchy controls verified on `develop`.
+- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Operations (Steps 4A-4C), Admin Sales Leads Multi-Token Search, Hierarchical Developer/Project Activation & Public Visibility (Steps 1-3), Tara Refactor Phases 1, 2, 2.1 & 3 (Streamlined Entry Points, Editorial Overlay Redesign & Buy vs Rent Entry Decision), Navigation Layout Robustness for Long Entity Names, Automatic & Header-Triggered "Let's Connect" Advisory Popup, and Public Global Navigation Streamlining (Removal of Rentals Link).
+- **Branch**: All core platform, rental capabilities, admin hierarchy controls, and streamlined public discovery verified on `develop`.
+
+
+
+
+
 
