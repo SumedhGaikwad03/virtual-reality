@@ -711,3 +711,55 @@
   - No database migration or Prisma schema changes.
   - Zero changes to public lead capture endpoints or rental desks.
   - Strict server-side execution with status filter and pagination integration.
+
+---
+
+## Phase 54: Admin Developer & Project Activation / Deactivation Controls
+- **Admin Publication Status Controls**:
+  - Reused the existing `publishStatus` enum (`PUBLISHED` vs `DRAFT`) across `Developer` and `Project` models without creating new database tables, `isActive` booleans, or `previousStatus` columns.
+  - Exposed `publishStatus` as explicit **Active** (`PUBLISHED`) and **Inactive** (`DRAFT`) administrative controls on Developer and Project list and edit interfaces.
+- **Developer Activate / Deactivate Actions & Safety Modal**:
+  - Added direct `Activate` / `Deactivate` buttons to `DevelopersPage.tsx` rows and clarified publication options in `DeveloperFormPage.tsx`.
+  - Created `DeactivateDeveloperModal.tsx` requiring confirmation before deactivating a developer, stating: *"This will remove the developer and its projects from public visibility. Existing projects and data will be preserved."*
+  - Deactivation updates ONLY `Developer.publishStatus` to `DRAFT` via existing `PATCH /api/admin/developers/:id`. No child project, configuration, or lead database records are modified or cascaded.
+- **Project Activate / Deactivate Actions & Safety Modal**:
+  - Added direct `Activate` / `Deactivate` buttons to `ProjectsPage.tsx` rows and separated construction lifecycle (`status`) from publication status (`publishStatus`) in `ProjectFormPage.tsx`.
+  - Created `DeactivateProjectModal.tsx` requiring confirmation before deactivating a project, stating: *"This will remove the project and its configurations from public visibility. Existing data will be preserved."*
+  - Deactivation updates ONLY `Project.publishStatus` to `DRAFT` via existing `PATCH /api/admin/projects/:id`. No parent developer, configuration, or lead database records are modified.
+- **Parent Deactivation Warning**:
+  - Implemented non-blocking warning banners in `ProjectFormPage.tsx` and warning badges (`Active (Developer Inactive)`) in `ProjectsPage.tsx` when a Project is marked `PUBLISHED` (`Active`) but its parent Developer is `DRAFT` (`Inactive`), informing the admin that the project is currently not publicly visible without overwriting the project's stored status.
+- **CSS Styling (`frontend/src/styles/admin/admin.css`)**:
+  - Added styles for `.admin-badge`, `.admin-badge--active`, `.admin-badge--inactive`, `.admin-badge--warning`, `.admin-badge--featured`, `.admin-status-warning`, and `.admin-status-draft`.
+- **Invariants Preserved**:
+  - No Prisma schema alterations or database migrations.
+  - No cascade mutations on child/parent records.
+  - Public visibility queries and Tara/search/SEO behavior remain untouched in this step.
+
+---
+
+## Phase 55: Hierarchical Developer & Project Public Visibility Verification
+- **End-to-End Public Visibility Verification**:
+  - Verified and confirmed that the hierarchical visibility contract is strictly enforced on read across all 10 public channels:
+    1. **Public Developer Detail (`GET /api/developers/:slug`)**: Accessible $\iff$ `developer.publishStatus === "PUBLISHED"`. Returns 404 when `DRAFT`. Only embeds child projects whose `project.publishStatus === "PUBLISHED"`.
+    2. **Public Project Detail (`GET /api/projects/:developerSlug/:projectSlug`)**: Accessible $\iff$ `developer.publishStatus === "PUBLISHED" && project.publishStatus === "PUBLISHED"`. Returns 404 if either is `DRAFT`.
+    3. **Locality Project Listing (`GET /api/locations/:locationSlug/projects`)**: Filters strictly by `publishStatus: "PUBLISHED"` on both Project and Developer.
+    4. **Conversational Search Assistant (`POST /api/search/properties`)**: Search filters strictly require `project: { publishStatus: "PUBLISHED", developer: { publishStatus: "PUBLISHED" } }`.
+    5. **Tara Property Catalog (`GET /api/search/catalog`)**: Only includes configurations from projects where both Project and Developer are `PUBLISHED`.
+    6. **Public Site Metadata & Featured Projects (`GET /api/site`)**: Featured projects require `featured: true`, `publishStatus: "PUBLISHED"`, and `developer: { publishStatus: "PUBLISHED" }`. Developer list requires `publishStatus: "PUBLISHED"`.
+    7. **Server-Side SEO HTML Pre-Rendering (`/location/:locality`, `/projects-in-pune`)**: Only renders active projects under active developers; returns 404 for inactive entities.
+    8. **Dynamic XML Sitemap (`/sitemap.xml`)**: Generates URLs strictly for published developers and published projects under published developers.
+    9. **Configuration Visibility**: Configurations inherit visibility directly from parent Project and Developer; deactivated parents hide all configurations from search and catalog.
+    10. **Admin Operational Independence**: Deactivated entities remain 100% visible, editable, and manageable in Admin workspaces without affecting existing leads or rental desks.
+- **Automated Verification Harness**:
+  - Executed a 5-stage lifecycle test against the live PostgreSQL database:
+    - *Test A*: Baseline Active Hierarchy (Dev: `PUBLISHED`, Proj: `PUBLISHED`) $\rightarrow$ 100% public paths available.
+    - *Test B*: Project Deactivated (Dev: `PUBLISHED`, Proj: `DRAFT`) $\rightarrow$ Project hidden from all 10 public channels; developer remains visible.
+    - *Test C*: Project Restored $\rightarrow$ Public project availability restored immediately.
+    - *Test D*: Developer Deactivated (Dev: `DRAFT`, Proj: `PUBLISHED`) $\rightarrow$ Developer and all child projects hidden from all 10 public channels while project database status remains `PUBLISHED`.
+    - *Test E*: Developer Restored $\rightarrow$ Complete hierarchy restored with 100% consistency.
+- **Invariants Preserved**:
+  - Zero database schema changes or migrations.
+  - Zero cascading writes in database tables.
+  - No disruption to Leads, Rentals, or admin workflows.
+
+

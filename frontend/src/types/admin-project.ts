@@ -33,7 +33,7 @@ export type ProjectHighlight = {
 export type AdminProject = {
   id: string;
   developerId: string;
-  developer: { id: string; name: string; slug: string };
+  developer: { id: string; name: string; slug: string; publishStatus?: PublishStatus };
   name: string;
   slug: string;
   description: string | null;

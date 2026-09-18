@@ -67,6 +67,7 @@ function toAdminProject(project: {
     id: string;
     name: string;
     slug: string;
+    publishStatus?: PublishStatus;
   };
   name: string;
   slug: string;

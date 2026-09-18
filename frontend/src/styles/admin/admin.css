@@ -2537,3 +2537,63 @@
   color: var(--admin-text-muted);
 }
 
+/* ==========================================================================
+   Admin Badges & Publication Status Indicators
+   ========================================================================== */
+
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.725rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 9999px;
+  line-height: 1.3;
+}
+
+.admin-badge--active {
+  color: #15803d;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.admin-badge--inactive {
+  color: var(--admin-text-muted, #6b7280);
+  background-color: var(--admin-surface-muted, #f3f4f6);
+  border: 1px solid var(--admin-border, #e5e7eb);
+}
+
+.admin-badge--warning {
+  color: #b45309;
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.admin-badge--featured {
+  color: #1e40af;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.admin-status-warning {
+  color: #b45309;
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-status-draft {
+  color: var(--admin-text-muted);
+  background-color: var(--admin-surface-muted);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+

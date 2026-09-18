@@ -90,6 +90,7 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 - **Admin PWA & Push**: The admin shell is installable with static-shell-only service-worker caching. Authenticated push subscriptions support multiple devices per active admin; lead notifications contain minimal context and never cache or include lead PII.
 - **Push Verification**: Leads includes the explicit notification permission control and a real backend-dispatched test notification; the UI reports unsupported, denied, unregistered, and registered device states.
 - **Developer Lead Attribution**: Direct developer enquiries now forward the validated `developerId`; project and configuration enquiries retain their existing relationship-derived attribution.
+- **Developer & Project Activation / Deactivation Controls**: Admin UI exposes `publishStatus` as explicit **Active** (`PUBLISHED`) and **Inactive** (`DRAFT`) controls on Developers (`DevelopersPage.tsx`, `DeveloperFormPage.tsx`) and Projects (`ProjectsPage.tsx`, `ProjectFormPage.tsx`). Deactivating requires explicit confirmation via `DeactivateDeveloperModal.tsx` or `DeactivateProjectModal.tsx` explaining that public visibility will be removed while existing data is preserved. Deactivation strictly updates the single entity's database row with zero cascade overwrites to child/parent records. When a Project is marked `PUBLISHED` under an inactive Developer (`DRAFT`), an informational parent deactivation warning is rendered on the project workspace.
 - **Security & Authentication Architecture**: Short-lived JWTs (default 15-minute lifetime) signed with HMAC-SHA256 (`HS256`) and verified server-side with pinned algorithm configuration. `JWT_SECRET` must be non-empty and at least 32 characters in production. All admin endpoints enforce `requireAdminAuthentication`. Login and lead endpoints are strictly rate limited, input lengths are bounded against DoS, and all user-supplied URLs enforce `http:`/`https:` protocol whitelists. The scraper features DNS resolution and private/loopback IP validation against SSRF.
 - **Server-Side SEO Pre-Rendering & Edge Rewrites (Phase 1 & Phase 2)**:
   - Vercel edge rewrites (`vercel.json`) proxy public traffic to the Express backend (`seo.routes.ts` ➔ `seo-renderer.service.ts`) while keeping `/search` and `/admin/*` as client-side Vite SPAs.
@@ -216,6 +217,14 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 
 ---
 
+- **Developer & Project Activation Hierarchy (Step 1, 2 & 3)**:
+  - **Independent Database Statuses**: `Developer.publishStatus` (`DRAFT` | `PUBLISHED`) and `Project.publishStatus` (`DRAFT` | `PUBLISHED`) remain completely independent in PostgreSQL. Project lifecycle `status` (`UPCOMING`, `ONGOING`, `READY_TO_MOVE`, etc.) and Configuration `availabilityStatus` (`AVAILABLE`, `LIMITED`, `SOLD_OUT`) are preserved with zero cascades or overwrites when parent entities are deactivated.
+  - **Admin Deactivation Controls**: Admin Developers and Projects workspaces feature dedicated Deactivate/Activate modals with clear warning dialogs. When a Developer is `DRAFT`, child projects in the admin UI display an informative warning callout (`Parent Developer Deactivated`) while retaining their own stored status.
+  - **Effective Public Visibility Model**: Derived dynamically on read across all 10 public endpoints (Developer API, Project API, Locality Hubs, Conversational Search Assistant, Tara Catalog, Public Site API, Featured Projects, SEO HTML Pre-rendering, and Dynamic XML Sitemap). A project or configuration is publicly accessible if and only if both `developer.publishStatus === "PUBLISHED"` and `project.publishStatus === "PUBLISHED"`. Deactivating a developer immediately conceals all child projects from public discovery and returns 404 on direct routes without altering child database records.
+
+---
+
 ## Current Status & Next Steps
-- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Step 4A (Rental Enquiries), Admin Rental Step 4B (Available Properties), and Admin Rental Step 4C (Surfacing Relevant Available Properties).
-- **Branch**: All core platform and rental capabilities verified and integrated on `main`/`develop`.
+- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Operations (Steps 4A-4C), Admin Sales Leads Multi-Token Search, and Hierarchical Developer/Project Activation & Public Visibility (Steps 1-3).
+- **Branch**: All core platform, rental capabilities, and admin hierarchy controls verified on `develop`.
+

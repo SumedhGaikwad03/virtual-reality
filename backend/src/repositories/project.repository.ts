@@ -449,6 +449,7 @@ const adminProjectSelect = {
       id: true,
       name: true,
       slug: true,
+      publishStatus: true,
     },
   },
 

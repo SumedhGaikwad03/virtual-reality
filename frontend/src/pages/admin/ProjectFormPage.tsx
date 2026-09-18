@@ -429,9 +429,14 @@ export function ProjectFormPage() {
           {JSON.stringify(form) !== JSON.stringify(initialForm) && <p className="admin-unsaved-state">Unsaved project changes</p>}
           <div className="admin-project-readiness" aria-label="Project workspace status">
             <div><strong>Project details</strong><span className="admin-status-ready">Ready to edit</span></div>
+            <div>
+              <strong>Publication</strong>
+              <span className={form.publishStatus === "PUBLISHED" ? (developers.find((d) => d.id === form.developerId)?.publishStatus === "DRAFT" ? "admin-status-warning" : "admin-status-ready") : "admin-status-draft"}>
+                {form.publishStatus === "PUBLISHED" ? (developers.find((d) => d.id === form.developerId)?.publishStatus === "DRAFT" ? "Active (Parent Inactive)" : "Active") : "Inactive"}
+              </span>
+            </div>
             <div><strong>Highlights</strong><span>{highlights.length ? `${highlights.length} added` : "Optional · none added"}</span></div>
             <div><strong>Amenities</strong><span>{amenities.length ? `${amenities.length} added` : "Optional · none added"}</span></div>
-            <div><strong>Media & configurations</strong><span>Manage from workspace sections</span></div>
           </div>
         </>
       )}
@@ -441,10 +446,24 @@ export function ProjectFormPage() {
       {!developerError && developers.length === 0 && (
         <p role="alert">No developers available. Create a developer first.</p>
       )}
+
+      {form.publishStatus === "PUBLISHED" && developers.find((d) => d.id === form.developerId)?.publishStatus === "DRAFT" && (
+        <div className="admin-warning-callout" role="status" style={{ margin: "1rem 0" }}>
+          <p>
+            <strong>Parent Developer Inactive:</strong> Project is marked Active, but its developer (
+            <em>{developers.find((d) => d.id === form.developerId)?.name}</em>) is inactive. The project is currently not publicly visible.
+          </p>
+        </div>
+      )}
+
       <form className="admin-project-form" onSubmit={handleSubmit}>
         <label>Developer<select required value={form.developerId} onChange={(event) => setField("developerId", event.target.value)} disabled={developers.length === 0}>
           <option value="">Select a developer</option>
-          {developers.map((developer) => <option key={developer.id} value={developer.id}>{developer.name}</option>)}
+          {developers.map((developer) => (
+            <option key={developer.id} value={developer.id}>
+              {developer.name} {developer.publishStatus === "DRAFT" ? "(Inactive)" : ""}
+            </option>
+          ))}
         </select></label>
         <label>Name<input required value={form.name} onChange={(event) => setField("name", event.target.value)} /></label>
         <label>Slug<input required value={form.slug} onChange={(event) => setField("slug", event.target.value)} /></label>
@@ -453,11 +472,11 @@ export function ProjectFormPage() {
         <label>Location slug<input required value={form.locationSlug} onChange={(event) => setField("locationSlug", event.target.value)} /></label>
         <label>Address<textarea required value={form.address} onChange={(event) => setField("address", event.target.value)} /></label>
         <label>Maps URL<input type="url" value={form.mapsUrl} onChange={(event) => setField("mapsUrl", event.target.value)} /></label>
-        <label>Status<select required value={form.status} onChange={(event) => setField("status", event.target.value as ProjectStatus)}>
+        <label>Lifecycle status (Construction phase)<select required value={form.status} onChange={(event) => setField("status", event.target.value as ProjectStatus)}>
           {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
         </select></label>
         <label>
-          Publish status
+          Publication status
           <select
             value={form.publishStatus}
             onChange={(event) =>
@@ -467,13 +486,13 @@ export function ProjectFormPage() {
               )
             }
           >
-            <option value="DRAFT">Draft</option>
-            <option value="PUBLISHED">Published</option>
+            <option value="PUBLISHED">Active (Published)</option>
+            <option value="DRAFT">Inactive (Hidden)</option>
           </select>
           <small>
             {form.publishStatus === "PUBLISHED"
-              ? "Available on the public website when its developer is also published."
-              : "Not visible on the public website."}
+              ? "Available on the public website when its developer is also active."
+              : "Inactive and hidden from public website. Existing data is preserved."}
           </small>
         </label>
         <label className="admin-checkbox"><input type="checkbox" checked={form.featured} onChange={(event) => setField("featured", event.target.checked)} /> Featured</label>

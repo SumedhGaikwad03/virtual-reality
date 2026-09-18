@@ -263,7 +263,7 @@ export function DeveloperFormPage() {
         </label>
 
         <label>
-          Publish status
+          Publication status
           <select
             value={form.publishStatus}
             onChange={(event) =>
@@ -273,13 +273,13 @@ export function DeveloperFormPage() {
               )
             }
           >
-            <option value="DRAFT">Draft</option>
-            <option value="PUBLISHED">Published</option>
+            <option value="PUBLISHED">Active (Published)</option>
+            <option value="DRAFT">Inactive (Hidden)</option>
           </select>
           <small>
             {form.publishStatus === "PUBLISHED"
-              ? "Available on the public website."
-              : "Not visible on the public website."}
+              ? "Active and discoverable on the public website."
+              : "Inactive and hidden from public website. Existing projects and data are preserved."}
           </small>
         </label>
 
