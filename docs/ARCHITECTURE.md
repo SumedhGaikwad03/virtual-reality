@@ -36,6 +36,8 @@ Admin access tokens default to a 15-minute JWT lifetime, overridable by `JWT_EXP
 | `/admin/media` | `HomeMediaPage.tsx` | Site-level media asset management |
 | `/admin/projects/:projectId/media` | `ProjectMediaPage.tsx` | Project media asset management |
 | `/admin/configurations/:configurationId/media` | `ConfigurationMediaPage.tsx` | Unit configuration media management |
+| `/admin/rentals/enquiries`, `/:id` | `RentalEnquiriesPage.tsx`, `RentalEnquiryDetailPage.tsx` | Seeker rental demand inquiries & status triage |
+| `/admin/rentals/available`, `/:id` | `RentalAvailablePage.tsx`, `RentalAvailableDetailPage.tsx` | Owner-submitted rental properties & status triage |
 
 ---
 

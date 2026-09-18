@@ -78,6 +78,17 @@ export function AdminLayout({
             <NavLink to="/admin/leads">
               Leads
             </NavLink>
+            <div className="admin-nav-group">
+              <span className="admin-nav-group-title">Rentals</span>
+              <div className="admin-nav-group-items">
+                <NavLink to="/admin/rentals/enquiries">
+                  Enquiries
+                </NavLink>
+                <NavLink to="/admin/rentals/available">
+                  Available
+                </NavLink>
+              </div>
+            </div>
           </div>
 
           <div className="admin-more-container" ref={moreRef}>

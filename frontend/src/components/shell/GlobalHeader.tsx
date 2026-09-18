@@ -88,10 +88,17 @@ export function GlobalHeader() {
   };
 
   const headerTitle = developerName || "Virtual Reality";
+  const isLightHeader = location.pathname === "/privacy-policy";
+
+  const headerVariantClass = isLightHeader
+    ? `global-header--light ${isScrolled ? "global-header--light-scrolled" : ""}`
+    : isScrolled
+    ? "global-header--scrolled"
+    : "global-header--transparent";
 
   return (
     <header
-      className={`global-header ${isScrolled ? "global-header--scrolled" : "global-header--transparent"} ${
+      className={`global-header ${headerVariantClass} ${
         mobileMenuOpen ? "global-header--menu-open" : ""
       }`}
       aria-label="Site Header"
@@ -100,8 +107,8 @@ export function GlobalHeader() {
         {/* Contextual Brand Identity */}
         <Link
           to="/"
-          className="global-brand-link"
           onClick={handleHomeClick}
+          className="global-brand-link"
           title={headerTitle}
         >
           <span className={`global-brand-name ${developerName ? "is-developer-context" : ""}`}>
@@ -116,7 +123,14 @@ export function GlobalHeader() {
             <button
               type="button"
               onClick={handleHomeClick}
-              className={`nav-link-btn ${isFirmPage && !location.hash && location.pathname !== "/privacy-policy" ? "active" : ""}`}
+              className={`nav-link-btn ${
+                isFirmPage &&
+                !location.hash &&
+                location.pathname !== "/privacy-policy" &&
+                !location.pathname.startsWith("/rentals")
+                  ? "active"
+                  : ""
+              }`}
             >
               Home
             </button>
@@ -127,6 +141,16 @@ export function GlobalHeader() {
             >
               About
             </button>
+            <Link
+              to="/rentals"
+              className={`nav-link ${
+                location.pathname === "/rentals" || location.pathname === "/rentals/list-property"
+                  ? "active"
+                  : ""
+              }`}
+            >
+              Rentals
+            </Link>
             <Link
               to="/privacy-policy"
               className={`nav-link ${location.pathname === "/privacy-policy" ? "active" : ""}`}
@@ -195,6 +219,17 @@ export function GlobalHeader() {
             >
               About Firm
             </button>
+            <Link
+              to="/rentals"
+              onClick={closeMobileMenu}
+              className={`mobile-nav-link ${
+                location.pathname === "/rentals" || location.pathname === "/rentals/list-property"
+                  ? "active"
+                  : ""
+              }`}
+            >
+              Rental Desk
+            </Link>
             <Link
               to="/privacy-policy"
               onClick={closeMobileMenu}

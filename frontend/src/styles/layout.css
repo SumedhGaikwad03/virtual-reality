@@ -86,7 +86,7 @@
   box-shadow: none;
 }
 
-/* 2. Scrolled State (Subtle restrained architectural tint for readability) */
+/* 2. Scrolled State (Subtle restrained architectural tint for readability over hero photography) */
 .global-header--scrolled {
   background-color: rgba(17, 40, 33, 0.40);
   backdrop-filter: blur(8px);
@@ -95,10 +95,91 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-/* 3. Open Mobile Menu State */
-.global-header--menu-open {
+/* 3. Light Header Variant (For dedicated pages without full-bleed hero imagery like /rentals/list-property) */
+.global-header--light {
+  background-color: var(--color-bg, #FAFAF8);
+  border-bottom: 1px solid var(--color-border, #E6E6E2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.global-header--light.global-header--light-scrolled {
+  background-color: rgba(250, 250, 248, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--color-border-strong, #D9D9D4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.global-header--light .global-brand-name {
+  color: var(--color-forest-dark, #112821);
+  text-shadow: none;
+}
+
+.global-header--light .desktop-primary-nav .nav-link,
+.global-header--light .desktop-primary-nav .nav-link-btn {
+  color: var(--color-text, #202622);
+  text-shadow: none;
+}
+
+.global-header--light .desktop-primary-nav .nav-link:hover,
+.global-header--light .desktop-primary-nav .nav-link-btn:hover {
+  color: var(--color-forest, #18382E);
+  border-bottom-color: var(--color-forest, #18382E);
+}
+
+.global-header--light .desktop-primary-nav .nav-link.active,
+.global-header--light .desktop-primary-nav .nav-link-btn.active {
+  color: var(--color-forest, #18382E);
+  border-bottom-color: var(--color-forest, #18382E);
+}
+
+.global-header--light .global-contact-advisory-btn {
+  color: var(--color-forest, #18382E);
+  border-color: rgba(24, 56, 46, 0.35);
+  text-shadow: none;
+}
+
+.global-header--light .global-contact-advisory-btn:hover {
+  background-color: rgba(24, 56, 46, 0.06);
+  border-color: var(--color-forest, #18382E);
+  color: var(--color-forest-dark, #112821);
+}
+
+.global-header--light .global-contact-advisory-btn.active {
+  background-color: var(--color-forest, #18382E);
+  color: #FFFFFF;
+  border-color: var(--color-forest, #18382E);
+}
+
+.global-header--light .global-assistant-btn {
+  background-color: var(--color-forest-dark, #112821);
+  color: #FFFFFF;
+  border-color: var(--color-forest-dark, #112821);
+}
+
+.global-header--light .global-assistant-btn:hover {
+  background-color: var(--color-forest, #18382E);
+  color: #FFFFFF;
+}
+
+.global-header--light .mobile-menu-toggle-btn {
+  color: var(--color-forest-dark, #112821);
+  text-shadow: none;
+}
+
+/* 4. Open Mobile Menu State */
+.global-header--menu-open,
+.global-header--light.global-header--menu-open {
   background-color: rgba(17, 40, 33, 0.98);
   border-bottom-color: rgba(217, 208, 195, 0.2);
+}
+
+.global-header--light.global-header--menu-open .global-brand-name {
+  color: #FFFFFF;
+}
+
+.global-header--light.global-header--menu-open .mobile-menu-toggle-btn {
+  color: #FFFFFF;
 }
 
 .global-header-container {

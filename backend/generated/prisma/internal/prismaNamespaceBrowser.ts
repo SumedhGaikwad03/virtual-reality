@@ -62,7 +62,9 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   PasswordResetToken: 'PasswordResetToken',
   FirmContact: 'FirmContact',
-  FirmProfile: 'FirmProfile'
+  FirmProfile: 'FirmProfile',
+  RentalEnquiry: 'RentalEnquiry',
+  RentalProperty: 'RentalProperty'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -270,6 +272,46 @@ export const FirmProfileScalarFieldEnum = {
 } as const
 
 export type FirmProfileScalarFieldEnum = (typeof FirmProfileScalarFieldEnum)[keyof typeof FirmProfileScalarFieldEnum]
+
+
+export const RentalEnquiryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  configuration: 'configuration',
+  location: 'location',
+  areaLocality: 'areaLocality',
+  budget: 'budget',
+  furnishing: 'furnishing',
+  moveInTimeframe: 'moveInTimeframe',
+  whoIsFor: 'whoIsFor',
+  notes: 'notes',
+  status: 'status',
+  internalNotes: 'internalNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RentalEnquiryScalarFieldEnum = (typeof RentalEnquiryScalarFieldEnum)[keyof typeof RentalEnquiryScalarFieldEnum]
+
+
+export const RentalPropertyScalarFieldEnum = {
+  id: 'id',
+  ownerName: 'ownerName',
+  phone: 'phone',
+  flatType: 'flatType',
+  approxSizeSqFt: 'approxSizeSqFt',
+  location: 'location',
+  areaLocality: 'areaLocality',
+  societyDeveloper: 'societyDeveloper',
+  additionalDetails: 'additionalDetails',
+  status: 'status',
+  internalNotes: 'internalNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RentalPropertyScalarFieldEnum = (typeof RentalPropertyScalarFieldEnum)[keyof typeof RentalPropertyScalarFieldEnum]
 
 
 export const SortOrder = {

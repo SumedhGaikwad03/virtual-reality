@@ -101,3 +101,13 @@ export type FirmContact = Prisma.FirmContactModel
  * 
  */
 export type FirmProfile = Prisma.FirmProfileModel
+/**
+ * Model RentalEnquiry
+ * 
+ */
+export type RentalEnquiry = Prisma.RentalEnquiryModel
+/**
+ * Model RentalProperty
+ * 
+ */
+export type RentalProperty = Prisma.RentalPropertyModel

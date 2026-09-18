@@ -4,8 +4,10 @@ import { FounderRoute, ProtectedRoute } from "../auth/ProtectedRoute";
 
 import { DeveloperPage } from "../pages/DeveloperPage";
 import { HomePage } from "../pages/HomePage";
+import { ListPropertyPage } from "../pages/ListPropertyPage";
 import { PrivacyPolicyPage } from "../pages/PrivacyPolicyPage";
 import { ProjectPage } from "../pages/ProjectPage";
+import { RentalsPage } from "../pages/RentalsPage";
 import { SearchPage } from "../pages/SearchPage";
 import { PublicShell } from "../components/shell/PublicShell";
 
@@ -42,6 +44,18 @@ const LeadDetailPage = lazy(() =>
 );
 const LeadFormPage = lazy(() =>
   import("../pages/admin/LeadFormPage").then((m) => ({ default: m.LeadFormPage })),
+);
+const RentalEnquiriesPage = lazy(() =>
+  import("../pages/admin/RentalEnquiriesPage").then((m) => ({ default: m.RentalEnquiriesPage })),
+);
+const RentalEnquiryDetailPage = lazy(() =>
+  import("../pages/admin/RentalEnquiryDetailPage").then((m) => ({ default: m.RentalEnquiryDetailPage })),
+);
+const RentalAvailablePage = lazy(() =>
+  import("../pages/admin/RentalAvailablePage").then((m) => ({ default: m.RentalAvailablePage })),
+);
+const RentalAvailableDetailPage = lazy(() =>
+  import("../pages/admin/RentalAvailableDetailPage").then((m) => ({ default: m.RentalAvailableDetailPage })),
 );
 const ImportPage = lazy(() =>
   import("../pages/admin/ImportPage").then((m) => ({ default: m.ImportPage })),
@@ -248,6 +262,52 @@ export function AppRouter() {
         }
       />
 
+      {/* Admin rental enquiries */}
+      <Route
+        path="/admin/rentals/enquiries"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <RentalEnquiriesPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/rentals/enquiries/:id"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <RentalEnquiryDetailPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Admin available rental properties */}
+      <Route
+        path="/admin/rentals/available"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <RentalAvailablePage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/rentals/available/:id"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <RentalAvailableDetailPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
       {/* Admin import */}
       <Route
         path="/admin/import"
@@ -345,6 +405,8 @@ export function AppRouter() {
       <Route element={<PublicShell />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/firm" element={<HomePage />} />
+        <Route path="/rentals" element={<RentalsPage />} />
+        <Route path="/rentals/list-property" element={<ListPropertyPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route

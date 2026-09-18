@@ -93,6 +93,51 @@ export async function notifyNewLead(lead: NewLeadNotification) {
   });
 }
 
+export async function notifyNewRentalEnquiry(enquiry: {
+  id: string;
+  name: string;
+  configuration: string;
+  location?: string | null;
+  areaLocality?: string | null;
+}) {
+  const subscriptions = await pushSubscriptionRepository.findForActiveAdmins();
+  const locationContext = [enquiry.configuration, enquiry.areaLocality || enquiry.location]
+    .filter(Boolean)
+    .join(" · ");
+  await sendToSubscriptions(subscriptions, {
+    title: "New Rental Enquiry",
+    body: locationContext
+      ? `${enquiry.name} (${locationContext})`
+      : `${enquiry.name} submitted a rental requirement.`,
+    url: `/admin/rentals/enquiries`,
+  });
+}
+
+export async function notifyNewRentalProperty(property: {
+  id: string;
+  ownerName: string;
+  flatType: string;
+  societyDeveloper?: string | null;
+  areaLocality?: string | null;
+  location?: string | null;
+}) {
+  const subscriptions = await pushSubscriptionRepository.findForActiveAdmins();
+  const propertyContext = [
+    property.flatType,
+    property.societyDeveloper,
+    property.areaLocality || property.location,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  await sendToSubscriptions(subscriptions, {
+    title: "New Rental Property Submission",
+    body: propertyContext
+      ? `${property.ownerName} (${propertyContext})`
+      : `${property.ownerName} submitted a property to rent.`,
+    url: `/admin/rentals/properties`,
+  });
+}
+
 export async function notifyTestPush(adminId: string) {
   const subscriptions = await pushSubscriptionRepository.findForAdmin(adminId);
   await sendToSubscriptions(subscriptions, {

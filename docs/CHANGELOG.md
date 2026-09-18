@@ -624,3 +624,90 @@
   - Verified `dist/index.html` references `/assets/index.js` and `/assets/index.css`.
   - Verified `npm --prefix backend run build` compiles TypeScript cleanly with zero errors.
   - Confirmed Admin PWA scope remains strictly `/admin` without regressing Service Worker behavior, JWT authentication, or API endpoints.
+
+---
+
+## Phase 49: Rental Desk Backend Foundation & Public Portal
+- **Rental Domain Backend Architecture**:
+  - Implemented isolated Rental domain with Prisma models `RentalEnquiry` and `RentalProperty`.
+  - Added RESTful endpoints for public submissions (`POST /api/rentals/enquiries`, `POST /api/rentals/properties`) and authenticated admin operations (`/api/admin/rentals/*`).
+  - Implemented comprehensive input validation (`rental.validator.ts`) and database repository layer (`rental.repository.ts`).
+- **Public Rental Portal & Separation of Audiences**:
+  - Created dedicated seeker Rental Desk page at `/rentals` (`RentalsPage.tsx`).
+  - Created dedicated owner Property Desk page at `/rentals/list-property` (`ListPropertyPage.tsx`).
+  - Engineered editorial styling and typography in `rentals.css` matching the platform's luxury design system.
+  - Resolved transparent header contrast and layout spacing on owner submission page.
+
+---
+
+## Phase 50: Admin Rental Step 4A – Rental Enquiries
+- **Multi-Token Backend Search (`backend/src/repositories/rental.repository.ts`)**:
+  - Enhanced `findManyEnquiries` to tokenize search queries by whitespace and apply case-insensitive `AND` filters across seeker details, configuration, location, furnishing, and notes.
+- **Frontend Admin Rental Foundation**:
+  - Created TypeScript types in `frontend/src/types/admin-rental.ts` (`RentalEnquiry`, `RentalEnquiryStatus`, `UpdateRentalEnquiryInput`).
+  - Created API client in `frontend/src/api/admin-rentals.ts` for listing, retrieving, updating status/internal notes, and deleting enquiries.
+- **Admin Navigation & Routing**:
+  - Added "Rentals" navigation in `AdminLayout.tsx` linking to `/admin/rentals/enquiries`.
+  - Registered lazy-loaded routes in `AppRouter.tsx` for `/admin/rentals/enquiries` and `/admin/rentals/enquiries/:id`.
+- **Enquiry Management Interface**:
+  - Created `RentalEnquiriesPage.tsx` with multi-token keyword search, status tabs (`ALL`, `NEW`, `CONTACTED`, `MATCHED`, `CLOSED`, `ARCHIVED`), attention indicator badges, and pagination.
+  - Created `RentalEnquiryDetailPage.tsx` with complete seeker profile breakdown, status update dropdown, editable internal notes, and direct communication actions (`RentalEnquiryActions.tsx`).
+  - Created `DeleteRentalEnquiryModal.tsx` for safe deletion.
+- **Admin CSS Extensions (`frontend/src/styles/admin/admin.css`)**:
+  - Added status badge color styling for `status-contacted`, `status-matched`, `status-closed`, and `status-archived`.
+
+---
+
+## Phase 51: Admin Rental Step 4B – Available Rental Properties
+- **Multi-Token Backend Property Search (`backend/src/repositories/rental.repository.ts`)**:
+  - Enhanced `findManyProperties` to tokenize search queries by whitespace and apply case-insensitive `AND` filters across `ownerName`, `phone`, `flatType`, `approxSizeSqFt` (with integer conversion support), `location`, `areaLocality`, `societyDeveloper`, `additionalDetails`, and `internalNotes`.
+- **Frontend Admin Rental Types & API Client**:
+  - Extended `frontend/src/types/admin-rental.ts` with `RentalPropertyStatus`, `AdminRentalProperty`, `AdminRentalPropertyQuery`, `AdminRentalPropertyUpdateInput`, and response types.
+  - Extended `frontend/src/api/admin-rentals.ts` with `getRentalProperties`, `getRentalProperty`, `updateRentalProperty`, and `deleteRentalProperty`.
+- **Nested Admin Navigation & Routing**:
+  - Updated `AdminLayout.tsx` and `admin.css` to render nested Rentals navigation (`Enquiries` and `Available`) with desktop vertical sub-group hierarchy and mobile horizontal scrolling support.
+  - Registered lazy-loaded routes in `AppRouter.tsx` for `/admin/rentals/available` and `/admin/rentals/available/:id`.
+- **Available Properties Management Interface**:
+  - Created `RentalAvailablePage.tsx` with debounced keyword search, status tabs (`ALL`, `NEW`, `VERIFIED`, `AVAILABLE`, `RENTED`, `ARCHIVED`), attention indicator badges, and pagination.
+  - Created `RentalAvailableDetailPage.tsx` with complete owner contact breakdown, property specifications, status triage dropdown, editable internal notes with dirty-state save handling, and direct communication actions (`RentalPropertyActions.tsx`).
+  - Created `DeleteRentalPropertyModal.tsx` for safe deletion.
+- **Admin CSS Extensions (`frontend/src/styles/admin/admin.css`)**:
+  - Added status badge styling for `.status-verified`, `.status-available`, and `.status-rented`.
+
+---
+
+## Phase 52: Admin Rental Step 4C – Surface Relevant Available Properties in Enquiry Detail
+- **Deterministic Server-Side Property Candidate Discovery**:
+  - Added `findRelevantAvailableProperties` to `backend/src/repositories/rental.repository.ts` querying `RentalProperty` records with status `AVAILABLE` using the enquiry's `configuration`, `location`, and `areaLocality`.
+  - Applied deterministic prioritization (exact configuration + location match > configuration match > location match) returning a bounded list of top candidates.
+  - Excluded all non-`AVAILABLE` statuses (`NEW`, `VERIFIED`, `RENTED`, `ARCHIVED`).
+- **Admin Endpoint for Enquiry Available Properties**:
+  - Added `GET /api/admin/rentals/enquiries/:id/available-properties` route, controller (`getRelevantAvailablePropertiesController`), and service (`getRelevantAvailablePropertiesForEnquiry`).
+  - Added client method `getRelevantAvailableProperties(enquiryId)` in `frontend/src/api/admin-rentals.ts`.
+- **Enquiry Detail Available Properties Section**:
+  - Updated `frontend/src/pages/admin/RentalEnquiryDetailPage.tsx` to surface candidate available properties with flat type, approx size, society/developer, location, status badge, and "View Property" navigation link (`/admin/rentals/available/:id`).
+  - Handled loading, error with retry, and empty states ("No relevant available properties found" + "View All Available →" link).
+- **Admin CSS Extensions (`frontend/src/styles/admin/admin.css`)**:
+  - Added styles for `.admin-relevant-properties-section`, `.admin-relevant-properties-grid`, and `.admin-relevant-property-card`.
+- **Strict Invariants Preserved**:
+  - No `RentalConnection` model, foreign keys, or database migrations created.
+  - No automated matching, scoring, or automated notes mutation.
+  - Internal admin notes remain manual and isolated.
+
+---
+
+## Phase 53: Admin Leads Search Bar Audit & Multi-Token Relational Improvement
+- **Multi-Token Relational Search (`backend/src/repositories/lead.repository.ts`)**:
+  - Upgraded `findMany` search implementation from single-string query matching to whitespace-tokenized `AND` matching across all tokens.
+  - Expanded searchable fields to include:
+    - Direct fields: `name`, `phone`, `email`, `message`, `notes`.
+    - Relational fields: `developer.name`, `project.name`, `project.locationName`, and `configuration.name`.
+  - All token matching is case-insensitive (`mode: "insensitive"`) and cleanly ignores duplicate whitespace.
+- **Frontend Leads Search Bar UX (`frontend/src/pages/admin/LeadsPage.tsx`, `frontend/src/styles/admin/admin.css`)**:
+  - Added dedicated clear button (`✕`) when search terms exist that instantly resets query and pagination without page reload.
+  - Refined placeholder copy: *"Search leads by name, phone, project, configuration, notes..."*.
+  - Added rich contextual empty state distinguishing between unfiltered empty leads, specific keyword misses (with one-click "Clear search" action), and status filter misses.
+- **Invariants Preserved**:
+  - No database migration or Prisma schema changes.
+  - Zero changes to public lead capture endpoints or rental desks.
+  - Strict server-side execution with status filter and pagination integration.

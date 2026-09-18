@@ -88,14 +88,22 @@ export class LeadRepository {
     }
 
     if (options?.search && options.search.trim() !== "") {
-      const searchTerm = options.search.trim();
-      where.OR = [
-        { name: { contains: searchTerm, mode: "insensitive" } },
-        { phone: { contains: searchTerm, mode: "insensitive" } },
-        { email: { contains: searchTerm, mode: "insensitive" } },
-        { message: { contains: searchTerm, mode: "insensitive" } },
-        { notes: { contains: searchTerm, mode: "insensitive" } },
-      ];
+      const tokens = options.search.trim().split(/\s+/).filter(Boolean);
+      if (tokens.length > 0) {
+        where.AND = tokens.map((token) => ({
+          OR: [
+            { name: { contains: token, mode: "insensitive" } },
+            { phone: { contains: token, mode: "insensitive" } },
+            { email: { contains: token, mode: "insensitive" } },
+            { message: { contains: token, mode: "insensitive" } },
+            { notes: { contains: token, mode: "insensitive" } },
+            { developer: { name: { contains: token, mode: "insensitive" } } },
+            { project: { name: { contains: token, mode: "insensitive" } } },
+            { project: { locationName: { contains: token, mode: "insensitive" } } },
+            { configuration: { name: { contains: token, mode: "insensitive" } } },
+          ],
+        }));
+      }
     }
 
     const [total, leads] = await prisma.$transaction([

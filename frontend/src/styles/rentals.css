@@ -1,0 +1,1464 @@
+/*
+ * PURPOSE:
+ * Public Rental Desk domain presentation styles.
+ *
+ * FLOW:
+ * RentalsPage -> rentals.css selectors.
+ *
+ * DESIGN DIRECTION:
+ * Architectural · Premium · Editorial · Restrained · Renter-First
+ */
+
+/* ==========================================================================
+   1. Page Container & Layout Base
+   ========================================================================== */
+.rental-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3.5rem, 6vw, 5.5rem);
+  width: 100%;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem 1.5rem;
+  box-sizing: border-box;
+  background-color: var(--color-bg, #FAFAF8);
+}
+
+.rental-loading-state,
+.rental-error-state {
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+  padding: 2rem;
+  font-size: 1.05rem;
+  color: var(--color-text-muted, #68706A);
+  background-color: var(--color-bg, #FAFAF8);
+}
+
+/* ==========================================================================
+   2. Rental Hero
+   ========================================================================== */
+.rental-hero {
+  position: relative;
+  width: 100%;
+  min-height: min(78vh, 44rem);
+  display: flex;
+  align-items: flex-end;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  background-color: #0b1118;
+}
+
+.rental-hero-media-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.rental-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Neutral architectural charcoal scrim - NO heavy green overlay tint */
+.rental-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 24, 28, 0.45) 0%,
+    rgba(17, 24, 28, 0.2) 30%,
+    rgba(15, 20, 24, 0.75) 75%,
+    rgba(11, 17, 24, 0.95) 100%
+  );
+  z-index: 2;
+}
+
+.floating-rental-hero-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 52rem;
+  padding: clamp(2rem, 5vw, 4rem);
+  box-sizing: border-box;
+  color: #FFFFFF;
+}
+
+.rental-hero-eyebrow-row {
+  margin-bottom: 0.75rem;
+}
+
+.rental-hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #D9C9A8;
+  background: rgba(217, 201, 168, 0.12);
+  border: 1px solid rgba(217, 201, 168, 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+}
+
+.rental-hero-headline {
+  margin: 0 0 1rem 0;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.rental-hero-supporting {
+  margin: 0 0 2rem 0;
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 44rem;
+}
+
+.rental-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.rental-hero-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.85rem;
+  border-radius: 9999px;
+  background-color: var(--color-forest, #18382E);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rental-hero-primary-btn:hover {
+  background-color: var(--color-forest-dark, #112821);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.rental-hero-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.4rem;
+  border-radius: 9999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.rental-hero-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ==========================================================================
+   3. Section Headers & Foundations
+   ========================================================================== */
+.rental-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rental-section-container {
+  width: 100%;
+  max-width: 54rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.rental-section-header {
+  margin-bottom: 2rem;
+}
+
+.rental-section-header.text-center {
+  text-align: center;
+}
+
+.rental-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-forest, #18382E);
+  margin-bottom: 0.5rem;
+}
+
+.rental-section-title {
+  margin: 0 0 0.75rem 0;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(1.85rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  color: var(--color-text, #202622);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.rental-section-subtitle {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-text-muted, #68706A);
+}
+
+.max-w-reading {
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ==========================================================================
+   4. Primary Renter Card & Form Styles
+   ========================================================================== */
+.rental-primary-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 1.25rem;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  box-shadow: 0 12px 36px rgba(24, 56, 46, 0.06);
+  box-sizing: border-box;
+}
+
+.rental-secondary-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.rental-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text, #202622);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.required-star {
+  color: var(--color-clay, #B86F55);
+  margin-left: 0.2rem;
+}
+
+.optional-tag {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--color-text-muted, #68706A);
+  margin-left: 0.35rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 0.95rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border-strong, #D9D9D4);
+  background-color: var(--color-bg, #FAFAF8);
+  color: var(--color-text, #202622);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-forest, #18382E);
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(24, 56, 46, 0.12);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 5.5rem;
+  line-height: 1.5;
+}
+
+/* Progressive Disclosure Options */
+.optional-toggle-wrapper {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.optional-toggle-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-forest, #18382E);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.2s ease;
+}
+
+.optional-toggle-btn:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.optional-fields-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--color-border, #E6E6E2);
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Submission Actions */
+.rental-form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.rental-primary-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.75rem;
+  border-radius: 9999px;
+  background-color: var(--color-forest, #18382E);
+  color: #FFFFFF;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(24, 56, 46, 0.18);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.rental-primary-submit-btn:hover:not(:disabled) {
+  background-color: var(--color-forest-dark, #112821);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(24, 56, 46, 0.24);
+}
+
+.rental-primary-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.rental-form-privacy-note {
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #68706A);
+  text-align: center;
+}
+
+/* Error Banner */
+.rental-form-error-banner {
+  background-color: rgba(184, 111, 85, 0.1);
+  border: 1px solid rgba(184, 111, 85, 0.3);
+  color: #923821;
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.88rem;
+}
+
+.rental-form-error-banner p {
+  margin: 0;
+}
+
+/* Success Card */
+.rental-form-success-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+}
+
+.success-badge-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #15803d;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.success-card-title {
+  margin: 0 0 0.5rem 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.75rem;
+  color: var(--color-text, #202622);
+}
+
+.success-card-desc {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--color-text-muted, #68706A);
+  max-width: 32rem;
+}
+
+.rental-secondary-cta-btn {
+  background: transparent;
+  border: 1px solid var(--color-border-strong, #D9D9D4);
+  color: var(--color-text, #202622);
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.rental-secondary-cta-btn:hover {
+  background-color: var(--color-bg, #FAFAF8);
+  border-color: var(--color-forest, #18382E);
+}
+
+/* ==========================================================================
+   5. Rental Process Pillars (3 Steps)
+   ========================================================================== */
+.rental-process-section {
+  width: 100%;
+  padding: 1.5rem 0;
+  box-sizing: border-box;
+}
+
+.rental-process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.rental-process-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rental-process-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(24, 56, 46, 0.06);
+}
+
+.rental-process-number {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-brass, #A99168);
+  line-height: 1;
+}
+
+.rental-process-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text, #202622);
+  line-height: 1.3;
+}
+
+.rental-process-desc {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-text-muted, #68706A);
+}
+
+/* ==========================================================================
+   6. Owner Direct Call Elements
+   ========================================================================== */
+.owner-inline-callout {
+  font-size: 0.88rem;
+  color: var(--color-text-muted, #68706A);
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+.inline-call-link {
+  color: var(--color-forest, #18382E);
+  font-weight: 600;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.inline-call-link:hover {
+  opacity: 0.8;
+}
+
+.owner-post-submit-actions {
+  width: 100%;
+  max-width: 32rem;
+  margin: 1.25rem 0;
+  padding: 1.25rem;
+  border-radius: 0.85rem;
+  background: var(--color-bg, #FAFAF8);
+  border: 1px solid var(--color-border, #E6E6E2);
+}
+
+.owner-call-prompt {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-text, #202622);
+}
+
+.owner-call-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.rental-call-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 1.15rem;
+  border-radius: 9999px;
+  background-color: var(--color-forest, #18382E);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.rental-call-btn:hover {
+  background-color: var(--color-forest-dark, #112821);
+}
+
+.rental-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 1.15rem;
+  border-radius: 9999px;
+  background-color: #25D366;
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.rental-whatsapp-btn:hover {
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   7. Rental Desk Advisory Closing Section
+   ========================================================================== */
+.rental-closing-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rental-closing-card {
+  background: var(--color-forest-dark, #112821);
+  color: #FFFFFF;
+  border-radius: 1.25rem;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  box-shadow: 0 16px 48px rgba(17, 40, 33, 0.2);
+  box-sizing: border-box;
+}
+
+.rental-closing-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rental-closing-card .rental-eyebrow {
+  color: #D9C9A8;
+}
+
+.rental-closing-title {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.rental-closing-desc {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 44rem;
+}
+
+.rental-closing-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.rental-closing-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rental-contact-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #D9C9A8;
+}
+
+.rental-contact-val {
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+a.rental-contact-val:hover {
+  text-decoration: underline;
+  color: #D9C9A8;
+}
+
+.address-text {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.rental-closing-actions {
+  margin-top: 1rem;
+}
+
+.rental-whatsapp-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 1.65rem;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.rental-whatsapp-pill-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   8. Editorial Owner Pathway CTA (/rentals) & Dedicated Page (/rentals/list-property)
+   ========================================================================== */
+.rental-owner-cta-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 1.25rem;
+  padding: clamp(2rem, 4vw, 3rem);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.rental-owner-cta-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 44rem;
+}
+
+.rental-owner-cta-title {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight: 700;
+  color: var(--color-text, #202622);
+  line-height: 1.25;
+}
+
+.rental-owner-cta-desc {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-muted, #68706A);
+}
+
+.rental-owner-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.rental-owner-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.65rem;
+  border-radius: 9999px;
+  background-color: var(--color-forest, #18382E);
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 16px rgba(24, 56, 46, 0.15);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.rental-owner-link-btn:hover {
+  background-color: var(--color-forest-dark, #112821);
+  transform: translateY(-1px);
+}
+
+.rental-owner-call-link {
+  font-size: 0.92rem;
+  color: var(--color-text-muted, #68706A);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.rental-owner-call-link strong {
+  color: var(--color-forest, #18382E);
+}
+
+.rental-owner-call-link:hover {
+  color: var(--color-text, #202622);
+}
+
+/* Dedicated Owner Landing Page Layout (/rentals/list-property) */
+.owner-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3.5rem, 6vw, 5.5rem);
+  width: 100%;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem 1.5rem;
+  box-sizing: border-box;
+  background-color: var(--color-bg, #FAFAF8);
+}
+
+/* Owner Hero Section (Comparable in visual weight to /rentals hero) */
+.owner-hero {
+  position: relative;
+  width: 100%;
+  min-height: min(78vh, 46rem);
+  display: flex;
+  align-items: flex-end;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  background-color: #0b1118;
+}
+
+.owner-hero-media-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.owner-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Neutral architectural charcoal scrim - NO heavy green overlay tint */
+.owner-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 24, 28, 0.50) 0%,
+    rgba(17, 24, 28, 0.25) 30%,
+    rgba(15, 20, 24, 0.78) 72%,
+    rgba(11, 17, 24, 0.96) 100%
+  );
+  z-index: 2;
+}
+
+.floating-owner-hero-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 56rem;
+  padding: clamp(2rem, 5vw, 4rem);
+  box-sizing: border-box;
+  color: #FFFFFF;
+}
+
+/* Top Back Navigation inside Hero */
+.owner-hero-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 0.4rem 0.95rem;
+  border-radius: 9999px;
+  margin-bottom: 1.5rem;
+  transition: color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  width: fit-content;
+}
+
+.owner-hero-back-link:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateX(-3px);
+}
+
+.owner-hero-back-link:focus-visible {
+  outline: 2px solid #D9C9A8;
+  outline-offset: 2px;
+}
+
+.owner-hero-eyebrow-row {
+  margin-bottom: 0.75rem;
+}
+
+.owner-hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #D9C9A8;
+  background: rgba(217, 201, 168, 0.12);
+  border: 1px solid rgba(217, 201, 168, 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+}
+
+.owner-hero-headline {
+  margin: 0 0 1rem 0;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.owner-hero-supporting {
+  margin: 0 0 2rem 0;
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 44rem;
+}
+
+/* Action Buttons Cluster */
+.owner-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.owner-hero-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.85rem;
+  border-radius: 9999px;
+  background-color: var(--color-forest, #18382E);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.owner-hero-primary-btn:hover {
+  background-color: var(--color-forest-dark, #112821);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.owner-hero-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.4rem;
+  border-radius: 9999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.owner-hero-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* 3-Step Process Strip embedded within lower hero */
+.owner-hero-process-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.owner-hero-process-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.owner-hero-process-num {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #D9C9A8;
+  line-height: 1;
+}
+
+.owner-hero-process-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.owner-hero-process-desc {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+}
+
+/* 2-Column Split: Intro Media & Editorial / Form Card */
+.owner-page-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.25fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.owner-intro-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.owner-media-frame {
+  position: relative;
+  width: 100%;
+  height: clamp(16rem, 24vw, 21rem);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border, #E6E6E2);
+  background-color: #0b1118;
+}
+
+.owner-media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.owner-media-badge {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: rgba(17, 40, 33, 0.78);
+  backdrop-filter: blur(6px);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 2;
+}
+
+.owner-editorial-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  box-sizing: border-box;
+}
+
+.owner-editorial-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-forest, #18382E);
+  margin-bottom: 0.4rem;
+}
+
+.owner-editorial-title {
+  margin: 0 0 0.5rem 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-text, #202622);
+  line-height: 1.3;
+}
+
+.owner-editorial-desc {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--color-text-muted, #68706A);
+}
+
+.owner-direct-advisory-box {
+  background: var(--color-forest-dark, #112821);
+  color: #FFFFFF;
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  box-shadow: 0 8px 24px rgba(17, 40, 33, 0.15);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.owner-advisory-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #D9C9A8;
+}
+
+.owner-advisory-heading {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.owner-advisory-text {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.owner-advisory-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.owner-call-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.15rem;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.owner-call-pill-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.owner-whatsapp-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.15rem;
+  border-radius: 9999px;
+  background-color: #25D366;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.owner-whatsapp-pill-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Elevated Owner Form Card */
+.owner-form-column {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.owner-form-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 1.25rem;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  box-shadow: 0 12px 36px rgba(24, 56, 46, 0.05);
+  box-sizing: border-box;
+}
+
+.owner-form-header {
+  margin-bottom: 1.75rem;
+}
+
+.owner-form-title {
+  margin: 0.25rem 0 0.4rem 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.5rem, 2.5vw, 1.95rem);
+  font-weight: 700;
+  color: var(--color-text, #202622);
+}
+
+.owner-form-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-muted, #68706A);
+}
+
+/* How The Desk Operates (Process Section) */
+.owner-process-section {
+  width: 100%;
+  padding: 1.5rem 0;
+  box-sizing: border-box;
+}
+
+.owner-process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.owner-process-card {
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E6E6E2);
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.owner-process-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(24, 56, 46, 0.06);
+}
+
+.owner-process-num {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-brass, #A99168);
+  line-height: 1;
+}
+
+.owner-process-card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text, #202622);
+  line-height: 1.3;
+}
+
+.owner-process-card-desc {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-text-muted, #68706A);
+}
+
+/* Architectural Brand Banner */
+.owner-banner-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.owner-banner-wrapper {
+  position: relative;
+  width: 100%;
+  height: clamp(13rem, 22vw, 18rem);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0b1118;
+}
+
+.owner-banner-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.owner-banner-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 24, 28, 0.65) 0%,
+    rgba(15, 20, 24, 0.8) 100%
+  );
+  z-index: 1;
+}
+
+.owner-banner-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  max-width: 44rem;
+}
+
+.owner-banner-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #D9C9A8;
+  margin-bottom: 0.75rem;
+}
+
+.owner-banner-quote {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.4rem, 2.4vw, 1.95rem);
+  font-weight: 600;
+  font-style: italic;
+  color: #FFFFFF;
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   9. Responsive Behavior
+   ========================================================================== */
+@media (max-width: 900px) {
+  .rental-process-grid,
+  .owner-process-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .rental-closing-contact-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .owner-page-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .owner-form-column {
+    order: 1;
+  }
+
+  .owner-intro-column {
+    order: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .rental-page-container,
+  .owner-page-container {
+    padding: 0 1rem 3.5rem 1rem;
+    gap: 3rem;
+  }
+
+  .owner-form-card {
+    padding: 1.35rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .owner-media-frame {
+    height: 12rem;
+  }
+
+  .owner-banner-wrapper {
+    height: 11rem;
+  }
+
+  .owner-banner-content {
+    padding: 1.25rem 1rem;
+  }
+
+  .rental-hero,
+  .owner-hero {
+    min-height: 70vh;
+    border-radius: 1rem;
+  }
+
+  .floating-rental-hero-content,
+  .floating-owner-hero-content {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .owner-hero-process-strip {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-top: 1.25rem;
+  }
+
+  .hero-break {
+    display: none;
+  }
+
+  .form-group-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .rental-primary-card,
+  .rental-secondary-card {
+    padding: 1.25rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .rental-hero-actions,
+  .owner-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .rental-hero-primary-btn,
+  .rental-hero-secondary-btn,
+  .owner-hero-primary-btn,
+  .owner-hero-secondary-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .rental-owner-cta-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .rental-owner-link-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

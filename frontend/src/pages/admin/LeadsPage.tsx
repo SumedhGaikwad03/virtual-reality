@@ -33,10 +33,19 @@ export function LeadsPage() {
   });
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<LeadStatus | "ALL">("ALL");
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Debounce search input by 250ms to avoid out-of-order responses and race conditions
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   // Deletion modal state
   const [leadToDelete, setLeadToDelete] = useState<AdminLead | null>(null);
@@ -51,7 +60,7 @@ export function LeadsPage() {
       const response = await getLeads({
         page,
         limit: 20,
-        search: search.trim() || undefined,
+        search: debouncedSearch.trim() || undefined,
         status: statusFilter === "ALL" ? undefined : statusFilter,
       });
 
@@ -64,7 +73,7 @@ export function LeadsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, search, statusFilter]);
+  }, [page, debouncedSearch, statusFilter]);
 
   useEffect(() => {
     void fetchLeads();
@@ -114,7 +123,7 @@ export function LeadsPage() {
           <input
             type="search"
             className="admin-lead-search-input"
-            placeholder="Search by name, phone, email, notes..."
+            placeholder="Search leads by name, phone, project, configuration, notes..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -122,6 +131,20 @@ export function LeadsPage() {
             }}
             aria-label="Search leads"
           />
+          {search && (
+            <button
+              type="button"
+              className="admin-lead-search-clear-btn"
+              onClick={() => {
+                setSearch("");
+                setPage(1);
+              }}
+              title="Clear search"
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         <div className="admin-lead-filter-wrapper">
@@ -152,7 +175,40 @@ export function LeadsPage() {
 
       {!isLoading && !error && leads.length === 0 && (
         <section className="admin-card">
-          <p>No leads found {search || statusFilter !== "ALL" ? "matching your filters." : "."}</p>
+          {search.trim() ? (
+            <p>
+              No leads match "<strong>{search.trim()}</strong>"
+              {statusFilter !== "ALL" ? ` with status ${statusLabel(statusFilter)}` : ""}.{" "}
+              <button
+                type="button"
+                className="admin-link-button"
+                style={{ background: "none", border: "none", color: "var(--admin-primary, #18382E)", textDecoration: "underline", cursor: "pointer", padding: 0, font: "inherit" }}
+                onClick={() => {
+                  setSearch("");
+                  setPage(1);
+                }}
+              >
+                Clear search
+              </button>
+            </p>
+          ) : statusFilter !== "ALL" ? (
+            <p>
+              No leads found with status {statusLabel(statusFilter)}.{" "}
+              <button
+                type="button"
+                className="admin-link-button"
+                style={{ background: "none", border: "none", color: "var(--admin-primary, #18382E)", textDecoration: "underline", cursor: "pointer", padding: 0, font: "inherit" }}
+                onClick={() => {
+                  setStatusFilter("ALL");
+                  setPage(1);
+                }}
+              >
+                Show all statuses
+              </button>
+            </p>
+          ) : (
+            <p>No leads found.</p>
+          )}
         </section>
       )}
 

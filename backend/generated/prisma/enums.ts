@@ -100,3 +100,25 @@ export const MediaContext = {
 } as const
 
 export type MediaContext = (typeof MediaContext)[keyof typeof MediaContext]
+
+
+export const RentalEnquiryStatus = {
+  NEW: 'NEW',
+  CONTACTED: 'CONTACTED',
+  MATCHED: 'MATCHED',
+  CLOSED: 'CLOSED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type RentalEnquiryStatus = (typeof RentalEnquiryStatus)[keyof typeof RentalEnquiryStatus]
+
+
+export const RentalPropertyStatus = {
+  NEW: 'NEW',
+  VERIFIED: 'VERIFIED',
+  AVAILABLE: 'AVAILABLE',
+  RENTED: 'RENTED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type RentalPropertyStatus = (typeof RentalPropertyStatus)[keyof typeof RentalPropertyStatus]

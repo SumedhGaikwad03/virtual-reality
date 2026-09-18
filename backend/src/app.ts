@@ -23,6 +23,7 @@ import adminPushSubscriptionRoutes from "./routes/admin/push-subscription.routes
 import adminImportRoutes from "./routes/admin/import.routes.js";
 import adminContactRoutes from "./routes/admin/contact.routes.js";
 import adminFirmProfileRoutes from "./routes/admin/firm-profile.routes.js";
+import adminRentalRoutes from "./routes/admin/rental.routes.js";
 import {
   configurationRouter,
   projectRouter as projectConfigurationRouter,
@@ -34,6 +35,7 @@ import { projectAmenityRouter } from "./routes/admin/amenity.routes.js";
 import { projectHighlightRouter } from "./routes/admin/highlight.routes.js";
 import siteRoutes from "./routes/public/site.routes.js";
 import leadRoutes from "./routes/public/lead.routes.js";
+import rentalRoutes from "./routes/public/rental.routes.js";
 import seoRoutes from "./routes/public/seo.routes.js";
 
 const app = express();
@@ -158,6 +160,7 @@ app.use("/api/search", searchRoutes);
 //console.log("SEARCH ROUTES REGISTERED");
 app.use("/api/site", siteRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/rentals", rentalRoutes);
 app.use("/api/admin/auth", authRoutes);
 app.use("/api/admin/developers", adminDeveloperRoutes);
 app.use("/api/admin/projects/:projectId/configurations", projectConfigurationRouter);
@@ -167,6 +170,7 @@ app.use("/api/admin/projects", adminProjectRoutes);
 app.use("/api/admin/configurations", configurationRouter);
 app.use("/api/admin/media", adminMediaRoutes);
 app.use("/api/admin/leads", adminLeadRoutes);
+app.use("/api/admin/rentals", adminRentalRoutes);
 app.use("/api/admin/push-subscriptions", adminPushSubscriptionRoutes);
 app.use("/api/admin/import", adminImportRoutes);
 app.use("/api/admin/contact", adminContactRoutes);
@@ -559,6 +563,27 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
     return;
   }
 
+
+  if (error?.code === "RENTAL_ENQUIRY_NOT_FOUND") {
+    res.status(404).json({
+      error: { code: "RENTAL_ENQUIRY_NOT_FOUND", message: "Rental enquiry not found" },
+    });
+    return;
+  }
+
+  if (error?.code === "RENTAL_PROPERTY_NOT_FOUND") {
+    res.status(404).json({
+      error: { code: "RENTAL_PROPERTY_NOT_FOUND", message: "Rental property not found" },
+    });
+    return;
+  }
+
+  if (error?.code === "INVALID_RENTAL_REQUEST") {
+    res.status(400).json({
+      error: { code: "INVALID_RENTAL_REQUEST", message: error.message },
+    });
+    return;
+  }
 
   console.error(error);
   res.status(500).json({

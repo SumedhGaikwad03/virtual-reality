@@ -311,3 +311,61 @@ enum MediaContext {
   PROJECT
   CONFIGURATION
 }
+
+enum RentalEnquiryStatus {
+  NEW
+  CONTACTED
+  MATCHED
+  CLOSED
+  ARCHIVED
+}
+
+enum RentalPropertyStatus {
+  NEW
+  VERIFIED
+  AVAILABLE
+  RENTED
+  ARCHIVED
+}
+
+model RentalEnquiry {
+  id                  String              @id @default(uuid())
+  name                String
+  phone               String
+  configuration       String
+  location            String?
+  areaLocality        String?
+  budget              String?
+  furnishing          String?
+  moveInTimeframe     String?
+  whoIsFor            String?
+  notes               String?
+  status              RentalEnquiryStatus @default(NEW)
+  internalNotes       String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@index([phone])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model RentalProperty {
+  id                  String               @id @default(uuid())
+  ownerName           String
+  phone               String
+  flatType            String
+  approxSizeSqFt      Int?
+  location            String?
+  areaLocality        String?
+  societyDeveloper    String?
+  additionalDetails   String?
+  status              RentalPropertyStatus @default(NEW)
+  internalNotes       String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([phone])
+  @@index([status])
+  @@index([createdAt])
+}
