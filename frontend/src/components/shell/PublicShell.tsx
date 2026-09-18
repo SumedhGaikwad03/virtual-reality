@@ -51,8 +51,11 @@ function PublicShellInner() {
         // Storage access exception fallback
       }
 
-      // Explicitly exclude owner submission page (/rentals/list-property)
-      if (location.pathname === "/rentals/list-property") {
+      // Explicitly exclude standalone forms (/rentals/list-property, /enquiry)
+      if (
+        location.pathname === "/rentals/list-property" ||
+        location.pathname === "/enquiry"
+      ) {
         return;
       }
 

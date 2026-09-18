@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { FounderRoute, ProtectedRoute } from "../auth/ProtectedRoute";
 
 import { DeveloperPage } from "../pages/DeveloperPage";
+import { EnquiryPage } from "../pages/EnquiryPage";
 import { HomePage } from "../pages/HomePage";
 import { ListPropertyPage } from "../pages/ListPropertyPage";
 import { PrivacyPolicyPage } from "../pages/PrivacyPolicyPage";
@@ -415,6 +416,9 @@ export function AppRouter() {
         />
         <Route path="/:developerSlug" element={<DeveloperPage />} />
       </Route>
+
+      {/* Standalone customer property brief route (no header/footer/Tara/advisory popups) */}
+      <Route path="/enquiry" element={<EnquiryPage />} />
     </Routes>
   );
 }

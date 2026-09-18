@@ -1,0 +1,392 @@
+/*
+ * PURPOSE:
+ * Styles for the Standalone Public Property Enquiry page (/enquiry).
+ *
+ * AESTHETIC:
+ * Generic, editorial, calm, and trustworthy. Full-bleed residential architectural
+ * image backdrop with subtle cinematic scrim, solid warm ivory/cream consultation card,
+ * deep forest green accents, refined typography, and accessible responsive spacing.
+ */
+
+/* Full Viewport Container with Background Image */
+.enquiry-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1.5rem 5rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: #112821;
+}
+
+/* Background Image & Scrim */
+.enquiry-backdrop-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.enquiry-backdrop-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.enquiry-backdrop-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 40, 33, 0.6) 0%,
+    rgba(17, 40, 33, 0.75) 100%
+  );
+}
+
+/* Main Centered Content Container */
+.enquiry-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* Main Form Card - Solid Warm Ivory Surface */
+.enquiry-form-card {
+  background: #fdfdfb;
+  border: 1px solid #e7e6e0;
+  border-radius: 4px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.35);
+  padding: 2.75rem 2.5rem;
+  box-sizing: border-box;
+}
+
+/* Header Framing */
+.enquiry-header {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+
+.enquiry-title {
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  font-size: 2.125rem;
+  font-weight: 500;
+  line-height: 1.15;
+  color: #112821;
+  margin: 0 0 0.625rem;
+  letter-spacing: -0.01em;
+}
+
+.enquiry-subtitle {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: 0.9375rem;
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 0 auto 0.25rem;
+  max-width: 440px;
+}
+
+.enquiry-subtitle-secondary {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.8125rem;
+  color: #6b7280;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Understated Section Headings (Unnumbered) */
+.enquiry-section {
+  margin-bottom: 1.875rem;
+}
+
+.enquiry-section-title {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #112821;
+  margin: 0 0 0.875rem;
+}
+
+/* Form Controls & Grid */
+.enquiry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.enquiry-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.enquiry-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.enquiry-label {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.enquiry-label .required {
+  color: #b91c1c;
+  margin-left: 2px;
+}
+
+.enquiry-label-optional {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #6b7280;
+  margin-left: 4px;
+}
+
+.enquiry-input,
+.enquiry-textarea {
+  width: 100%;
+  padding: 0.6875rem 0.875rem;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.9375rem;
+  color: #111827;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.enquiry-input:focus,
+.enquiry-textarea:focus {
+  outline: none;
+  border-color: #112821;
+  box-shadow: 0 0 0 1px #112821;
+}
+
+.enquiry-input.has-error,
+.enquiry-textarea.has-error {
+  border-color: #b91c1c;
+}
+
+.enquiry-error-text {
+  font-size: 0.75rem;
+  color: #b91c1c;
+  margin-top: 0.125rem;
+}
+
+.enquiry-textarea {
+  min-height: 75px;
+  resize: vertical;
+}
+
+/* Chip / Pill Selectors */
+.enquiry-chips-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.enquiry-chip {
+  flex: 1;
+  min-width: 80px;
+  padding: 0.625rem 0.875rem;
+  background-color: #f3f3f0;
+  border: 1px solid #e2e2dd;
+  border-radius: 3px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #112821;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  text-align: center;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.enquiry-chip:hover {
+  border-color: #112821;
+  background-color: #ffffff;
+}
+
+.enquiry-chip.active {
+  background-color: #112821;
+  color: #ffffff;
+  border-color: #112821;
+  font-weight: 600;
+}
+
+/* Optional Details Toggle */
+.enquiry-optional-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.875rem 0;
+  background: none;
+  border: none;
+  border-top: 1px solid #e7e6e0;
+  cursor: pointer;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #112821;
+  margin: 1.25rem 0 0.5rem;
+  transition: color 0.15s ease;
+}
+
+.enquiry-optional-toggle:hover {
+  color: #8c7550;
+}
+
+.enquiry-optional-content {
+  padding-top: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Submission CTA & Feedback */
+.enquiry-submit-btn {
+  width: 100%;
+  padding: 0.9375rem 1.5rem;
+  background-color: #112821;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  margin-top: 1.5rem;
+}
+
+.enquiry-submit-btn:hover:not(:disabled) {
+  background-color: #1a3c32;
+}
+
+.enquiry-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.enquiry-feedback-error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 3px;
+  font-size: 0.8125rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Success Confirmation State */
+.enquiry-success-view {
+  text-align: center;
+  padding: 2.5rem 1rem 1.5rem;
+}
+
+.enquiry-success-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.enquiry-success-title {
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #112821;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.enquiry-success-text {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.9375rem;
+  color: #4b5563;
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto 2rem;
+}
+
+.enquiry-success-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.enquiry-btn-primary {
+  padding: 0.75rem 1.5rem;
+  background-color: #112821;
+  color: #ffffff;
+  border: 1px solid #112821;
+  border-radius: 3px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enquiry-btn-primary:hover {
+  background-color: #1a3c32;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 640px) {
+  .enquiry-page-wrapper {
+    padding: 2rem 1rem 3.5rem;
+    align-items: flex-start;
+  }
+
+  .enquiry-form-card {
+    padding: 2rem 1.25rem;
+  }
+
+  .enquiry-title {
+    font-size: 1.75rem;
+  }
+
+  .enquiry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .enquiry-chip {
+    min-width: 70px;
+  }
+}

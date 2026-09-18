@@ -920,6 +920,27 @@
   - Clear UX separation: Tara (property discovery), Let's Connect (generic firm advisory), Schedule a Visit (specific project visit).
   - Zero Git commits or pushes.
 
+---
+
+## Phase 64: Standalone Public Property Enquiry Page (`/enquiry`)
+- **Standalone Customer Brief Route (`frontend/src/router/AppRouter.tsx`)**:
+  - Mounted `<Route path="/enquiry" element={<EnquiryPage />} />` outside `PublicShell` so the consultation page renders completely standalone with zero website navigation headers, footers, Tara floating triggers, or advisory modals.
+- **Generic & Personal Page Redesign (`frontend/src/pages/EnquiryPage.tsx`)**:
+  - Redesigned for customer direct sharing (WhatsApp/SMS/Email) following human calls.
+  - Features generic, reassuring headline: `PROPERTY ENQUIRY` and *"Tell us what you're looking for. We'll take care of the rest."*
+  - Fast, unnumbered minimum path: Full Name $\rightarrow$ Mobile Number (Indian 10-digit validation) $\rightarrow$ Buy/Rent segmented chips $\rightarrow$ Configuration (`1 BHK`, `2 BHK`, `3 BHK`, `4+ BHK`) $\rightarrow$ Preferred Date (`min={today}`) $\rightarrow$ `Submit Enquiry →`.
+  - Preferred Visit Time chips (`Morning`, `Afternoon`, `Evening`) and expandable optional accordion (`+ Add more details (optional)` for Location, Budget, Email, and Notes) remain secondary and progressive.
+  - Reuses existing `createLead` / `POST /api/leads` contract, encoding structured requirements into the lead message with zero backend schema changes.
+  - Minimal confirmation view: `PROPERTY ENQUIRY RECEIVED` with *"Thank you. We've received your requirements and will take care of the next steps."* and `[ Continue Exploring ]`.
+- **Full-Bleed Architectural Backdrop (`frontend/src/styles/enquiry.css`)**:
+  - Full-viewport high-end residential architecture backdrop with dark cinematic scrim (`rgba(17, 40, 33, 0.6)`) and solid warm ivory consultation card (`#FDFDFB`).
+  - Mobile-first responsive optimization (320px–1440px) with $\ge 44\text{px}$ touch targets and zero horizontal overflow.
+- **Invariants Preserved**:
+  - Zero database schema or backend migration modifications.
+  - Zero modifications to Tara discovery, contextual project modals, or existing project pages.
+  - Zero Git commits or pushes.
+
+
 
 
 
