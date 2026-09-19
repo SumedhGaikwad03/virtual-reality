@@ -15,7 +15,7 @@
  * 6. Communicates developer.name context to GlobalHeader for developer brand attribution.
  */
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AboutFooter } from "../components/home/AboutFooter";
 import { useSite } from "../components/home/hooks/useSite";
@@ -23,8 +23,10 @@ import { DeveloperHero } from "../components/developer/DeveloperHero";
 import { DeveloperIntro } from "../components/developer/DeveloperIntro";
 import { DeveloperLeadSection } from "../components/developer/DeveloperLeadSection";
 import { DeveloperProjects } from "../components/developer/DeveloperProjects";
+import { ContextualEnquiryModal } from "../components/common/ContextualEnquiryModal";
 import { useDeveloper } from "../components/developer/hooks/useDeveloper";
 import { useHeader } from "../context/HeaderContext";
+import { useAssistant } from "../context/AssistantContext";
 
 const defaultSiteFallback = {
   name: "Virtual Reality",
@@ -46,6 +48,10 @@ export function DeveloperPage() {
   const { developer, isLoading, loadError } = useDeveloper(developerSlug);
   const { site } = useSite();
   const { setDeveloperName } = useHeader();
+  const { isOpen: isAssistantOpen, closeAssistant } = useAssistant();
+
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const enquiryTriggerRef = useRef<HTMLElement | null>(null);
 
   // Communicate developer.name context to GlobalHeader
   useEffect(() => {
@@ -56,6 +62,20 @@ export function DeveloperPage() {
       setDeveloperName(null);
     };
   }, [developer?.name, setDeveloperName]);
+
+  const openEnquiryModal = (triggerElement?: HTMLElement | null) => {
+    if (isAssistantOpen) {
+      closeAssistant({ reset: false });
+    }
+    if (triggerElement) {
+      enquiryTriggerRef.current = triggerElement;
+    }
+    setIsEnquiryModalOpen(true);
+  };
+
+  const handleCloseEnquiryModal = () => {
+    setIsEnquiryModalOpen(false);
+  };
 
   if (isLoading) {
     return (
@@ -78,7 +98,10 @@ export function DeveloperPage() {
     <div className="developer-page-container">
       <main className="developer-page-main">
         {/* 1. Full-Bleed Atmospheric Hero with Integrated Floating Brand Mark */}
-        <DeveloperHero developer={developer} />
+        <DeveloperHero
+          developer={developer}
+          onOpenEnquiry={(triggerEl) => openEnquiryModal(triggerEl)}
+        />
 
         {/* 2. Developer Introduction / Identity */}
         <DeveloperIntro developer={developer} />
@@ -86,9 +109,21 @@ export function DeveloperPage() {
         {/* 3. Projects by Developer Portfolio */}
         <DeveloperProjects developer={developer} />
 
-        {/* 4. Developer Enquiry */}
+        {/* 4. Developer Enquiry (In-Page Conversion Section) */}
         <DeveloperLeadSection developer={developer} />
       </main>
+
+      {/* Reused Contextual Enquiry Sheet */}
+      <ContextualEnquiryModal
+        isOpen={isEnquiryModalOpen}
+        onClose={handleCloseEnquiryModal}
+        contextType="developer"
+        entityName={developer.name}
+        developerName={developer.name}
+        developerId={developer.id}
+        triggerRef={enquiryTriggerRef}
+        initialIntent="REQUEST_CALLBACK"
+      />
 
       {/* 5. Footer */}
       <AboutFooter site={site || defaultSiteFallback} />

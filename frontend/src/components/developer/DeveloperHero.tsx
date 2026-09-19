@@ -14,11 +14,22 @@ import { scrollToElement } from "../../scroll/scrollTo";
 
 type DeveloperHeroProps = {
   developer: PublicDeveloper;
+  onOpenEnquiry?: (triggerEl?: HTMLElement | null) => void;
 };
 
-export function DeveloperHero({ developer }: DeveloperHeroProps) {
+export function DeveloperHero({ developer, onOpenEnquiry }: DeveloperHeroProps) {
   const heroMedia = developer.heroMedia;
   const heroImageUrl = heroMedia?.url || null;
+
+  function handleHeroCtaClick(e: React.MouseEvent<HTMLButtonElement>) {
+    if (onOpenEnquiry) {
+      onOpenEnquiry(e.currentTarget);
+    } else {
+      scrollToElement("developer-enquiry-heading");
+      const el = document.getElementById("developer-enquiry-heading");
+      el?.parentElement?.querySelector<HTMLInputElement>("input")?.focus();
+    }
+  }
 
   return (
     <section className="developer-hero" aria-label={`${developer.name} profile hero`}>
@@ -45,13 +56,9 @@ export function DeveloperHero({ developer }: DeveloperHeroProps) {
           <button
             type="button"
             className="developer-hero-contact-btn"
-            onClick={() => {
-              scrollToElement("developer-enquiry-heading");
-              const el = document.getElementById("developer-enquiry-heading");
-              el?.parentElement?.querySelector<HTMLInputElement>("input")?.focus();
-            }}
+            onClick={handleHeroCtaClick}
           >
-            Enquire with {developer.name} →
+            Enquire About {developer.name} →
           </button>
         </div>
       </div>
