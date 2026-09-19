@@ -9,6 +9,8 @@ export type AdminLead = {
   project: { id: string; name: string; slug: string } | null;
   configuration: { id: string; name: string } | null;
   message: string | null;
+  visitDate: string | null;
+  visitTime: string | null;
   status: LeadStatus;
   notes: string | null;
   createdAt: string;
@@ -23,6 +25,8 @@ export type AdminLeadCreateInput = {
   projectId?: string | null;
   configurationId?: string | null;
   message?: string | null;
+  visitDate?: string | null;
+  visitTime?: string | null;
   status?: LeadStatus;
   notes?: string | null;
 };
@@ -35,6 +39,8 @@ export type AdminLeadUpdateInput = {
   projectId?: string | null;
   configurationId?: string | null;
   message?: string | null;
+  visitDate?: string | null;
+  visitTime?: string | null;
   status?: LeadStatus;
   notes?: string | null;
 };
@@ -62,3 +68,37 @@ export type AdminLeadsResponse = {
   pagination: PaginationMeta;
 };
 export type AdminLeadDeleteResponse = { data: { deleted: boolean; id: string } };
+export type AdminVisitCreateInput = {
+  name: string;
+  phone: string;
+  visitDate: string;
+  visitTime?: string | null;
+  email?: string | null;
+  developerId?: string | null;
+  projectId?: string | null;
+  configurationId?: string | null;
+  message?: string | null;
+  status?: LeadStatus;
+  notes?: string | null;
+};
+
+export type AdminVisitUpdateInput = {
+  name?: string;
+  phone?: string;
+  visitDate?: string | null;
+  visitTime?: string | null;
+  email?: string | null;
+  developerId?: string | null;
+  projectId?: string | null;
+  configurationId?: string | null;
+  message?: string | null;
+  status?: LeadStatus;
+  notes?: string | null;
+};
+
+export type AdminVisitsData = {
+  today: AdminLead[];
+  upcoming: AdminLead[];
+  past: AdminLead[];
+};
+export type AdminVisitsResponse = { data: AdminVisitsData };

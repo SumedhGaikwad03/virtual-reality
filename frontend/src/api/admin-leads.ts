@@ -6,6 +6,9 @@ import type {
   AdminLeadResponse,
   AdminLeadsResponse,
   AdminLeadUpdateInput,
+  AdminVisitCreateInput,
+  AdminVisitUpdateInput,
+  AdminVisitsResponse,
 } from "../types/admin-lead";
 
 export function getLeads(query?: AdminLeadQuery) {
@@ -46,6 +49,43 @@ export function updateLead(id: string, payload: AdminLeadUpdateInput) {
 
 export function deleteLead(id: string) {
   return adminRequest<AdminLeadDeleteResponse>(`/admin/leads/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export function getVisits() {
+  return adminRequest<AdminVisitsResponse>("/admin/visits");
+}
+
+export function createVisit(payload: AdminVisitCreateInput) {
+  return adminRequest<AdminLeadResponse>("/admin/visits", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getVisit(id: string) {
+  return adminRequest<AdminLeadResponse>(`/admin/visits/${id}`);
+}
+
+export function updateVisit(id: string, payload: AdminVisitUpdateInput) {
+  return adminRequest<AdminLeadResponse>(`/admin/visits/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function cancelVisitSchedule(id: string) {
+  return updateVisit(id, {
+    visitDate: null,
+    visitTime: null,
+  });
+}
+
+export function deleteVisit(id: string) {
+  return adminRequest<AdminLeadDeleteResponse>(`/admin/visits/${id}`, {
     method: "DELETE",
   });
 }

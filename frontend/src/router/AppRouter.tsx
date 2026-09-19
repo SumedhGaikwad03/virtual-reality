@@ -40,6 +40,9 @@ const ConfigurationFormPage = lazy(() =>
 const LeadsPage = lazy(() =>
   import("../pages/admin/LeadsPage").then((m) => ({ default: m.LeadsPage })),
 );
+const VisitsPage = lazy(() =>
+  import("../pages/admin/VisitsPage").then((m) => ({ default: m.VisitsPage })),
+);
 const LeadDetailPage = lazy(() =>
   import("../pages/admin/LeadDetailPage").then((m) => ({ default: m.LeadDetailPage })),
 );
@@ -225,6 +228,18 @@ export function AppRouter() {
           <ProtectedRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <LeadsPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Admin scheduled property visits */}
+      <Route
+        path="/admin/visits"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <VisitsPage />
             </Suspense>
           </ProtectedRoute>
         }

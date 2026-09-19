@@ -15,6 +15,7 @@ import {
   createAdminLead,
   deleteLead,
   getLeadById,
+  getVisits,
   listLeads,
   updateLead,
   type CreateAdminLeadInput,
@@ -42,6 +43,8 @@ export async function createAdminLeadController(
       projectId: body.projectId as string | undefined,
       configurationId: body.configurationId as string | undefined,
       message: body.message as string | undefined,
+      visitDate: body.visitDate as string | null | undefined,
+      visitTime: body.visitTime as string | null | undefined,
       status: body.status as LeadStatus | undefined,
       notes: body.notes as string | undefined,
     } satisfies CreateAdminLeadInput);
@@ -103,6 +106,8 @@ export async function updateLeadController(
       projectId: body.projectId as string | null | undefined,
       configurationId: body.configurationId as string | null | undefined,
       message: body.message as string | null | undefined,
+      visitDate: body.visitDate as string | null | undefined,
+      visitTime: body.visitTime as string | null | undefined,
       status: body.status as LeadStatus | undefined,
       notes: body.notes as string | null | undefined,
     };
@@ -114,6 +119,97 @@ export async function updateLeadController(
 }
 
 export async function deleteLeadController(
+  req: Request<LeadIdParams>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    res.status(200).json(await deleteLead(req.params.id));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getVisitsController(
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await getVisits();
+    res.status(200).json({ data: result });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function createVisitController(
+  req: Request<{}, unknown, AdminLeadCreateBody>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const body = req.body;
+    const result = await createAdminLead({
+      name: body.name as string,
+      phone: body.phone as string,
+      email: body.email as string | undefined,
+      developerId: body.developerId as string | undefined,
+      projectId: body.projectId as string | undefined,
+      configurationId: body.configurationId as string | undefined,
+      message: body.message as string | undefined,
+      visitDate: body.visitDate as string,
+      visitTime: body.visitTime as string | null | undefined,
+      status: body.status as LeadStatus | undefined,
+      notes: body.notes as string | undefined,
+    } satisfies CreateAdminLeadInput);
+
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getVisitController(
+  req: Request<LeadIdParams>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    res.status(200).json(await getLeadById(req.params.id));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateVisitController(
+  req: Request<LeadIdParams, unknown, AdminLeadUpdateBody>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const body = req.body;
+    const input: UpdateAdminLeadInput = {
+      name: body.name as string | undefined,
+      phone: body.phone as string | undefined,
+      email: body.email as string | null | undefined,
+      developerId: body.developerId as string | null | undefined,
+      projectId: body.projectId as string | null | undefined,
+      configurationId: body.configurationId as string | null | undefined,
+      message: body.message as string | null | undefined,
+      visitDate: body.visitDate as string | null | undefined,
+      visitTime: body.visitTime as string | null | undefined,
+      status: body.status as LeadStatus | undefined,
+      notes: body.notes as string | null | undefined,
+    };
+
+    res.status(200).json(await updateLead(req.params.id, input));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteVisitController(
   req: Request<LeadIdParams>,
   res: Response,
   next: NextFunction,
