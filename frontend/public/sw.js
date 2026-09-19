@@ -180,6 +180,11 @@ self.addEventListener("fetch", (event) => {
         return fetch(request)
           .then((response) => {
             if (response && response.ok) {
+              const contentType = response.headers.get("content-type") || "";
+              // Guard: Never cache SPA fallback HTML as a JavaScript module chunk
+              if (url.pathname.endsWith(".js") && contentType.includes("text/html")) {
+                return response;
+              }
               const copy = response.clone();
               caches.open(STATIC_CACHE).then((cache) => cache.put(request, copy)).catch(() => {});
             }
