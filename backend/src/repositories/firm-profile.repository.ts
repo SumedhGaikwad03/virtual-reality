@@ -18,7 +18,7 @@ export const DEFAULT_FIRM_PROFILE = {
   founderTitle: "Founder of Virtual Reality",
   founderExperience: "20+ years of experience in the real estate industry",
   founderBio:
-    "Dipankar Jagtap has shaped the real estate landscape across Pune, delivering distinguished residential and commercial landmarks with exceptional architectural integrity.",
+    "Dipankar Jagtap brings extensive real estate advisory experience across Pune, helping homebuyers navigate property selections with transparent, consultative guidance.",
   founderImageMediaId: null as string | null,
   founderImageMedia: null as {
     id: string;
@@ -28,7 +28,7 @@ export const DEFAULT_FIRM_PROFILE = {
     title: string | null;
   } | null,
   companyDescription:
-    "Virtual Reality is a real-estate discovery platform showcasing prime residential developments and architectural landmarks.",
+    "Virtual Reality is a real-estate discovery and advisory platform connecting homebuyers with residential developments from established developers.",
 };
 
 export type UpdateFirmProfileInput = {

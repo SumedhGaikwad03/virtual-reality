@@ -138,7 +138,7 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
             <span className="card-badge-eyebrow">CONSULTATION & ADVISORY</span>
             <h3 className="card-heading">Property Advisory</h3>
             <p className="card-description">
-              Request a bespoke architectural consultation and verified property guidance with our senior advisory team.
+              Request a personalized property consultation and verified project guidance with our senior advisory team.
             </p>
           </div>
 
@@ -218,7 +218,7 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
               disabled={isSubmitting}
               className="advisory-submit-btn"
             >
-              {isSubmitting ? "Submitting Request..." : "Request Advisory Consultation →"}
+              {isSubmitting ? "Submitting Request..." : "Request Property Consultation →"}
             </button>
           </form>
         </div>

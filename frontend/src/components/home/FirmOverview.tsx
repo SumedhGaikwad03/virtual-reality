@@ -28,11 +28,11 @@ export function FirmOverview({ site }: FirmOverviewProps) {
     "20+ years of experience in the real estate industry";
   const founderBio =
     profile?.founderBio ||
-    "Dipankar Jagtap has shaped the real estate landscape across Pune, delivering distinguished residential and commercial landmarks with exceptional architectural integrity.";
+    "Dipankar Jagtap brings extensive real estate advisory experience across Pune, helping homebuyers navigate property selections with transparent, consultative guidance.";
   const companyDescription =
     profile?.companyDescription ||
     site.description ||
-    "Virtual Reality is a real-estate discovery platform showcasing prime residential developments and architectural landmarks.";
+    "Virtual Reality is a real-estate discovery and advisory platform connecting homebuyers with residential developments from established developers.";
 
   const founderImage = profile?.founderImage;
 
@@ -49,10 +49,10 @@ export function FirmOverview({ site }: FirmOverviewProps) {
       aria-label="Firm Leadership and Overview"
     >
       <div className="section-header-editorial">
-        <span className="section-eyebrow">BRAND PHILOSOPHY & LEADERSHIP</span>
-        <h2 className="section-title">More than spaces. A better way of living.</h2>
+        <span className="section-eyebrow">EXPERIENCED PROPERTY ADVISORY</span>
+        <h2 className="section-title">Guiding you to the right address with confidence.</h2>
         <p className="section-subtitle">
-          Shaping Pune's real estate landscape through architectural discernment, verified inventory, and consultative advisory.
+          Guiding homebuyers through Pune's residential market with trusted advisory and market knowledge.
         </p>
       </div>
 

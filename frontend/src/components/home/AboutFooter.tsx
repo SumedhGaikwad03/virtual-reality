@@ -63,7 +63,7 @@ export function AboutFooter({ site }: AboutFooterProps) {
           <p className="footer-about-description">
             {site.firmProfile?.companyDescription ||
               site.description ||
-              "Virtual Reality is a real-estate discovery platform showcasing prime residential developments and architectural landmarks."}
+              "Virtual Reality is a real-estate discovery and advisory platform connecting homebuyers with residential developments from established developers."}
           </p>
         </div>
 

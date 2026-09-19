@@ -89,10 +89,10 @@ export function HomeGallery({ media }: HomeGalleryProps) {
     >
       <div className="home-firm-gallery-header">
         <div>
-          <span className="firm-gallery-badge">Firm Milestones & Culture</span>
+          <span className="firm-gallery-badge">Our Journey & Milestones</span>
           <h2 className="firm-gallery-title">Moments & Achievements</h2>
           <p className="firm-gallery-subtitle">
-            Celebrating milestones, architectural excellence, and leadership across Virtual Reality.
+            Milestones, client interactions, and key moments from our advisory journey.
           </p>
         </div>
 

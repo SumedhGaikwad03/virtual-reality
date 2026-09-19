@@ -25,7 +25,7 @@ import { getSite } from "../site.service.js";
 const CANONICAL_ORIGIN = "https://www.virtual2reality.in";
 const DEFAULT_SITE_NAME = "Virtual Reality";
 const DEFAULT_DESCRIPTION =
-  "Virtual Reality is a premier architectural real-estate platform showcasing curated residential landmarks and luxury developments in Pune and Mumbai.";
+  "Virtual Reality is a premier real estate discovery and advisory platform connecting homebuyers with curated residential developments from leading builders in Pune.";
 const DEFAULT_OG_IMAGE = `${CANONICAL_ORIGIN}/icons/icon-512x512.png`;
 
 import fs from "node:fs";
@@ -561,7 +561,7 @@ export async function generateHomeHtml(): Promise<string> {
   const site = siteData.data;
 
   const canonicalUrl = CANONICAL_ORIGIN;
-  const title = `${site.name || DEFAULT_SITE_NAME} — ${site.tagline || "Architectural Real Estate Platform"}`;
+  const title = `${site.name || DEFAULT_SITE_NAME} — ${site.tagline || "Real Estate Discovery & Property Advisory"}`;
   const description = site.description?.trim() || DEFAULT_DESCRIPTION;
 
   const heroMedia =
@@ -637,7 +637,7 @@ export async function generateHomeHtml(): Promise<string> {
     <main class="home-page-container" style="max-width: 1200px; margin: 0 auto; padding: 24px;">
       <header style="margin-bottom: 32px;">
         <h1 style="font-size: 36px; font-weight: bold; margin-bottom: 12px;">${escapeHtml(site.name || DEFAULT_SITE_NAME)}</h1>
-        <p style="font-size: 20px; color: #374151;">${escapeHtml(site.tagline || "Architectural Real Estate Platform")}</p>
+        <p style="font-size: 20px; color: #374151;">${escapeHtml(site.tagline || "Real Estate Discovery & Property Advisory")}</p>
         <p style="font-size: 16px; color: #6b7280; margin-top: 8px;">${escapeHtml(description)}</p>
       </header>
 

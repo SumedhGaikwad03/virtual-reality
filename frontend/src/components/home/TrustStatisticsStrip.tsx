@@ -50,7 +50,7 @@ export function TrustStatisticsStrip({
           <span className="trust-stat-number">20+</span>
           <div className="trust-stat-meta">
             <strong className="trust-stat-label">Years of Advisory</strong>
-            <span className="trust-stat-desc">Founded on architectural insight & integrity</span>
+            <span className="trust-stat-desc">Real estate advisory & market insight</span>
           </div>
         </div>
 

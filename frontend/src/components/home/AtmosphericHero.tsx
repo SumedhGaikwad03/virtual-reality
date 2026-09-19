@@ -35,11 +35,11 @@ export function AtmosphericHero({
   const mobileHero = heroItems.find((item) => item.slot === "mobile") || primaryHero;
   const mobileImageUrl = mobileHero?.url ? getOptimizedImageUrl(mobileHero.url) : desktopImageUrl;
 
-  const eyebrowText = tagline || "Curated Real Estate & Architectural Landmarks";
+  const eyebrowText = tagline || "Curated Residential Developments & Property Advisory";
   const headlineText = name || "Find a Better Tomorrow";
   const supportingText =
     description ||
-    "Discover verified residential developments, signature penthouses, and bespoke villas crafted by leading developers.";
+    "Discover residential developments from established developers with dedicated property guidance across Pune.";
 
   return (
     <section className="atmospheric-hero" aria-label="Hero">
@@ -72,7 +72,7 @@ export function AtmosphericHero({
 
         <div className="hero-action-cluster">
           <a href="#featured" className="hero-secondary-link">
-            <span>Explore Portfolio ↓</span>
+            <span>Explore Developments ↓</span>
           </a>
         </div>
       </div>
