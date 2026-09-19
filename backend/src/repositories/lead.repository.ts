@@ -24,6 +24,8 @@ const leadSelect = {
   project: { select: { id: true, name: true, slug: true } },
   configuration: { select: { id: true, name: true } },
   message: true,
+  visitDate: true,
+  visitTime: true,
   status: true,
   notes: true,
   createdAt: true,
@@ -48,6 +50,8 @@ export type LeadUpdateData = {
   projectId?: string | null;
   configurationId?: string | null;
   message?: string | null;
+  visitDate?: string | null;
+  visitTime?: string | null;
   status?: LeadStatus;
   notes?: string | null;
 };
@@ -61,6 +65,8 @@ export class LeadRepository {
     projectId?: string;
     configurationId?: string;
     message?: string;
+    visitDate?: string;
+    visitTime?: string;
     status: LeadStatus;
     notes?: string;
   }) {
@@ -128,6 +134,21 @@ export class LeadRepository {
 
   findById(id: string) {
     return prisma.lead.findUnique({ where: { id }, select: leadSelect });
+  }
+
+  async findVisits() {
+    return prisma.lead.findMany({
+      where: {
+        visitDate: {
+          not: null,
+        },
+      },
+      orderBy: [
+        { visitDate: "asc" },
+        { createdAt: "asc" },
+      ],
+      select: leadSelect,
+    });
   }
 
   update(id: string, data: LeadUpdateData) {

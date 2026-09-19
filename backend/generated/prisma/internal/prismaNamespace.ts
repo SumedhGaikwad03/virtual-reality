@@ -1615,6 +1615,8 @@ export const LeadScalarFieldEnum = {
   projectId: 'projectId',
   configurationId: 'configurationId',
   message: 'message',
+  visitDate: 'visitDate',
+  visitTime: 'visitTime',
   status: 'status',
   notes: 'notes',
   createdAt: 'createdAt',

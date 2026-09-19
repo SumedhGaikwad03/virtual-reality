@@ -19,7 +19,7 @@ import { developerRepository } from "../repositories/developer.repository.js";
 import { leadRepository, type LeadFindManyOptions, type LeadUpdateData } from "../repositories/lead.repository.js";
 import { projectRepository } from "../repositories/project.repository.js";
 import { notifyNewLead } from "./notification.service.js";
-import { normalizeIndianPhone } from "../validators/lead.validator.js";
+import { getTodayISTDateString, normalizeIndianPhone } from "../validators/lead.validator.js";
 
 export type CreateLeadInput = {
   name: string;
@@ -29,6 +29,8 @@ export type CreateLeadInput = {
   projectId?: string;
   configurationId?: string;
   message?: string;
+  visitDate?: string;
+  visitTime?: string;
 };
 
 export type CreateAdminLeadInput = {
@@ -39,6 +41,8 @@ export type CreateAdminLeadInput = {
   projectId?: string | null;
   configurationId?: string | null;
   message?: string | null;
+  visitDate?: string | null;
+  visitTime?: string | null;
   status?: LeadStatus;
   notes?: string | null;
 };
@@ -51,6 +55,8 @@ export type UpdateAdminLeadInput = {
   projectId?: string | null;
   configurationId?: string | null;
   message?: string | null;
+  visitDate?: string | null;
+  visitTime?: string | null;
   status?: LeadStatus;
   notes?: string | null;
 };
@@ -81,6 +87,8 @@ function toAdminLead(lead: {
   project: { id: string; name: string; slug: string } | null;
   configuration: { id: string; name: string } | null;
   message: string | null;
+  visitDate?: string | null;
+  visitTime?: string | null;
   status: LeadStatus;
   notes: string | null;
   createdAt: Date;
@@ -95,6 +103,8 @@ function toAdminLead(lead: {
     project: lead.project,
     configuration: lead.configuration,
     message: lead.message,
+    visitDate: lead.visitDate ?? null,
+    visitTime: lead.visitTime ?? null,
     status: lead.status,
     notes: lead.notes,
     createdAt: lead.createdAt,
@@ -207,6 +217,8 @@ export async function createLead(input: CreateLeadInput) {
     projectId: context.projectId,
     configurationId: context.configurationId,
     message: input.message,
+    visitDate: input.visitDate,
+    visitTime: input.visitTime,
     status: "NEW",
   });
 
@@ -237,6 +249,8 @@ export async function createAdminLead(input: CreateAdminLeadInput) {
     projectId: context.projectId,
     configurationId: context.configurationId,
     message: input.message || undefined,
+    visitDate: input.visitDate || undefined,
+    visitTime: input.visitTime || undefined,
     status: input.status || "NEW",
     notes: input.notes || undefined,
   });
@@ -277,6 +291,8 @@ export async function updateLead(id: string, input: UpdateAdminLeadInput) {
   if (input.phone !== undefined) updateData.phone = input.phone;
   if (input.email !== undefined) updateData.email = input.email;
   if (input.message !== undefined) updateData.message = input.message;
+  if (input.visitDate !== undefined) updateData.visitDate = input.visitDate;
+  if (input.visitTime !== undefined) updateData.visitTime = input.visitTime;
   if (input.status !== undefined) updateData.status = input.status;
   if (input.notes !== undefined) updateData.notes = input.notes;
 
@@ -314,4 +330,66 @@ export async function deleteLead(id: string) {
 
   await leadRepository.delete(id);
   return { data: { deleted: true, id } };
+}
+
+function timeSlotRank(timeSlot: string | null | undefined): number {
+  switch (timeSlot) {
+    case "Morning":
+      return 1;
+    case "Afternoon":
+      return 2;
+    case "Evening":
+      return 3;
+    default:
+      return 4;
+  }
+}
+
+export async function getVisits() {
+  const todayDate = getTodayISTDateString();
+  const rawLeads = await leadRepository.findVisits();
+  const leads = rawLeads.map(toAdminLead);
+
+  const todayLeads = leads.filter((lead) => lead.visitDate === todayDate);
+  const upcomingLeads = leads.filter((lead) => Boolean(lead.visitDate && lead.visitDate > todayDate));
+  const pastLeads = leads.filter((lead) => Boolean(lead.visitDate && lead.visitDate < todayDate));
+
+  // Today sorting:
+  // 1. visitTime (Morning -> Afternoon -> Evening -> unspecified)
+  // 2. createdAt ascending
+  todayLeads.sort((a, b) => {
+    const rankDiff = timeSlotRank(a.visitTime) - timeSlotRank(b.visitTime);
+    if (rankDiff !== 0) return rankDiff;
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
+
+  // Upcoming sorting:
+  // 1. visitDate ascending (nearest date first)
+  // 2. visitTime (Morning -> Afternoon -> Evening -> unspecified)
+  // 3. createdAt ascending
+  upcomingLeads.sort((a, b) => {
+    const dateDiff = (a.visitDate || "").localeCompare(b.visitDate || "");
+    if (dateDiff !== 0) return dateDiff;
+    const rankDiff = timeSlotRank(a.visitTime) - timeSlotRank(b.visitTime);
+    if (rankDiff !== 0) return rankDiff;
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
+
+  // Past sorting:
+  // 1. visitDate descending (most recent past date first)
+  // 2. visitTime (Morning -> Afternoon -> Evening -> unspecified)
+  // 3. createdAt descending
+  pastLeads.sort((a, b) => {
+    const dateDiff = (b.visitDate || "").localeCompare(a.visitDate || "");
+    if (dateDiff !== 0) return dateDiff;
+    const rankDiff = timeSlotRank(a.visitTime) - timeSlotRank(b.visitTime);
+    if (rankDiff !== 0) return rankDiff;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  return {
+    today: todayLeads,
+    upcoming: upcomingLeads,
+    past: pastLeads,
+  };
 }

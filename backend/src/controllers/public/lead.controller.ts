@@ -30,6 +30,8 @@ export async function createLeadController(
         projectId: body.projectId as string | undefined,
         configurationId: body.configurationId as string | undefined,
         message: body.message as string | undefined,
+        visitDate: body.visitDate as string | undefined,
+        visitTime: body.visitTime as string | undefined,
       } satisfies CreateLeadInput),
     );
   } catch (error) {

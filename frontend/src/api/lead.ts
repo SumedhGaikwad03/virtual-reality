@@ -8,6 +8,8 @@ export type CreateLeadPayload = {
   projectId?: string;
   configurationId?: string;
   message?: string;
+  visitDate?: string;
+  visitTime?: string;
 };
 
 export class LeadApiError extends Error {

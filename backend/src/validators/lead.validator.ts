@@ -19,6 +19,8 @@ export type PublicLeadBody = {
   projectId?: unknown;
   configurationId?: unknown;
   message?: unknown;
+  visitDate?: unknown;
+  visitTime?: unknown;
 };
 
 export type AdminLeadCreateBody = {
@@ -29,6 +31,8 @@ export type AdminLeadCreateBody = {
   projectId?: unknown;
   configurationId?: unknown;
   message?: unknown;
+  visitDate?: unknown;
+  visitTime?: unknown;
   status?: unknown;
   notes?: unknown;
 };
@@ -41,11 +45,14 @@ export type AdminLeadUpdateBody = {
   projectId?: unknown;
   configurationId?: unknown;
   message?: unknown;
+  visitDate?: unknown;
+  visitTime?: unknown;
   status?: unknown;
   notes?: unknown;
 };
 
 const leadStatuses = new Set(["NEW", "IN_PROGRESS", "DONE"]);
+const validVisitTimes = new Set(["Morning", "Afternoon", "Evening"]);
 
 function validationError(message: string) {
   const error = new Error(message);
@@ -74,6 +81,37 @@ export function normalizeIndianPhone(raw: unknown): string | null {
   return `+91${match[1]}`;
 }
 
+export function getTodayISTDateString(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+export function isValidFutureOrTodayDateString(value: unknown): boolean {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+  const [yearStr, monthStr, dayStr] = value.split("-");
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const day = Number(dayStr);
+
+  const dateObj = new Date(year, month - 1, day);
+  if (
+    dateObj.getFullYear() !== year ||
+    dateObj.getMonth() !== month - 1 ||
+    dateObj.getDate() !== day
+  ) {
+    return false;
+  }
+
+  const todayIST = getTodayISTDateString();
+  return value >= todayIST;
+}
+
 export function validatePublicLead(
   req: Request,
   _res: Response,
@@ -86,6 +124,14 @@ export function validatePublicLead(
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email));
   const normalizedPhone = normalizeIndianPhone(body?.phone);
 
+  const validVisitDate =
+    body?.visitDate === undefined ||
+    isValidFutureOrTodayDateString(body.visitDate);
+
+  const validVisitTime =
+    body?.visitTime === undefined ||
+    (typeof body.visitTime === "string" && validVisitTimes.has(body.visitTime));
+
   if (
     !hasOnlyFields(body, [
       "name",
@@ -95,17 +141,21 @@ export function validatePublicLead(
       "projectId",
       "configurationId",
       "message",
+      "visitDate",
+      "visitTime",
     ]) ||
     !isNonEmptyString(body?.name) ||
     !normalizedPhone ||
     !validEmail ||
+    !validVisitDate ||
+    !validVisitTime ||
     (body?.developerId !== undefined && !isNonEmptyString(body.developerId)) ||
     (body?.projectId !== undefined && !isNonEmptyString(body.projectId)) ||
     (body?.configurationId !== undefined &&
       !isNonEmptyString(body.configurationId)) ||
     (body?.message !== undefined && typeof body.message !== "string")
   ) {
-    next(validationError("Name and a valid phone number are required"));
+    next(validationError("Name, valid phone number, and valid lead details are required"));
     return;
   }
   body.phone = normalizedPhone;
@@ -126,6 +176,18 @@ export function validateCreateAdminLead(
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email));
   const normalizedPhone = normalizeIndianPhone(body?.phone);
 
+  const validVisitDate =
+    body?.visitDate === undefined ||
+    body?.visitDate === null ||
+    body?.visitDate === "" ||
+    (typeof body?.visitDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.visitDate));
+
+  const validVisitTime =
+    body?.visitTime === undefined ||
+    body?.visitTime === null ||
+    body?.visitTime === "" ||
+    (typeof body?.visitTime === "string" && validVisitTimes.has(body.visitTime));
+
   if (
     !hasOnlyFields(body, [
       "name",
@@ -135,12 +197,16 @@ export function validateCreateAdminLead(
       "projectId",
       "configurationId",
       "message",
+      "visitDate",
+      "visitTime",
       "status",
       "notes",
     ]) ||
     !isNonEmptyString(body?.name) ||
     !normalizedPhone ||
     !validEmail ||
+    !validVisitDate ||
+    !validVisitTime ||
     (body?.developerId !== undefined &&
       body?.developerId !== null &&
       !isNonEmptyString(body.developerId)) ||
@@ -165,6 +231,97 @@ export function validateCreateAdminLead(
 
   body.phone = normalizedPhone;
   if (body.email === "") body.email = null;
+  if (body.visitDate === "") body.visitDate = null;
+  if (body.visitTime === "") body.visitTime = null;
+  next();
+}
+
+export type AdminVisitCreateBody = {
+  name?: unknown;
+  phone?: unknown;
+  email?: unknown;
+  developerId?: unknown;
+  projectId?: unknown;
+  configurationId?: unknown;
+  message?: unknown;
+  visitDate?: unknown;
+  visitTime?: unknown;
+  status?: unknown;
+  notes?: unknown;
+};
+
+export function validateCreateAdminVisit(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
+  const body = req.body as AdminVisitCreateBody;
+  const validEmail =
+    body?.email === undefined ||
+    body?.email === null ||
+    body?.email === "" ||
+    (typeof body?.email === "string" &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email));
+  const normalizedPhone = normalizeIndianPhone(body?.phone);
+
+  const validVisitDate =
+    typeof body?.visitDate === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(body.visitDate);
+
+  const validVisitTime =
+    body?.visitTime === undefined ||
+    body?.visitTime === null ||
+    body?.visitTime === "" ||
+    (typeof body?.visitTime === "string" && validVisitTimes.has(body.visitTime));
+
+  if (
+    !hasOnlyFields(body, [
+      "name",
+      "phone",
+      "email",
+      "developerId",
+      "projectId",
+      "configurationId",
+      "message",
+      "visitDate",
+      "visitTime",
+      "status",
+      "notes",
+    ]) ||
+    !isNonEmptyString(body?.name) ||
+    !normalizedPhone ||
+    !validEmail ||
+    !validVisitDate ||
+    !validVisitTime ||
+    (body?.developerId !== undefined &&
+      body?.developerId !== null &&
+      !isNonEmptyString(body.developerId)) ||
+    (body?.projectId !== undefined &&
+      body?.projectId !== null &&
+      !isNonEmptyString(body.projectId)) ||
+    (body?.configurationId !== undefined &&
+      body?.configurationId !== null &&
+      !isNonEmptyString(body.configurationId)) ||
+    (body?.message !== undefined &&
+      body?.message !== null &&
+      typeof body.message !== "string") ||
+    (body?.status !== undefined &&
+      (typeof body.status !== "string" || !leadStatuses.has(body.status))) ||
+    (body?.notes !== undefined &&
+      body?.notes !== null &&
+      typeof body.notes !== "string")
+  ) {
+    next(
+      validationError(
+        "Name, valid phone number, and preferred visit date (YYYY-MM-DD) are required",
+      ),
+    );
+    return;
+  }
+
+  body.phone = normalizedPhone;
+  if (body.email === "") body.email = null;
+  if (body.visitTime === "") body.visitTime = null;
   next();
 }
 
@@ -195,6 +352,8 @@ export function validateAdminLeadUpdate(
       "projectId",
       "configurationId",
       "message",
+      "visitDate",
+      "visitTime",
       "status",
       "notes",
     ])
@@ -264,6 +423,28 @@ export function validateAdminLeadUpdate(
     next(validationError("Invalid message format"));
     return;
   }
+
+  if (
+    body?.visitDate !== undefined &&
+    body.visitDate !== null &&
+    body.visitDate !== "" &&
+    (typeof body.visitDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(body.visitDate))
+  ) {
+    next(validationError("Invalid visit date format (expected YYYY-MM-DD)"));
+    return;
+  }
+  if (body?.visitDate === "") body.visitDate = null;
+
+  if (
+    body?.visitTime !== undefined &&
+    body.visitTime !== null &&
+    body.visitTime !== "" &&
+    (typeof body.visitTime !== "string" || !validVisitTimes.has(body.visitTime))
+  ) {
+    next(validationError("Invalid visit time format"));
+    return;
+  }
+  if (body?.visitTime === "") body.visitTime = null;
 
   if (
     body?.status !== undefined &&
