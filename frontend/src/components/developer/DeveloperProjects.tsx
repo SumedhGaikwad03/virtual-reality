@@ -13,6 +13,7 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import type { DeveloperProjectCard, PublicDeveloper } from "../../types/developer";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type DeveloperProjectsProps = {
   developer: PublicDeveloper;
@@ -115,7 +116,7 @@ export function DeveloperProjects({ developer }: DeveloperProjectsProps) {
                   <div className="featured-project-media">
                     {mediaItem ? (
                       <img
-                        src={mediaItem.url}
+                        src={getOptimizedImageUrl(mediaItem.url, { width: 800 })}
                         alt={mediaItem.altText || project.name}
                         loading="lazy"
                         decoding="async"

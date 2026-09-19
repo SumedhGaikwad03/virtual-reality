@@ -11,6 +11,7 @@
 
 import { Link } from "react-router-dom";
 import type { Developer } from "../../types/project";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ProjectDeveloperProps = {
   developer: Developer;
@@ -31,14 +32,14 @@ export function ProjectDeveloper({ developer }: ProjectDeveloperProps) {
           {developer.bannerMedia ? (
             <div className="project-developer-banner-container">
               <img
-                src={developer.bannerMedia.url}
+                src={getOptimizedImageUrl(developer.bannerMedia.url)}
                 alt={developer.bannerMedia.altText || `${developer.name} banner`}
                 className="project-developer-banner-img"
               />
             </div>
           ) : developer.logoUrl ? (
             <img
-              src={developer.logoUrl}
+              src={getOptimizedImageUrl(developer.logoUrl)}
               alt={`${developer.name} logo`}
               className="project-developer-logo"
             />

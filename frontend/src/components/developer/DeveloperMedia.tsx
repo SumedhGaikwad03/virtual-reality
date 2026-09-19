@@ -11,6 +11,7 @@
  */
 
 import type { Media } from "../../types/project";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type DeveloperMediaProps = {
   media: Media[];
@@ -34,7 +35,7 @@ export function DeveloperMedia({ media }: DeveloperMediaProps) {
         {images.map((item) => (
           <figure key={item.id} className="developer-media-item">
             <img
-              src={item.url}
+              src={getOptimizedImageUrl(item.url)}
               alt={item.altText ?? ""}
               loading="lazy"
             />

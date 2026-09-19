@@ -17,6 +17,7 @@ import type {
   MediaCategory,
 } from "../../types/project";
 import { ProjectImageLightbox } from "./ProjectImageLightbox";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ConfigurationMediaSectionProps = {
   configuration: Configuration | null | undefined;
@@ -156,7 +157,7 @@ export function ConfigurationMediaSection({
 
       <ProjectImageLightbox
         isOpen={Boolean(activeLightboxMedia)}
-        imageUrl={activeLightboxMedia?.url ?? ""}
+        imageUrl={getOptimizedImageUrl(activeLightboxMedia?.url)}
         altText={activeLightboxMedia?.altText ?? `${configuration.name} Floor Plan`}
         title={`${configuration.name} · Floor Plan`}
         onClose={() => setActiveLightboxMedia(null)}
@@ -190,7 +191,7 @@ function ConfigurationMediaItem({
             aria-label={`Enlarge floor plan for ${configurationName}`}
           >
             <img
-              src={item.thumbnailUrl ?? item.url}
+              src={getOptimizedImageUrl(item.thumbnailUrl ?? item.url)}
               alt={
                 item.altText ??
                 `${categoryLabel} for this configuration`
@@ -218,7 +219,7 @@ function ConfigurationMediaItem({
           </button>
         ) : (
           <img
-            src={item.thumbnailUrl ?? item.url}
+            src={getOptimizedImageUrl(item.thumbnailUrl ?? item.url)}
             alt={
               item.altText ??
               `${categoryLabel} for this configuration`

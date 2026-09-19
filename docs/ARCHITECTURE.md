@@ -214,6 +214,18 @@ Configuration authoring is exposed through authenticated admin routes: configura
 
 Admin media metadata updates reuse the same ownership validation as media creation. The persisted developer/project/configuration relationships are combined with the requested context before a `Media` update is written, so category, title, ordering, primary status, and activation edits remain available while invalid context transitions are rejected.
 
+### Cloudinary Media Delivery Optimization
+
+Image optimization occurs purely at client delivery time via `getOptimizedImageUrl(url, options?)` (`frontend/src/utils/image.ts`) without modifying database records or Cloudinary source files:
+
+1. **Format & Quality Optimization (Phase 1)**: All Cloudinary image delivery URLs receive dynamic `f_auto,q_auto` injection, enabling modern format negotiation (WebP/AVIF) and perceptual quality compression. Non-Cloudinary links, SVGs, documents, and videos bypass transformation.
+2. **Targeted Width Constraints (Phase 2)**: High-impact, low-risk presentation components apply explicit width presets with `c_limit` (preserving natural aspect ratio without cropping):
+   - **Project & Developer Cards (`w_800,c_limit`)**: `FeaturedProjectCard`, `ProjectCard`, `ExploreDevelopers` banners, and `DeveloperProjects` carousel cards.
+   - **Gallery & Modal Thumbnails (`w_200,c_limit`)**: `TapToExploreGallery` modal thumbnail strip and `ContextualEnquiryModal` project preview.
+   - **In-Page Location Preview (`w_1200,c_limit`)**: `ProjectLocation` in-page map preview.
+3. **High-Detail Quality Preservation**: Full-bleed heroes (`ProjectHero`, `DeveloperHero`, `AtmosphericHero`), lightboxes (`ProjectImageLightbox`, gallery modal stage, location map modal), full-size gallery views, and configuration floor plans intentionally remain unconstrained on `f_auto,q_auto` to ensure that zooming and fine architectural blueprints retain full resolution.
+4. **Data Layer Invariants**: PostgreSQL `Media.url` remains the raw original Cloudinary URL. Backend models, repositories, and controllers remain completely uncoupled from frontend delivery-time transformations.
+
 ### Admin PWA and lead notifications
 
 The admin application is installable through `manifest.webmanifest` and registers `sw.js`. The service worker caches only the static application shell and same-origin static assets; `/api/` requests, including authenticated leads, subscriptions, and notification data, are network-only and are never cached.

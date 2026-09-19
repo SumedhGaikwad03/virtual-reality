@@ -318,9 +318,22 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 
 ---
 
+- **Cloudinary Media Delivery Optimization (Phase 1 & Phase 2)**:
+  - **Frontend Delivery-Only Optimization (`frontend/src/utils/image.ts`)**: Injects Cloudinary dynamic URL transformation parameters at presentation time via `getOptimizedImageUrl(url, options?)`.
+  - **Phase 1 (`f_auto,q_auto`)**: Delivers automatic modern format negotiation (WebP/AVIF) and automatic perceptual quality compression across all public image presentation components.
+  - **Phase 2 (Targeted Width Optimization with `c_limit`)**: Delivers size-constrained representations for high-impact, low-risk contexts without cropping or altering aspect ratios:
+    - **Project & Developer Cards (`w_800,c_limit`)**: `FeaturedProjectCard`, `ProjectCard`, `ExploreDevelopers` banners, `DeveloperProjects` carousel cards.
+    - **Gallery Thumbnails (`w_200,c_limit`)**: `TapToExploreGallery` modal thumbnail strip buttons and `ContextualEnquiryModal` project thumbnail.
+    - **Project Location / Map Preview (`w_1200,c_limit`)**: `ProjectLocation` in-page map preview.
+  - **High-Detail Quality Preservation**: Full-bleed heroes (`ProjectHero`, `DeveloperHero`, `AtmosphericHero`), lightboxes (`ProjectImageLightbox`, gallery modal stage, location map modal), full-size gallery views, and configuration floor plans intentionally remain unconstrained on `f_auto,q_auto` to preserve zoom clarity and fine architectural details.
+  - **Data Integrity & Storage Invariants**: Original Cloudinary cloud assets remain untouched; PostgreSQL database `Media.url` remains the raw original source URL; backend models, routes, and controllers are completely unmodified.
+  - **Validation**: Visual validation confirmed correct rendering with zero layout/crop regressions, and Network inspection confirmed materially smaller transferred byte payloads for all targeted card, thumbnail, and map contexts.
+
+---
+
 ## Current Status & Next Steps
-- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Operations (Steps 4A-4C), Admin Sales Leads Multi-Token Search, Hierarchical Developer/Project Activation & Public Visibility (Steps 1-3), Tara Refactor Phases 1, 2, 2.1 & 3 (Streamlined Entry Points, Editorial Overlay Redesign & Buy vs Rent Entry Decision), Navigation Layout Robustness for Long Entity Names, Automatic & Header-Triggered "Let's Connect" Advisory Popup, Public Global Navigation Streamlining, Contextual Project Enquiry, Standalone Public Enquiry Page, Dedicated Admin Visits Workspace & Full Visit CRUD (`/admin/visits`).
-- **Branch**: All core platform, rental capabilities, admin hierarchy controls, and streamlined public discovery verified on `develop`.
+- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Operations (Steps 4A-4C), Admin Sales Leads Multi-Token Search, Hierarchical Developer/Project Activation & Public Visibility (Steps 1-3), Tara Refactor Phases 1, 2, 2.1 & 3 (Streamlined Entry Points, Editorial Overlay Redesign & Buy vs Rent Entry Decision), Navigation Layout Robustness for Long Entity Names, Automatic & Header-Triggered "Let's Connect" Advisory Popup, Public Global Navigation Streamlining, Contextual Project Enquiry, Standalone Public Enquiry Page, Dedicated Admin Visits Workspace & Full Visit CRUD (`/admin/visits`), Cloudinary Delivery Optimization Phases 1 & 2 (`f_auto,q_auto` + targeted width delivery).
+- **Branch**: All core platform, rental capabilities, admin hierarchy controls, streamlined public discovery, and media delivery optimizations verified on `develop`.
 
 
 

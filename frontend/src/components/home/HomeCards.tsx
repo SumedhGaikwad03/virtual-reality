@@ -11,6 +11,7 @@
  */
 
 import type { HomeMedia } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type HomeCardsProps = {
   media: HomeMedia[];
@@ -34,7 +35,7 @@ export function HomeCards({
           <article key={card.id} className="home-card-item">
             {card.type === "IMAGE" && (
               <img
-                src={card.thumbnailUrl ?? card.url}
+                src={getOptimizedImageUrl(card.thumbnailUrl ?? card.url)}
                 alt={
                   card.altText ??
                   card.title ??

@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useRef, type FormEvent } from "react";
 import { createLead, LeadApiError } from "../../api/lead";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 export type EnquiryIntent = "SCHEDULE_VISIT" | "REQUEST_CALLBACK";
 
@@ -335,7 +336,7 @@ export function ContextualEnquiryModal({
                 {projectThumbnailUrl && (
                   <div className="enquiry-project-context-thumb">
                     <img
-                      src={projectThumbnailUrl}
+                      src={getOptimizedImageUrl(projectThumbnailUrl, { width: 200 })}
                       alt={entityName}
                       className="enquiry-project-context-img"
                     />

@@ -11,6 +11,7 @@
  */
 
 import type { HomeMedia } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type HomeHeroMediaProps = {
   media: HomeMedia[];
@@ -51,7 +52,7 @@ export function HomeHeroMedia({
     <section className="home-hero-media" aria-label="Firm visual highlight">
       {hero.type === "IMAGE" && (
         <img
-          src={hero.url}
+          src={getOptimizedImageUrl(hero.url)}
           alt={hero.altText ?? hero.title ?? "Firm visual"}
         />
       )}

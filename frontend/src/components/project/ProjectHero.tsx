@@ -14,6 +14,7 @@ import type { RefObject } from "react";
 import { Link } from "react-router-dom";
 import type { Project } from "../../types/project";
 import { scrollToElement } from "../../scroll/scrollTo";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ProjectHeroProps = {
   project: Project;
@@ -79,7 +80,7 @@ export function ProjectHero({ project, contactRef, onOpenEnquiry }: ProjectHeroP
       (item) => item.type === "IMAGE" && item.category !== "HERO_CAROUSEL",
     );
 
-  const heroImageUrl = heroMedia?.url || null;
+  const heroImageUrl = heroMedia?.url ? getOptimizedImageUrl(heroMedia.url) : null;
 
   function handleScheduleVisitClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (onOpenEnquiry) {

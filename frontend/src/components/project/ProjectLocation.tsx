@@ -12,6 +12,7 @@
 import { useRef, useState } from "react";
 import type { Location, Media } from "../../types/project";
 import { ProjectImageLightbox } from "./ProjectImageLightbox";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ProjectLocationProps = {
   location: Location;
@@ -56,7 +57,7 @@ export function ProjectLocation({ location, locationMedia }: ProjectLocationProp
               aria-label={`Enlarge location map for ${location.name}`}
             >
               <img
-                src={locationMedia.url}
+                src={getOptimizedImageUrl(locationMedia.url, { width: 1200 })}
                 alt={locationMedia.altText ?? `${location.name} location map and surroundings`}
                 loading="lazy"
               />
@@ -90,7 +91,7 @@ export function ProjectLocation({ location, locationMedia }: ProjectLocationProp
       {locationMedia && (
         <ProjectImageLightbox
           isOpen={isLightboxOpen}
-          imageUrl={locationMedia.url}
+          imageUrl={getOptimizedImageUrl(locationMedia.url)}
           altText={locationMedia.altText ?? `${location.name} location map and surroundings`}
           title={locationMedia.altText ?? `${location.name} · Location Map`}
           onClose={() => setIsLightboxOpen(false)}

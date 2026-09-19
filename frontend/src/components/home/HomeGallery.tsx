@@ -13,6 +13,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { HomeMedia } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type HomeGalleryProps = {
   media: HomeMedia[];
@@ -135,7 +136,7 @@ export function HomeGallery({ media }: HomeGalleryProps) {
                 aria-hidden={!isActive}
               >
                 <img
-                  src={item.url}
+                  src={getOptimizedImageUrl(item.url)}
                   alt={item.altText || item.title || "Virtual Reality Firm Gallery moment"}
                   className="firm-gallery-image"
                   loading={index === 0 ? "eager" : "lazy"}

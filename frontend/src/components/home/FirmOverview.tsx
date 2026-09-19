@@ -12,6 +12,7 @@
  */
 
 import type { Site } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type FirmOverviewProps = {
   site: Site;
@@ -61,7 +62,7 @@ export function FirmOverview({ site }: FirmOverviewProps) {
           <div className="founder-portrait-frame">
             {founderImage?.url ? (
               <img
-                src={founderImage.url}
+                src={getOptimizedImageUrl(founderImage.url)}
                 alt={founderImage.altText || founderName}
                 className="founder-portrait-img"
                 loading="lazy"

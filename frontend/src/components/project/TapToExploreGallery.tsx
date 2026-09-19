@@ -15,6 +15,7 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent, type TouchEvent } from "react";
 import type { Media } from "../../types/project";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type TapToExploreGalleryProps = {
   media: Media[];
@@ -109,7 +110,7 @@ export function TapToExploreGallery({ media }: TapToExploreGalleryProps) {
     <section id="project-gallery-heading" className="tap-to-explore-section" aria-label="Project Gallery Exploration">
       <div className="tap-to-explore-card" onClick={handleOpen} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && handleOpen()}>
         <div className="tap-to-explore-preview">
-          <img src={coverItem.url} alt={coverItem.altText ?? "Project gallery preview"} className="tap-to-explore-cover-img" />
+          <img src={getOptimizedImageUrl(coverItem.url)} alt={coverItem.altText ?? "Project gallery preview"} className="tap-to-explore-cover-img" />
           <div className="tap-to-explore-overlay">
             <span className="tap-to-explore-badge">✦ TAP TO EXPLORE</span>
             <h3 className="tap-to-explore-title">Full Project Gallery</h3>
@@ -164,7 +165,7 @@ export function TapToExploreGallery({ media }: TapToExploreGalleryProps) {
               <div className="gallery-modal-view">
                 {activeItem.type === "IMAGE" && (
                   <img
-                    src={activeItem.url}
+                    src={getOptimizedImageUrl(activeItem.url)}
                     alt={activeItem.altText ?? `Gallery photo ${selectedIndex + 1}`}
                     className="gallery-modal-image"
                   />
@@ -208,7 +209,7 @@ export function TapToExploreGallery({ media }: TapToExploreGalleryProps) {
                     onClick={() => setSelectedIndex(idx)}
                     aria-label={`Select photo ${idx + 1}`}
                   >
-                    <img src={item.thumbnailUrl ?? item.url} alt="" />
+                    <img src={getOptimizedImageUrl(item.thumbnailUrl ?? item.url, { width: 200 })} alt="" />
                   </button>
                 ))}
               </div>

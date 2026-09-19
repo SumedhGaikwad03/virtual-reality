@@ -11,6 +11,7 @@
  */
 
 import type { HomeMedia } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type AtmosphericHeroProps = {
   name?: string | null;
@@ -29,10 +30,10 @@ export function AtmosphericHero({
   const heroItems = heroMedia.filter((item) => item.category === "HERO");
   const primaryHero = heroItems.find((item) => item.isPrimary) || heroItems[0];
 
-  const desktopImageUrl = primaryHero?.url || null;
+  const desktopImageUrl = primaryHero?.url ? getOptimizedImageUrl(primaryHero.url) : null;
   // If a slot or dedicated mobile asset is configured, use it; otherwise fallback to primary URL
   const mobileHero = heroItems.find((item) => item.slot === "mobile") || primaryHero;
-  const mobileImageUrl = mobileHero?.url || desktopImageUrl;
+  const mobileImageUrl = mobileHero?.url ? getOptimizedImageUrl(mobileHero.url) : desktopImageUrl;
 
   const eyebrowText = tagline || "Curated Real Estate & Architectural Landmarks";
   const headlineText = name || "Find a Better Tomorrow";

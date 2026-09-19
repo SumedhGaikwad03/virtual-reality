@@ -12,6 +12,7 @@
 
 import { Link } from "react-router-dom";
 import type { FeaturedProject } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type FeaturedProjectCardProps = {
   project: FeaturedProject;
@@ -45,7 +46,7 @@ export function FeaturedProjectCard({ project }: FeaturedProjectCardProps) {
       <div className="featured-project-media">
         {project.heroImage ? (
           <img
-            src={project.heroImage.url}
+            src={getOptimizedImageUrl(project.heroImage.url, { width: 800 })}
             alt={project.name}
             loading="lazy"
             decoding="async"

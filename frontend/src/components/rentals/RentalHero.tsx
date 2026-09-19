@@ -12,6 +12,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { scrollToElement } from "../../scroll/scrollTo";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type RentalHeroProps = {
   heroImageUrl?: string | null;
@@ -37,7 +38,7 @@ export function RentalHero({ heroImageUrl }: RentalHeroProps) {
     <section className="rental-hero" aria-label="Rental Desk Hero">
       <div className="rental-hero-media-wrapper">
         <img
-          src={bgImage}
+          src={getOptimizedImageUrl(bgImage)}
           alt="Virtual Reality Rental Desk curated residences"
           className="rental-hero-image"
           loading="eager"

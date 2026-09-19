@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ProjectImageLightboxProps = {
   isOpen: boolean;
@@ -92,7 +93,7 @@ export function ProjectImageLightbox({
 
         <div className="project-image-lightbox-stage">
           <img
-            src={imageUrl}
+            src={getOptimizedImageUrl(imageUrl)}
             alt={altText || title || "Enlarged view"}
             className="project-image-lightbox-img"
           />

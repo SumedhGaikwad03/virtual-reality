@@ -11,6 +11,7 @@
 
 import type { PublicDeveloper } from "../../types/developer";
 import { scrollToElement } from "../../scroll/scrollTo";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type DeveloperHeroProps = {
   developer: PublicDeveloper;
@@ -19,7 +20,7 @@ type DeveloperHeroProps = {
 
 export function DeveloperHero({ developer, onOpenEnquiry }: DeveloperHeroProps) {
   const heroMedia = developer.heroMedia;
-  const heroImageUrl = heroMedia?.url || null;
+  const heroImageUrl = heroMedia?.url ? getOptimizedImageUrl(heroMedia.url) : null;
 
   function handleHeroCtaClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (onOpenEnquiry) {

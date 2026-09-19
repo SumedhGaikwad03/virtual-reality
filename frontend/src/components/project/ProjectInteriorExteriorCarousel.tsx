@@ -12,6 +12,7 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent, type TouchEvent } from "react";
 import type { Media } from "../../types/project";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ProjectInteriorExteriorCarouselProps = {
   media: Media[];
@@ -36,7 +37,7 @@ export function ProjectInteriorExteriorCarousel({ media }: ProjectInteriorExteri
     const nextItem = combinedItems[nextIndex];
     if (nextItem && nextItem.type === "IMAGE" && nextItem.url) {
       const img = new Image();
-      img.src = nextItem.url;
+      img.src = getOptimizedImageUrl(nextItem.url);
     }
   }, [activeIndex, hasMultiple, combinedItems]);
 
@@ -149,7 +150,7 @@ export function ProjectInteriorExteriorCarousel({ media }: ProjectInteriorExteri
             >
               {item.type === "IMAGE" && (
                 <img
-                  src={item.url}
+                  src={getOptimizedImageUrl(item.url)}
                   alt={item.altText ?? `${item.category} view`}
                   className="project-ie-carousel-image"
                   loading={idx === 0 ? "eager" : "lazy"}

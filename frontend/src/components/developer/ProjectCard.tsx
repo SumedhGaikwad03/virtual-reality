@@ -12,6 +12,7 @@
 
 import { Link } from "react-router-dom";
 import type { DeveloperProjectCard as ProjectCardData } from "../../types/developer";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ProjectCardProps = {
   developerSlug: string;
@@ -25,7 +26,7 @@ export function ProjectCard({ developerSlug, project }: ProjectCardProps) {
     <article className="developer-project-card">
       {project.media ? (
         <img
-          src={project.media.url}
+          src={getOptimizedImageUrl(project.media.url, { width: 800 })}
           alt={project.media.altText ?? `${project.name} project`}
         />
       ) : (

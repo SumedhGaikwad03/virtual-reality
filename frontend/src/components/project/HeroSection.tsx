@@ -11,6 +11,7 @@
  */
 
 import type { Media } from "../../types/project";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type HeroSectionProps = {
   media: Media[];
@@ -46,7 +47,7 @@ export function HeroSection({ media }: HeroSectionProps) {
     <section aria-label="Project hero">
       <img
         className="project-hero-image"
-        src={hero.url}
+        src={getOptimizedImageUrl(hero.url)}
         alt={hero.altText ?? "Project image"}
       />
     </section>

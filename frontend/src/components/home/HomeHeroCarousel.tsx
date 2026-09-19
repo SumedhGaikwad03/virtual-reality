@@ -13,6 +13,7 @@
 
 import { useState, useRef, type KeyboardEvent, type TouchEvent } from "react";
 import type { HomeMedia } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type HomeHeroCarouselProps = {
   media: HomeMedia[];
@@ -107,7 +108,7 @@ export function HomeHeroCarousel({ media }: HomeHeroCarouselProps) {
         >
           {currentItem.type === "IMAGE" && (
             <img
-              src={currentItem.thumbnailUrl ?? currentItem.url}
+              src={getOptimizedImageUrl(currentItem.thumbnailUrl ?? currentItem.url)}
               alt={
                 currentItem.altText ??
                 currentItem.title ??

@@ -12,6 +12,7 @@
 
 import { Link } from "react-router-dom";
 import type { SiteDeveloper } from "../../types/site";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type ExploreDevelopersProps = {
   developers?: SiteDeveloper[];
@@ -47,14 +48,14 @@ export function ExploreDevelopers({ developers = [] }: ExploreDevelopersProps) {
                 <div className="developer-row-content">
                   {developer.bannerMedia ? (
                     <img
-                      src={developer.bannerMedia.thumbnailUrl ?? developer.bannerMedia.url}
+                      src={getOptimizedImageUrl(developer.bannerMedia.thumbnailUrl ?? developer.bannerMedia.url, { width: 800 })}
                       alt={developer.bannerMedia.altText || `${developer.name} brand banner`}
                       className="developer-row-logo"
                       loading="lazy"
                     />
                   ) : developer.logoUrl ? (
                     <img
-                      src={developer.logoUrl}
+                      src={getOptimizedImageUrl(developer.logoUrl)}
                       alt={`${developer.name} logo`}
                       className="developer-row-logo"
                       loading="lazy"

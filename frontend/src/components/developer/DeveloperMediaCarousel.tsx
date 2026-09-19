@@ -14,6 +14,7 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent, type TouchEvent } from "react";
 import type { Media } from "../../types/project";
+import { getOptimizedImageUrl } from "../../utils/image";
 
 type DeveloperMediaCarouselProps = {
   media: Media[];
@@ -58,7 +59,7 @@ export function DeveloperMediaCarousel({ media }: DeveloperMediaCarouselProps) {
     const nextItem = carouselItems[nextIndex];
     if (nextItem && nextItem.type === "IMAGE" && nextItem.url) {
       const img = new Image();
-      img.src = nextItem.url;
+      img.src = getOptimizedImageUrl(nextItem.url);
     }
   }, [activeIndex, hasMultiple, carouselItems]);
 
@@ -175,7 +176,7 @@ export function DeveloperMediaCarousel({ media }: DeveloperMediaCarouselProps) {
             >
               {item.type === "IMAGE" && (
                 <img
-                  src={item.url}
+                  src={getOptimizedImageUrl(item.url)}
                   alt={item.altText ?? "Developer showcase image"}
                   className="developer-carousel-image"
                   loading={idx === 0 ? "eager" : "lazy"}

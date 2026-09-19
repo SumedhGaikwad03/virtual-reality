@@ -1153,3 +1153,26 @@
   - Zero database schema migrations or breaking changes.
   - 100% backward compatibility for all public enquiry and schedule-a-visit flows.
   - Zero Git commits or pushes.
+
+---
+
+## Phase 76: Cloudinary Media Delivery Optimization (Phase 1 & Phase 2)
+- **Delivery-Time Transformation Engine (`frontend/src/utils/image.ts`)**:
+  - Built `getOptimizedImageUrl(url, options?)` to dynamically inject Cloudinary URL parameters at frontend render time.
+  - Safely ignores non-Cloudinary URLs, SVG vector assets (preserving lossless scalability), `/video/upload/`, `/raw/upload/` (PDFs/brochures), and already-transformed URLs.
+- **Phase 1: Automatic Format & Perceptual Quality (`f_auto,q_auto`)**:
+  - Injected `/f_auto,q_auto/` across all public presentation components, enabling modern format negotiation (WebP/AVIF) and quality compression directly from Cloudinary CDN edge.
+- **Phase 2: Targeted Width Delivery (`w_...,c_limit`)**:
+  - Applied explicit width bounds with `c_limit` (preserving aspect ratios with zero crop or CSS layout distortion) to high-impact, low-risk card and thumbnail contexts:
+    - **Project & Developer Cards (`w_800,c_limit`)**: `FeaturedProjectCard.tsx`, `ProjectCard.tsx`, `ExploreDevelopers.tsx` (brand banners), `DeveloperProjects.tsx` (portfolio cards).
+    - **Modal Thumbnails (`w_200,c_limit`)**: `TapToExploreGallery.tsx` (bottom strip thumbnail buttons) and `ContextualEnquiryModal.tsx` (compact project context preview).
+    - **In-Page Location Map (`w_1200,c_limit`)**: `ProjectLocation.tsx` (in-page map preview, while Lightbox modal retains unconstrained `f_auto,q_auto`).
+- **High-Detail Quality Preservation**:
+  - Full-bleed heroes (`ProjectHero`, `DeveloperHero`, `AtmosphericHero`), lightboxes (`ProjectImageLightbox`, gallery modal stage, location map modal), full-size gallery views, and configuration floor plans intentionally remain unconstrained on `f_auto,q_auto` to ensure zoom inspection and blueprint clarity are preserved.
+- **Invariants Preserved**:
+  - Original Cloudinary assets stored in the cloud remain untouched.
+  - Database schema and PostgreSQL `Media.url` remain unchanged (raw source URLs preserved).
+  - Backend models, routes, services, and repositories are completely unmodified.
+  - Zero changes to CSS, layouts, image containers, aspect ratios, or responsive breakpoints.
+  - Optimization is purely additive, delivery-only on the client side.
+  - Zero Git commits or pushes.
