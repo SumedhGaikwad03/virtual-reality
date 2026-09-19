@@ -160,7 +160,7 @@ Admin project rows, lead actions, configuration actions, and form CTAs use the s
 ## 8. Standalone Property Enquiry Page (`/enquiry`)
 
 ### Purpose
-Dedicated standalone property brief page sent directly to clients following initial consultation (via WhatsApp, SMS, or email). Rendered outside `PublicShell` as a standalone experience without website navigation headers, footers, Tara search triggers, or advisory popups. Features a full-bleed architectural image backdrop, solid warm ivory card surface, and continuous minimal completion flow with 4 mandatory requirements (Full Name, Mobile Number, Buy/Rent + Configuration, and Preferred Visit Date) plus expandable optional details.
+Dedicated standalone property brief page sent directly to clients following initial consultation (via WhatsApp, SMS, or email). Rendered outside `PublicShell` as a standalone experience without website navigation headers, footers, Tara search triggers, or advisory popups. Features a full-bleed architectural image backdrop, solid warm ivory card surface, and continuous minimal completion flow with 3 mandatory requirements (Full Name, Mobile Number, and Preferred Visit Date) plus expandable optional details.
 
 ### Component Structure
 ```
@@ -170,11 +170,32 @@ EnquiryPage (Standalone outside PublicShell)
     └── EnquiryFormCard (Solid Warm Ivory Surface)
         ├── EnquiryHeader ("PROPERTY ENQUIRY", "Tell us what you're looking for. We'll take care of the rest.")
         ├── Section: YOUR DETAILS (Full Name *, Mobile Number *)
-        ├── Section: WHAT ARE YOU LOOKING FOR? (Buy/Rent segmented selector, Configuration 1/2/3/4+ BHK chips)
         ├── Section: WHEN WOULD YOU LIKE TO VISIT? (Preferred Date * picker >= today, Optional Time chips: Morning/Afternoon/Evening)
         ├── Expandable Details: "+ Add more details (optional)" (Location, Budget, Email, Notes)
         ├── Submit Action ("Submit Enquiry →")
         └── Success Confirmation ("PROPERTY ENQUIRY RECEIVED", "Thank you. We've received your requirements and will take care of the next steps.", [ Continue Exploring ])
 ```
 
+---
 
+## 9. Admin Visits Workspace (`/admin/visits`)
+
+### Purpose
+Dedicated operational triage workspace for managing scheduled customer property visits. Connects directly to existing `Lead` records where `visitDate` is populated, avoiding duplicate database entities or complex scheduling overhead.
+
+### Component Structure
+```
+VisitsPage (/admin/visits within AdminLayout)
+├── Page Header ("Property Visits", "Operational schedule for today and upcoming customer visits", Refresh button)
+└── VisitsContainer
+    ├── Section: TODAY (`visitDate === today in Asia/Kolkata`)
+    │   ├── Section Header (Title + Count Badge)
+    │   ├── Empty State ("No visits scheduled for today.")
+    │   └── Visit Cards Grid (Ordered by Morning -> Afternoon -> Evening -> unspecified, then createdAt)
+    │       └── Visit Card (Time slot badge, Lead name, phone, email, project/configuration or "General Enquiry", notes preview, status badge, [View Lead], [WhatsApp], [Call])
+    └── Section: UPCOMING (`visitDate > today in Asia/Kolkata`)
+        ├── Section Header (Title + Count Badge)
+        ├── Empty State ("No upcoming visits scheduled.")
+        └── Visit Cards Grid (Ordered chronologically by visitDate ascending, then visitTime)
+            └── Visit Card (Date block badge, time slot pill, Lead name, phone, email, full date, project/configuration or "General Enquiry", notes preview, status badge, [View Lead], [WhatsApp], [Call])
+```

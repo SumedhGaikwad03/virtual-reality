@@ -32,6 +32,7 @@ Admin access tokens default to a 15-minute JWT lifetime, overridable by `JWT_EXP
 | `/admin/projects/:projectId/configurations` | `ProjectConfigurationsPage.tsx` | Unit configurations for a project |
 | `/admin/configurations/:id` | `ConfigurationFormPage.tsx` | Create/edit unit configuration |
 | `/admin/leads`, `/:id` | `LeadsPage.tsx`, `LeadDetailPage.tsx` | Inbound customer lead inquiries |
+| `/admin/visits` | `VisitsPage.tsx` | Operational triage for scheduled Today and Upcoming customer visits |
 | `/admin/import` | `ImportPage.tsx` | Scraped URL property importer review pipeline |
 | `/admin/media` | `HomeMediaPage.tsx` | Site-level media asset management |
 | `/admin/projects/:projectId/media` | `ProjectMediaPage.tsx` | Project media asset management |
@@ -187,11 +188,15 @@ model Lead {
   budget          String?
   location        String?
   message         String?
+  visitDate       String?
+  visitTime       String?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
   project       Project?       @relation(fields: [projectId], references: [id])
   configuration Configuration? @relation(fields: [configurationId], references: [id])
+
+  @@index([visitDate])
 }
 ```
 

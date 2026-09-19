@@ -118,11 +118,11 @@ export function LeadDetailPage() {
 
   return (
     <AdminLayout>
-      <div className="admin-top-bar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="admin-top-bar admin-top-bar--split">
         <Link className="admin-action admin-action--secondary" to="/admin/leads">
           ← Back to Leads
         </Link>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <Link className="admin-action admin-action--primary" to={`/admin/leads/${lead.id}/edit`}>
             Edit Lead
           </Link>

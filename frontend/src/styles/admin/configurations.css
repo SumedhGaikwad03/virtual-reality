@@ -52,19 +52,30 @@
   border-top: 1px solid #dbe2ef;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .admin-configuration-actions {
     align-items: stretch;
     flex-direction: column;
+    gap: 0.5rem;
   }
 
+  .admin-configuration-actions .admin-action,
   .admin-configuration-actions .admin-action--secondary,
   .admin-configuration-actions .admin-action-secondary {
     width: 100%;
+    min-height: 2.75rem;
+    justify-content: center;
   }
 
   .admin-configuration-row {
     grid-template-columns: 1fr;
-    gap: 0.6rem;
+    gap: 0.65rem;
+    padding: 1rem 0;
+  }
+
+  .admin-configuration-row .admin-action {
+    width: 100%;
+    min-height: 2.75rem;
+    justify-content: center;
   }
 }

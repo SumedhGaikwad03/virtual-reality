@@ -146,14 +146,11 @@ export function RentalAvailableDetailPage() {
 
   return (
     <AdminLayout>
-      <div
-        className="admin-top-bar"
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-      >
+      <div className="admin-top-bar admin-top-bar--split">
         <Link className="admin-action admin-action--secondary" to="/admin/rentals/available">
           ← Back to Available
         </Link>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <button
             type="button"
             className="admin-action admin-action--danger"

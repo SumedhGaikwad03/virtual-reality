@@ -127,7 +127,7 @@ export function RentalEnquiriesPage() {
 
   return (
     <AdminLayout>
-      <div className="admin-page-heading" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+      <div className="admin-page-heading">
         <div>
           <h1>Rental Enquiries</h1>
           <p>Manage people looking for rental homes.</p>
@@ -243,19 +243,11 @@ export function RentalEnquiriesPage() {
 
           {/* Pagination Controls */}
           {pagination.totalPages > 1 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: "1.25rem",
-                padding: "0.5rem 0",
-              }}
-            >
-              <span style={{ fontSize: "0.875rem", color: "#64748b" }}>
+            <div className="admin-pagination">
+              <span className="admin-pagination-info">
                 Page {pagination.page} of {pagination.totalPages} ({pagination.total} total {pagination.total === 1 ? "enquiry" : "enquiries"})
               </span>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
+              <div className="admin-pagination-buttons">
                 <button
                   type="button"
                   className="admin-action admin-action--secondary"

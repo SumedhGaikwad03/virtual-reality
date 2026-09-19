@@ -125,7 +125,7 @@ export function RentalAvailablePage() {
 
   return (
     <AdminLayout>
-      <div className="admin-page-heading" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+      <div className="admin-page-heading">
         <div>
           <h1>Available Properties</h1>
           <p>Manage owner-submitted rental flats.</p>
@@ -191,38 +191,51 @@ export function RentalAvailablePage() {
 
       {!isLoading && !error && properties.length > 0 && (
         <>
-          <div className="admin-card admin-lead-list">
+          <div className="admin-property-card-list">
             {properties.map((property) => (
               <article
-                className={`admin-lead-row ${property.status === "NEW" ? "is-new" : ""}`}
+                className={`admin-property-card ${property.status === "NEW" ? "is-new" : ""}`}
                 key={property.id}
               >
-                <div>
-                  <h2>
-                    {property.ownerName}
-                    {property.status === "NEW" && (
-                      <span className="admin-new-badge" aria-label="New property submission">
-                        NEW
+                <div className="admin-property-card-body">
+                  <div className="admin-property-col admin-property-col--contact">
+                    <div className="admin-property-contact-header">
+                      <h2>{property.ownerName}</h2>
+                      {property.status === "NEW" && (
+                        <span className="admin-new-badge" aria-label="New property submission">
+                          NEW
+                        </span>
+                      )}
+                    </div>
+                    <p className="admin-property-phone">{property.phone}</p>
+                  </div>
+
+                  <div className="admin-property-col admin-property-col--details">
+                    <p className="admin-property-type">
+                      <strong>{property.flatType}</strong>
+                      {property.approxSizeSqFt ? (
+                        <span className="admin-property-size"> · {property.approxSizeSqFt.toLocaleString()} sq ft</span>
+                      ) : null}
+                    </p>
+                    <p className="admin-property-society">{property.societyDeveloper || "—"}</p>
+                  </div>
+
+                  <div className="admin-property-col admin-property-col--location">
+                    <span className="admin-property-col-label">Location</span>
+                    <p className="admin-property-location-val">{property.areaLocality || property.location || "—"}</p>
+                  </div>
+
+                  <div className="admin-property-col admin-property-col--status">
+                    <div>
+                      <span className={`admin-lead-status status-${property.status.toLowerCase()}`}>
+                        {statusLabel(property.status)}
                       </span>
-                    )}
-                  </h2>
-                  <p>{property.phone}</p>
+                    </div>
+                    <p className="admin-property-date">{formatDate(property.createdAt)}</p>
+                  </div>
                 </div>
-                <p>
-                  <strong>{property.flatType}</strong>
-                </p>
-                <p>
-                  {property.approxSizeSqFt ? `${property.approxSizeSqFt.toLocaleString()} sq ft` : "—"}
-                </p>
-                <p>{property.areaLocality || property.location || "—"}</p>
-                <p>{property.societyDeveloper || "—"}</p>
-                <p>
-                  <span className={`admin-lead-status status-${property.status.toLowerCase()}`}>
-                    {statusLabel(property.status)}
-                  </span>
-                </p>
-                <p>{formatDate(property.createdAt)}</p>
-                <div className="admin-lead-row-actions">
+
+                <div className="admin-property-card-actions">
                   <Link
                     className="admin-action admin-action--secondary"
                     to={`/admin/rentals/available/${property.id}`}
@@ -244,19 +257,11 @@ export function RentalAvailablePage() {
 
           {/* Pagination Controls */}
           {pagination.totalPages > 1 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: "1.25rem",
-                padding: "0.5rem 0",
-              }}
-            >
-              <span style={{ fontSize: "0.875rem", color: "#64748b" }}>
+            <div className="admin-pagination">
+              <span className="admin-pagination-info">
                 Page {pagination.page} of {pagination.totalPages} ({pagination.total} total {pagination.total === 1 ? "property" : "properties"})
               </span>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
+              <div className="admin-pagination-buttons">
                 <button
                   type="button"
                   className="admin-action admin-action--secondary"

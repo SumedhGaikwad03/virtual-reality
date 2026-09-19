@@ -940,12 +940,216 @@
   - Zero modifications to Tara discovery, contextual project modals, or existing project pages.
   - Zero Git commits or pushes.
 
+---
 
+## Phase 65: Structured Visit Scheduling Fields in Lead Model (Visits Foundation Phase 1)
+- **Database Schema Evolution (`backend/prisma/schema.prisma` & Migration `20260919123500_add_lead_visit_fields`)**:
+  - Added nullable `visitDate String?` and `visitTime String?` columns to the existing `Lead` model.
+  - Applied `@@index([visitDate])` index for operational query performance.
+  - Used strict plain calendar date string (`YYYY-MM-DD`) rather than `DateTime` to eliminate UTC/local timezone shifts across API, DB, and client runtimes in India Standard Time (`Asia/Kolkata`).
+  - Applied migration non-destructively; all existing historical leads are preserved with `visitDate = null, visitTime = null`.
+- **Validation Engine Updates (`backend/src/validators/lead.validator.ts`)**:
+  - Added strict date validation for optional `visitDate`: enforces `^\d{4}-\d{2}-\d{2}$`, valid calendar dates (accurate leap year & day-of-month checks), and $\ge \text{today in Asia/Kolkata}$.
+  - Added strict time validation for optional `visitTime`: enforces `Morning` | `Afternoon` | `Evening`.
+  - Updated both public (`createLeadValidation`) and admin (`createAdminLeadValidation`, `updateAdminLeadValidation`) validation schemas.
+- **Service & Repository Layer Integration (`backend/src/services/lead.service.ts`, `backend/src/repositories/lead.repository.ts`)**:
+  - Updated `LeadRepository.leadSelect`, `create()`, and `update()` to persist and retrieve `visitDate` and `visitTime`.
+  - Updated `LeadService.toAdminLead`, `createLead`, `createAdminLead`, and `updateLead` to map `visitDate` and `visitTime` cleanly to/from DTOs and database records.
+- **Controller & Frontend API Contracts (`backend/src/controllers/*`, `frontend/src/api/lead.ts`, `frontend/src/types/admin-lead.ts`)**:
+  - Public `lead.controller.ts` and Admin `lead.controller.ts` forward structured visit fields.
+  - Frontend `CreateLeadPayload` accepts optional `visitDate?: string` and `visitTime?: string`.
+  - Frontend `AdminLead`, `AdminLeadCreateInput`, and `AdminLeadUpdateInput` expose `visitDate: string | null` and `visitTime: string | null`.
+- **Invariants Preserved**:
+  - Zero separate `Visit` database entities created.
+  - Zero historical message parsing or data distortion.
+  - 100% backwards compatible with existing lead submissions.
+  - Zero Git commits or pushes.
 
+---
 
+## Phase 66: Standalone Enquiry Form Connected to Structured Visit Fields (Visits Foundation Phase 2)
+- **Standalone Form Simplification & Direct Structured Binding (`frontend/src/pages/EnquiryPage.tsx`)**:
+  - Streamlined the standalone `/enquiry` consultation brief to 3 mandatory fields: Full Name, Mobile Number, and Preferred Visit Date (`visitDate`).
+  - Removed old mandatory Buy/Rent and Configuration selectors from the submission path, keeping the standalone page generic, personal, and untied to specific projects or developers.
+  - Bound the date input directly to structured `visitDate` (`YYYY-MM-DD`), preventing timezone shifts via `getTodayISTDateString()` (`Asia/Kolkata`) and enforcing `min={today}` validation.
+  - Bound the optional time slot selector (`Morning`, `Afternoon`, `Evening`) directly to structured `visitTime`.
+  - Removed `visitDate` and `visitTime` from the `message` string. The `message` field is now used exclusively for free-form optional client details (`Location`, `Budget`, `Notes`).
+  - Form state and values are fully preserved across validation or API submission errors.
+- **Invariants Preserved**:
+  - Zero modifications to database schema or migrations.
+  - Zero modifications to contextual project modals, Tara conversational search, or public shell layouts.
+  - Zero Git commits or pushes.
 
+---
 
+## Phase 67: Dedicated Admin Visits Workspace (`/admin/visits`) (Visits Foundation Phase 3)
+- **Backend Admin Visits Projection API (`GET /api/admin/visits`)**:
+  - Added `findVisits(todayDate: string)` in `LeadRepository` querying all leads where `visitDate >= todayDate`.
+  - Added `getVisits()` in `LeadService` projecting leads into two operational sections:
+    - **TODAY**: `visitDate === todayDate` in `Asia/Kolkata`, sorted by visit time (`Morning` $\rightarrow$ `Afternoon` $\rightarrow$ `Evening` $\rightarrow$ unspecified), then `createdAt` ascending.
+    - **UPCOMING**: `visitDate > todayDate` in `Asia/Kolkata`, sorted chronologically by `visitDate` ascending (nearest first), then `visitTime`, then `createdAt`.
+    - Past visits (`visitDate < todayDate`) and leads without `visitDate` are strictly excluded.
+  - Mounted authenticated route `GET /api/admin/visits` in `backend/src/routes/admin/visit.routes.ts` protected by `requireAdminAuthentication`.
+- **Admin Shell Navigation Evolution (`frontend/src/components/admin/AdminLayout.tsx`)**:
+  - Grouped Leads section into `LEADS` dropdown containing `All Leads` (`/admin/leads`) and `Visits` (`/admin/visits`).
+- **Dedicated Operational UI (`frontend/src/pages/admin/VisitsPage.tsx`)**:
+  - Built real-time operational triage interface with `TODAY` and `UPCOMING` sections, live count pills, and calm empty states.
+  - Scannable visit cards displaying time slot badges, large calendar date blocks (for upcoming), client contact details, project context or `"General Enquiry"`, notes preview, and existing lead status badges (`NEW`, `IN_PROGRESS` as "Ongoing", `DONE`).
+  - Direct operational action buttons: `[ View Lead ]` (navigating to `/admin/leads/:id`), `[ Call ]` (`tel:`), and `[ WhatsApp ]` (`wa.me` with prefilled context).
+  - Responsive optimization across desktop (1024px, 1280px, 1440px) and mobile (768px, 430px) with vertical card stacking and touch-friendly targets.
+- **Invariants Preserved**:
+  - Zero separate `Visit` database entities or tables created (pure projection of `Lead` data).
+  - Zero modifications to customer-facing enquiry flows, Tara assistant, or public pages.
+  - Zero historical message parsing or data distortion.
+  - Zero Git commits or pushes.
 
+---
 
+## Phase 68: Standalone Property Enquiry UI Redesign (`/enquiry`) (Phase 5)
+- **Elevated Editorial Real-Estate Visual Experience (`frontend/src/pages/EnquiryPage.tsx`, `frontend/src/styles/enquiry.css`)**:
+  - Redesigned standalone `/enquiry` consultation brief with an Architectural Magazine aesthetic:
+    - Background: Full-bleed residential architectural backdrop with a warm, deep forest gradient scrim (`rgba(17, 40, 33, 0.65)` to `rgba(17, 40, 33, 0.85)`).
+    - Surface: Solid warm ivory card (`#FDFDFB`) with subtle warm stone border (`#E8E2D8`), gentle depth shadow, and generous padding (`3rem 2.75rem` on desktop, `2rem 1.25rem` on mobile).
+    - Typography: Editorial Playfair Display serif headings (`Find Your Next Address`), warm uppercase eyebrow (`PROPERTY ENQUIRY`), and warm charcoal section rules (`YOUR DETAILS`, `WHEN WOULD YOU LIKE TO VISIT?`).
+  - **Refined Form Controls & Touch Ergonomics**:
+    - Input heights elevated to 52–56px with warm neutral borders (`#D9D0C3`), friendly forest focus halos, and error states.
+    - Time slot selectors upgraded to 2-line cards with prominent time-range labels (`Morning` / `10 AM – 1 PM`, `Afternoon` / `1 PM – 5 PM`, `Evening` / `5 PM – 8 PM`).
+    - Expandable optional details accordion (`＋ Add more details (optional)` / `Location, budget, email & notes`) for Location, Budget, Email, and Notes.
+    - Primary CTA button styled with solid deep forest (`#112821`), hover elevation, and touch target $\ge 54\text{px}$ (`Request a Visit →`).
+    - Success state displays refined editorial confirmation card with deep forest badge and home navigation.
+  - **Mobile-First Responsiveness**:
+    - 1-column input stacking on mobile (<640px), comfortable touch padding, viewport-relative heights (`100dvh`), and zero horizontal overflow across 360px–1440px viewports.
+- **Invariants Preserved**:
+  - 3 mandatory fields strictly maintained (Full Name, Mobile Number, Preferred Visit Date).
+  - Optional fields strictly maintained (Time Slot, Location, Budget, Email, Notes).
+  - Zero Buy/Rent or Configuration selectors.
+  - Zero project/developer ID requirements (generic enquiry).
+  - Standalone route outside `PublicShell`: NO GlobalHeader, NO GlobalFooter, NO Tara assistant, NO automatic advisory popup.
+  - Zero modifications to backend schema, Prisma, APIs, or database models.
+  - Zero Git commits or pushes.
 
+---
 
+## Phase 69: Standalone Property Enquiry UI Final Visual Refinement (`/enquiry`) (Phase 6)
+- **Visual & Architectural Refinements (`frontend/src/pages/EnquiryPage.tsx`, `frontend/src/styles/enquiry.css`)**:
+  - Removed the `PROPERTY ENQUIRY` eyebrow above the main heading.
+  - Added a restrained, subtle brass architectural accent line (`38px × 2px`, `var(--color-brass, #A99168)`) above the main heading and in the success confirmation view.
+  - Refined the introductory typography hierarchy:
+    - Primary Heading: `Find Your Next Address` in Playfair Display serif (`2.375rem` desktop, `1.875rem` mobile, line-height 1.18).
+    - Subtitle: `"Tell us what you're looking for. We'll take care of the rest."`
+    - Supporting line: `"A few details help us prepare the right options for you."`
+  - Refined Section Titles (`YOUR DETAILS`, `WHEN WOULD YOU LIKE TO VISIT?`) with uppercase modern sans-serif, letter-spacing `0.12em`, and an extending horizontal divider line (`#E2DCCE`).
+  - Refined Form Surface: Warm ivory `#FDFDFB`, crisp warm stone border `#E5DFD5`, refined elevation shadow, and comfortable max-width `580px`.
+  - Refined Form Controls: Generous 52–58px input touch heights, warm stone borders (`#D4CCBD`), and focus rings (`1.5px #112821`).
+  - Refined Time Slot Selection Cards: 2-line cards with clear time range labels (`Morning` / `10 AM – 1 PM`, `Afternoon` / `1 PM – 5 PM`, `Evening` / `5 PM – 8 PM`), deep forest active state, and responsive side-by-side layout on mobile (`52px` min-height).
+  - Refined CTA Button: Solid full-width deep forest (`#112821`), hover elevation, and touch target `54px` (`Request a Visit →`).
+  - Mobile responsiveness verified across 360px, 375px, 390px, and 430px viewports with zero horizontal overflow.
+- **Invariants Preserved**:
+  - Mandatory fields remain strictly: Full Name, Mobile Number, Preferred Visit Date (`visitDate`).
+  - Optional fields remain strictly: Time Slot (`visitTime`), Location, Budget, Email, Notes.
+  - Standalone route outside `PublicShell` (no header/footer/Tara/advisory popups).
+  - Zero modifications to backend, Prisma, database schema, or APIs.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 70: Developer Page Contextual Enquiry Sheet Integration
+- **Contextual Enquiry Sheet Reuse (`DeveloperHero.tsx`, `DeveloperPage.tsx`)**:
+  - Connected the primary hero CTA on Developer Profile pages (`/:developerSlug`) to open the shared `ContextualEnquiryModal` sheet.
+  - Updated hero CTA wording to `"Enquire About {developer.name} →"`.
+  - Configured modal invocation with `contextType="developer"`, `entityName={developer.name}`, `developerName={developer.name}`, `developerId={developer.id}`, and `initialIntent="REQUEST_CALLBACK"`.
+  - Maintained keyboard focus restoration via `enquiryTriggerRef`, backdrop click dismiss, and Escape key listener.
+- **In-Page Lead Form Preserved (`DeveloperLeadSection.tsx`)**:
+  - Kept the existing in-page developer enquiry section fully functional at the bottom of the page.
+- **Invariants Preserved**:
+  - Zero new database models, migrations, or schema changes.
+  - Reused existing `createLead()` API client and backend lead controller.
+  - Zero modifications to project enquiry flows, Tara assistant, or admin portals.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 71: PWA Admin Launch Hardening & Route Verification
+- **PWA Manifest & Launch Architecture Verification (`frontend/public/manifest.webmanifest`, `frontend/public/sw.js`, `frontend/src/pwa/registerServiceWorker.ts`)**:
+  - Verified `start_url: "/admin"` in `manifest.webmanifest` ensuring device/app launcher visits open directly at `/admin`.
+  - Verified `scope: "/admin"` in `manifest.webmanifest` and `registerServiceWorker.ts` ensuring the PWA scope is appropriately scoped to internal administrative workspaces.
+  - Verified `sw.js` intercepts navigation requests exclusively for admin paths (`isAdminPath`), leaving normal browser public website visits (`/`, `/:developerSlug`, `/search`, etc.) completely untouched by service worker navigation handlers.
+  - Verified `ProtectedRoute` behavior: unauthenticated PWA launches redirect seamlessly to `/admin/login` preserving the return route, while authenticated sessions land immediately on `/admin` (Admin Dashboard).
+- **Invariants Preserved**:
+  - Normal browser visits to `/` continue to render the public homepage without redirection.
+  - Zero authentication bypasses or weakening introduced.
+  - Zero modifications to backend or database.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 72: Admin Login Autofill & Example Account Exposure Hardening
+- **Neutral Placeholder & Autocomplete Semantics Hardening (`frontend/src/pages/admin/AdminLoginPage.tsx`)**:
+  - Replaced hardcoded example admin email placeholder `placeholder="admin@example.com"` with standard neutral placeholder `placeholder="name@example.com"`.
+  - Verified and preserved standard HTML autocomplete semantics (`autoComplete="email"` for email, `autoComplete="current-password"` for password).
+  - Maintained clean initial form state (`useState("")` for email and password).
+  - Confirmed password manager compatibility is preserved without employing non-standard `autocomplete="off"` or `autocomplete="new-password"` workarounds.
+- **Invariants Preserved**:
+  - Zero modifications to login styling, layouts, error handling, redirect flows, or auth contexts.
+  - Zero modifications to backend authentication controllers, JWT tokens, Prisma schemas, or database models.
+  - Zero hardcoded credentials stored in client bundle.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 73: Admin UI Layout Audit & Structural Hardening
+- **Projects Row Grid Realignment (`frontend/src/styles/admin/projects.css`, `frontend/src/pages/admin/ProjectsPage.tsx`)**:
+  - Fixed severe grid column mismatch where `.admin-project-row` had 5 CSS grid columns for 3 JSX children, eliminating ghost blank columns and restoring generous horizontal room for project identity, developer attribution, and location details.
+  - Added responsive breakpoints (`@media (max-width: 900px)` and `@media (max-width: 640px)`) allowing metadata and action groups to wrap cleanly without horizontal overflow.
+- **Available Rental Properties Card Architecture (`frontend/src/styles/admin/admin.css`, `frontend/src/pages/admin/RentalAvailablePage.tsx`)**:
+  - Introduced dedicated `.admin-property-card` responsive layout with 4 curated content columns (Contact, Property Details, Location, Status/Date) and a distinct actions bar.
+  - Replaced legacy 8-column unaligned lead grid with clear visual hierarchy, eliminating disjointed button placement and empty column voids.
+- **Admin Headings & Text Wrapping Polish (`frontend/src/pages/admin/VisitsPage.tsx`, `frontend/src/pages/admin/RentalEnquiriesPage.tsx`, `frontend/src/styles/admin/admin.css`)**:
+  - Replaced `.admin-page-header` with shared `.admin-page-heading` on Visits page and stripped redundant inline styles.
+  - Enforced `min-width: 0` and `overflow-wrap: anywhere` across admin lead and table cells to prevent long names, emails, and slugs from causing layout distortion.
+- **Invariants Preserved**:
+  - Zero modifications to backend, API clients, database models, or authentication guards.
+  - Preserved all CRUD operations, modals, filter triggers, and communication actions.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 74: Admin Projects Layout Overhaul & Full Admin UI Audit
+- **Admin Projects Operational Card Architecture (`frontend/src/styles/admin/projects.css`, `frontend/src/pages/admin/ProjectsPage.tsx`)**:
+  - Replaced stretched table rows with structured `.admin-project-card` operational containers dividing content into three distinct visual regions:
+    - **Area A (Identity & Metadata)**: Project name with prominent typography, inline publication/lifecycle status badges, developer name, location slug, and configurations count summary.
+    - **Area B (Operational Status Metrics)**: Dedicated status display showing Lifecycle (`UNDER_CONSTRUCTION`, `READY_TO_MOVE`, etc.) and Publication (`PUBLISHED` vs `DRAFT`) with semantic indicator badges.
+    - **Area C (Action Bar)**: Direct inline status toggles (Deactivate/Activate) and the primary "Open Workspace" navigation link.
+  - Responsive layout adapts from side-by-side flex split on desktop ($\ge 1024\text{px}$) to stacked operational sections on tablet ($768\text{px}$) and single-column full-width touch cards on mobile ($\le 600\text{px}$).
+- **Full Admin UI Audit & Hardening**:
+  - Audited all admin pages: Dashboard, Projects, Developers, Leads, Visits, Available Properties, Rental Enquiries, Media, Configurations, Project Workspace, Accounts, Firm Profile, Contact, and Import.
+  - Hardened text-wrapping and responsive flex containers across all list items using `min-width: 0`, `overflow-wrap: anywhere`, and semantic design tokens.
+  - Standardized `.admin-page-heading` typography, spacing, and action-bar alignment across all views.
+  - Guaranteed zero horizontal overflow across 320px, 375px, 430px, 768px, 1024px, 1280px, and 1440px viewports.
+- **Invariants Preserved**:
+  - Zero modifications to backend routes, controllers, services, repositories, or Prisma schemas.
+  - Zero modifications to authentication logic, JWT handling, or route protection.
+  - Zero modifications to public pages, Tara discovery assistant, or public enquiry flows.
+  - Zero fake data or unsupported media fields introduced.
+---
+
+## Phase 75: Admin Property Visit CRUD & Operational Lifecycle
+- **Unified Lead-Based Visit Architecture (`Lead.visitDate IS NOT NULL`)**:
+  - Implemented complete CRUD capabilities directly on the authenticated Visits workspace (`/admin/visits`) without introducing a separate Visit database table or schema migrations.
+  - Sourced all visits from the authoritative `Lead` model where `visitDate` is populated, ensuring client history, triage notes, and communication workflows remain completely unified across `/admin/leads` and `/admin/visits`.
+- **Backend Admin Visit Endpoints (`backend/src/routes/admin/visit.routes.ts`, `backend/src/controllers/admin/lead.controller.ts`, `backend/src/services/lead.service.ts`)**:
+  - Mounted RESTful admin endpoints under `/api/admin/visits` protected by `requireAdminAuthentication`:
+    - `GET /api/admin/visits`: Returns operational triage projection partitioned into `{ today, upcoming, past }` with time-slot ranking (`Morning` $\rightarrow$ `Afternoon` $\rightarrow$ `Evening` $\rightarrow$ unspecified).
+    - `POST /api/admin/visits`: Validates and creates a manual property visit (`name`, `phone`, `visitDate`, optional context & notes).
+    - `GET /api/admin/visits/:id`: Retrieves single visit by ID.
+    - `PATCH /api/admin/visits/:id`: Updates visit schedule, time slot, property context, status, and internal triage notes (setting `visitDate: null` and `visitTime: null` cancels the visit schedule while safely preserving the customer Lead record).
+    - `DELETE /api/admin/visits/:id`: Permanently deletes the underlying Lead record with confirmation.
+- **Frontend Visit Management Workspace (`frontend/src/pages/admin/VisitsPage.tsx`, `VisitModal.tsx`, `CancelVisitModal.tsx`)**:
+  - Added **`+ Add Visit`** action button and operational filter tabs (`All`, `Today`, `Upcoming`, `Past`).
+  - Created **`VisitModal`** with full cascading property context resolution (`Developer` $\rightarrow$ `Project` $\rightarrow$ `Configuration`), validated date picker (`YYYY-MM-DD`), time-slot selection, and status assignment.
+  - Created **`CancelVisitModal`** offering explicit choice between "Cancel Schedule Only" (preserves Lead record) and "Permanent Delete".
+  - Maintained instant Call & WhatsApp actions (`LeadActions`) and deep links to Lead Manager.
+- **Invariants Preserved**:
+  - Zero database schema migrations or breaking changes.
+  - 100% backward compatibility for all public enquiry and schedule-a-visit flows.
+  - Zero Git commits or pushes.

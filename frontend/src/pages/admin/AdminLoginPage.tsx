@@ -96,7 +96,7 @@ export function AdminLoginPage() {
             <input
               required
               type="email"
-              placeholder="admin@example.com"
+              placeholder="name@example.com"
               value={email}
               autoComplete="email"
               disabled={isSubmitting}

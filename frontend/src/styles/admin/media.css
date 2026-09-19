@@ -48,5 +48,22 @@
 @media (max-width: 640px) {
   .admin-media-list {
     grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .admin-media-upload-form {
+    max-width: 100%;
+    margin: 0.75rem 0;
+  }
+
+  .admin-media-card img,
+  .admin-media-card video {
+    max-height: 12rem;
+  }
+
+  .admin-media-card .admin-action {
+    width: 100%;
+    min-height: 2.75rem;
+    justify-content: center;
   }
 }

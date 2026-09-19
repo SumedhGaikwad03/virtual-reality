@@ -141,51 +141,59 @@ function ProjectListPage({ onAdd }: { onAdd: () => void }) {
       )}
 
       {!isLoading && !error && projects.length > 0 && (
-        <div className="admin-card admin-project-list">
+        <div className="admin-project-list">
           {projects.map((project) => {
             const isActive = project.publishStatus === "PUBLISHED";
             const isParentDeveloperInactive = project.developer?.publishStatus === "DRAFT";
             const isMutating = isUpdatingId === project.id;
 
             return (
-              <article className="admin-project-row" key={project.id}>
-                <div style={{ flex: "1 1 240px", minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <h2>{project.name}</h2>
-                    {isActive ? (
-                      isParentDeveloperInactive ? (
-                        <span className="admin-badge admin-badge--warning" title="Developer is inactive; this project is currently not visible publicly.">
-                          Active (Developer Inactive)
-                        </span>
+              <article className="admin-project-card" key={project.id}>
+                <div className="admin-project-card-main">
+                  {/* Area A: Project Identity */}
+                  <div className="admin-project-identity">
+                    <div className="admin-project-title-row">
+                      <h2>{project.name}</h2>
+                      {isActive ? (
+                        isParentDeveloperInactive ? (
+                          <span className="admin-badge admin-badge--warning" title="Developer is inactive; this project is currently not visible publicly.">
+                            Active (Developer Inactive)
+                          </span>
+                        ) : (
+                          <span className="admin-badge admin-badge--active">Active</span>
+                        )
                       ) : (
-                        <span className="admin-badge admin-badge--active">Active</span>
-                      )
-                    ) : (
-                      <span className="admin-badge admin-badge--inactive">Inactive</span>
-                    )}
-                    {project.featured && (
-                      <span className="admin-badge admin-badge--featured">Featured</span>
-                    )}
+                        <span className="admin-badge admin-badge--inactive">Inactive</span>
+                      )}
+                      {project.featured && (
+                        <span className="admin-badge admin-badge--featured">Featured</span>
+                      )}
+                    </div>
+                    <p className="admin-project-meta-line">
+                      {project.slug} · Developer: <strong>{project.developer.name}</strong> · Location: {project.locationName}
+                    </p>
                   </div>
-                  <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--admin-text-muted)" }}>
-                    {project.slug} · Developer: <strong>{project.developer.name}</strong> · Location: {project.locationName}
-                  </p>
+
+                  {/* Area B: Operational Status */}
+                  <div className="admin-project-status-group">
+                    <div className="admin-project-status-item">
+                      <span className="admin-project-status-label">Lifecycle</span>
+                      <strong className="admin-project-status-val">{formatLifecycleStatus(project.status)}</strong>
+                    </div>
+                    <div className="admin-project-status-item">
+                      <span className="admin-project-status-label">Publication</span>
+                      <strong
+                        className="admin-project-status-val"
+                        style={{ color: isActive ? "var(--admin-success-text, #18382E)" : "var(--admin-text-muted)" }}
+                      >
+                        {isActive ? "Active" : "Inactive"}
+                      </strong>
+                    </div>
+                  </div>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.85rem" }}>
-                  <div>
-                    <span style={{ color: "var(--admin-text-muted)" }}>Lifecycle: </span>
-                    <strong>{formatLifecycleStatus(project.status)}</strong>
-                  </div>
-                  <div>
-                    <span style={{ color: "var(--admin-text-muted)" }}>Publication: </span>
-                    <strong style={{ color: isActive ? "var(--admin-success-text, #15803d)" : "var(--admin-text-muted)" }}>
-                      {isActive ? "Active" : "Inactive"}
-                    </strong>
-                  </div>
-                </div>
-
-                <div className="admin-project-row-actions" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                {/* Area C: Actions */}
+                <div className="admin-project-card-actions">
                   {isActive ? (
                     <button
                       type="button"
