@@ -1,4 +1,5 @@
-const STATIC_CACHE = "virtual-reality-admin-shell-v5";
+const STATIC_CACHE = "virtual-reality-admin-shell-v6";
+
 
 const PRECACHE_ASSETS = [
   "/index.html",

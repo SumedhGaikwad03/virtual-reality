@@ -1550,3 +1550,24 @@
 - **Invariants Preserved**:
   - Zero Prisma schema changes, zero database migrations, zero data duplication or synchronization between tables.
   - Dedicated `/admin/rentals/enquiries` and `/admin/rentals/available` workspaces remain 100% intact and functional.
+
+---
+
+## Phase 90: PWA Update & Asset Cache Lifecycle Fix
+- **Vite Content Hashing (`frontend/vite.config.mts`)**:
+  - Removed custom unhashed entrypoint naming (`assets/index.js` and `assets/index.css`), allowing Vite to produce content-hashed entry bundles (`assets/index-[hash].js`, `assets/index-[hash].css`).
+  - Guaranteed safe alignment with Vercel's 1-year immutable caching header for `/assets/*` without stale entrypoint locking.
+- **Service Worker Versioning & Cache Management (`frontend/public/sw.js`)**:
+  - Bumped static cache version to `virtual-reality-admin-shell-v6`.
+  - Service worker `activate` automatically purges all obsolete `virtual-reality-*` cache buckets.
+  - Pre-caches only minimal shell assets on install (`/index.html`, `/manifest.webmanifest`, icons) with `skipWaiting()`.
+  - Preserves Network-First navigation with offline fallback, and applies Cache-First safely to Vite content-hashed assets under `/assets/`.
+- **Client Update Lifecycle & Reload Orchestration (`frontend/src/pwa/registerServiceWorker.ts`)**:
+  - Added guarded `navigator.serviceWorker.addEventListener("controllerchange", ...)` listener.
+  - When a new Service Worker activates and claims clients, the application triggers a single controlled `window.location.reload()`.
+  - Added single-reload in-memory guard (`isRefreshing`) and `hadPreviousController` check so initial first-time installs do not trigger an unnecessary reload.
+  - Added startup `registration.update()` check to prompt immediate detection of new deployments.
+- **Invariants Preserved**:
+  - Service worker scope strictly preserved to `/admin` (public routes remain unaffected).
+  - Existing `vite:preloadError` handler in `main.tsx` preserved as a secondary resilience safety net.
+  - Zero modifications to backend services, Prisma schemas, migrations, authentication tokens, or public search/rental features.
