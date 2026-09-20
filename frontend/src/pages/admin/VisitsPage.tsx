@@ -37,6 +37,11 @@ function statusLabel(status: AdminLead["status"]): string {
   return status === "IN_PROGRESS" ? "Ongoing" : status;
 }
 
+function creatorLabel(lead: AdminLead): string {
+  const name = lead.createdBy?.name?.trim() || lead.createdBy?.email;
+  return name ? `Created by ${name}` : "Created Organically";
+}
+
 function formatShortDate(dateStr: string): { day: number; month: string; year: string } {
   if (!dateStr || !dateStr.includes("-")) {
     return { day: 0, month: "—", year: "" };
@@ -182,6 +187,11 @@ export function VisitsPage() {
           <p className="admin-visit-full-date">
             {formatFullDate(visit.visitDate || "")}
           </p>
+          <div className="admin-lead-creator">
+            <span className="admin-lead-creator-tag">
+              {creatorLabel(visit)}
+            </span>
+          </div>
 
           <div className="admin-visit-requirement">
             {visit.project ? (

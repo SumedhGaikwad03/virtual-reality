@@ -14,6 +14,7 @@ import type {
   RentalEnquiryStatus,
   RentalPropertyStatus,
 } from "../../../generated/prisma/enums.js";
+import type { AuthenticatedAdmin } from "../../middleware/auth.middleware.js";
 import {
   createAdminRentalEnquiry,
   createAdminRentalProperty,
@@ -51,6 +52,7 @@ export async function createAdminRentalEnquiryController(
   next: NextFunction,
 ) {
   try {
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
     const body = req.body;
     const input: CreateAdminRentalEnquiryInput = {
       name: body.name as string,
@@ -67,7 +69,7 @@ export async function createAdminRentalEnquiryController(
       internalNotes: body.internalNotes as string | undefined,
     };
 
-    res.status(201).json(await createAdminRentalEnquiry(input));
+    res.status(201).json(await createAdminRentalEnquiry(input, actorAdmin));
   } catch (error) {
     next(error);
   }

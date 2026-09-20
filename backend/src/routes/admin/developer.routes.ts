@@ -17,7 +17,7 @@ import {
   listDevelopersController,
   updateDeveloperController,
 } from "../../controllers/admin/developer.controller.js";
-import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
+import { requireFounderAuthentication } from "../../middleware/auth.middleware.js";
 import {
   validateAdminCreateDeveloper,
   validateAdminDeveloperId,
@@ -26,7 +26,7 @@ import {
 
 const router = Router();
 
-router.use(requireAdminAuthentication);
+router.use(requireFounderAuthentication);
 router.use(express.json());
 
 router.post("/", validateAdminCreateDeveloper, createDeveloperController);

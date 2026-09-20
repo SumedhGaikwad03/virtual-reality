@@ -20,6 +20,10 @@ const leadSelect = {
   developerId: true,
   projectId: true,
   configurationId: true,
+  createdById: true,
+  ownerId: true,
+  createdBy: { select: { id: true, name: true, email: true, role: true } },
+  owner: { select: { id: true, name: true, email: true, role: true } },
   developer: { select: { id: true, name: true, slug: true } },
   project: { select: { id: true, name: true, slug: true } },
   configuration: { select: { id: true, name: true } },
@@ -40,6 +44,8 @@ export type LeadFindManyOptions = {
   developerId?: string;
   projectId?: string;
   configurationId?: string;
+  ownerId?: string;
+  createdById?: string;
 };
 
 export type LeadUpdateData = {
@@ -54,6 +60,7 @@ export type LeadUpdateData = {
   visitTime?: string | null;
   status?: LeadStatus;
   notes?: string | null;
+  ownerId?: string | null;
 };
 
 export class LeadRepository {
@@ -64,6 +71,8 @@ export class LeadRepository {
     developerId?: string;
     projectId?: string;
     configurationId?: string;
+    createdById?: string | null;
+    ownerId?: string | null;
     message?: string;
     visitDate?: string;
     visitTime?: string;
@@ -91,6 +100,12 @@ export class LeadRepository {
     }
     if (options?.configurationId) {
       where.configurationId = options.configurationId;
+    }
+    if (options?.ownerId) {
+      where.ownerId = options.ownerId;
+    }
+    if (options?.createdById) {
+      where.createdById = options.createdById;
     }
 
     if (options?.search && options.search.trim() !== "") {
@@ -136,13 +151,17 @@ export class LeadRepository {
     return prisma.lead.findUnique({ where: { id }, select: leadSelect });
   }
 
-  async findVisits() {
-    return prisma.lead.findMany({
-      where: {
-        visitDate: {
-          not: null,
-        },
+  async findVisits(ownerId?: string) {
+    const where: Record<string, unknown> = {
+      visitDate: {
+        not: null,
       },
+    };
+    if (ownerId) {
+      where.ownerId = ownerId;
+    }
+    return prisma.lead.findMany({
+      where,
       orderBy: [
         { visitDate: "asc" },
         { createdAt: "asc" },

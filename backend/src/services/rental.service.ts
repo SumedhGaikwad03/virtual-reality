@@ -16,6 +16,7 @@ import type {
   RentalEnquiryStatus,
   RentalPropertyStatus,
 } from "../../generated/prisma/enums.js";
+import type { AuthenticatedAdmin } from "../middleware/auth.middleware.js";
 import {
   rentalRepository,
   type RentalEnquiryFindManyOptions,
@@ -160,7 +161,10 @@ export async function createRentalEnquiry(input: CreateRentalEnquiryInput) {
   };
 }
 
-export async function createAdminRentalEnquiry(input: CreateAdminRentalEnquiryInput) {
+export async function createAdminRentalEnquiry(
+  input: CreateAdminRentalEnquiryInput,
+  actorAdmin?: AuthenticatedAdmin,
+) {
   const enquiry = await rentalRepository.createEnquiry({
     name: input.name,
     phone: input.phone,
@@ -174,6 +178,7 @@ export async function createAdminRentalEnquiry(input: CreateAdminRentalEnquiryIn
     notes: input.notes,
     status: input.status ?? "NEW",
     internalNotes: input.internalNotes,
+    createdById: actorAdmin?.id ?? null,
   });
 
   return { data: enquiry };

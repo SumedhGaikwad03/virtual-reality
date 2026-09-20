@@ -51,6 +51,10 @@ export type AdminLeadUpdateBody = {
   notes?: unknown;
 };
 
+export type ReassignLeadOwnerBody = {
+  ownerId?: unknown;
+};
+
 const leadStatuses = new Set(["NEW", "IN_PROGRESS", "DONE"]);
 const validVisitTimes = new Set(["Morning", "Afternoon", "Evening"]);
 
@@ -471,7 +475,17 @@ export function validateListLeadsQuery(
   _res: Response,
   next: NextFunction,
 ) {
-  const { page, limit, status, search, developerId, projectId, configurationId } = req.query;
+  const {
+    page,
+    limit,
+    status,
+    search,
+    developerId,
+    projectId,
+    configurationId,
+    ownerId,
+    createdById,
+  } = req.query;
 
   if (page !== undefined) {
     const parsedPage = Number(page);
@@ -514,5 +528,28 @@ export function validateListLeadsQuery(
     return;
   }
 
+  if (ownerId !== undefined && typeof ownerId !== "string") {
+    next(validationError("Owner ID parameter must be a string"));
+    return;
+  }
+
+  if (createdById !== undefined && typeof createdById !== "string") {
+    next(validationError("Created By ID parameter must be a string"));
+    return;
+  }
+
+  next();
+}
+
+export function validateReassignLeadOwner(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
+  const body = req.body as ReassignLeadOwnerBody;
+  if (!hasOnlyFields(body, ["ownerId"]) || !isNonEmptyString(body?.ownerId)) {
+    next(validationError("A valid target ownerId is required"));
+    return;
+  }
   next();
 }

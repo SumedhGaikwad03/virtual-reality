@@ -13,7 +13,9 @@
  * - Manages lead creation (public & admin), full updates, deletion, search, filtering, and pagination.
  */
 
-import type { LeadStatus } from "../../generated/prisma/enums.js";
+import type { AdminRole, LeadStatus } from "../../generated/prisma/enums.js";
+import type { AuthenticatedAdmin } from "../middleware/auth.middleware.js";
+import { adminRepository } from "../repositories/admin.repository.js";
 import { configurationRepository } from "../repositories/configuration.repository.js";
 import { developerRepository } from "../repositories/developer.repository.js";
 import { leadRepository, type LeadFindManyOptions, type LeadUpdateData } from "../repositories/lead.repository.js";
@@ -69,8 +71,10 @@ export class LeadServiceError extends Error {
       | "CONFIGURATION_NOT_FOUND"
       | "CONFIGURATION_PROJECT_MISMATCH"
       | "DEVELOPER_PROJECT_MISMATCH"
-      | "LEAD_NOT_FOUND",
-    public readonly statusCode: 400 | 404,
+      | "LEAD_NOT_FOUND"
+      | "FORBIDDEN"
+      | "INVALID_LEAD_REQUEST",
+    public readonly statusCode: 400 | 403 | 404,
     message: string,
   ) {
     super(message);
@@ -86,6 +90,10 @@ function toAdminLead(lead: {
   developer: { id: string; name: string; slug: string } | null;
   project: { id: string; name: string; slug: string } | null;
   configuration: { id: string; name: string } | null;
+  createdById?: string | null;
+  ownerId?: string | null;
+  createdBy?: { id: string; name: string | null; email: string; role: AdminRole } | null;
+  owner?: { id: string; name: string | null; email: string; role: AdminRole } | null;
   message: string | null;
   visitDate?: string | null;
   visitTime?: string | null;
@@ -102,6 +110,10 @@ function toAdminLead(lead: {
     developer: lead.developer,
     project: lead.project,
     configuration: lead.configuration,
+    createdById: lead.createdById ?? null,
+    ownerId: lead.ownerId ?? null,
+    createdBy: lead.createdBy ?? null,
+    owner: lead.owner ?? null,
     message: lead.message,
     visitDate: lead.visitDate ?? null,
     visitTime: lead.visitTime ?? null,
@@ -208,6 +220,7 @@ async function resolveLeadContext(input: {
 
 export async function createLead(input: CreateLeadInput) {
   const context = await resolveLeadContext(input);
+  const founder = await adminRepository.findFounder();
 
   const lead = await leadRepository.create({
     name: input.name,
@@ -216,6 +229,8 @@ export async function createLead(input: CreateLeadInput) {
     developerId: context.developerId,
     projectId: context.projectId,
     configurationId: context.configurationId,
+    createdById: null,
+    ownerId: founder?.id ?? null,
     message: input.message,
     visitDate: input.visitDate,
     visitTime: input.visitTime,
@@ -234,12 +249,19 @@ export async function createLead(input: CreateLeadInput) {
   };
 }
 
-export async function createAdminLead(input: CreateAdminLeadInput) {
+export async function createAdminLead(
+  input: CreateAdminLeadInput,
+  actorAdmin?: AuthenticatedAdmin | { id?: string; role?: AdminRole },
+) {
   const context = await resolveLeadContext({
     developerId: input.developerId,
     projectId: input.projectId,
     configurationId: input.configurationId,
   });
+
+  const founder = await adminRepository.findFounder();
+  const creatorId = actorAdmin?.id || null;
+  const ownerId = actorAdmin?.id || founder?.id || null;
 
   const lead = await leadRepository.create({
     name: input.name,
@@ -248,6 +270,8 @@ export async function createAdminLead(input: CreateAdminLeadInput) {
     developerId: context.developerId,
     projectId: context.projectId,
     configurationId: context.configurationId,
+    createdById: creatorId,
+    ownerId: ownerId,
     message: input.message || undefined,
     visitDate: input.visitDate || undefined,
     visitTime: input.visitTime || undefined,
@@ -260,8 +284,18 @@ export async function createAdminLead(input: CreateAdminLeadInput) {
   };
 }
 
-export async function listLeads(options?: LeadFindManyOptions) {
-  const result = await leadRepository.findMany(options);
+export async function listLeads(
+  options?: LeadFindManyOptions,
+  actorAdmin?: AuthenticatedAdmin,
+) {
+  const queryOptions: LeadFindManyOptions = { ...options };
+
+  // RBAC: EMPLOYEE can only list leads where ownerId === authenticatedEmployee.id
+  if (actorAdmin?.role === "EMPLOYEE") {
+    queryOptions.ownerId = actorAdmin.id;
+  }
+
+  const result = await leadRepository.findMany(queryOptions);
   return {
     data: result.leads.map(toAdminLead),
     pagination: {
@@ -273,16 +307,34 @@ export async function listLeads(options?: LeadFindManyOptions) {
   };
 }
 
-export async function getLeadById(id: string) {
+export async function getLeadById(
+  id: string,
+  actorAdmin?: AuthenticatedAdmin,
+) {
   const lead = await leadRepository.findById(id);
   if (!lead) throw new LeadServiceError("LEAD_NOT_FOUND", 404, "Lead not found");
+
+  // RBAC: EMPLOYEE can only view their own leads
+  if (actorAdmin?.role === "EMPLOYEE" && lead.ownerId !== actorAdmin.id) {
+    throw new LeadServiceError("FORBIDDEN", 403, "Access to this lead is forbidden");
+  }
+
   return { data: toAdminLead(lead) };
 }
 
-export async function updateLead(id: string, input: UpdateAdminLeadInput) {
+export async function updateLead(
+  id: string,
+  input: UpdateAdminLeadInput,
+  actorAdmin?: AuthenticatedAdmin,
+) {
   const existing = await leadRepository.findById(id);
   if (!existing) {
     throw new LeadServiceError("LEAD_NOT_FOUND", 404, "Lead not found");
+  }
+
+  // RBAC: EMPLOYEE can only update their own leads
+  if (actorAdmin?.role === "EMPLOYEE" && existing.ownerId !== actorAdmin.id) {
+    throw new LeadServiceError("FORBIDDEN", 403, "Access to this lead is forbidden");
   }
 
   const updateData: LeadUpdateData = {};
@@ -322,14 +374,53 @@ export async function updateLead(id: string, input: UpdateAdminLeadInput) {
   return { data: toAdminLead(updated) };
 }
 
-export async function deleteLead(id: string) {
+export async function deleteLead(
+  id: string,
+  actorAdmin?: AuthenticatedAdmin,
+) {
   const existing = await leadRepository.findById(id);
   if (!existing) {
     throw new LeadServiceError("LEAD_NOT_FOUND", 404, "Lead not found");
   }
 
+  // RBAC: EMPLOYEE can only delete their own leads
+  if (actorAdmin?.role === "EMPLOYEE" && existing.ownerId !== actorAdmin.id) {
+    throw new LeadServiceError("FORBIDDEN", 403, "Access to this lead is forbidden");
+  }
+
   await leadRepository.delete(id);
   return { data: { deleted: true, id } };
+}
+
+export async function reassignLeadOwner(
+  id: string,
+  targetOwnerId: string,
+  actorAdmin?: AuthenticatedAdmin,
+) {
+  if (actorAdmin?.role !== "FOUNDER") {
+    throw new LeadServiceError("FORBIDDEN", 403, "Only Founder can reassign lead ownership");
+  }
+
+  const existing = await leadRepository.findById(id);
+  if (!existing) {
+    throw new LeadServiceError("LEAD_NOT_FOUND", 404, "Lead not found");
+  }
+
+  const targetAdmin = await adminRepository.findById(targetOwnerId);
+  if (!targetAdmin || !targetAdmin.isActive) {
+    throw new LeadServiceError(
+      "INVALID_LEAD_REQUEST",
+      400,
+      "Target admin not found or inactive",
+    );
+  }
+
+  // Reassign ownerId only; createdById remains immutable
+  const updated = await leadRepository.update(id, {
+    ownerId: targetAdmin.id,
+  });
+
+  return { data: toAdminLead(updated) };
 }
 
 function timeSlotRank(timeSlot: string | null | undefined): number {
@@ -345,9 +436,10 @@ function timeSlotRank(timeSlot: string | null | undefined): number {
   }
 }
 
-export async function getVisits() {
+export async function getVisits(actorAdmin?: AuthenticatedAdmin) {
   const todayDate = getTodayISTDateString();
-  const rawLeads = await leadRepository.findVisits();
+  const ownerId = actorAdmin?.role === "EMPLOYEE" ? actorAdmin.id : undefined;
+  const rawLeads = await leadRepository.findVisits(ownerId);
   const leads = rawLeads.map(toAdminLead);
 
   const todayLeads = leads.filter((lead) => lead.visitDate === todayDate);

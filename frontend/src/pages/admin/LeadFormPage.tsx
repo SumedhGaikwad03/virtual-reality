@@ -87,8 +87,8 @@ export function LeadFormPage() {
 
       try {
         const [devRes, projRes] = await Promise.all([
-          getDevelopers(),
-          getProjects(),
+          getDevelopers().catch(() => ({ data: [] })),
+          getProjects().catch(() => ({ data: [] })),
         ]);
 
         if (!active) return;

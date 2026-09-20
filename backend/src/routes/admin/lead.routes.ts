@@ -16,6 +16,7 @@ import {
   deleteLeadController,
   getLeadController,
   listLeadsController,
+  reassignLeadOwnerController,
   updateLeadController,
 } from "../../controllers/admin/lead.controller.js";
 import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
@@ -24,6 +25,7 @@ import {
   validateCreateAdminLead,
   validateLeadId,
   validateListLeadsQuery,
+  validateReassignLeadOwner,
 } from "../../validators/lead.validator.js";
 
 const router = Router();
@@ -48,6 +50,14 @@ router.get(
   requireAdminAuthentication,
   validateLeadId,
   getLeadController,
+);
+
+router.patch(
+  "/:id/owner",
+  requireAdminAuthentication,
+  validateLeadId,
+  validateReassignLeadOwner,
+  reassignLeadOwnerController,
 );
 
 router.patch(

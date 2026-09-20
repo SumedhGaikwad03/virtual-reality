@@ -267,7 +267,16 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
 - **Admin Mobile Layout**: At phone widths the admin shell collapses into a compact header row with an independently scrollable navigation strip. Admin content, cards, controls, project readiness panels, and workspace navigation have explicit shrink/max-width constraints; readiness panels use two columns on larger phones and one column below 380px. Public pages and API behavior are unchanged.
 - **Responsive Admin Navigation**: Desktop keeps the full familiar navigation. Phone widths expose Admin, Projects, and Leads directly, while Developers, Media, Import, and Logout are available through the compact More menu; the menu is contained within the shell and does not widen the document.
 - **Contextual Enquiry UX**: Action-driven contextual lead modal and mobile sticky bar (<768px) integrated directly into existing `createLead` API client (`lead.ts`).
-- **Lead Operations**: Admin Lead Manager exposes project/developer/configuration context, WhatsApp and `tel:` actions, and a restrained green outer attention halo for `NEW` leads; `IN_PROGRESS` is displayed as “Ongoing” without changing the persisted enum.
+- **Lead Operations & Ownership Foundation (Step 1)**:
+  - Extended PostgreSQL `Lead` model with `createdById` (nullable UUID string with FK to `Admin.id` on delete set null) and `ownerId` (nullable UUID string with FK to `Admin.id` on delete set null).
+  - Extended PostgreSQL `Admin` model with `createdLeads` (`@relation("LeadCreatedBy")`) and `ownedLeads` (`@relation("LeadOwner")`).
+  - Database indexes: `@@index([createdById])` and `@@index([ownerId])`.
+  - Database migration `20260919200000_add_lead_ownership_fields` safely backfills all existing organic/legacy leads to the primary active Founder administrator.
+  - Server-side ownership assignment:
+    - **Organic website leads**: `createdById = null`, `ownerId = Founder`.
+    - **Authenticated manual admin leads**: `createdById = actorAdminId`, `ownerId = actorAdminId`.
+  - Request validation (`hasOnlyFields`) strictly rejects any attempt by public callers or employees to inject `ownerId` or `createdById` with HTTP 400.
+  - Admin Lead Manager exposes project/developer/configuration context, WhatsApp and `tel:` actions, and a restrained green outer attention halo for `NEW` leads; `IN_PROGRESS` is displayed as “Ongoing” without changing the persisted enum.
 - **Admin PWA & Push**: The admin shell is installable with static-shell-only service-worker caching. Authenticated push subscriptions support multiple devices per active admin; lead notifications contain minimal context and never cache or include lead PII.
 - **Push Verification**: Leads includes the explicit notification permission control and a real backend-dispatched test notification; the UI reports unsupported, denied, unregistered, and registered device states.
 - **Developer Lead Attribution**: Direct developer enquiries now forward the validated `developerId`; project and configuration enquiries retain their existing relationship-derived attribution.
@@ -329,14 +338,33 @@ The authenticated Admin Dashboard uses existing `getLeads()` and `getProjects()`
   - **Data Integrity & Storage Invariants**: Original Cloudinary cloud assets remain untouched; PostgreSQL database `Media.url` remains the raw original source URL; backend models, routes, and controllers are completely unmodified.
   - **Validation**: Visual validation confirmed correct rendering with zero layout/crop regressions, and Network inspection confirmed materially smaller transferred byte payloads for all targeted card, thumbnail, and map contexts.
 
+- **Lead Operations, Ownership & Role-Based Authorization (Steps 1, 2 & 3)**:
+  - Extended PostgreSQL `Lead` model with `createdById` and `ownerId` (nullable UUID strings with foreign keys to `Admin.id` on delete set null).
+  - Extended PostgreSQL `Admin` model with `createdLeads` (`@relation("LeadCreatedBy")`) and `ownedLeads` (`@relation("LeadOwner")`).
+  - Database migration `20260919200000_add_lead_ownership_fields` safely backfilled all existing organic/legacy leads to the primary active Founder administrator.
+  - Server-side ownership assignment:
+    - **Organic website leads**: `createdById = null`, `ownerId = Founder`.
+    - **Authenticated manual admin leads & visits**: `createdById = actorAdminId`, `ownerId = actorAdminId`.
+  - Request validation (`hasOnlyFields`) strictly rejects any attempt by callers to inject `ownerId` or `createdById` with HTTP 400.
+  - **Founder Authorization**: Full global access to list, inspect, update, reschedule, cancel, and delete all Leads and scheduled Visits; exclusive permission to reassign lead ownership via `PATCH /api/admin/leads/:id/owner` (which dynamically reassigns visit operational access).
+  - **Employee Authorization**: Scoped strictly to records where `ownerId === authenticatedEmployee.id`. Attempts to read, update, reschedule, cancel, or delete unowned Leads or Visits are rejected with HTTP 403 Forbidden.
+  - **Employee/Founder Admin Access Boundary (Step 5)**:
+  - **Role-Aware Navigation (`AdminLayout.tsx`)**: Employees see only Dashboard (`/admin`), Leads (`/admin/leads`), Visits (`/admin/visits`), Rentals (`/admin/rentals/enquiries` and `/admin/rentals/available`), and Logout. Projects, Developers, Configurations, Media, Import, Firm Profile, Contact, and Accounts navigation links and menus are completely hidden for Employees.
+  - **Frontend Route Protection (`FounderRoute`, `AppRouter.tsx`)**: All Founder-only routes are protected by `<FounderRoute>`. Direct URL access by Employees redirects smoothly to `/admin` without rendering unauthorized views or firing unauthorized API requests.
+  - **Backend Route Authorization (`auth.middleware.ts`, admin routers)**: All Founder-only API endpoints (Developers, Projects, Configurations, Amenities, Highlights, Media, Import, Firm Profile, Contact, Accounts) are protected by `requireFounderAuthentication`. Employee requests receive HTTP 403 Forbidden with `{ error: { code: "FORBIDDEN", message: "Founder privileges required" } }`. Unauthenticated requests receive HTTP 401.
+  - **Founder Lead Reassignment UI (Step 7)**:
+    - Added Owner display on Lead Detail (`LeadDetailPage.tsx`).
+    - Founder-only `[ Change Owner ]` button opens `ReassignLeadOwnerModal.tsx` displaying eligible active administrators.
+    - Submits to `PATCH /api/admin/leads/:id/owner` updating `Lead.ownerId` immediately while preserving historical `Lead.createdById`.
+    - Scheduled Visits automatically follow the new owner through `Lead.ownerId` derivation.
+
+  - **Final RBAC Audit & Hardening (Step 8)**: Completed full verification of Lead Ownership, Role-Based Authorization, Founder Reassignment, Visit Authorization derivation, Rental Operations queues, Founder route boundaries, and Dashboard scoping across all automated verification suites (22/22 Leads, 20/20 Visits, 5/5 Dashboard, 7/7 Ownership, 15/15 Security).
+
 ---
 
 ## Current Status & Next Steps
-- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Operations (Steps 4A-4C), Admin Sales Leads Multi-Token Search, Hierarchical Developer/Project Activation & Public Visibility (Steps 1-3), Tara Refactor Phases 1, 2, 2.1 & 3 (Streamlined Entry Points, Editorial Overlay Redesign & Buy vs Rent Entry Decision), Navigation Layout Robustness for Long Entity Names, Automatic & Header-Triggered "Let's Connect" Advisory Popup, Public Global Navigation Streamlining, Contextual Project Enquiry, Standalone Public Enquiry Page, Dedicated Admin Visits Workspace & Full Visit CRUD (`/admin/visits`), Cloudinary Delivery Optimization Phases 1 & 2 (`f_auto,q_auto` + targeted width delivery).
-- **Branch**: All core platform, rental capabilities, admin hierarchy controls, streamlined public discovery, and media delivery optimizations verified on `develop`.
-
-
-
+- **Completed**: Core Backend, Public Pages, Media Architecture, Tara Conversational Discovery Assistant, Admin Portal & PWA, Security Hardening, SEO Pre-Rendering & Edge Rewrites, Public Rental Desk, Admin Rental Operations (Steps 4A-4C), Admin Sales Leads Multi-Token Search, Hierarchical Developer/Project Activation & Public Visibility (Steps 1-3), Tara Refactor Phases 1-3, Navigation Layout Robustness, Automatic Advisory Popup, Public Navigation Streamlining, Contextual Project Enquiry, Standalone Public Enquiry Page, Dedicated Admin Visits Workspace & Full Visit CRUD (`/admin/visits`), Cloudinary Delivery Optimization Phases 1 & 2 (`f_auto,q_auto` + targeted width delivery), Lead Ownership Foundation (Step 1), Lead Authorization & Founder Reassignment (Step 2), Lead Creator Identity Badge (Step 2.1), Visit Authorization & Scoped Employee Access (Step 3), Rental Enquiry Creator Identity (Step 4), Visit Card Creator Tag, Employee/Founder Admin Access Boundary (Step 5), Role-Aware Admin Dashboard, Founder Lead Reassignment UI (Step 7), Final RBAC Audit & Hardening (Step 8).
+- **Branch**: All core platform, rental capabilities, admin hierarchy controls, streamlined public discovery, media delivery optimizations, role-aware workspaces, and lead ownership RBAC milestone verified on `main`.
 
 
 

@@ -25,6 +25,7 @@ import adminImportRoutes from "./routes/admin/import.routes.js";
 import adminContactRoutes from "./routes/admin/contact.routes.js";
 import adminFirmProfileRoutes from "./routes/admin/firm-profile.routes.js";
 import adminRentalRoutes from "./routes/admin/rental.routes.js";
+import adminDashboardRoutes from "./routes/admin/dashboard.routes.js";
 import {
   configurationRouter,
   projectRouter as projectConfigurationRouter,
@@ -163,6 +164,7 @@ app.use("/api/site", siteRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/admin/auth", authRoutes);
+app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/admin/developers", adminDeveloperRoutes);
 app.use("/api/admin/projects/:projectId/configurations", projectConfigurationRouter);
 app.use("/api/admin/projects/:projectId/amenities", projectAmenityRouter);

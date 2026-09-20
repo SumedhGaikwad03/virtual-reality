@@ -13,6 +13,16 @@ export class AdminRepository {
     });
   }
 
+  findFounder() {
+    return prisma.admin.findFirst({
+      where: {
+        role: "FOUNDER",
+        isActive: true,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+  }
+
   findAll() {
     return prisma.admin.findMany({
       orderBy: [{ createdAt: "asc" }, { id: "asc" }],

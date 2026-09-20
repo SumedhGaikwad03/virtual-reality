@@ -52,6 +52,11 @@ function statusLabel(status: RentalEnquiryStatus) {
   }
 }
 
+function creatorLabel(enquiry: AdminRentalEnquiry) {
+  const name = enquiry.createdBy?.name?.trim() || enquiry.createdBy?.email;
+  return name ? `Created by ${name}` : "Created Organically";
+}
+
 export function RentalEnquiriesPage() {
   const navigate = useNavigate();
   const [enquiries, setEnquiries] = useState<AdminRentalEnquiry[]>([]);
@@ -209,6 +214,11 @@ export function RentalEnquiriesPage() {
                     )}
                   </h2>
                   <p>{enquiry.phone}</p>
+                  <div className="admin-lead-creator">
+                    <span className="admin-lead-creator-tag">
+                      {creatorLabel(enquiry)}
+                    </span>
+                  </div>
                 </div>
                 <p>
                   <strong>{enquiry.configuration}</strong>

@@ -1,13 +1,13 @@
 /*
  * PURPOSE:
- * Owns the restrained operational dashboard layout.
+ * Owns the restrained operational dashboard layout for Founder and Employee roles.
  *
  * FLOW:
  * AdminDashboardPage -> dashboard selectors -> responsive admin presentation.
  *
  * RESPONSIBILITY:
- * Keep the four metrics, lead actions, and quick actions scannable without introducing
- * dashboard-specific infrastructure or decorative marketing UI.
+ * Scannable KPIs, pipeline count breakdown, today's scheduled visits, recent leads,
+ * and shared rental operations without introducing decorative marketing UI.
  */
 
 .admin-dashboard-heading {
@@ -47,7 +47,7 @@
 
 .admin-dashboard-kpis {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -86,7 +86,7 @@
 }
 
 /* ==========================================================================
-   Dashboard Sections
+   Dashboard Sections & Headings
    ========================================================================== */
 
 .admin-dashboard-section {
@@ -120,6 +120,135 @@
   font-size: 0.875rem;
 }
 
+/* ==========================================================================
+   Lead Pipeline Breakdown
+   ========================================================================== */
+
+.admin-dashboard-pipeline-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-pipeline-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem 1.25rem;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(32, 38, 34, 0.03);
+}
+
+.admin-pipeline-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--admin-text-muted);
+}
+
+.admin-pipeline-count {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--admin-text);
+}
+
+.admin-pipeline-count.count-new {
+  color: var(--admin-primary, #18382E);
+}
+
+.admin-pipeline-count.count-progress {
+  color: #B45309;
+}
+
+.admin-pipeline-count.count-done {
+  color: #047857;
+}
+
+/* ==========================================================================
+   Today's Visits Grid
+   ========================================================================== */
+
+.admin-dashboard-visits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.admin-dashboard-visit-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-left: 4px solid var(--admin-primary, #18382E);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(32, 38, 34, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-dashboard-visit-card:hover {
+  border-color: #A99B89;
+  border-left-color: var(--admin-primary, #18382E);
+  box-shadow: 0 4px 12px -2px rgba(32, 38, 34, 0.06);
+}
+
+.admin-dashboard-visit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.admin-dashboard-visit-time {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--admin-primary, #18382E);
+  background: var(--admin-primary-soft, rgba(24, 56, 46, 0.08));
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+.admin-dashboard-visit-body h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.admin-dashboard-visit-phone {
+  margin: 0.2rem 0 0 0;
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+}
+
+.admin-dashboard-visit-project {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--admin-text);
+}
+
+.admin-dashboard-visit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--admin-border-subtle, rgba(0, 0, 0, 0.06));
+}
+
+/* ==========================================================================
+   Recent Leads List
+   ========================================================================== */
+
 .admin-dashboard-leads {
   display: grid;
   gap: 0.75rem;
@@ -141,6 +270,13 @@
 .admin-dashboard-lead:hover {
   background-color: var(--admin-surface-subtle);
   border-color: #A99B89;
+}
+
+.admin-dashboard-lead-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .admin-dashboard-lead-info h3,
@@ -175,6 +311,63 @@
   gap: 0.5rem;
 }
 
+/* ==========================================================================
+   Shared Rental Operations
+   ========================================================================== */
+
+.admin-dashboard-rental-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-rental-kpi-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(32, 38, 34, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-rental-kpi-card:hover {
+  border-color: #A99B89;
+  box-shadow: 0 4px 12px -2px rgba(32, 38, 34, 0.06);
+}
+
+.admin-rental-kpi-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--admin-text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.admin-rental-kpi-count {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--admin-text);
+  letter-spacing: -0.02em;
+}
+
+.admin-rental-kpi-desc {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+}
+
+/* ==========================================================================
+   Empty Cards
+   ========================================================================== */
+
 .admin-empty-card {
   padding: 2rem 1.5rem;
   text-align: center;
@@ -196,7 +389,6 @@
 @media (max-width: 1024px) {
   .admin-dashboard-kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.85rem;
   }
 }
 
@@ -213,6 +405,21 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
     margin-bottom: 1.5rem;
+  }
+
+  .admin-dashboard-pipeline-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .admin-dashboard-visits-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .admin-dashboard-rental-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .admin-kpi-card {
@@ -244,6 +451,12 @@
   }
 
   .admin-dashboard-lead-actions .admin-action {
+    flex: 1 1 auto;
+    min-height: 2.75rem;
+    justify-content: center;
+  }
+
+  .admin-dashboard-visit-actions .admin-action {
     flex: 1 1 auto;
     min-height: 2.75rem;
     justify-content: center;

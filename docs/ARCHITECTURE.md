@@ -21,24 +21,25 @@ All admin routes are wrapped in `<ProtectedRoute>` (JWT guard) and `<AdminLayout
 
 Admin access tokens default to a 15-minute JWT lifetime, overridable by `JWT_EXPIRES_IN`. The browser stores the token and admin identity in separate local-storage keys; logout clears both, malformed/expired tokens are discarded locally, and backend JWT verification remains the authorization authority. Each browser/device maintains an independent session.
 
-| Route Path | Component | Description |
-| :--- | :--- | :--- |
-| `/admin/login` | `AdminLoginPage.tsx` | Admin authentication login form |
-| `/admin` | `AdminDashboardPage.tsx` | Operational lead/project metrics and work queues |
-| `/admin/developers` | `DevelopersPage.tsx` | List of developer entities |
-| `/admin/developers/new`, `/:id` | `DeveloperFormPage.tsx` | Create/edit developer form |
-| `/admin/projects` | `ProjectsPage.tsx` | List of project entities |
-| `/admin/projects/new`, `/:id` | `ProjectFormPage.tsx` | Create/edit project form |
-| `/admin/projects/:projectId/configurations` | `ProjectConfigurationsPage.tsx` | Unit configurations for a project |
-| `/admin/configurations/:id` | `ConfigurationFormPage.tsx` | Create/edit unit configuration |
-| `/admin/leads`, `/:id` | `LeadsPage.tsx`, `LeadDetailPage.tsx` | Inbound customer lead inquiries |
-| `/admin/visits` | `VisitsPage.tsx` | Operational triage for scheduled Today and Upcoming customer visits |
-| `/admin/import` | `ImportPage.tsx` | Scraped URL property importer review pipeline |
-| `/admin/media` | `HomeMediaPage.tsx` | Site-level media asset management |
-| `/admin/projects/:projectId/media` | `ProjectMediaPage.tsx` | Project media asset management |
-| `/admin/configurations/:configurationId/media` | `ConfigurationMediaPage.tsx` | Unit configuration media management |
-| `/admin/rentals/enquiries`, `/:id` | `RentalEnquiriesPage.tsx`, `RentalEnquiryDetailPage.tsx` | Seeker rental demand inquiries & status triage |
-| `/admin/rentals/available`, `/:id` | `RentalAvailablePage.tsx`, `RentalAvailableDetailPage.tsx` | Owner-submitted rental properties & status triage |
+| Route Path | Component | Role Access | Description |
+| :--- | :--- | :--- | :--- |
+| `/admin/login` | `AdminLoginPage.tsx` | Public Admin | Admin authentication login form |
+| `/admin` | `AdminDashboardPage.tsx` | FOUNDER & EMPLOYEE | Operational lead/project metrics and work queues |
+| `/admin/leads`, `/:id` | `LeadsPage.tsx`, `LeadDetailPage.tsx` | FOUNDER & EMPLOYEE | Inbound customer lead inquiries (Founder: all, Employee: owned) |
+| `/admin/visits` | `VisitsPage.tsx` | FOUNDER & EMPLOYEE | Scheduled customer visits (Founder: all, Employee: owned) |
+| `/admin/rentals/enquiries`, `/:id` | `RentalEnquiriesPage.tsx`, `RentalEnquiryDetailPage.tsx` | FOUNDER & EMPLOYEE | Seeker rental demand inquiries (Shared operational queue) |
+| `/admin/rentals/available`, `/:id` | `RentalAvailablePage.tsx`, `RentalAvailableDetailPage.tsx` | FOUNDER & EMPLOYEE | Owner-submitted rental properties (Shared operational queue) |
+| `/admin/developers`, `/new`, `/:id` | `DevelopersPage.tsx`, `DeveloperFormPage.tsx` | FOUNDER ONLY | Developer entities management |
+| `/admin/projects`, `/new`, `/:id` | `ProjectsPage.tsx`, `ProjectFormPage.tsx` | FOUNDER ONLY | Project entities management |
+| `/admin/projects/:projectId/configurations`, `/new` | `ProjectConfigurationsPage.tsx` | FOUNDER ONLY | Unit configurations for a project |
+| `/admin/configurations/:id` | `ConfigurationFormPage.tsx` | FOUNDER ONLY | Create/edit unit configuration |
+| `/admin/import` | `ImportPage.tsx` | FOUNDER ONLY | Scraped URL property importer review pipeline |
+| `/admin/media` | `HomeMediaPage.tsx` | FOUNDER ONLY | Site-level media asset management |
+| `/admin/projects/:projectId/media` | `ProjectMediaPage.tsx` | FOUNDER ONLY | Project media asset management |
+| `/admin/configurations/:configurationId/media` | `ConfigurationMediaPage.tsx` | FOUNDER ONLY | Unit configuration media management |
+| `/admin/firm-profile` | `FirmProfilePage.tsx` | FOUNDER ONLY | Organization profile and branding configuration |
+| `/admin/contact` | `ContactPage.tsx` | FOUNDER ONLY | Contact information management |
+| `/admin/accounts`, `/new` | `AdminAccountsPage.tsx`, `CreateAdminPage.tsx` | FOUNDER ONLY | Admin account creation and management |
 
 ---
 
@@ -47,6 +48,7 @@ Admin access tokens default to a 15-minute JWT lifetime, overridable by `JWT_EXP
 ```
 frontend/src/
 ├── api/                   # HTTP Fetch API clients (Fetch + AbortSignal)
+│   ├── admin-dashboard.ts # GET /api/admin/dashboard
 │   ├── site.ts            # GET /api/site
 │   ├── project.ts         # GET /api/projects/:devSlug/:locSlug/:projSlug
 │   ├── developer.ts       # GET /api/developers/:slug
@@ -180,22 +182,31 @@ model Lead {
   name            String
   phone           String
   email           String?
+  developerId     String?
   projectId       String?
   configurationId String?
-  intent          String?
-  source          String?      @default("WEBSITE")
+  createdById     String?
+  ownerId         String?
   status          LeadStatus   @default(NEW)
-  budget          String?
-  location        String?
   message         String?
   visitDate       String?
   visitTime       String?
+  notes           String?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
+  developer     Developer?     @relation(fields: [developerId], references: [id])
   project       Project?       @relation(fields: [projectId], references: [id])
   configuration Configuration? @relation(fields: [configurationId], references: [id])
+  createdBy     Admin?         @relation("LeadCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  owner         Admin?         @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
 
+  @@index([developerId])
+  @@index([projectId])
+  @@index([configurationId])
+  @@index([createdById])
+  @@index([ownerId])
+  @@index([status])
   @@index([visitDate])
 }
 ```
@@ -427,4 +438,86 @@ Tara Assistant               "Let's Connect" Popup         Contextual Project En
 - If a user triggers a Contextual Project Enquiry while Tara is open, `closeAssistant({ reset: false })` immediately closes Tara.
 - If Tara is open or `.contextual-enquiry-backdrop` is present in DOM, the 5-second automatic advisory popup timer is suppressed.
 - If a user opens Tara while the Advisory modal is active, `PublicShell` auto-dismisses the advisory modal to maintain a single-modal viewport.
+
+---
+
+## 8. Admin Lead Ownership & Role-Based Access Control (RBAC)
+
+The administrative lead subsystem enforces strict distinction between record creation (`createdById`) and ongoing operational responsibility (`ownerId`).
+
+```
+                              LEAD CREATION & OWNERSHIP FLOW
+                                             │
+               ┌─────────────────────────────┴─────────────────────────────┐
+               │                                                           │
+               ▼                                                           ▼
+      Public Website Lead                                         Admin Manual Lead
+       (POST /api/leads)                                          (POST /api/admin/leads)
+               │                                                           │
+        createdById = null                                          createdById = actorAdmin.id
+        ownerId = founder.id                                        ownerId = actorAdmin.id
+               │                                                           │
+               └─────────────────────────────┬─────────────────────────────┘
+                                             │
+                                             ▼
+                                  PostgreSQL Lead Record
+                                             │
+               ┌─────────────────────────────┴─────────────────────────────┐
+               │                                                           │
+               ▼                                                           ▼
+       FOUNDER Privilege                                           EMPLOYEE Privilege
+  (Admin.role === "FOUNDER")                                   (Admin.role === "EMPLOYEE")
+               │                                                           │
+  ├─ List: All leads across system                             ├─ List: Only leads where ownerId === id
+  ├─ Read: Any lead by ID                                      ├─ Read: Only owned leads (403 on others)
+  ├─ Update: Any lead                                          ├─ Update: Only owned leads (403 on others)
+  ├─ Delete: Any lead                                          ├─ Delete: Only owned leads (403 on others)
+  └─ Reassign: PATCH /:id/owner                                └─ Reassign: Prohibited (403 Forbidden)
+     (ownerId changes, createdById immutable)
+```
+
+### 8.1 Authorization Matrix
+
+| Operation | Endpoint | Founder (`FOUNDER`) | Employee (`EMPLOYEE`) |
+| :--- | :--- | :--- | :--- |
+| **List Leads** | `GET /api/admin/leads` | Full visibility across all owners; can filter by `ownerId` / `createdById` | Scoped strictly to `ownerId === employee.id`; query params cannot override |
+| **Get Lead by ID** | `GET /api/admin/leads/:id` | 200 OK for any lead | 200 OK for owned leads; 403 Forbidden for unowned leads |
+| **Create Lead** | `POST /api/admin/leads` | `createdById = founder.id`, `ownerId = founder.id` | `createdById = employee.id`, `ownerId = employee.id` |
+| **Update Lead** | `PATCH /api/admin/leads/:id` | 200 OK for any lead | 200 OK for owned leads; 403 Forbidden for unowned leads |
+| **Delete Lead** | `DELETE /api/admin/leads/:id` | 200 OK for any lead | 200 OK for owned leads; 403 Forbidden for unowned leads |
+| **Reassign Lead** | `PATCH /api/admin/leads/:id/owner` | 200 OK (verifies active target admin; updates `ownerId` only) | 403 Forbidden |
+| **Payload Injection** | Payload contains `ownerId` / `createdById` | 400 Bad Request (`INVALID_LEAD_REQUEST`) | 400 Bad Request (`INVALID_LEAD_REQUEST`) |
+
+### 8.2 Visit Authorization & Access Control (Step 3)
+
+Visits are **not** independent database records; they are an operational projection of `Lead` where `visitDate IS NOT NULL`. Consequently, visit authorization is derived directly from `Lead.ownerId` with zero separate Visit tables or ownership columns.
+
+```
+                           VISIT OPERATIONAL PROJECTION
+                                        │
+                         Lead (where visitDate !== null)
+                                        │
+        ┌───────────────────────────────┴───────────────────────────────┐
+        │                                                               │
+        ▼                                                               ▼
+FOUNDER Privilege                                               EMPLOYEE Privilege
+  (Full Organization View)                                        (Owner-Scoped View)
+        │                                                               │
+├─ List: All visits (GET /api/admin/visits)                     ├─ List: Scoped to ownerId === employee.id
+├─ Read: Any visit (GET /api/admin/visits/:id)                  ├─ Read: Owned visit (403 on others)
+├─ Create: Created/owned by Founder                             ├─ Create: Created/owned by Employee
+├─ Update / Reschedule: Any visit                               ├─ Update / Reschedule: Owned visit (403 on others)
+├─ Cancel Schedule: Clears date/time, keeps lead               ├─ Cancel Schedule: Owned visit (403 on others)
+└─ Delete Visit / Lead: Any visit                               └─ Delete Visit / Lead: Owned visit (403 on others)
+```
+
+| Operation | Endpoint | Founder (`FOUNDER`) | Employee (`EMPLOYEE`) |
+| :--- | :--- | :--- | :--- |
+| **List Scheduled Visits** | `GET /api/admin/visits` | Full visibility across all scheduled visits and team members | Scoped strictly to `Lead.ownerId === employee.id` |
+| **Get Visit by ID** | `GET /api/admin/visits/:id` | 200 OK for any visit | 200 OK for owned visit; 403 Forbidden for unowned visit |
+| **Create Visit** | `POST /api/admin/visits` | `createdById = founder.id`, `ownerId = founder.id` | `createdById = employee.id`, `ownerId = employee.id` |
+| **Update / Reschedule** | `PATCH /api/admin/visits/:id` | 200 OK for any visit | 200 OK for owned visit; 403 Forbidden for unowned visit |
+| **Cancel Visit Schedule** | `PATCH /api/admin/visits/:id` with `{ visitDate: null, visitTime: null }` | 200 OK (preserves underlying Lead) | 200 OK for owned visit; 403 Forbidden for unowned visit |
+| **Delete Visit / Lead** | `DELETE /api/admin/visits/:id` | 200 OK for any visit | 200 OK for owned visit; 403 Forbidden for unowned visit |
+| **Dynamic Reassignment** | Reassign Lead (`PATCH /api/admin/leads/:id/owner`) | Automatically transfers visit operational access to the new owner | Prohibited (403 Forbidden) |
 

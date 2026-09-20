@@ -192,6 +192,8 @@ export const LeadScalarFieldEnum = {
   developerId: 'developerId',
   projectId: 'projectId',
   configurationId: 'configurationId',
+  createdById: 'createdById',
+  ownerId: 'ownerId',
   message: 'message',
   visitDate: 'visitDate',
   visitTime: 'visitTime',
@@ -290,6 +292,7 @@ export const RentalEnquiryScalarFieldEnum = {
   notes: 'notes',
   status: 'status',
   internalNotes: 'internalNotes',
+  createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

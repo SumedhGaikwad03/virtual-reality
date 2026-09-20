@@ -14,12 +14,12 @@ import {
   getContactController,
   updateContactController,
 } from "../../controllers/admin/contact.controller.js";
-import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
+import { requireFounderAuthentication } from "../../middleware/auth.middleware.js";
 import { validateContactUpdate } from "../../validators/contact.validator.js";
 
 const router = Router();
 
-router.use(requireAdminAuthentication);
+router.use(requireFounderAuthentication);
 router.use(express.json());
 
 /*

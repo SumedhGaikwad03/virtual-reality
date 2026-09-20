@@ -16,11 +16,11 @@ import {
   listProjectHighlightsController,
   updateProjectHighlightController,
 } from "../../controllers/admin/highlight.controller.js";
-import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
+import { requireFounderAuthentication } from "../../middleware/auth.middleware.js";
 
 const projectHighlightRouter = Router({ mergeParams: true });
 
-projectHighlightRouter.use(requireAdminAuthentication);
+projectHighlightRouter.use(requireFounderAuthentication);
 projectHighlightRouter.use(express.json());
 
 projectHighlightRouter.get("/", listProjectHighlightsController);

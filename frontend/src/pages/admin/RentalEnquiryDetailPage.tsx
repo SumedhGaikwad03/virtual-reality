@@ -57,6 +57,11 @@ function formatDate(value: string) {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
 
+function creatorLabel(enquiry: AdminRentalEnquiry) {
+  const name = enquiry.createdBy?.name?.trim() || enquiry.createdBy?.email;
+  return name ? `Created by ${name}` : "Created Organically";
+}
+
 export function RentalEnquiryDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -203,6 +208,12 @@ export function RentalEnquiryDetailPage() {
         <h2>Seeker Contact</h2>
         <p><strong>Name:</strong> {enquiry.name}</p>
         <p><strong>Phone:</strong> {enquiry.phone}</p>
+        <p>
+          <strong>Creator:</strong>{" "}
+          <span className="admin-lead-creator-tag">
+            {creatorLabel(enquiry)}
+          </span>
+        </p>
         <p><strong>Received:</strong> {formatDate(enquiry.createdAt)}</p>
         <p><strong>Last Updated:</strong> {formatDate(enquiry.updatedAt)}</p>
 

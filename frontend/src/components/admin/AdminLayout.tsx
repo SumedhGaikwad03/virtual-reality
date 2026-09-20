@@ -182,9 +182,11 @@ export function AdminLayout({
               <NavLink to="/admin" end onClick={closeDrawer}>
                 Dashboard
               </NavLink>
-              <NavLink to="/admin/projects" onClick={closeDrawer}>
-                Projects
-              </NavLink>
+              {admin?.role === "FOUNDER" && (
+                <NavLink to="/admin/projects" onClick={closeDrawer}>
+                  Projects
+                </NavLink>
+              )}
             </div>
           </div>
 
@@ -212,31 +214,31 @@ export function AdminLayout({
             </div>
           </div>
 
-          <div className="admin-drawer-nav-section">
-            <span className="admin-drawer-section-title">Management</span>
-            <div className="admin-drawer-links">
-              <NavLink to="/admin/developers" onClick={closeDrawer}>
-                Developers
-              </NavLink>
-              <NavLink to="/admin/media" onClick={closeDrawer}>
-                Home Media
-              </NavLink>
-              <NavLink to="/admin/contact" onClick={closeDrawer}>
-                Contact Info
-              </NavLink>
-              <NavLink to="/admin/firm-profile" onClick={closeDrawer}>
-                Firm Profile
-              </NavLink>
-              {admin?.role === "FOUNDER" && (
+          {admin?.role === "FOUNDER" && (
+            <div className="admin-drawer-nav-section">
+              <span className="admin-drawer-section-title">Management</span>
+              <div className="admin-drawer-links">
+                <NavLink to="/admin/developers" onClick={closeDrawer}>
+                  Developers
+                </NavLink>
+                <NavLink to="/admin/media" onClick={closeDrawer}>
+                  Home Media
+                </NavLink>
+                <NavLink to="/admin/contact" onClick={closeDrawer}>
+                  Contact Info
+                </NavLink>
+                <NavLink to="/admin/firm-profile" onClick={closeDrawer}>
+                  Firm Profile
+                </NavLink>
                 <NavLink to="/admin/accounts" onClick={closeDrawer}>
                   Admin Accounts
                 </NavLink>
-              )}
-              <NavLink to="/admin/import" onClick={closeDrawer}>
-                Import
-              </NavLink>
+                <NavLink to="/admin/import" onClick={closeDrawer}>
+                  Import
+                </NavLink>
+              </div>
             </div>
-          </div>
+          )}
         </nav>
 
         <div className="admin-mobile-drawer-footer">
@@ -260,9 +262,11 @@ export function AdminLayout({
             <NavLink to="/admin" end>
               Dashboard
             </NavLink>
-            <NavLink to="/admin/projects">
-              Projects
-            </NavLink>
+            {admin?.role === "FOUNDER" && (
+              <NavLink to="/admin/projects">
+                Projects
+              </NavLink>
+            )}
             <div className="admin-nav-group">
               <span className="admin-nav-group-title">Leads</span>
               <div className="admin-nav-group-items">
@@ -287,58 +291,69 @@ export function AdminLayout({
             </div>
           </div>
 
-          <div className="admin-more-container" ref={moreRef}>
-            <button
-              className={`admin-more-toggle ${isMoreOpen ? "is-active" : ""}`}
-              type="button"
-              aria-expanded={isMoreOpen}
-              aria-controls="admin-more-menu"
-              aria-haspopup="true"
-              onClick={() => setIsMoreOpen((open) => !open)}
-            >
-              <span>More</span>
-              <span className="admin-more-arrow" aria-hidden="true">{isMoreOpen ? "▴" : "▾"}</span>
-            </button>
+          {admin?.role === "FOUNDER" ? (
+            <div className="admin-more-container" ref={moreRef}>
+              <button
+                className={`admin-more-toggle ${isMoreOpen ? "is-active" : ""}`}
+                type="button"
+                aria-expanded={isMoreOpen}
+                aria-controls="admin-more-menu"
+                aria-haspopup="true"
+                onClick={() => setIsMoreOpen((open) => !open)}
+              >
+                <span>More</span>
+                <span className="admin-more-arrow" aria-hidden="true">{isMoreOpen ? "▴" : "▾"}</span>
+              </button>
 
-            <div
-              id="admin-more-menu"
-              className={`admin-secondary-nav ${isMoreOpen ? "is-open" : ""}`}
-              role="menu"
-            >
-              <NavLink to="/admin/developers" role="menuitem" onClick={closeMore}>
-                Developers
-              </NavLink>
-              <NavLink to="/admin/media" role="menuitem" onClick={closeMore}>
-                Home Media
-              </NavLink>
-              <NavLink to="/admin/contact" role="menuitem" onClick={closeMore}>
-                Contact Info
-              </NavLink>
-              <NavLink to="/admin/firm-profile" role="menuitem" onClick={closeMore}>
-                Firm Profile
-              </NavLink>
-              {admin?.role === "FOUNDER" && (
+              <div
+                id="admin-more-menu"
+                className={`admin-secondary-nav ${isMoreOpen ? "is-open" : ""}`}
+                role="menu"
+              >
+                <NavLink to="/admin/developers" role="menuitem" onClick={closeMore}>
+                  Developers
+                </NavLink>
+                <NavLink to="/admin/media" role="menuitem" onClick={closeMore}>
+                  Home Media
+                </NavLink>
+                <NavLink to="/admin/contact" role="menuitem" onClick={closeMore}>
+                  Contact Info
+                </NavLink>
+                <NavLink to="/admin/firm-profile" role="menuitem" onClick={closeMore}>
+                  Firm Profile
+                </NavLink>
                 <NavLink to="/admin/accounts" role="menuitem" onClick={closeMore}>
                   Admin Accounts
                 </NavLink>
-              )}
-              <NavLink to="/admin/import" role="menuitem" onClick={closeMore}>
-                Import
-              </NavLink>
-              <div className="admin-more-divider" role="separator" />
+                <NavLink to="/admin/import" role="menuitem" onClick={closeMore}>
+                  Import
+                </NavLink>
+                <div className="admin-more-divider" role="separator" />
+                <button
+                  type="button"
+                  className="admin-logout-btn"
+                  role="menuitem"
+                  onClick={() => {
+                    closeMore();
+                    logout();
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="admin-sidebar-footer" style={{ marginTop: "auto", paddingTop: "1rem" }}>
               <button
                 type="button"
                 className="admin-logout-btn"
-                role="menuitem"
-                onClick={() => {
-                  closeMore();
-                  logout();
-                }}
+                style={{ width: "100%", textAlign: "left", padding: "0.6rem 0.85rem" }}
+                onClick={() => logout()}
               >
                 Logout
               </button>
             </div>
-          </div>
+          )}
         </nav>
       </aside>
 

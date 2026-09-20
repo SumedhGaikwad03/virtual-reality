@@ -30,6 +30,15 @@ const rentalEnquirySelect = {
   notes: true,
   status: true,
   internalNotes: true,
+  createdById: true,
+  createdBy: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+    },
+  },
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -70,6 +79,7 @@ export type RentalEnquiryCreateData = {
   notes?: string | null;
   status?: RentalEnquiryStatus;
   internalNotes?: string | null;
+  createdById?: string | null;
 };
 
 export type RentalEnquiryUpdateData = {
@@ -141,6 +151,7 @@ export class RentalRepository {
         notes: data.notes ?? null,
         status: data.status ?? "NEW",
         internalNotes: data.internalNotes ?? null,
+        createdById: data.createdById ?? null,
       },
       select: rentalEnquirySelect,
     });

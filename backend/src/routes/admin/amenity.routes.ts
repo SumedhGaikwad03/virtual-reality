@@ -17,11 +17,11 @@ import {
   listProjectAmenitiesController,
   updateProjectAmenityController,
 } from "../../controllers/admin/amenity.controller.js";
-import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
+import { requireFounderAuthentication } from "../../middleware/auth.middleware.js";
 
 const projectAmenityRouter = Router({ mergeParams: true });
 
-projectAmenityRouter.use(requireAdminAuthentication);
+projectAmenityRouter.use(requireFounderAuthentication);
 projectAmenityRouter.use(express.json());
 
 projectAmenityRouter.get("/", listProjectAmenitiesController);

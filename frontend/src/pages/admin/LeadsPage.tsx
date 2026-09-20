@@ -23,6 +23,11 @@ function statusLabel(status: AdminLead["status"]) {
   return status === "IN_PROGRESS" ? "Ongoing" : status;
 }
 
+function creatorLabel(lead: AdminLead) {
+  const name = lead.createdBy?.name?.trim() || lead.createdBy?.email;
+  return name ? `Created by ${name}` : "Created Organically";
+}
+
 export function LeadsPage() {
   const [leads, setLeads] = useState<AdminLead[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta>({
@@ -227,6 +232,11 @@ export function LeadsPage() {
                     )}
                   </h2>
                   <p>{lead.phone}{lead.email ? ` · ${lead.email}` : ""}</p>
+                  <div className="admin-lead-creator">
+                    <span className="admin-lead-creator-tag">
+                      {creatorLabel(lead)}
+                    </span>
+                  </div>
                 </div>
                 <p>{lead.developer?.name ?? "—"}</p>
                 <p>{lead.project?.name ?? "General enquiry"}</p>

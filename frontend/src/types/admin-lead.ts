@@ -8,6 +8,10 @@ export type AdminLead = {
   developer: { id: string; name: string; slug: string } | null;
   project: { id: string; name: string; slug: string } | null;
   configuration: { id: string; name: string } | null;
+  createdById?: string | null;
+  ownerId?: string | null;
+  createdBy?: { id: string; name: string | null; email: string; role: string } | null;
+  owner?: { id: string; name: string | null; email: string; role: string } | null;
   message: string | null;
   visitDate: string | null;
   visitTime: string | null;

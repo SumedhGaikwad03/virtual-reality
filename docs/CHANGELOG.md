@@ -1176,3 +1176,237 @@
   - Zero changes to CSS, layouts, image containers, aspect ratios, or responsive breakpoints.
   - Optimization is purely additive, delivery-only on the client side.
   - Zero Git commits or pushes.
+
+---
+
+## Phase 77: Admin Lead Ownership & Creator Foundation (Step 1)
+- **Database Model Extension (`backend/prisma/schema.prisma`)**:
+  - Extended `Lead` model with `createdById` (nullable UUID string with foreign key to `Admin.id` on delete set null) and `ownerId` (nullable UUID string with foreign key to `Admin.id` on delete set null).
+  - Extended `Admin` model with `createdLeads` (`@relation("LeadCreatedBy")`) and `ownedLeads` (`@relation("LeadOwner")`).
+  - Added database indexes: `@@index([createdById])` and `@@index([ownerId])`.
+- **Database Migration & Deterministic Backfill (`backend/prisma/migrations/20260919200000_add_lead_ownership_fields/migration.sql`)**:
+  - Added `createdById` and `ownerId` columns, foreign key constraints, and performance indexes to PostgreSQL `Lead` table.
+  - Executed safe deterministic backfill setting `ownerId` of all pre-existing leads to the active Founder administrator (`role = 'FOUNDER' AND isActive = true`).
+- **Domain & Service Layer Foundation (`backend/src/services/lead.service.ts`, `backend/src/repositories/lead.repository.ts`, `backend/src/repositories/admin.repository.ts`)**:
+  - Added `findFounder()` query helper in `AdminRepository` to retrieve the primary active Founder admin.
+  - Updated `LeadRepository` select projection to include `createdById`, `ownerId`, `createdBy`, and `owner`.
+  - Updated `createLead()` (public/organic lead capture): server-side assigns `createdById = null` and `ownerId = founder.id`.
+  - Updated `createAdminLead()` (authenticated admin lead creation): server-side extracts `actorAdminId` from authenticated JWT context, setting `createdById = actorAdminId` and `ownerId = actorAdminId`.
+  - Prepared `LeadRepository.findMany()` with optional `ownerId` and `createdById` query filters for clean operational boundary queries.
+- **Security & Validation Boundaries (`backend/src/validators/lead.validator.ts`)**:
+  - Verified `hasOnlyFields` strictly disallows `ownerId` and `createdById` in public submissions, admin creation payloads, and admin updates (rejecting payload tampering with HTTP 400).
+- **Invariants Preserved**:
+  - Zero UI, dashboard, navigation, or role permission changes (Step 1 foundation only).
+  - Visits and Rental domains untouched.
+  - All existing leads preserved with Founder ownership backfill.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 78: Server-Side Lead Authorization & Founder Reassignment (Step 2)
+- **Role-Based Authorization Enforcement (`backend/src/services/lead.service.ts`)**:
+  - **Founder (`role = 'FOUNDER'`)**:
+    - Full visibility: lists all leads across all owners (`GET /api/admin/leads`).
+    - Filter capability: can filter by `ownerId` or `createdById` through query parameters.
+    - Global lead retrieval: can read any lead by ID (`GET /api/admin/leads/:id`).
+    - Global lead modification: can update any lead (`PATCH /api/admin/leads/:id`).
+    - Global lead deletion: can delete any lead (`DELETE /api/admin/leads/:id`).
+    - Exclusive reassignment authority: can reassign lead ownership to any active administrator (`PATCH /api/admin/leads/:id/owner`).
+  - **Employee (`role = 'EMPLOYEE'`)**:
+    - Scoped visibility: listing leads automatically enforces `ownerId === authenticatedEmployee.id`. Any query attempt to override `ownerId` is strictly ignored/overridden.
+    - Scoped retrieval: attempting to read a lead owned by Founder or another employee throws `LeadServiceError("FORBIDDEN", 403, "Access to this lead is forbidden")`.
+    - Scoped modification: attempting to update an unowned lead returns HTTP 403 Forbidden.
+    - Scoped deletion: attempting to delete an unowned lead returns HTTP 403 Forbidden.
+    - Reassignment prohibited: attempting to call `PATCH /api/admin/leads/:id/owner` throws `LeadServiceError("FORBIDDEN", 403, "Only Founder can reassign lead ownership")`.
+- **Founder-Only Lead Reassignment Endpoint (`PATCH /api/admin/leads/:id/owner`)**:
+  - Mounted route: `PATCH /api/admin/leads/:id/owner` with `requireAdminAuthentication`, `validateLeadId`, `validateReassignLeadOwner`, and `reassignLeadOwnerController`.
+  - Validator `validateReassignLeadOwner`: ensures request body strictly contains only `{ "ownerId": "<target-admin-id>" }`.
+  - Service `reassignLeadOwner`:
+    - Checks actor is `FOUNDER` (rejects with 403 otherwise).
+    - Verifies target administrator exists in the database and is active (`isActive === true`) (rejects inactive or non-existent admins with 400 `INVALID_LEAD_REQUEST`).
+    - Updates `ownerId` only; `createdById` remains strictly immutable.
+- **Controller & Middleware Context Passing (`backend/src/controllers/admin/lead.controller.ts`)**:
+  - All admin lead controllers (`listLeadsController`, `getLeadController`, `createAdminLeadController`, `updateLeadController`, `deleteLeadController`, `reassignLeadOwnerController`) pass authenticated `res.locals.admin` to the service layer.
+- **Verification & Test Coverage (`backend/src/scripts/lead-authorization-verification.ts`)**:
+  - Built comprehensive 22-test automated verification suite verifying all Founder and Employee authorization, boundary enforcement, query protection, and reassignment rules. (22/22 PASSED).
+- **Invariants Preserved**:
+  - No frontend navigation or dashboard changes yet.
+  - Visits and Rentals RBAC untouched.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 79: Visit Authorization & Employee Access (Step 3)
+- **Architectural Invariant**:
+  - Visits are strictly an operational projection of `Lead` where `visitDate IS NOT NULL` rather than an independent database entity.
+  - Zero separate Visit ownership fields or tables were added (`Lead.ownerId` is the single source of truth).
+- **Role-Based Visit Authorization Enforcement (`backend/src/services/lead.service.ts`, `backend/src/repositories/lead.repository.ts`, `backend/src/controllers/admin/lead.controller.ts`)**:
+  - **Founder (`role = 'FOUNDER'`)**:
+    - Complete operational visibility: `GET /api/admin/visits` lists all scheduled visits across all owners and team members.
+    - Global visit retrieval: `GET /api/admin/visits/:id` can read any scheduled visit.
+    - Global visit modification: `PATCH /api/admin/visits/:id` can update visit details, reschedule, or cancel visit schedules (`visitDate: null, visitTime: null`) across any lead.
+    - Global visit deletion: `DELETE /api/admin/visits/:id` can delete any visit/lead.
+  - **Employee (`role = 'EMPLOYEE'`)**:
+    - Scoped operational visibility: `GET /api/admin/visits` automatically scopes queries to `where: { visitDate: { not: null }, ownerId: authenticatedEmployee.id }`.
+    - Scoped retrieval: `GET /api/admin/visits/:id` returns 200 OK for owned visits, and 403 Forbidden (`FORBIDDEN`) when attempting to access a visit owned by the Founder or another Employee.
+    - Scoped modification: `PATCH /api/admin/visits/:id` allows updating/rescheduling/cancelling owned visits, and rejects unowned visits with HTTP 403 Forbidden.
+    - Scoped deletion: `DELETE /api/admin/visits/:id` allows deleting owned visits, and rejects unowned visits with HTTP 403 Forbidden.
+  - **Dynamic Access Delegation via Lead Reassignment**:
+    - Reassigning a `Lead` (`PATCH /api/admin/leads/:id/owner`) instantly and automatically reassigns visit operational access without touching any visit fields.
+- **Verification & Test Coverage (`backend/src/scripts/visit-authorization-verification.ts`)**:
+  - Built comprehensive 20-test automated verification suite verifying Founder and Employee visit listing, scoping, retrieval, scheduling, cancellation, deletion, date filters (today, upcoming, past), general enquiry visits, dynamic reassignment handoff, and schema cleanliness. (20/20 PASSED).
+- **Invariants Preserved**:
+  - No changes to Rental Enquiries, Rental Available Properties, employee navigation, dashboard redesign, JWT/auth architecture, public website, or Tara.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 80: Employee/Founder Admin Access Boundary (Step 5)
+- **Role-Aware Admin Navigation (`frontend/src/components/admin/AdminLayout.tsx`)**:
+  - `EMPLOYEE` role visible items strictly scoped to:
+    - Dashboard (`/admin`)
+    - Leads (`/admin/leads`)
+    - Visits (`/admin/visits`)
+    - Rentals (`/admin/rentals/enquiries` and `/admin/rentals/available`)
+    - Direct Logout button
+  - Founder-only navigation sections and menus (Projects, Developers, Configurations, Media, Import, Firm Profile, Contact Info, Accounts) completely hidden from Employee sidebar and mobile drawer.
+  - `FOUNDER` role retains full navigation across all administrative workspaces.
+- **Frontend Route Protection (`frontend/src/auth/ProtectedRoute.tsx`, `frontend/src/router/AppRouter.tsx`)**:
+  - `FounderRoute` updated to redirect non-founder authenticated users directly to `/admin` (`<Navigate to="/admin" replace />`).
+  - Wrapped all Founder-only administrative route branches with `<FounderRoute>`:
+    - `/admin/developers`, `/admin/developers/new`, `/admin/developers/:id`
+    - `/admin/projects`, `/admin/projects/new`, `/admin/projects/:id`
+    - `/admin/projects/:projectId/configurations`, `/admin/projects/:projectId/configurations/new`, `/admin/configurations/:id`
+    - `/admin/import`
+    - `/admin/media`, `/admin/projects/:projectId/media`, `/admin/configurations/:configurationId/media`
+    - `/admin/contact`
+    - `/admin/firm-profile`
+    - `/admin/accounts`, `/admin/accounts/new`
+- **Backend Route Authorization (`backend/src/middleware/auth.middleware.ts`, `backend/src/routes/admin/*.ts`)**:
+  - Enforced `requireFounderAuthentication` / `requireFounder` across all Founder-only routers:
+    - `backend/src/routes/admin/developer.routes.ts`
+    - `backend/src/routes/admin/project.routes.ts`
+    - `backend/src/routes/admin/configuration.routes.ts` (`projectRouter` and `configurationRouter`)
+    - `backend/src/routes/admin/amenity.routes.ts`
+    - `backend/src/routes/admin/highlight.routes.ts`
+    - `backend/src/routes/admin/media.routes.ts`
+    - `backend/src/routes/admin/import.routes.ts`
+    - `backend/src/routes/admin/firm-profile.routes.ts`
+    - `backend/src/routes/admin/contact.routes.ts`
+  - Rejects Employee requests on Founder-only endpoints with HTTP 403 Forbidden (`{ error: { code: "FORBIDDEN", message: "Founder privileges required" } }`).
+  - Unauthenticated requests continue to be rejected with HTTP 401 Unauthorized.
+- **Operational Workspace & Dashboard Gracefulness**:
+  - `AdminDashboardPage`: Conditionally fetches project metrics only for `FOUNDER`; hides the `Active Projects` KPI card for `EMPLOYEE` without throwing 403 errors.
+  - `LeadFormPage` & `VisitModal`: Gracefully handle developer/project select dropdown fetching with `.catch(() => ({ data: [] }))`, ensuring employees can create/manage leads and visits seamlessly.
+  - Operational permissions preserved:
+    - Leads: Founder (all), Employee (own).
+    - Visits: Founder (all), Employee (own).
+    - Rental Enquiries: Shared operational queue.
+    - Rental Available Properties: Shared operational queue.
+- **Verification & Test Coverage**:
+  - Ran comprehensive automated HTTP endpoint role boundary suite verifying 401 unauthenticated, 403 employee on founder endpoints, 200 founder on all, 200 employee on operational endpoints. All checks passed.
+  - Re-verified Lead authorization suite (22/22 PASSED) and Visit authorization suite (20/20 PASSED).
+- **Invariants Preserved**:
+  - Zero changes to database schema or Lead/Visit ownership logic.
+  - Zero changes to public website, SEO routes, or Tara assistant.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 81: Role-Aware Admin Dashboard Implementation
+- **Unified Backend Dashboard API (`backend/src/services/dashboard.service.ts`, `backend/src/controllers/admin/dashboard.controller.ts`, `backend/src/routes/admin/dashboard.routes.ts`)**:
+  - Mounted endpoint: `GET /api/admin/dashboard` protected with `requireAdminAuthentication`.
+  - Authoritative scoping derived purely from `res.locals.admin` (no client override query parameters accepted).
+  - **Founder Scope (`role = 'FOUNDER'`)**:
+    - Organization-wide metrics: `totalLeads`, `newLeads`, `todayVisits` (all scheduled visits for today), `inProgress`, and `activeProjects` (published projects count).
+    - Pipeline summary: organization-wide status count breakdown (`NEW`, `IN_PROGRESS`, `DONE`).
+    - Today's visits: all scheduled visits across the entire organization today, sorted by time slot and creation date.
+    - Recent leads: latest organization leads across all owners.
+    - Shared rental operations: total `enquiryCount` and `availablePropertyCount`.
+  - **Employee Scope (`role = 'EMPLOYEE'`)**:
+    - Personal workload metrics: `myLeads`, `newLeads` (owned), `todayVisits` (owned visits today), `inProgress` (owned).
+    - Pipeline summary: owner-scoped status count breakdown.
+    - Today's visits: scheduled visits strictly for leads where `ownerId === authenticatedEmployee.id`.
+    - Recent leads: latest leads strictly where `ownerId === authenticatedEmployee.id`.
+    - Shared rental operations: identical shared `enquiryCount` and `availablePropertyCount`.
+- **Frontend Dashboard Architecture (`frontend/src/api/admin-dashboard.ts`, `frontend/src/types/admin-dashboard.ts`, `frontend/src/pages/admin/AdminDashboardPage.tsx`)**:
+  - Replaced multi-request dashboard fetching with single `getAdminDashboard()` call.
+  - **Contextual Greeting**: Time-of-day greeting with authenticated user's name (`Good morning, <Name>` / `Good afternoon, <Name>` / `Good evening, <Name>`). Subtitle dynamically reads:
+    - Founder: `"Here's what's happening across your workspace."`
+    - Employee: `"Here's what needs your attention."`
+  - **Operational Sections**:
+    - **KPI Row**: Displays role-appropriate cards (Total Leads vs My Leads, New Leads, Today's Visits vs My Visits Today, In Progress, Active Projects for Founder).
+    - **Lead Pipeline Summary**: Visual count cards for `New`, `In Progress`, and `Done` with status accents.
+    - **Today's Scheduled Visits**: Time pill, Customer Name, Phone, Project context or `General Enquiry`, status badge, authentic creator attribution (`[ Created by <Name> ]` / `[ Created Organically ]`), WhatsApp/Call shortcuts, and Lead view link.
+    - **Recent Leads**: Customer Name, Project / `General Enquiry`, status badge, creator tag, relative timestamp, and contact shortcuts.
+    - **Shared Rental Operations**: Dual operational cards for Seeker Demand (`Rental Enquiries`) and Landlord Supply (`Available Properties`) with direct navigation links.
+    - **Explicit Empty States**: `"No visits scheduled for today."`, `"No leads assigned to you yet."`.
+- **CSS Styling (`frontend/src/styles/admin/dashboard.css`)**:
+  - Restrained, scannable layout honoring the dark forest / sand architectural design tokens.
+  - Mobile, tablet, and desktop responsive flex/grid layouts with zero horizontal overflow.
+- **Verification & Test Coverage (`backend/src/scripts/dashboard-role-verification.ts`)**:
+  - Verified 401 unauthenticated protection.
+  - Verified Founder org-wide metrics, visits, leads, active projects, and shared rentals.
+  - Verified Employee personal workload metrics, visits, leads, and shared rentals.
+  - Verified critical Creator vs Owner scenario: Lead created by Employee A but owned by Employee B appears strictly in Employee B's dashboard metrics/leads/visits with creator tag `"Created by Employee A"`.
+  - Re-verified Lead authorization suite (22/22 PASSED) and Visit authorization suite (20/20 PASSED).
+- **Invariants Preserved**:
+  - `Lead.ownerId` controls operational visibility; `Lead.createdBy` is historical attribution only.
+  - Rental Enquiries and Rental Available Properties remain shared operational queues.
+  - No database schema alterations or migrations needed.
+  - Zero changes to public website, SEO routes, or Tara assistant.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 82: Founder Lead Reassignment UI (Step 7)
+- **Lead Detail Owner Presentation (`frontend/src/pages/admin/LeadDetailPage.tsx`)**:
+  - Added dedicated Owner display near the Creator attribution:
+    - Creator: `[ Created by <Name> ]` / `[ Created Organically ]`
+    - Owner: `<Owner Name>` / `<Owner Email>` / `Founder`
+  - **Founder-Only Change Owner Action**: Renders `[ Change Owner ]` button conditionally only when `admin?.role === "FOUNDER"`. Hidden completely for Employees.
+- **Change Owner Modal Component (`frontend/src/components/admin/ReassignLeadOwnerModal.tsx`)**:
+  - Modal fetching active administrators from `getAdminAccounts()`.
+  - Displays current owner preview and a responsive radio selection list of active administrators with name, role badge (`FOUNDER` / `EMPLOYEE`), and email.
+  - Submits reassignment to `PATCH /api/admin/leads/:id/owner` via `reassignLeadOwner()` in `frontend/src/api/admin-leads.ts`.
+  - Error handling: Graceful error messages on failures (403 forbidden, 400 invalid/inactive admin).
+  - State & Lifecycle: Resets submitting state, closes on Escape or backdrop click, updates lead state immediately on success without full-page reloads.
+- **Creator vs Owner Invariant Preserved**:
+  - `createdById` and `createdBy` remain immutable when ownership changes.
+  - Scheduled Visits dynamically inherit new ownership via `Lead.ownerId`.
+- **Verification & Test Coverage**:
+  - Re-verified Lead authorization suite (`22/22 PASSED`).
+  - Re-verified Visit authorization suite (`20/20 PASSED`).
+  - Re-verified Role-aware Dashboard verification suite (`5/5 PASSED`).
+  - Backend and frontend `npm run build` passed with zero errors.
+- **Invariants Preserved**:
+  - Zero changes to database schema or Visit data structure.
+  - Zero changes to public website, SEO routes, or Tara assistant.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 83: Final RBAC Audit, Verification & Hardening (Step 8)
+- **Comprehensive RBAC & Security Audit**:
+  - **Ownership Model**: Verified immutable `createdById` (historical creator) and mutable `ownerId` (responsible owner) on PostgreSQL `Lead` model. Clients cannot inject ownership fields during creation/update (rejected with 400).
+  - **Lead Authorization**: Verified Founder org-wide visibility and CRUD, Employee own-record isolation (read/update/delete blocked with 403 on unowned leads).
+  - **Lead Reassignment**: Verified `PATCH /api/admin/leads/:id/owner` is Founder-only (`requireFounderAuthentication`). Reassignment dynamically updates `ownerId` while preserving `createdById`.
+  - **Visit Authorization**: Verified Visits inherit Lead ownership without duplicate `Visit.ownerId` fields. Reassignment dynamically reassigns visit operational visibility.
+  - **Creator Attribution**: Verified authentic creator attribution tags (`[ Created Organically ]` / `[ Created by <Name> ]`) across Leads, Visits, and Rental Enquiries.
+  - **Dashboard Scoping**: Verified `GET /api/admin/dashboard` derives identity server-side; Founder receives organization metrics, Employee receives personal workload metrics.
+  - **Founder-Only Route Boundary**: Verified `requireFounderAuthentication` protection on Developers, Projects, Configurations, Amenities, Highlights, Media, Import, Firm Profile, Contact, and Accounts APIs.
+  - **Frontend Role Boundaries**: Verified Employee navigation isolation and `<FounderRoute>` protection on all Founder pages.
+  - **Shared Rental Operations**: Verified Rental Enquiries and Rental Available Properties remain shared operational queues without owner filtering or reassignment.
+  - **Bypass & IDOR Testing**: Verified URL, query parameter, and payload tampering attempts are rejected with 403/400.
+- **Verification Suites & Automated Tests**:
+  - Lead authorization suite (`lead-authorization-verification.ts`): 22/22 PASSED.
+  - Visit authorization suite (`visit-authorization-verification.ts`): 20/20 PASSED.
+  - Dashboard role verification (`dashboard-role-verification.ts`): 5/5 PASSED.
+  - Lead ownership verification (`lead-ownership-verification.ts`): 7/7 PASSED.
+  - Security test suite (`security-verification.ts`): 15/15 PASSED.
+  - Static typechecking & production builds: Backend `npm run build` and Frontend `npm run build` completed with zero errors.
+  - Whitespace & format check: `git diff --check` clean.
+- **Invariants Preserved**:
+  - Zero changes to database schema or existing media architecture.
+  - Zero changes to public website, SEO routes, or Tara assistant.
+

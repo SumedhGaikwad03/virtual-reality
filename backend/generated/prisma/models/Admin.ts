@@ -208,6 +208,9 @@ export type AdminWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Admin"> | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
   pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
+  createdLeads?: Prisma.LeadListRelationFilter
+  ownedLeads?: Prisma.LeadListRelationFilter
+  createdRentalEnquiries?: Prisma.RentalEnquiryListRelationFilter
 }
 
 export type AdminOrderByWithRelationInput = {
@@ -221,6 +224,9 @@ export type AdminOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   passwordResetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
   pushSubscriptions?: Prisma.PushSubscriptionOrderByRelationAggregateInput
+  createdLeads?: Prisma.LeadOrderByRelationAggregateInput
+  ownedLeads?: Prisma.LeadOrderByRelationAggregateInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryOrderByRelationAggregateInput
 }
 
 export type AdminWhereUniqueInput = Prisma.AtLeast<{
@@ -237,6 +243,9 @@ export type AdminWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Admin"> | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
   pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
+  createdLeads?: Prisma.LeadListRelationFilter
+  ownedLeads?: Prisma.LeadListRelationFilter
+  createdRentalEnquiries?: Prisma.RentalEnquiryListRelationFilter
 }, "id" | "email">
 
 export type AdminOrderByWithAggregationInput = {
@@ -278,6 +287,9 @@ export type AdminCreateInput = {
   updatedAt?: Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutAdminInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUncheckedCreateInput = {
@@ -291,6 +303,9 @@ export type AdminUncheckedCreateInput = {
   updatedAt?: Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutAdminInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUpdateInput = {
@@ -304,6 +319,9 @@ export type AdminUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutAdminNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUncheckedUpdateInput = {
@@ -317,6 +335,9 @@ export type AdminUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutAdminNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUncheckedUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminCreateManyInput = {
@@ -350,6 +371,11 @@ export type AdminUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AdminNullableScalarRelationFilter = {
+  is?: Prisma.AdminWhereInput | null
+  isNot?: Prisma.AdminWhereInput | null
 }
 
 export type AdminCountOrderByAggregateInput = {
@@ -390,6 +416,38 @@ export type AdminScalarRelationFilter = {
   isNot?: Prisma.AdminWhereInput
 }
 
+export type AdminCreateNestedOneWithoutCreatedLeadsInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutCreatedLeadsInput, Prisma.AdminUncheckedCreateWithoutCreatedLeadsInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutCreatedLeadsInput
+  connect?: Prisma.AdminWhereUniqueInput
+}
+
+export type AdminCreateNestedOneWithoutOwnedLeadsInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutOwnedLeadsInput, Prisma.AdminUncheckedCreateWithoutOwnedLeadsInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutOwnedLeadsInput
+  connect?: Prisma.AdminWhereUniqueInput
+}
+
+export type AdminUpdateOneWithoutCreatedLeadsNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutCreatedLeadsInput, Prisma.AdminUncheckedCreateWithoutCreatedLeadsInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutCreatedLeadsInput
+  upsert?: Prisma.AdminUpsertWithoutCreatedLeadsInput
+  disconnect?: Prisma.AdminWhereInput | boolean
+  delete?: Prisma.AdminWhereInput | boolean
+  connect?: Prisma.AdminWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutCreatedLeadsInput, Prisma.AdminUpdateWithoutCreatedLeadsInput>, Prisma.AdminUncheckedUpdateWithoutCreatedLeadsInput>
+}
+
+export type AdminUpdateOneWithoutOwnedLeadsNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutOwnedLeadsInput, Prisma.AdminUncheckedCreateWithoutOwnedLeadsInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutOwnedLeadsInput
+  upsert?: Prisma.AdminUpsertWithoutOwnedLeadsInput
+  disconnect?: Prisma.AdminWhereInput | boolean
+  delete?: Prisma.AdminWhereInput | boolean
+  connect?: Prisma.AdminWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutOwnedLeadsInput, Prisma.AdminUpdateWithoutOwnedLeadsInput>, Prisma.AdminUncheckedUpdateWithoutOwnedLeadsInput>
+}
+
 export type EnumAdminRoleFieldUpdateOperationsInput = {
   set?: $Enums.AdminRole
 }
@@ -422,6 +480,174 @@ export type AdminUpdateOneRequiredWithoutPasswordResetTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutPasswordResetTokensInput, Prisma.AdminUpdateWithoutPasswordResetTokensInput>, Prisma.AdminUncheckedUpdateWithoutPasswordResetTokensInput>
 }
 
+export type AdminCreateNestedOneWithoutCreatedRentalEnquiriesInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutCreatedRentalEnquiriesInput, Prisma.AdminUncheckedCreateWithoutCreatedRentalEnquiriesInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutCreatedRentalEnquiriesInput
+  connect?: Prisma.AdminWhereUniqueInput
+}
+
+export type AdminUpdateOneWithoutCreatedRentalEnquiriesNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutCreatedRentalEnquiriesInput, Prisma.AdminUncheckedCreateWithoutCreatedRentalEnquiriesInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutCreatedRentalEnquiriesInput
+  upsert?: Prisma.AdminUpsertWithoutCreatedRentalEnquiriesInput
+  disconnect?: Prisma.AdminWhereInput | boolean
+  delete?: Prisma.AdminWhereInput | boolean
+  connect?: Prisma.AdminWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutCreatedRentalEnquiriesInput, Prisma.AdminUpdateWithoutCreatedRentalEnquiriesInput>, Prisma.AdminUncheckedUpdateWithoutCreatedRentalEnquiriesInput>
+}
+
+export type AdminCreateWithoutCreatedLeadsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name?: string | null
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutAdminInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutAdminInput
+  ownedLeads?: Prisma.LeadCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryCreateNestedManyWithoutCreatedByInput
+}
+
+export type AdminUncheckedCreateWithoutCreatedLeadsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name?: string | null
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutAdminInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutAdminInput
+  ownedLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type AdminCreateOrConnectWithoutCreatedLeadsInput = {
+  where: Prisma.AdminWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminCreateWithoutCreatedLeadsInput, Prisma.AdminUncheckedCreateWithoutCreatedLeadsInput>
+}
+
+export type AdminCreateWithoutOwnedLeadsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name?: string | null
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutAdminInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadCreateNestedManyWithoutCreatedByInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryCreateNestedManyWithoutCreatedByInput
+}
+
+export type AdminUncheckedCreateWithoutOwnedLeadsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name?: string | null
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutAdminInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type AdminCreateOrConnectWithoutOwnedLeadsInput = {
+  where: Prisma.AdminWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminCreateWithoutOwnedLeadsInput, Prisma.AdminUncheckedCreateWithoutOwnedLeadsInput>
+}
+
+export type AdminUpsertWithoutCreatedLeadsInput = {
+  update: Prisma.XOR<Prisma.AdminUpdateWithoutCreatedLeadsInput, Prisma.AdminUncheckedUpdateWithoutCreatedLeadsInput>
+  create: Prisma.XOR<Prisma.AdminCreateWithoutCreatedLeadsInput, Prisma.AdminUncheckedCreateWithoutCreatedLeadsInput>
+  where?: Prisma.AdminWhereInput
+}
+
+export type AdminUpdateToOneWithWhereWithoutCreatedLeadsInput = {
+  where?: Prisma.AdminWhereInput
+  data: Prisma.XOR<Prisma.AdminUpdateWithoutCreatedLeadsInput, Prisma.AdminUncheckedUpdateWithoutCreatedLeadsInput>
+}
+
+export type AdminUpdateWithoutCreatedLeadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutAdminNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutAdminNestedInput
+  ownedLeads?: Prisma.LeadUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUpdateManyWithoutCreatedByNestedInput
+}
+
+export type AdminUncheckedUpdateWithoutCreatedLeadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutAdminNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutAdminNestedInput
+  ownedLeads?: Prisma.LeadUncheckedUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type AdminUpsertWithoutOwnedLeadsInput = {
+  update: Prisma.XOR<Prisma.AdminUpdateWithoutOwnedLeadsInput, Prisma.AdminUncheckedUpdateWithoutOwnedLeadsInput>
+  create: Prisma.XOR<Prisma.AdminCreateWithoutOwnedLeadsInput, Prisma.AdminUncheckedCreateWithoutOwnedLeadsInput>
+  where?: Prisma.AdminWhereInput
+}
+
+export type AdminUpdateToOneWithWhereWithoutOwnedLeadsInput = {
+  where?: Prisma.AdminWhereInput
+  data: Prisma.XOR<Prisma.AdminUpdateWithoutOwnedLeadsInput, Prisma.AdminUncheckedUpdateWithoutOwnedLeadsInput>
+}
+
+export type AdminUpdateWithoutOwnedLeadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutAdminNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUpdateManyWithoutCreatedByNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUpdateManyWithoutCreatedByNestedInput
+}
+
+export type AdminUncheckedUpdateWithoutOwnedLeadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutAdminNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
 export type AdminCreateWithoutPushSubscriptionsInput = {
   id?: string
   email: string
@@ -432,6 +658,9 @@ export type AdminCreateWithoutPushSubscriptionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUncheckedCreateWithoutPushSubscriptionsInput = {
@@ -444,6 +673,9 @@ export type AdminUncheckedCreateWithoutPushSubscriptionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminCreateOrConnectWithoutPushSubscriptionsInput = {
@@ -472,6 +704,9 @@ export type AdminUpdateWithoutPushSubscriptionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutPushSubscriptionsInput = {
@@ -484,6 +719,9 @@ export type AdminUncheckedUpdateWithoutPushSubscriptionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUncheckedUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminCreateWithoutPasswordResetTokensInput = {
@@ -496,6 +734,9 @@ export type AdminCreateWithoutPasswordResetTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -508,6 +749,9 @@ export type AdminUncheckedCreateWithoutPasswordResetTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutOwnerInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type AdminCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -536,6 +780,9 @@ export type AdminUpdateWithoutPasswordResetTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUpdateManyWithoutCreatedByNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -548,6 +795,85 @@ export type AdminUncheckedUpdateWithoutPasswordResetTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUncheckedUpdateManyWithoutOwnerNestedInput
+  createdRentalEnquiries?: Prisma.RentalEnquiryUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type AdminCreateWithoutCreatedRentalEnquiriesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name?: string | null
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutAdminInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadCreateNestedManyWithoutOwnerInput
+}
+
+export type AdminUncheckedCreateWithoutCreatedRentalEnquiriesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name?: string | null
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutAdminInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutAdminInput
+  createdLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutCreatedByInput
+  ownedLeads?: Prisma.LeadUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type AdminCreateOrConnectWithoutCreatedRentalEnquiriesInput = {
+  where: Prisma.AdminWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminCreateWithoutCreatedRentalEnquiriesInput, Prisma.AdminUncheckedCreateWithoutCreatedRentalEnquiriesInput>
+}
+
+export type AdminUpsertWithoutCreatedRentalEnquiriesInput = {
+  update: Prisma.XOR<Prisma.AdminUpdateWithoutCreatedRentalEnquiriesInput, Prisma.AdminUncheckedUpdateWithoutCreatedRentalEnquiriesInput>
+  create: Prisma.XOR<Prisma.AdminCreateWithoutCreatedRentalEnquiriesInput, Prisma.AdminUncheckedCreateWithoutCreatedRentalEnquiriesInput>
+  where?: Prisma.AdminWhereInput
+}
+
+export type AdminUpdateToOneWithWhereWithoutCreatedRentalEnquiriesInput = {
+  where?: Prisma.AdminWhereInput
+  data: Prisma.XOR<Prisma.AdminUpdateWithoutCreatedRentalEnquiriesInput, Prisma.AdminUncheckedUpdateWithoutCreatedRentalEnquiriesInput>
+}
+
+export type AdminUpdateWithoutCreatedRentalEnquiriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutAdminNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUpdateManyWithoutOwnerNestedInput
+}
+
+export type AdminUncheckedUpdateWithoutCreatedRentalEnquiriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutAdminNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutAdminNestedInput
+  createdLeads?: Prisma.LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+  ownedLeads?: Prisma.LeadUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 
@@ -558,11 +884,17 @@ export type AdminUncheckedUpdateWithoutPasswordResetTokensInput = {
 export type AdminCountOutputType = {
   passwordResetTokens: number
   pushSubscriptions: number
+  createdLeads: number
+  ownedLeads: number
+  createdRentalEnquiries: number
 }
 
 export type AdminCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   passwordResetTokens?: boolean | AdminCountOutputTypeCountPasswordResetTokensArgs
   pushSubscriptions?: boolean | AdminCountOutputTypeCountPushSubscriptionsArgs
+  createdLeads?: boolean | AdminCountOutputTypeCountCreatedLeadsArgs
+  ownedLeads?: boolean | AdminCountOutputTypeCountOwnedLeadsArgs
+  createdRentalEnquiries?: boolean | AdminCountOutputTypeCountCreatedRentalEnquiriesArgs
 }
 
 /**
@@ -589,6 +921,27 @@ export type AdminCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends runti
   where?: Prisma.PushSubscriptionWhereInput
 }
 
+/**
+ * AdminCountOutputType without action
+ */
+export type AdminCountOutputTypeCountCreatedLeadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeadWhereInput
+}
+
+/**
+ * AdminCountOutputType without action
+ */
+export type AdminCountOutputTypeCountOwnedLeadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeadWhereInput
+}
+
+/**
+ * AdminCountOutputType without action
+ */
+export type AdminCountOutputTypeCountCreatedRentalEnquiriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RentalEnquiryWhereInput
+}
+
 
 export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -601,6 +954,9 @@ export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   updatedAt?: boolean
   passwordResetTokens?: boolean | Prisma.Admin$passwordResetTokensArgs<ExtArgs>
   pushSubscriptions?: boolean | Prisma.Admin$pushSubscriptionsArgs<ExtArgs>
+  createdLeads?: boolean | Prisma.Admin$createdLeadsArgs<ExtArgs>
+  ownedLeads?: boolean | Prisma.Admin$ownedLeadsArgs<ExtArgs>
+  createdRentalEnquiries?: boolean | Prisma.Admin$createdRentalEnquiriesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["admin"]>
 
@@ -641,6 +997,9 @@ export type AdminOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type AdminInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   passwordResetTokens?: boolean | Prisma.Admin$passwordResetTokensArgs<ExtArgs>
   pushSubscriptions?: boolean | Prisma.Admin$pushSubscriptionsArgs<ExtArgs>
+  createdLeads?: boolean | Prisma.Admin$createdLeadsArgs<ExtArgs>
+  ownedLeads?: boolean | Prisma.Admin$ownedLeadsArgs<ExtArgs>
+  createdRentalEnquiries?: boolean | Prisma.Admin$createdRentalEnquiriesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AdminIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -651,6 +1010,9 @@ export type $AdminPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
     pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
+    createdLeads: Prisma.$LeadPayload<ExtArgs>[]
+    ownedLeads: Prisma.$LeadPayload<ExtArgs>[]
+    createdRentalEnquiries: Prisma.$RentalEnquiryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1057,6 +1419,9 @@ export interface Prisma__AdminClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   passwordResetTokens<T extends Prisma.Admin$passwordResetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pushSubscriptions<T extends Prisma.Admin$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdLeads<T extends Prisma.Admin$createdLeadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$createdLeadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedLeads<T extends Prisma.Admin$ownedLeadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$ownedLeadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdRentalEnquiries<T extends Prisma.Admin$createdRentalEnquiriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$createdRentalEnquiriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RentalEnquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1532,6 +1897,78 @@ export type Admin$pushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.PushSubscriptionScalarFieldEnum | Prisma.PushSubscriptionScalarFieldEnum[]
+}
+
+/**
+ * Admin.createdLeads
+ */
+export type Admin$createdLeadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Lead
+   */
+  select?: Prisma.LeadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Lead
+   */
+  omit?: Prisma.LeadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeadInclude<ExtArgs> | null
+  where?: Prisma.LeadWhereInput
+  orderBy?: Prisma.LeadOrderByWithRelationInput | Prisma.LeadOrderByWithRelationInput[]
+  cursor?: Prisma.LeadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeadScalarFieldEnum | Prisma.LeadScalarFieldEnum[]
+}
+
+/**
+ * Admin.ownedLeads
+ */
+export type Admin$ownedLeadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Lead
+   */
+  select?: Prisma.LeadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Lead
+   */
+  omit?: Prisma.LeadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeadInclude<ExtArgs> | null
+  where?: Prisma.LeadWhereInput
+  orderBy?: Prisma.LeadOrderByWithRelationInput | Prisma.LeadOrderByWithRelationInput[]
+  cursor?: Prisma.LeadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeadScalarFieldEnum | Prisma.LeadScalarFieldEnum[]
+}
+
+/**
+ * Admin.createdRentalEnquiries
+ */
+export type Admin$createdRentalEnquiriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RentalEnquiry
+   */
+  select?: Prisma.RentalEnquirySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RentalEnquiry
+   */
+  omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
+  where?: Prisma.RentalEnquiryWhereInput
+  orderBy?: Prisma.RentalEnquiryOrderByWithRelationInput | Prisma.RentalEnquiryOrderByWithRelationInput[]
+  cursor?: Prisma.RentalEnquiryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RentalEnquiryScalarFieldEnum | Prisma.RentalEnquiryScalarFieldEnum[]
 }
 
 /**

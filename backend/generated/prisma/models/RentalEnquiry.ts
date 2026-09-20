@@ -38,6 +38,7 @@ export type RentalEnquiryMinAggregateOutputType = {
   notes: string | null
   status: $Enums.RentalEnquiryStatus | null
   internalNotes: string | null
+  createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +57,7 @@ export type RentalEnquiryMaxAggregateOutputType = {
   notes: string | null
   status: $Enums.RentalEnquiryStatus | null
   internalNotes: string | null
+  createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +76,7 @@ export type RentalEnquiryCountAggregateOutputType = {
   notes: number
   status: number
   internalNotes: number
+  createdById: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -94,6 +97,7 @@ export type RentalEnquiryMinAggregateInputType = {
   notes?: true
   status?: true
   internalNotes?: true
+  createdById?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +116,7 @@ export type RentalEnquiryMaxAggregateInputType = {
   notes?: true
   status?: true
   internalNotes?: true
+  createdById?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -130,6 +135,7 @@ export type RentalEnquiryCountAggregateInputType = {
   notes?: true
   status?: true
   internalNotes?: true
+  createdById?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -221,6 +227,7 @@ export type RentalEnquiryGroupByOutputType = {
   notes: string | null
   status: $Enums.RentalEnquiryStatus
   internalNotes: string | null
+  createdById: string | null
   createdAt: Date
   updatedAt: Date
   _count: RentalEnquiryCountAggregateOutputType | null
@@ -260,8 +267,10 @@ export type RentalEnquiryWhereInput = {
   notes?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
   status?: Prisma.EnumRentalEnquiryStatusFilter<"RentalEnquiry"> | $Enums.RentalEnquiryStatus
   internalNotes?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  createdById?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RentalEnquiry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RentalEnquiry"> | Date | string
+  createdBy?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
 }
 
 export type RentalEnquiryOrderByWithRelationInput = {
@@ -278,8 +287,10 @@ export type RentalEnquiryOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  createdBy?: Prisma.AdminOrderByWithRelationInput
 }
 
 export type RentalEnquiryWhereUniqueInput = Prisma.AtLeast<{
@@ -299,8 +310,10 @@ export type RentalEnquiryWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
   status?: Prisma.EnumRentalEnquiryStatusFilter<"RentalEnquiry"> | $Enums.RentalEnquiryStatus
   internalNotes?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  createdById?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RentalEnquiry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RentalEnquiry"> | Date | string
+  createdBy?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
 }, "id">
 
 export type RentalEnquiryOrderByWithAggregationInput = {
@@ -317,6 +330,7 @@ export type RentalEnquiryOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RentalEnquiryCountOrderByAggregateInput
@@ -341,6 +355,7 @@ export type RentalEnquiryScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"RentalEnquiry"> | string | null
   status?: Prisma.EnumRentalEnquiryStatusWithAggregatesFilter<"RentalEnquiry"> | $Enums.RentalEnquiryStatus
   internalNotes?: Prisma.StringNullableWithAggregatesFilter<"RentalEnquiry"> | string | null
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"RentalEnquiry"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RentalEnquiry"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"RentalEnquiry"> | Date | string
 }
@@ -361,6 +376,7 @@ export type RentalEnquiryCreateInput = {
   internalNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.AdminCreateNestedOneWithoutCreatedRentalEnquiriesInput
 }
 
 export type RentalEnquiryUncheckedCreateInput = {
@@ -377,6 +393,7 @@ export type RentalEnquiryUncheckedCreateInput = {
   notes?: string | null
   status?: $Enums.RentalEnquiryStatus
   internalNotes?: string | null
+  createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -397,6 +414,7 @@ export type RentalEnquiryUpdateInput = {
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.AdminUpdateOneWithoutCreatedRentalEnquiriesNestedInput
 }
 
 export type RentalEnquiryUncheckedUpdateInput = {
@@ -413,6 +431,7 @@ export type RentalEnquiryUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumRentalEnquiryStatusFieldUpdateOperationsInput | $Enums.RentalEnquiryStatus
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -431,6 +450,7 @@ export type RentalEnquiryCreateManyInput = {
   notes?: string | null
   status?: $Enums.RentalEnquiryStatus
   internalNotes?: string | null
+  createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -467,8 +487,19 @@ export type RentalEnquiryUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumRentalEnquiryStatusFieldUpdateOperationsInput | $Enums.RentalEnquiryStatus
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RentalEnquiryListRelationFilter = {
+  every?: Prisma.RentalEnquiryWhereInput
+  some?: Prisma.RentalEnquiryWhereInput
+  none?: Prisma.RentalEnquiryWhereInput
+}
+
+export type RentalEnquiryOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type RentalEnquiryCountOrderByAggregateInput = {
@@ -485,6 +516,7 @@ export type RentalEnquiryCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -503,6 +535,7 @@ export type RentalEnquiryMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -521,12 +554,211 @@ export type RentalEnquiryMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
+export type RentalEnquiryCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.RentalEnquiryCreateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput> | Prisma.RentalEnquiryCreateWithoutCreatedByInput[] | Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput | Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.RentalEnquiryCreateManyCreatedByInputEnvelope
+  connect?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+}
+
+export type RentalEnquiryUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.RentalEnquiryCreateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput> | Prisma.RentalEnquiryCreateWithoutCreatedByInput[] | Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput | Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.RentalEnquiryCreateManyCreatedByInputEnvelope
+  connect?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+}
+
+export type RentalEnquiryUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.RentalEnquiryCreateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput> | Prisma.RentalEnquiryCreateWithoutCreatedByInput[] | Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput | Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.RentalEnquiryUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.RentalEnquiryUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.RentalEnquiryCreateManyCreatedByInputEnvelope
+  set?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  disconnect?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  delete?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  connect?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  update?: Prisma.RentalEnquiryUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.RentalEnquiryUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.RentalEnquiryUpdateManyWithWhereWithoutCreatedByInput | Prisma.RentalEnquiryUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.RentalEnquiryScalarWhereInput | Prisma.RentalEnquiryScalarWhereInput[]
+}
+
+export type RentalEnquiryUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.RentalEnquiryCreateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput> | Prisma.RentalEnquiryCreateWithoutCreatedByInput[] | Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput | Prisma.RentalEnquiryCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.RentalEnquiryUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.RentalEnquiryUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.RentalEnquiryCreateManyCreatedByInputEnvelope
+  set?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  disconnect?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  delete?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  connect?: Prisma.RentalEnquiryWhereUniqueInput | Prisma.RentalEnquiryWhereUniqueInput[]
+  update?: Prisma.RentalEnquiryUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.RentalEnquiryUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.RentalEnquiryUpdateManyWithWhereWithoutCreatedByInput | Prisma.RentalEnquiryUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.RentalEnquiryScalarWhereInput | Prisma.RentalEnquiryScalarWhereInput[]
+}
+
 export type EnumRentalEnquiryStatusFieldUpdateOperationsInput = {
   set?: $Enums.RentalEnquiryStatus
+}
+
+export type RentalEnquiryCreateWithoutCreatedByInput = {
+  id?: string
+  name: string
+  phone: string
+  configuration: string
+  location?: string | null
+  areaLocality?: string | null
+  budget?: string | null
+  furnishing?: string | null
+  moveInTimeframe?: string | null
+  whoIsFor?: string | null
+  notes?: string | null
+  status?: $Enums.RentalEnquiryStatus
+  internalNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RentalEnquiryUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  name: string
+  phone: string
+  configuration: string
+  location?: string | null
+  areaLocality?: string | null
+  budget?: string | null
+  furnishing?: string | null
+  moveInTimeframe?: string | null
+  whoIsFor?: string | null
+  notes?: string | null
+  status?: $Enums.RentalEnquiryStatus
+  internalNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RentalEnquiryCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.RentalEnquiryWhereUniqueInput
+  create: Prisma.XOR<Prisma.RentalEnquiryCreateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput>
+}
+
+export type RentalEnquiryCreateManyCreatedByInputEnvelope = {
+  data: Prisma.RentalEnquiryCreateManyCreatedByInput | Prisma.RentalEnquiryCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type RentalEnquiryUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.RentalEnquiryWhereUniqueInput
+  update: Prisma.XOR<Prisma.RentalEnquiryUpdateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.RentalEnquiryCreateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedCreateWithoutCreatedByInput>
+}
+
+export type RentalEnquiryUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.RentalEnquiryWhereUniqueInput
+  data: Prisma.XOR<Prisma.RentalEnquiryUpdateWithoutCreatedByInput, Prisma.RentalEnquiryUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type RentalEnquiryUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.RentalEnquiryScalarWhereInput
+  data: Prisma.XOR<Prisma.RentalEnquiryUpdateManyMutationInput, Prisma.RentalEnquiryUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type RentalEnquiryScalarWhereInput = {
+  AND?: Prisma.RentalEnquiryScalarWhereInput | Prisma.RentalEnquiryScalarWhereInput[]
+  OR?: Prisma.RentalEnquiryScalarWhereInput[]
+  NOT?: Prisma.RentalEnquiryScalarWhereInput | Prisma.RentalEnquiryScalarWhereInput[]
+  id?: Prisma.StringFilter<"RentalEnquiry"> | string
+  name?: Prisma.StringFilter<"RentalEnquiry"> | string
+  phone?: Prisma.StringFilter<"RentalEnquiry"> | string
+  configuration?: Prisma.StringFilter<"RentalEnquiry"> | string
+  location?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  areaLocality?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  budget?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  furnishing?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  moveInTimeframe?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  whoIsFor?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  notes?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  status?: Prisma.EnumRentalEnquiryStatusFilter<"RentalEnquiry"> | $Enums.RentalEnquiryStatus
+  internalNotes?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  createdById?: Prisma.StringNullableFilter<"RentalEnquiry"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"RentalEnquiry"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"RentalEnquiry"> | Date | string
+}
+
+export type RentalEnquiryCreateManyCreatedByInput = {
+  id?: string
+  name: string
+  phone: string
+  configuration: string
+  location?: string | null
+  areaLocality?: string | null
+  budget?: string | null
+  furnishing?: string | null
+  moveInTimeframe?: string | null
+  whoIsFor?: string | null
+  notes?: string | null
+  status?: $Enums.RentalEnquiryStatus
+  internalNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RentalEnquiryUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  configuration?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaLocality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budget?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  furnishing?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  moveInTimeframe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whoIsFor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumRentalEnquiryStatusFieldUpdateOperationsInput | $Enums.RentalEnquiryStatus
+  internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RentalEnquiryUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  configuration?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaLocality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budget?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  furnishing?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  moveInTimeframe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whoIsFor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumRentalEnquiryStatusFieldUpdateOperationsInput | $Enums.RentalEnquiryStatus
+  internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RentalEnquiryUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  configuration?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaLocality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budget?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  furnishing?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  moveInTimeframe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whoIsFor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumRentalEnquiryStatusFieldUpdateOperationsInput | $Enums.RentalEnquiryStatus
+  internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -545,8 +777,10 @@ export type RentalEnquirySelect<ExtArgs extends runtime.Types.Extensions.Interna
   notes?: boolean
   status?: boolean
   internalNotes?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean | Prisma.RentalEnquiry$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["rentalEnquiry"]>
 
 export type RentalEnquirySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -563,8 +797,10 @@ export type RentalEnquirySelectCreateManyAndReturn<ExtArgs extends runtime.Types
   notes?: boolean
   status?: boolean
   internalNotes?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean | Prisma.RentalEnquiry$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["rentalEnquiry"]>
 
 export type RentalEnquirySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -581,8 +817,10 @@ export type RentalEnquirySelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   notes?: boolean
   status?: boolean
   internalNotes?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean | Prisma.RentalEnquiry$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["rentalEnquiry"]>
 
 export type RentalEnquirySelectScalar = {
@@ -599,15 +837,27 @@ export type RentalEnquirySelectScalar = {
   notes?: boolean
   status?: boolean
   internalNotes?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RentalEnquiryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "phone" | "configuration" | "location" | "areaLocality" | "budget" | "furnishing" | "moveInTimeframe" | "whoIsFor" | "notes" | "status" | "internalNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["rentalEnquiry"]>
+export type RentalEnquiryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "phone" | "configuration" | "location" | "areaLocality" | "budget" | "furnishing" | "moveInTimeframe" | "whoIsFor" | "notes" | "status" | "internalNotes" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["rentalEnquiry"]>
+export type RentalEnquiryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.RentalEnquiry$createdByArgs<ExtArgs>
+}
+export type RentalEnquiryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.RentalEnquiry$createdByArgs<ExtArgs>
+}
+export type RentalEnquiryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.RentalEnquiry$createdByArgs<ExtArgs>
+}
 
 export type $RentalEnquiryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RentalEnquiry"
-  objects: {}
+  objects: {
+    createdBy: Prisma.$AdminPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
@@ -622,6 +872,7 @@ export type $RentalEnquiryPayload<ExtArgs extends runtime.Types.Extensions.Inter
     notes: string | null
     status: $Enums.RentalEnquiryStatus
     internalNotes: string | null
+    createdById: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["rentalEnquiry"]>
@@ -1018,6 +1269,7 @@ readonly fields: RentalEnquiryFieldRefs;
  */
 export interface Prisma__RentalEnquiryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  createdBy<T extends Prisma.RentalEnquiry$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RentalEnquiry$createdByArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1060,6 +1312,7 @@ export interface RentalEnquiryFieldRefs {
   readonly notes: Prisma.FieldRef<"RentalEnquiry", 'String'>
   readonly status: Prisma.FieldRef<"RentalEnquiry", 'RentalEnquiryStatus'>
   readonly internalNotes: Prisma.FieldRef<"RentalEnquiry", 'String'>
+  readonly createdById: Prisma.FieldRef<"RentalEnquiry", 'String'>
   readonly createdAt: Prisma.FieldRef<"RentalEnquiry", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"RentalEnquiry", 'DateTime'>
 }
@@ -1079,6 +1332,10 @@ export type RentalEnquiryFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
+  /**
    * Filter, which RentalEnquiry to fetch.
    */
   where: Prisma.RentalEnquiryWhereUniqueInput
@@ -1097,6 +1354,10 @@ export type RentalEnquiryFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
+  /**
    * Filter, which RentalEnquiry to fetch.
    */
   where: Prisma.RentalEnquiryWhereUniqueInput
@@ -1114,6 +1375,10 @@ export type RentalEnquiryFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the RentalEnquiry
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
   /**
    * Filter, which RentalEnquiry to fetch.
    */
@@ -1163,6 +1428,10 @@ export type RentalEnquiryFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
+  /**
    * Filter, which RentalEnquiry to fetch.
    */
   where?: Prisma.RentalEnquiryWhereInput
@@ -1210,6 +1479,10 @@ export type RentalEnquiryFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the RentalEnquiry
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
   /**
    * Filter, which RentalEnquiries to fetch.
    */
@@ -1259,6 +1532,10 @@ export type RentalEnquiryCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
+  /**
    * The data needed to create a RentalEnquiry.
    */
   data: Prisma.XOR<Prisma.RentalEnquiryCreateInput, Prisma.RentalEnquiryUncheckedCreateInput>
@@ -1292,6 +1569,10 @@ export type RentalEnquiryCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    */
   data: Prisma.RentalEnquiryCreateManyInput | Prisma.RentalEnquiryCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1306,6 +1587,10 @@ export type RentalEnquiryUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the RentalEnquiry
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
   /**
    * The data needed to update a RentalEnquiry.
    */
@@ -1358,6 +1643,10 @@ export type RentalEnquiryUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * Limit how many RentalEnquiries to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1372,6 +1661,10 @@ export type RentalEnquiryUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the RentalEnquiry
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
   /**
    * The filter to search for the RentalEnquiry to update in case it exists.
    */
@@ -1399,6 +1692,10 @@ export type RentalEnquiryDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
+  /**
    * Filter which RentalEnquiry to delete.
    */
   where: Prisma.RentalEnquiryWhereUniqueInput
@@ -1419,6 +1716,25 @@ export type RentalEnquiryDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+ * RentalEnquiry.createdBy
+ */
+export type RentalEnquiry$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Admin
+   */
+  select?: Prisma.AdminSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Admin
+   */
+  omit?: Prisma.AdminOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInclude<ExtArgs> | null
+  where?: Prisma.AdminWhereInput
+}
+
+/**
  * RentalEnquiry without action
  */
 export type RentalEnquiryDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1430,4 +1746,8 @@ export type RentalEnquiryDefaultArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the RentalEnquiry
    */
   omit?: Prisma.RentalEnquiryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalEnquiryInclude<ExtArgs> | null
 }

@@ -11,12 +11,14 @@
 
 import type { NextFunction, Request, Response } from "express";
 import type { LeadStatus } from "../../../generated/prisma/enums.js";
+import type { AuthenticatedAdmin } from "../../middleware/auth.middleware.js";
 import {
   createAdminLead,
   deleteLead,
   getLeadById,
   getVisits,
   listLeads,
+  reassignLeadOwner,
   updateLead,
   type CreateAdminLeadInput,
   type UpdateAdminLeadInput,
@@ -24,6 +26,7 @@ import {
 import type {
   AdminLeadCreateBody,
   AdminLeadUpdateBody,
+  ReassignLeadOwnerBody,
 } from "../../validators/lead.validator.js";
 
 type LeadIdParams = { id: string };
@@ -34,6 +37,7 @@ export async function createAdminLeadController(
   next: NextFunction,
 ) {
   try {
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
     const body = req.body;
     const result = await createAdminLead({
       name: body.name as string,
@@ -47,7 +51,7 @@ export async function createAdminLeadController(
       visitTime: body.visitTime as string | null | undefined,
       status: body.status as LeadStatus | undefined,
       notes: body.notes as string | undefined,
-    } satisfies CreateAdminLeadInput);
+    } satisfies CreateAdminLeadInput, actorAdmin);
 
     res.status(201).json(result);
   } catch (error) {
@@ -61,7 +65,18 @@ export async function listLeadsController(
   next: NextFunction,
 ) {
   try {
-    const { page, limit, search, status, developerId, projectId, configurationId } = req.query;
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
+    const {
+      page,
+      limit,
+      search,
+      status,
+      developerId,
+      projectId,
+      configurationId,
+      ownerId,
+      createdById,
+    } = req.query;
 
     const options = {
       page: page ? Number(page) : undefined,
@@ -71,9 +86,11 @@ export async function listLeadsController(
       developerId: typeof developerId === "string" ? developerId : undefined,
       projectId: typeof projectId === "string" ? projectId : undefined,
       configurationId: typeof configurationId === "string" ? configurationId : undefined,
+      ownerId: typeof ownerId === "string" ? ownerId : undefined,
+      createdById: typeof createdById === "string" ? createdById : undefined,
     };
 
-    res.status(200).json(await listLeads(options));
+    res.status(200).json(await listLeads(options, actorAdmin));
   } catch (error) {
     next(error);
   }
@@ -85,7 +102,8 @@ export async function getLeadController(
   next: NextFunction,
 ) {
   try {
-    res.status(200).json(await getLeadById(req.params.id));
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
+    res.status(200).json(await getLeadById(req.params.id, actorAdmin));
   } catch (error) {
     next(error);
   }
@@ -97,6 +115,7 @@ export async function updateLeadController(
   next: NextFunction,
 ) {
   try {
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
     const body = req.body;
     const input: UpdateAdminLeadInput = {
       name: body.name as string | undefined,
@@ -112,7 +131,7 @@ export async function updateLeadController(
       notes: body.notes as string | null | undefined,
     };
 
-    res.status(200).json(await updateLead(req.params.id, input));
+    res.status(200).json(await updateLead(req.params.id, input, actorAdmin));
   } catch (error) {
     next(error);
   }
@@ -124,7 +143,22 @@ export async function deleteLeadController(
   next: NextFunction,
 ) {
   try {
-    res.status(200).json(await deleteLead(req.params.id));
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
+    res.status(200).json(await deleteLead(req.params.id, actorAdmin));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function reassignLeadOwnerController(
+  req: Request<LeadIdParams, unknown, ReassignLeadOwnerBody>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin;
+    const ownerId = req.body.ownerId as string;
+    res.status(200).json(await reassignLeadOwner(req.params.id, ownerId, actorAdmin));
   } catch (error) {
     next(error);
   }
@@ -136,7 +170,8 @@ export async function getVisitsController(
   next: NextFunction,
 ) {
   try {
-    const result = await getVisits();
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
+    const result = await getVisits(actorAdmin);
     res.status(200).json({ data: result });
   } catch (error) {
     next(error);
@@ -149,6 +184,7 @@ export async function createVisitController(
   next: NextFunction,
 ) {
   try {
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
     const body = req.body;
     const result = await createAdminLead({
       name: body.name as string,
@@ -162,7 +198,7 @@ export async function createVisitController(
       visitTime: body.visitTime as string | null | undefined,
       status: body.status as LeadStatus | undefined,
       notes: body.notes as string | undefined,
-    } satisfies CreateAdminLeadInput);
+    } satisfies CreateAdminLeadInput, actorAdmin);
 
     res.status(201).json(result);
   } catch (error) {
@@ -176,7 +212,8 @@ export async function getVisitController(
   next: NextFunction,
 ) {
   try {
-    res.status(200).json(await getLeadById(req.params.id));
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
+    res.status(200).json(await getLeadById(req.params.id, actorAdmin));
   } catch (error) {
     next(error);
   }
@@ -188,6 +225,7 @@ export async function updateVisitController(
   next: NextFunction,
 ) {
   try {
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
     const body = req.body;
     const input: UpdateAdminLeadInput = {
       name: body.name as string | undefined,
@@ -203,7 +241,7 @@ export async function updateVisitController(
       notes: body.notes as string | null | undefined,
     };
 
-    res.status(200).json(await updateLead(req.params.id, input));
+    res.status(200).json(await updateLead(req.params.id, input, actorAdmin));
   } catch (error) {
     next(error);
   }
@@ -215,7 +253,8 @@ export async function deleteVisitController(
   next: NextFunction,
 ) {
   try {
-    res.status(200).json(await deleteLead(req.params.id));
+    const actorAdmin = res.locals.admin as AuthenticatedAdmin | undefined;
+    res.status(200).json(await deleteLead(req.params.id, actorAdmin));
   } catch (error) {
     next(error);
   }

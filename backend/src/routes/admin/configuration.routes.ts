@@ -18,7 +18,7 @@ import {
   listProjectConfigurationsController,
   updateConfigurationController,
 } from "../../controllers/admin/configuration.controller.js";
-import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
+import { requireFounderAuthentication } from "../../middleware/auth.middleware.js";
 import {
   validateAdminCreateConfiguration,
   validateAdminUpdateConfiguration,
@@ -27,7 +27,7 @@ import {
 } from "../../validators/configuration.validator.js";
 
 const projectRouter = Router({ mergeParams: true });
-projectRouter.use(requireAdminAuthentication);
+projectRouter.use(requireFounderAuthentication);
 projectRouter.use(express.json());
 projectRouter.post(
   "/",
@@ -42,7 +42,7 @@ projectRouter.get(
 );
 
 const configurationRouter = Router();
-configurationRouter.use(requireAdminAuthentication);
+configurationRouter.use(requireFounderAuthentication);
 configurationRouter.use(express.json());
 configurationRouter.get(
   "/:id",

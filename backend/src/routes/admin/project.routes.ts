@@ -16,7 +16,7 @@ import {
   listProjectsController,
   updateProjectController,
 } from "../../controllers/admin/project.controller.js";
-import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
+import { requireFounderAuthentication } from "../../middleware/auth.middleware.js";
 import {
   validateAdminCreateProject,
   validateAdminProjectId,
@@ -25,7 +25,7 @@ import {
 
 const router = Router();
 
-router.use(requireAdminAuthentication);
+router.use(requireFounderAuthentication);
 router.use(express.json());
 
 router.post("/", validateAdminCreateProject, createProjectController);

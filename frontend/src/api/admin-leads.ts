@@ -53,6 +53,14 @@ export function deleteLead(id: string) {
   });
 }
 
+export function reassignLeadOwner(id: string, ownerId: string) {
+  return adminRequest<AdminLeadResponse>(`/admin/leads/${id}/owner`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ownerId }),
+  });
+}
+
 export function getVisits() {
   return adminRequest<AdminVisitsResponse>("/admin/visits");
 }

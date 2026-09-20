@@ -94,6 +94,8 @@ export function VisitModal({
   useEffect(() => {
     if (!isOpen) return;
 
+    setIsSubmitting(false);
+
     let active = true;
 
     async function loadReferenceData() {
@@ -102,8 +104,8 @@ export function VisitModal({
 
       try {
         const [devRes, projRes] = await Promise.all([
-          getDevelopers(),
-          getProjects(),
+          getDevelopers().catch(() => ({ data: [] })),
+          getProjects().catch(() => ({ data: [] })),
         ]);
 
         if (!active) return;
@@ -261,6 +263,7 @@ export function VisitModal({
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
+    } finally {
       setIsSubmitting(false);
     }
   }

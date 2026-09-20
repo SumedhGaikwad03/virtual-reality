@@ -222,6 +222,12 @@ model Lead {
   configurationId String?
   configuration   Configuration? @relation(fields: [configurationId], references: [id])
 
+  createdById String?
+  createdBy   Admin?   @relation("LeadCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  ownerId String?
+  owner   Admin?   @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
   message   String?
   visitDate String?
   visitTime String?
@@ -234,6 +240,8 @@ model Lead {
   @@index([developerId])
   @@index([projectId])
   @@index([configurationId])
+  @@index([createdById])
+  @@index([ownerId])
   @@index([status])
   @@index([visitDate])
 }
@@ -249,6 +257,9 @@ model Admin {
   updatedAt           DateTime            @updatedAt
   passwordResetTokens PasswordResetToken[]
   pushSubscriptions   PushSubscription[]
+  createdLeads        Lead[]              @relation("LeadCreatedBy")
+  ownedLeads          Lead[]              @relation("LeadOwner")
+  createdRentalEnquiries RentalEnquiry[]  @relation("RentalEnquiryCreatedBy")
 }
 
 model PushSubscription {
@@ -345,12 +356,15 @@ model RentalEnquiry {
   notes               String?
   status              RentalEnquiryStatus @default(NEW)
   internalNotes       String?
+  createdById         String?
+  createdBy           Admin?              @relation("RentalEnquiryCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
 
   @@index([phone])
   @@index([status])
   @@index([createdAt])
+  @@index([createdById])
 }
 
 model RentalProperty {

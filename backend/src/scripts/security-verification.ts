@@ -39,7 +39,7 @@ async function runTests() {
   }
 
   let createdTempAdmin = false;
-  let dbAdmin = await prisma.admin.findFirst({ where: { isActive: true } });
+  let dbAdmin = await prisma.admin.findFirst({ where: { isActive: true, role: "FOUNDER" } });
   if (!dbAdmin) {
     dbAdmin = await prisma.admin.create({
       data: {

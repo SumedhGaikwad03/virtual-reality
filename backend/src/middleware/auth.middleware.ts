@@ -132,3 +132,20 @@ export async function requireFounderAuthentication(
     next(authenticationError());
   }
 }
+
+export function requireFounder(
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const admin = res.locals.admin as AuthenticatedAdmin | undefined;
+  if (!admin) {
+    next(authenticationError());
+    return;
+  }
+  if (admin.role !== "FOUNDER") {
+    next(forbiddenError());
+    return;
+  }
+  next();
+}

@@ -123,33 +123,33 @@ export function AppRouter() {
       <Route
         path="/admin/developers"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <DevelopersPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/developers/new"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <DeveloperFormPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/developers/:id"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <DeveloperFormPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
@@ -157,33 +157,33 @@ export function AppRouter() {
       <Route
         path="/admin/projects"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ProjectsPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/projects/new"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ProjectFormPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/projects/:id"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ProjectFormPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
@@ -191,33 +191,33 @@ export function AppRouter() {
       <Route
         path="/admin/projects/:projectId/configurations"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ProjectConfigurationsPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/projects/:projectId/configurations/new"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ConfigurationFormPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/configurations/:id"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ConfigurationFormPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
@@ -328,11 +328,11 @@ export function AppRouter() {
       <Route
         path="/admin/import"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ImportPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
@@ -340,33 +340,33 @@ export function AppRouter() {
       <Route
         path="/admin/media"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <HomeMediaPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/projects/:projectId/media"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ProjectMediaPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
       <Route
         path="/admin/configurations/:configurationId/media"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ConfigurationMediaPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
@@ -374,11 +374,11 @@ export function AppRouter() {
       <Route
         path="/admin/contact"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <ContactPage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 
@@ -386,11 +386,11 @@ export function AppRouter() {
       <Route
         path="/admin/firm-profile"
         element={
-          <ProtectedRoute>
+          <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <FirmProfilePage />
             </Suspense>
-          </ProtectedRoute>
+          </FounderRoute>
         }
       />
 

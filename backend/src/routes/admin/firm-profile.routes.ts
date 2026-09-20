@@ -14,12 +14,12 @@ import {
   getFirmProfileController,
   updateFirmProfileController,
 } from "../../controllers/admin/firm-profile.controller.js";
-import { requireAdminAuthentication } from "../../middleware/auth.middleware.js";
+import { requireFounderAuthentication } from "../../middleware/auth.middleware.js";
 import { validateFirmProfileUpdate } from "../../validators/firm-profile.validator.js";
 
 const router = Router();
 
-router.use(requireAdminAuthentication);
+router.use(requireFounderAuthentication);
 router.use(express.json());
 
 /*

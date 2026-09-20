@@ -31,6 +31,13 @@ export type AdminRentalEnquiry = {
   notes: string | null;
   status: RentalEnquiryStatus;
   internalNotes: string | null;
+  createdById?: string | null;
+  createdBy?: {
+    id: string;
+    name: string | null;
+    email: string;
+    role: string;
+  } | null;
   createdAt: string;
   updatedAt: string;
 };

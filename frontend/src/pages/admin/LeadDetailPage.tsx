@@ -1,11 +1,28 @@
+/*
+ * PURPOSE:
+ * Detailed administrative inspection and triage page for customer Leads.
+ *
+ * FLOW:
+ * LeadsPage -> LeadDetailPage -> getLead API -> Contact & requirement breakdown + status update form.
+ *
+ * RESPONSIBILITY:
+ * - Displays lead contact, project context, customer message, and internal notes.
+ * - Displays authentic historical Creator attribution (Created Organically / Created by <Name>).
+ * - Displays current operational Owner.
+ * - Founder-only Change Owner control opening ReassignLeadOwnerModal.
+ * - Manages lead status transitions (NEW -> IN_PROGRESS -> DONE), internal notes, and deletion.
+ */
+
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
 import { deleteLead, getLead, updateLead } from "../../api/admin-leads";
+import { useAuth } from "../../auth/AuthContext";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { DeleteLeadModal } from "../../components/admin/DeleteLeadModal";
 import { LeadActions } from "../../components/admin/LeadActions";
+import { ReassignLeadOwnerModal } from "../../components/admin/ReassignLeadOwnerModal";
 import type { AdminLead, LeadStatus } from "../../types/admin-lead";
 
 const statuses: Array<{ value: LeadStatus; label: string }> = [
@@ -30,9 +47,24 @@ function formatDate(value: string) {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
 
+function creatorLabel(lead: AdminLead) {
+  const name = lead.createdBy?.name?.trim() || lead.createdBy?.email;
+  return name ? `Created by ${name}` : "Created Organically";
+}
+
+function ownerLabel(lead: AdminLead) {
+  if (lead.owner) {
+    return lead.owner.name?.trim() || lead.owner.email;
+  }
+  return "Founder";
+}
+
 export function LeadDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { admin } = useAuth();
+  const isFounder = admin?.role === "FOUNDER";
+
   const [lead, setLead] = useState<AdminLead | null>(null);
   const [status, setStatus] = useState<LeadStatus>("NEW");
   const [notes, setNotes] = useState("");
@@ -40,6 +72,9 @@ export function LeadDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Reassignment modal state
+  const [isReassignModalOpen, setIsReassignModalOpen] = useState(false);
 
   // Deletion modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -149,6 +184,40 @@ export function LeadDetailPage() {
         <p><strong>Developer:</strong> {lead.developer?.name ?? "—"}</p>
         <p><strong>Project:</strong> {lead.project?.name ?? "General enquiry"}</p>
         <p><strong>Configuration:</strong> {lead.configuration?.name ?? "—"}</p>
+        <p>
+          <strong>Creator:</strong>{" "}
+          <span className="admin-lead-creator-tag">
+            {creatorLabel(lead)}
+          </span>
+        </p>
+        <div
+          className="admin-lead-owner-row"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1rem",
+            flexWrap: "wrap",
+            margin: "0.5rem 0",
+          }}
+        >
+          <p style={{ margin: 0 }}>
+            <strong>Owner:</strong>{" "}
+            <span className="admin-lead-owner-name">
+              {ownerLabel(lead)}
+            </span>
+          </p>
+          {isFounder && (
+            <button
+              type="button"
+              className="admin-action admin-action--secondary"
+              style={{ fontSize: "0.8rem", padding: "0.3rem 0.75rem", minHeight: "auto" }}
+              onClick={() => setIsReassignModalOpen(true)}
+            >
+              Change Owner
+            </button>
+          )}
+        </div>
         <p><strong>Created:</strong> {formatDate(lead.createdAt)}</p>
         <p><strong>Last Updated:</strong> {formatDate(lead.updatedAt)}</p>
 
@@ -176,6 +245,17 @@ export function LeadDetailPage() {
           {isSubmitting ? "Saving..." : "Save changes"}
         </button>
       </form>
+
+      {/* Founder-only Reassign Lead Owner Modal */}
+      <ReassignLeadOwnerModal
+        isOpen={isReassignModalOpen}
+        lead={lead}
+        onClose={() => setIsReassignModalOpen(false)}
+        onSuccess={(updatedLead) => {
+          setLead(updatedLead);
+          setSuccess(true);
+        }}
+      />
 
       {/* Delete Confirmation Modal */}
       <DeleteLeadModal
