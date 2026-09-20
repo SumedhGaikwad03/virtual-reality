@@ -22,7 +22,6 @@ import {
   type QueryBuilderState,
 } from "../services/query-builder";
 import {
-  getTaraIntentOpeningMessage,
   getTaraInitialMessage,
   getTaraResponse,
   getTaraAttributeRemovedMessage,
@@ -31,14 +30,11 @@ import {
 import type { SearchCatalogProject } from "../types/search-catalog";
 import type { SearchChatMessage } from "../types/search-chat";
 
-export type DiscoveryIntent = "BUY" | "RENT" | null;
-
-export function useSearchChat(initialIntent: DiscoveryIntent = null) {
+export function useSearchChat() {
   const [catalog, setCatalog] = useState<SearchCatalogProject[]>([]);
   const [queryHistory, setQueryHistory] = useState<PropertySearchQuery[]>([]);
   const [query, setQuery] = useState<PropertySearchQuery>({});
   const [state, setState] = useState<QueryBuilderState | null>(null);
-  const [intent, setIntent] = useState<DiscoveryIntent>(initialIntent);
   const [messages, setMessages] = useState<SearchChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,26 +52,16 @@ export function useSearchChat(initialIntent: DiscoveryIntent = null) {
         setQuery({});
         setQueryHistory([]);
 
-        if (initialIntent === "BUY") {
-          setIntent("BUY");
-          if (initialState.nextRule) {
-            setMessages([
-              {
-                id: "initial-question",
-                role: "assistant",
-                text: getTaraInitialMessage(initialState.nextRule),
-              },
-            ]);
-          }
-        } else {
-          setIntent(null);
+        if (initialState.nextRule) {
           setMessages([
             {
-              id: "intent-greeting",
+              id: "initial-question",
               role: "assistant",
-              text: getTaraIntentOpeningMessage(),
+              text: getTaraInitialMessage(initialState.nextRule),
             },
           ]);
+        } else {
+          setMessages([]);
         }
       })
       .catch(() => {
@@ -152,47 +138,9 @@ export function useSearchChat(initialIntent: DiscoveryIntent = null) {
     ]);
   }
 
-  // Handles initial intent decision ("BUY" vs "RENT")
-  function selectIntent(selectedIntent: "BUY" | "RENT") {
-    if (selectedIntent === "BUY") {
-      setIntent("BUY");
-      const initialState = getQueryBuilderState(catalog, {});
-      setQuery({});
-      setQueryHistory([]);
-      setState(initialState);
-      setMessages([
-        {
-          id: "intent-choice",
-          role: "user",
-          text: "Buy a home",
-        },
-        {
-          id: "initial-question",
-          role: "assistant",
-          text: getTaraInitialMessage(initialState.nextRule),
-        },
-      ]);
-    } else {
-      setIntent("RENT");
-    }
-  }
-
   // Rolls back one question step in the search history
   function goBack() {
     if (queryHistory.length === 0) {
-      if (initialIntent === null && intent === "BUY") {
-        setIntent(null);
-        setQuery({});
-        setQueryHistory([]);
-        setState(getQueryBuilderState(catalog, {}));
-        setMessages([
-          {
-            id: "intent-greeting",
-            role: "assistant",
-            text: getTaraIntentOpeningMessage(),
-          },
-        ]);
-      }
       return;
     }
 
@@ -205,7 +153,7 @@ export function useSearchChat(initialIntent: DiscoveryIntent = null) {
     setMessages((current) => current.slice(0, -2));
   }
 
-  // Resets search session back to initial rule question or intent decision
+  // Resets search session back to initial rule question
   function reset() {
     const initialState = getQueryBuilderState(catalog, {});
 
@@ -213,41 +161,27 @@ export function useSearchChat(initialIntent: DiscoveryIntent = null) {
     setQueryHistory([]);
     setState(initialState);
 
-    if (initialIntent === "BUY") {
-      setIntent("BUY");
-      setMessages(
-        initialState.nextRule
-          ? [
-              {
-                id: "initial-question",
-                role: "assistant",
-                text: getTaraInitialMessage(initialState.nextRule),
-              },
-            ]
-          : [],
-      );
-    } else {
-      setIntent(null);
-      setMessages([
-        {
-          id: "intent-greeting",
-          role: "assistant",
-          text: getTaraIntentOpeningMessage(),
-        },
-      ]);
-    }
+    setMessages(
+      initialState.nextRule
+        ? [
+            {
+              id: "initial-question",
+              role: "assistant",
+              text: getTaraInitialMessage(initialState.nextRule),
+            },
+          ]
+        : [],
+    );
   }
 
   return {
     catalog,
     query,
     state,
-    intent,
     messages,
     isLoading,
     error,
     retry,
-    selectIntent,
     selectOption,
     removeQueryAttribute,
     goBack,

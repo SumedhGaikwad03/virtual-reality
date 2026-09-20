@@ -20,12 +20,6 @@ export type SelectionContext = {
   label: string;
 };
 
-/**
- * Initial greeting for Tara on fresh session start prompting intent (Buy vs Rent).
- */
-export function getTaraIntentOpeningMessage(): string {
-  return "Hello, I'm Tara. What are you looking to do?";
-}
 
 /**
  * Initial greeting for Tara on property search start.

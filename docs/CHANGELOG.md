@@ -1521,3 +1521,15 @@
   - Preserved metadata architecture and dynamic site configuration.
 - **Invariants Preserved**:
   - Zero CSS, image, layout, route, API, database, authentication, admin, or component structure changes.
+
+---
+
+## Phase 88: Tara Property Discovery Advisor — UX Simplification
+- **Removed Buy/Rent Branch from Tara**:
+  - Removed Buy vs Rent intent selection screen (`[ Buy a Home ]` / `[ Rent a Home ]`) from Tara's opening state in `SearchAssistant.tsx` and `useSearchChat.ts`.
+  - Tara now enters the deterministic property discovery sequence directly upon opening (*"What kind of home are you looking for?"*), operating exclusively as a residential property discovery advisor for homebuyers.
+  - Removed unused `getTaraIntentOpeningMessage()`, `DiscoveryIntent`, and `selectIntent` handlers.
+- **Invariants Preserved**:
+  - Deterministic query builder, adaptive grounding, candidate filtering, project stopping threshold, contextual recovery, undo/reset actions, project cards, configuration deep-links, and `/search` route fully preserved.
+  - Public rental routes (`/rentals`, `/rentals/list-property`), rental enquiries, and rental admin workspaces remain 100% functional and isolated.
+  - Zero modifications to backend services, databases, CSS styling, or admin portals.

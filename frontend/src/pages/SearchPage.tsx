@@ -36,7 +36,7 @@ const defaultSiteFallback = {
 };
 
 export function SearchPage() {
-  const searchChat = useSearchChat("BUY");
+  const searchChat = useSearchChat();
   const { site } = useSite();
 
   const matches = searchChat.state ? searchChat.state.matches : [];

@@ -28,12 +28,10 @@ export function SearchAssistant({
   catalog,
   query,
   state,
-  intent,
   messages,
   isLoading,
   error,
   retry,
-  selectIntent,
   selectOption,
   removeQueryAttribute,
   goBack,
@@ -122,57 +120,6 @@ export function SearchAssistant({
     } else {
       navigate("/search");
     }
-  }
-
-  function handleSelectRent() {
-    closeAssistant({ reset: true });
-    navigate("/rentals");
-  }
-
-  function handleSelectBuy() {
-    if (selectIntent) {
-      selectIntent("BUY");
-    }
-  }
-
-  // Intent selection view (Buy vs Rent)
-  if (intent === null) {
-    return (
-      <section
-        className="search-assistant-card search-assistant-card--initial"
-        aria-label="Tara · Property Discovery Advisor"
-      >
-        <AssistantHeader />
-
-        <ConversationMessages messages={messages} />
-
-        <div className="tara-intent-options-container" role="group" aria-label="Discovery options">
-          <button
-            type="button"
-            onClick={handleSelectBuy}
-            className="tara-intent-btn"
-          >
-            <div className="tara-intent-btn-content">
-              <span className="tara-intent-btn-title">Buy a Home</span>
-              <span className="tara-intent-btn-subline">Find your next home to purchase</span>
-            </div>
-            <span className="tara-intent-arrow" aria-hidden="true">→</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleSelectRent}
-            className="tara-intent-btn"
-          >
-            <div className="tara-intent-btn-content">
-              <span className="tara-intent-btn-title">Rent a Home</span>
-              <span className="tara-intent-btn-subline">Explore verified rental desk listings</span>
-            </div>
-            <span className="tara-intent-arrow" aria-hidden="true">→</span>
-          </button>
-        </div>
-      </section>
-    );
   }
 
   return (
