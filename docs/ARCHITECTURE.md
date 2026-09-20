@@ -521,3 +521,94 @@ FOUNDER Privilege                                               EMPLOYEE Privile
 | **Delete Visit / Lead** | `DELETE /api/admin/visits/:id` | 200 OK for any visit | 200 OK for owned visit; 403 Forbidden for unowned visit |
 | **Dynamic Reassignment** | Reassign Lead (`PATCH /api/admin/leads/:id/owner`) | Automatically transfers visit operational access to the new owner | Prohibited (403 Forbidden) |
 
+
+### 8.3 Location Snapshot Architecture (Location V1 — Step 1)
+
+Location V1 provides a lightweight operational snapshot capability without tracking continuous breadcrumb trails or creating historical location tables.
+
+```
+                           LOCATION SNAPSHOT ARCHITECTURE
+                                         │
+                        PostgreSQL Admin Table (Snapshot)
+                   [ lastLatitude, lastLongitude, lastLocationAt ]
+                                         │
+         ┌───────────────────────────────┴───────────────────────────────┐
+         │                                                               │
+         ▼                                                               ▼
+Authenticated Admin Self-Update                                 Founder-Only Team View
+   (POST /api/admin/location)                                  (GET /api/admin/locations)
+         │                                                               │
+├─ Payload: { latitude, longitude }                             ├─ Privilege: FOUNDER only (403 for Employee)
+├─ Validation: strict finite numbers within ranges              ├─ Response: [ { id, name, email, role,
+│  (-90 <= lat <= 90, -180 <= lng <= 180)                       │                latitude, longitude,
+├─ Identity Injection Rejection: rejects adminId/ownerId/etc    │                lastLocationAt } ]
+├─ Timestamp: server-generated lastLocationAt = new Date()      └─ Security: omits password hashes & secrets
+└─ Target: updates authenticated admin's own record only
+```
+
+| Operation | Endpoint | Access Rule | Security & Validation |
+| :--- | :--- | :--- | :--- |
+| **Self Location Update** | `POST /api/admin/location` | Authenticated Admin (`requireAdminAuthentication`) | Validates numeric range; rejects client-supplied identities or timestamps with 400 `INVALID_LOCATION_REQUEST`; writes server-generated `lastLocationAt = new Date()`. |
+| **View Team Locations** | `GET /api/admin/locations` | Founder Only (`requireFounderAuthentication`) | Founder receives list of active admins with coordinates and timestamps; Employees receive 403 Forbidden; unauthenticated receive 401. |
+
+### 8.4 Location Permission & Snapshot Lifecycle (Location V1 — Step 2)
+
+```
+                       AUTHENTICATED ADMIN APP ENTRY
+                                     │
+                             AdminLayout Mounts
+                                     │
+                     useAdminLocationInitializer()
+                                     │
+           ┌─────────────────────────┴─────────────────────────┐
+           │                                                   │
+  navigator.permissions.query()                  navigator.permissions unsupported
+           │                                                   │
+   ┌───────┼──────────────────┐                                │
+   │       │                  │                                │
+granted  prompt             denied                             │
+   │       │                  │                                │
+   │       ▼                  ▼                                ▼
+   │   LocationPermission   Suppress modal;           LocationPermission
+   │   Modal Displayed      continue workspace        Modal Displayed
+   │       │                                                   │
+   │   User clicks                                         User clicks
+   │   "Allow Location Access"                             "Allow Location Access"
+   │       │                                                   │
+   └───────┼───────────────────────────────────────────────────┘
+           │
+           ▼
+navigator.geolocation.getCurrentPosition()
+           │
+ ┌─────────┴─────────────────────────────────┐
+ │                                           │
+Success                                    Error (denied / timeout / unavailable)
+ │                                           │
+updateAdminLocation({ lat, lng })            Fail gracefully;
+ │                                           workspace continues unaffected
+POST /api/admin/location (Bearer auth)
+ │
+PostgreSQL updated with single snapshot
+```
+
+### 8.5 Founder Employee Locations View (Location V1 — Step 3)
+
+The Founder Employee Locations interface allows the Founder to review the latest reported snapshot for all active team members:
+
+```
+                            FOUNDER LOCATIONS WORKSPACE
+                                         │
+                             Founder Nav: Locations
+                                         │
+                       GET /api/admin/locations (Bearer)
+                                         │
+                ┌────────────────────────┴────────────────────────┐
+                │                                                 │
+      Admin with Location                               Admin without Location
+                │                                                 │
+   ├─ Status: "Location updated"                     ├─ Status: "Location not available"
+   ├─ Timestamp: Formatted in-locale                 ├─ Timestamp: "Location not available"
+   ├─ Coordinates: 4-decimal precision               ├─ Disabled button: "No location available"
+   └─ Action: "View on Map ↗"                        └─ Card remains visible for accountability
+      (Google Maps search URL in new tab)
+```

@@ -1635,6 +1635,9 @@ export const AdminScalarFieldEnum = {
   name: 'name',
   role: 'role',
   isActive: 'isActive',
+  lastLatitude: 'lastLatitude',
+  lastLongitude: 'lastLongitude',
+  lastLocationAt: 'lastLocationAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1961,6 +1964,20 @@ export type ListEnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 
 
 /**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
  * Reference to a field of type 'RentalEnquiryStatus'
  */
 export type EnumRentalEnquiryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RentalEnquiryStatus'>
@@ -1985,20 +2002,6 @@ export type EnumRentalPropertyStatusFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'RentalPropertyStatus[]'
  */
 export type ListEnumRentalPropertyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RentalPropertyStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**

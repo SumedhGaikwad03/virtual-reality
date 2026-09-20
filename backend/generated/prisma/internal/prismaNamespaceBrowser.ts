@@ -213,6 +213,9 @@ export const AdminScalarFieldEnum = {
   name: 'name',
   role: 'role',
   isActive: 'isActive',
+  lastLatitude: 'lastLatitude',
+  lastLongitude: 'lastLongitude',
+  lastLocationAt: 'lastLocationAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

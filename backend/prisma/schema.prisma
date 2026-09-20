@@ -253,6 +253,9 @@ model Admin {
   name                String?
   role                AdminRole           @default(EMPLOYEE)
   isActive            Boolean             @default(true)
+  lastLatitude        Float?
+  lastLongitude       Float?
+  lastLocationAt      DateTime?
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   passwordResetTokens PasswordResetToken[]

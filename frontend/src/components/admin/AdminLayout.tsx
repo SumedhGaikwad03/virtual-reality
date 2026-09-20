@@ -13,6 +13,8 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
+import { useAdminLocationInitializer } from "../../hooks/useAdminLocationInitializer";
+import { LocationPermissionModal } from "./LocationPermissionModal";
 import type { ReactNode } from "react";
 
 type AdminLayoutProps = {
@@ -28,6 +30,13 @@ export function AdminLayout({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement | null>(null);
+
+  const {
+    isModalOpen: isLocationModalOpen,
+    isSubmitting: isLocationSubmitting,
+    handleAllow: handleAllowLocation,
+    handleDismiss: handleDismissLocation,
+  } = useAdminLocationInitializer();
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -233,6 +242,9 @@ export function AdminLayout({
                 <NavLink to="/admin/accounts" onClick={closeDrawer}>
                   Admin Accounts
                 </NavLink>
+                <NavLink to="/admin/locations" onClick={closeDrawer}>
+                  Locations
+                </NavLink>
                 <NavLink to="/admin/import" onClick={closeDrawer}>
                   Import
                 </NavLink>
@@ -325,6 +337,9 @@ export function AdminLayout({
                 <NavLink to="/admin/accounts" role="menuitem" onClick={closeMore}>
                   Admin Accounts
                 </NavLink>
+                <NavLink to="/admin/locations" role="menuitem" onClick={closeMore}>
+                  Locations
+                </NavLink>
                 <NavLink to="/admin/import" role="menuitem" onClick={closeMore}>
                   Import
                 </NavLink>
@@ -365,6 +380,13 @@ export function AdminLayout({
         )}
         {children}
       </main>
+
+      <LocationPermissionModal
+        isOpen={isLocationModalOpen}
+        isSubmitting={isLocationSubmitting}
+        onAllow={handleAllowLocation}
+        onDismiss={handleDismissLocation}
+      />
     </div>
   );
 }

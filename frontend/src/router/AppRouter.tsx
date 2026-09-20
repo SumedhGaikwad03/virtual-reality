@@ -85,6 +85,9 @@ const AdminAccountsPage = lazy(() =>
 const CreateAdminPage = lazy(() =>
   import("../pages/admin/CreateAdminPage").then((m) => ({ default: m.CreateAdminPage })),
 );
+const AdminLocationsPage = lazy(() =>
+  import("../pages/admin/AdminLocationsPage").then((m) => ({ default: m.AdminLocationsPage })),
+);
 
 function AdminSuspenseFallback() {
   return (
@@ -412,6 +415,18 @@ export function AppRouter() {
           <FounderRoute>
             <Suspense fallback={<AdminSuspenseFallback />}>
               <CreateAdminPage />
+            </Suspense>
+          </FounderRoute>
+        }
+      />
+
+      {/* Admin employee locations (Founder-only) */}
+      <Route
+        path="/admin/locations"
+        element={
+          <FounderRoute>
+            <Suspense fallback={<AdminSuspenseFallback />}>
+              <AdminLocationsPage />
             </Suspense>
           </FounderRoute>
         }

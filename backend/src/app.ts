@@ -27,6 +27,10 @@ import adminFirmProfileRoutes from "./routes/admin/firm-profile.routes.js";
 import adminRentalRoutes from "./routes/admin/rental.routes.js";
 import adminDashboardRoutes from "./routes/admin/dashboard.routes.js";
 import {
+  locationRouter as adminLocationRouter,
+  locationsRouter as adminLocationsRouter,
+} from "./routes/admin/location.routes.js";
+import {
   configurationRouter,
   projectRouter as projectConfigurationRouter,
 } from "./routes/admin/configuration.routes.js";
@@ -175,6 +179,8 @@ app.use("/api/admin/media", adminMediaRoutes);
 app.use("/api/admin/leads", adminLeadRoutes);
 app.use("/api/admin/visits", adminVisitRoutes);
 app.use("/api/admin/rentals", adminRentalRoutes);
+app.use("/api/admin/location", adminLocationRouter);
+app.use("/api/admin/locations", adminLocationsRouter);
 app.use("/api/admin/push-subscriptions", adminPushSubscriptionRoutes);
 app.use("/api/admin/import", adminImportRoutes);
 app.use("/api/admin/contact", adminContactRoutes);
@@ -585,6 +591,13 @@ app.use((error: any, _req: express.Request, res: express.Response, _next: expres
   if (error?.code === "INVALID_RENTAL_REQUEST") {
     res.status(400).json({
       error: { code: "INVALID_RENTAL_REQUEST", message: error.message },
+    });
+    return;
+  }
+
+  if (error?.code === "INVALID_LOCATION_REQUEST") {
+    res.status(400).json({
+      error: { code: "INVALID_LOCATION_REQUEST", message: error.message },
     });
     return;
   }

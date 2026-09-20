@@ -469,10 +469,6 @@ export type PushSubscriptionUncheckedUpdateManyWithoutAdminNestedInput = {
   deleteMany?: Prisma.PushSubscriptionScalarWhereInput | Prisma.PushSubscriptionScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type PushSubscriptionCreateWithoutAdminInput = {
   id?: string
   endpoint: string

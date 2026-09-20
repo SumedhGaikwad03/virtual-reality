@@ -227,6 +227,41 @@ export class AdminRepository {
       return true;
     });
   }
+
+  updateLocation(
+    id: string,
+    data: {
+      lastLatitude: number;
+      lastLongitude: number;
+      lastLocationAt: Date;
+    },
+  ) {
+    return prisma.admin.update({
+      where: { id },
+      data,
+      select: {
+        lastLatitude: true,
+        lastLongitude: true,
+        lastLocationAt: true,
+      },
+    });
+  }
+
+  findAllActiveLocations() {
+    return prisma.admin.findMany({
+      where: { isActive: true },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        lastLatitude: true,
+        lastLongitude: true,
+        lastLocationAt: true,
+      },
+    });
+  }
 }
 
 export const adminRepository = new AdminRepository();

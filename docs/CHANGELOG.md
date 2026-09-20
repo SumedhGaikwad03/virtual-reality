@@ -1398,7 +1398,32 @@
   - **Frontend Role Boundaries**: Verified Employee navigation isolation and `<FounderRoute>` protection on all Founder pages.
   - **Shared Rental Operations**: Verified Rental Enquiries and Rental Available Properties remain shared operational queues without owner filtering or reassignment.
   - **Bypass & IDOR Testing**: Verified URL, query parameter, and payload tampering attempts are rejected with 403/400.
+---
+
+## Phase 84: Location V1 — Step 1: Backend Location Snapshot Foundation
+- **Database Schema & Migration (`backend/prisma/schema.prisma`)**:
+  - Added nullable snapshot fields to `Admin` model:
+    - `lastLatitude Float?`
+    - `lastLongitude Float?`
+    - `lastLocationAt DateTime?`
+  - Created and deployed migration `20260920150000_add_admin_location_snapshot_fields` to PostgreSQL via `npx prisma migrate deploy`.
+  - Regenerated Prisma Client 7.9.1.
+- **Backend Location Snapshot Infrastructure**:
+  - **Repository Layer (`backend/src/repositories/admin.repository.ts`)**:
+    - `updateLocation(adminId, latitude, longitude, lastLocationAt)`: updates latest coordinates and server timestamp for the authenticated admin.
+    - `findAllActiveLocations()`: retrieves all active administrators with `id`, `name`, `email`, `role`, `lastLatitude`, `lastLongitude`, and `lastLocationAt` (omits password hashes and secrets).
+  - **Validation Layer (`backend/src/validators/location.validator.ts`)**:
+    - `validateLocationUpdate(body)`: verifies `latitude` and `longitude` are valid finite numbers with $-90 \le \text{latitude} \le 90$ and $-180 \le \text{longitude} \le 180$.
+    - Rejects any client-supplied identity, ownership, or timestamp parameters (`adminId`, `userId`, `ownerId`, `lastLocationAt`) with 400 Bad Request (`INVALID_LOCATION_REQUEST`).
+  - **Controller Layer (`backend/src/controllers/admin/location.controller.ts`)**:
+    - `updateLocationController`: updates location for `req.admin.id` and sets server-generated timestamp `new Date()`.
+    - `getLocationsController`: returns active administrators with their location snapshot data.
+  - **Route & App Mounting (`backend/src/routes/admin/location.routes.ts`, `backend/src/app.ts`)**:
+    - Mounted `POST /api/admin/location`: authenticated admin self-update (`requireAdminAuthentication`).
+    - Mounted `GET /api/admin/locations`: Founder-only multi-admin view (`requireFounderAuthentication`).
+    - Added `INVALID_LOCATION_REQUEST` error mapping to HTTP 400.
 - **Verification Suites & Automated Tests**:
+  - Location Snapshot verification suite (`location-snapshot-verification.ts`): 14/14 PASSED (100%).
   - Lead authorization suite (`lead-authorization-verification.ts`): 22/22 PASSED.
   - Visit authorization suite (`visit-authorization-verification.ts`): 20/20 PASSED.
   - Dashboard role verification (`dashboard-role-verification.ts`): 5/5 PASSED.
@@ -1407,6 +1432,79 @@
   - Static typechecking & production builds: Backend `npm run build` and Frontend `npm run build` completed with zero errors.
   - Whitespace & format check: `git diff --check` clean.
 - **Invariants Preserved**:
-  - Zero changes to database schema or existing media architecture.
-  - Zero changes to public website, SEO routes, or Tara assistant.
+  - Zero frontend location modal, geolocation, maps, background tracking, polling, or history tables created.
+  - Single latest snapshot model stored directly on `Admin`.
+  - Zero Git commits or pushes.
 
+---
+
+## Phase 85: Location V1 — Step 2: Employee Location Permission & First Snapshot
+- **Frontend Location API Client (`frontend/src/api/admin-location.ts`)**:
+  - Created `updateAdminLocation({ latitude, longitude })` sending coordinates via `adminRequest("/admin/location")`.
+  - Uses existing Bearer token authentication from `auth-storage.ts`.
+  - Sends only `latitude` and `longitude`; does not send `adminId`, `userId`, or timestamp.
+- **Location Permission Modal Component (`frontend/src/components/admin/LocationPermissionModal.tsx`)**:
+  - Restrained, non-blocking admin modal dialog adhering to warm architectural design system tokens (`#18382E`, `#68706A`, `#202622`).
+  - Clear copy: Eyebrow `"LOCATION ACCESS"`, Heading `"Keep your workspace location updated"`, Body `"Allow location access so your workspace can keep your latest known location updated."`, Subtitle `"Only your latest location and update time are saved."`.
+  - Actions: Primary `[ Allow Location Access ]`, Secondary `[ Not Now ]`.
+  - Accessible dialog (`role="dialog"`, `aria-modal="true"`, Escape key dismiss, backdrop dismiss).
+  - No map, no coordinates, no intrusive styling.
+- **Location Lifecycle Hook (`frontend/src/hooks/useAdminLocationInitializer.ts`)**:
+  - Coordinates first authenticated location capture on app mount.
+  - Protected against React re-renders, route changes, and StrictMode double-invocations using session flag `hasAttemptedLocationThisSession`.
+  - Checks `navigator.permissions.query({ name: "geolocation" })` when supported:
+    - `granted`: Captures `getCurrentPosition` and uploads snapshot directly without modal.
+    - `prompt`: Displays `LocationPermissionModal` before calling browser API.
+    - `denied`: Suppresses modal and allows admin workspace to function smoothly.
+  - On "Allow" click, calls `navigator.geolocation.getCurrentPosition(...)` and posts coordinates to `POST /api/admin/location`.
+  - Graceful error handling for `PERMISSION_DENIED`, `POSITION_UNAVAILABLE`, and `TIMEOUT` with zero UI blocking.
+  - Zero coordinates stored in `localStorage` or `sessionStorage`.
+- **Admin Layout Integration (`frontend/src/components/admin/AdminLayout.tsx`)**:
+  - Integrated `useAdminLocationInitializer` and `LocationPermissionModal` at the authenticated admin shell level.
+  - Does not execute for unauthenticated users, public pages, or after logout.
+- **Verification Suites & Automated Tests**:
+  - Location Snapshot verification suite (`location-snapshot-verification.ts`): 14/14 PASSED.
+  - Lead authorization suite (`lead-authorization-verification.ts`): 22/22 PASSED.
+  - Visit authorization suite (`visit-authorization-verification.ts`): 20/20 PASSED.
+  - Dashboard role verification (`dashboard-role-verification.ts`): 5/5 PASSED.
+  - Security test suite (`security-verification.ts`): 15/15 PASSED.
+  - Static typechecking & production builds: Backend `npm run build` and Frontend `npm run build` passed with zero errors.
+  - Whitespace & format check: `git diff --check` clean.
+- **Invariants Preserved**:
+  - Zero periodic polling, background tracking, visibility tracking, or location history tables created.
+  - Single latest snapshot model stored directly on `Admin`.
+  - Zero Git commits or pushes.
+
+---
+
+## Phase 86: Location V1 — Step 3: Founder Employee Locations View
+- **Frontend Location API Client (`frontend/src/api/admin-location.ts`)**:
+  - Added `getAdminLocations()` returning `AdminLocationsResponse` (`AdminLocationItem[]`) via `adminRequest("/admin/locations")`.
+- **Founder-Only Locations Page (`frontend/src/pages/admin/AdminLocationsPage.tsx`)**:
+  - Created operational employee locations page mounted at `/admin/locations` under `<FounderRoute>`.
+  - Heading: `"Employee Locations"` with supporting subtitle `"View the latest known location reported by each active team member."`.
+  - Displays responsive card grid with one card per active administrator:
+    - Member name, email, and role badge (`FOUNDER` / `EMPLOYEE`).
+    - Location status badge (`Location updated` vs `Location not available`).
+    - Human-readable timestamp formatted via `Intl.DateTimeFormat("en-IN")`.
+    - Coordinates in 4-decimal precision as secondary technical information.
+    - Direct external map action `[ View on Map ↗ ]` linking to `https://www.google.com/maps/search/?api=1&query=<lat>,<lng>` in a new tab (`target="_blank"`, `rel="noopener noreferrer"`).
+    - Graceful fallback `[ No location available ]` button when coordinates are absent.
+  - Handled loading, empty, and error states gracefully.
+- **Admin Navigation Integration (`frontend/src/components/admin/AdminLayout.tsx`)**:
+  - Added Founder-only `"Locations"` navigation link to desktop More dropdown and mobile drawer under Management.
+  - Completely hidden for Employees.
+- **Router Configuration (`frontend/src/router/AppRouter.tsx`)**:
+  - Added lazy-loaded route `/admin/locations` wrapped in `<FounderRoute>`.
+- **Verification & Test Coverage**:
+  - Location Snapshot verification suite (`location-snapshot-verification.ts`): 14/14 PASSED.
+  - Lead authorization suite (`lead-authorization-verification.ts`): 22/22 PASSED.
+  - Visit authorization suite (`visit-authorization-verification.ts`): 20/20 PASSED.
+  - Dashboard role verification (`dashboard-role-verification.ts`): 5/5 PASSED.
+  - Security test suite (`security-verification.ts`): 15/15 PASSED.
+  - Static typechecking & production builds: Backend `npm run build` and Frontend `npm run build` passed with zero errors.
+  - Whitespace & format check: `git diff --check` clean.
+- **Invariants Preserved**:
+  - Reused existing `GET /api/admin/locations` endpoint without database or backend changes.
+  - Zero embedded maps SDK, API keys, reverse geocoding, polling, background tracking, or history tables created.
+  - Zero Git commits or pushes.
