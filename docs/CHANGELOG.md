@@ -1508,3 +1508,16 @@
   - Reused existing `GET /api/admin/locations` endpoint without database or backend changes.
   - Zero embedded maps SDK, API keys, reverse geocoding, polling, background tracking, or history tables created.
   - Zero Git commits or pushes.
+
+---
+
+## Phase 87: Homepage Positioning Refinement
+- **Clarified Real-Estate Discovery & Property Advisory Positioning**:
+  - Replaced architectural studio phrasing with real-estate discovery and consultative property guidance copy across `AtmosphericHero`, `TrustStatisticsStrip`, `FeaturedProjects`, `ExploreDevelopers`, `HomeGallery`, `FirmOverview`, and `ContactAdvisorySection`.
+  - Retained verified `20+ Years of Advisory` metric backed by founder profile data.
+  - Maintained premium architectural visual identity without structural or layout alterations.
+- **SEO & Metadata Updates**:
+  - Updated default homepage description and metadata tagline fallbacks in `seo-renderer.service.ts` and `index.html`.
+  - Preserved metadata architecture and dynamic site configuration.
+- **Invariants Preserved**:
+  - Zero CSS, image, layout, route, API, database, authentication, admin, or component structure changes.

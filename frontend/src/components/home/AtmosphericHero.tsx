@@ -35,11 +35,11 @@ export function AtmosphericHero({
   const mobileHero = heroItems.find((item) => item.slot === "mobile") || primaryHero;
   const mobileImageUrl = mobileHero?.url ? getOptimizedImageUrl(mobileHero.url) : desktopImageUrl;
 
-  const eyebrowText = tagline || "Curated Residential Developments & Property Advisory";
-  const headlineText = name || "Find a Better Tomorrow";
+  const eyebrowText = tagline || "CURATED RESIDENTIAL DEVELOPMENTS";
+  const headlineText = name || "Explore Your Next Address";
   const supportingText =
     description ||
-    "Discover residential developments from established developers with dedicated property guidance across Pune.";
+    "Discover residential developments from established developers, with guidance to help you find the right home for your needs.";
 
   return (
     <section className="atmospheric-hero" aria-label="Hero">

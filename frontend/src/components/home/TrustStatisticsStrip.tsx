@@ -29,7 +29,7 @@ export function TrustStatisticsStrip({
         <div className="trust-stat-item">
           <span className="trust-stat-number">{devDisplay}</span>
           <div className="trust-stat-meta">
-            <strong className="trust-stat-label">Trusted Developers</strong>
+            <strong className="trust-stat-label">Established Developers</strong>
             <span className="trust-stat-desc">Leading builders with proven track records</span>
           </div>
         </div>
@@ -39,8 +39,8 @@ export function TrustStatisticsStrip({
         <div className="trust-stat-item">
           <span className="trust-stat-number">{projDisplay}</span>
           <div className="trust-stat-meta">
-            <strong className="trust-stat-label">Prime Developments</strong>
-            <span className="trust-stat-desc">Curated luxury residences & villas in Pune</span>
+            <strong className="trust-stat-label">Residential Developments</strong>
+            <span className="trust-stat-desc">Selected projects & configurations across Pune</span>
           </div>
         </div>
 
@@ -59,8 +59,8 @@ export function TrustStatisticsStrip({
         <div className="trust-stat-item">
           <span className="trust-stat-number trust-stat-number--sparkle">✦</span>
           <div className="trust-stat-meta">
-            <strong className="trust-stat-label">Bespoke Advisory</strong>
-            <span className="trust-stat-desc">Direct consultation without sales pressure</span>
+            <strong className="trust-stat-label">Guided Discovery</strong>
+            <span className="trust-stat-desc">Consultative assistance to navigate your search</span>
           </div>
         </div>
       </div>

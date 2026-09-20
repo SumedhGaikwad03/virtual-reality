@@ -120,12 +120,12 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
     >
       {/* Section Editorial Header */}
       <div className="section-header-editorial">
-        <span className="section-eyebrow">CONNECT & ADVISORY</span>
+        <span className="section-eyebrow">PROPERTY ADVISORY</span>
         <h2 id="contact-advisory-heading" className="section-title">
-          Let’s Connect
+          Looking for the Right Property?
         </h2>
         <p className="section-subtitle">
-          Whether you have a question, need personalized guidance, or want to explore properties, choose what works best for you.
+          Tell us what you're looking for and we'll help you explore suitable residential developments.
         </p>
       </div>
 
@@ -135,10 +135,10 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
            ==================================================================== */}
         <div id="advisory" className="advisory-card">
           <div className="advisory-card-header">
-            <span className="card-badge-eyebrow">CONSULTATION & ADVISORY</span>
+            <span className="card-badge-eyebrow">PROPERTY ADVISORY</span>
             <h3 className="card-heading">Property Advisory</h3>
             <p className="card-description">
-              Request a personalized property consultation and verified project guidance with our senior advisory team.
+              Request a personalized property consultation to explore suitable residential developments across Pune.
             </p>
           </div>
 
@@ -218,7 +218,7 @@ export function ContactAdvisorySection({ site }: ContactAdvisorySectionProps) {
               disabled={isSubmitting}
               className="advisory-submit-btn"
             >
-              {isSubmitting ? "Submitting Request..." : "Request Property Consultation →"}
+              {isSubmitting ? "Submitting Request..." : "Request a Property Consultation →"}
             </button>
           </form>
         </div>

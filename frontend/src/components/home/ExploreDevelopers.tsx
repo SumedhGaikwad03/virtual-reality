@@ -22,12 +22,12 @@ export function ExploreDevelopers({ developers = [] }: ExploreDevelopersProps) {
   return (
     <section id="developers" className="explore-developers-section" aria-labelledby="developers-heading">
       <div className="section-header-editorial">
-        <span className="section-eyebrow">PARTNER DEVELOPERS</span>
+        <span className="section-eyebrow">DEVELOPERS</span>
         <h2 id="developers-heading" className="section-title">
-          Trusted Developers
+          Developments From Established Developers
         </h2>
         <p className="section-subtitle">
-          Explore residential developments from Pune's established developers.
+          Explore residential projects from established developers across Pune.
         </p>
       </div>
 

@@ -49,10 +49,10 @@ export function FirmOverview({ site }: FirmOverviewProps) {
       aria-label="Firm Leadership and Overview"
     >
       <div className="section-header-editorial">
-        <span className="section-eyebrow">EXPERIENCED PROPERTY ADVISORY</span>
-        <h2 className="section-title">Guiding you to the right address with confidence.</h2>
+        <span className="section-eyebrow">PROPERTY ADVISORY</span>
+        <h2 className="section-title">Experienced Property Guidance</h2>
         <p className="section-subtitle">
-          Guiding homebuyers through Pune's residential market with trusted advisory and market knowledge.
+          Virtual Reality helps homebuyers discover residential developments and navigate their property search with greater clarity.
         </p>
       </div>
 
@@ -108,24 +108,24 @@ export function FirmOverview({ site }: FirmOverviewProps) {
             <div className="firm-pillar-item">
               <span className="pillar-index">01</span>
               <div className="pillar-content">
-                <strong>Curated Portfolio</strong>
-                <span>Verified residential inventory & prime developments across Pune</span>
+                <strong>Residential Developments</strong>
+                <span>Curated projects and configurations from established developers across Pune</span>
               </div>
             </div>
 
             <div className="firm-pillar-item">
               <span className="pillar-index">02</span>
               <div className="pillar-content">
-                <strong>Unbiased Advisory</strong>
-                <span>Direct, consultation-driven guidance without sales pressure</span>
+                <strong>Property Advisory</strong>
+                <span>Consultative guidance focused on finding the right match for your requirements</span>
               </div>
             </div>
 
             <div className="firm-pillar-item">
               <span className="pillar-index">03</span>
               <div className="pillar-content">
-                <strong>Preference Discovery</strong>
-                <span>Curated requirement matching powered by Tara, our property discovery advisor</span>
+                <strong>Guided Search</strong>
+                <span>Clear requirement matching assisted by Tara, our property search advisor</span>
               </div>
             </div>
           </div>

@@ -34,9 +34,9 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
     return (
       <section className="featured-projects-section" aria-labelledby="featured-heading">
         <div className="section-header-editorial">
-          <span className="section-eyebrow">FEATURED DEVELOPMENTS</span>
+          <span className="section-eyebrow">FEATURED RESIDENTIAL DEVELOPMENTS</span>
           <h2 id="featured-heading" className="section-title">
-            Featured Projects
+            Featured Residential Developments
           </h2>
         </div>
         <p className="no-projects-notice">No featured projects available.</p>
@@ -50,10 +50,10 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         <div>
           <span className="section-eyebrow">FEATURED RESIDENTIAL DEVELOPMENTS</span>
           <h2 id="featured-heading" className="section-title">
-            Featured Developments
+            Featured Residential Developments
           </h2>
           <p className="section-subtitle">
-            Curated residences, boutique towers, and private villas from established developers.
+            Explore selected residential developments across Pune and discover the projects, locations, and configurations available.
           </p>
         </div>
         <div className="featured-carousel-controls" aria-label="Carousel navigation">
