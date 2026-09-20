@@ -17,6 +17,7 @@ export function getLeads(query?: AdminLeadQuery) {
   if (query?.limit) params.set("limit", String(query.limit));
   if (query?.search?.trim()) params.set("search", query.search.trim());
   if (query?.status) params.set("status", query.status);
+  if (query?.type) params.set("type", query.type);
   if (query?.developerId) params.set("developerId", query.developerId);
   if (query?.projectId) params.set("projectId", query.projectId);
   if (query?.configurationId) params.set("configurationId", query.configurationId);

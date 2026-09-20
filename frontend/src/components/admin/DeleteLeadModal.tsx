@@ -74,12 +74,13 @@ export function DeleteLeadModal({
             <strong>{lead.name}</strong>
             <span>{lead.phone}{lead.email ? ` · ${lead.email}` : ""}</span>
             <span className="admin-delete-url-hint">
-              {lead.project?.name
-                ? `Project: ${lead.project.name}`
-                : lead.developer?.name
-                  ? `Developer: ${lead.developer.name}`
-                  : "General enquiry"}
-              {lead.configuration?.name ? ` (${lead.configuration.name})` : ""}
+              {lead.type === "RENTAL"
+                ? `Rental Enquiry: ${lead.rentalConfiguration || "Home"}${lead.areaLocality || lead.location ? ` (${lead.areaLocality || lead.location})` : ""}`
+                : lead.project?.name
+                  ? `Project: ${lead.project.name}${lead.configuration?.name ? ` (${lead.configuration.name})` : ""}`
+                  : lead.developer?.name
+                    ? `Developer: ${lead.developer.name}`
+                    : "General enquiry"}
             </span>
           </div>
         </div>

@@ -1533,3 +1533,20 @@
   - Deterministic query builder, adaptive grounding, candidate filtering, project stopping threshold, contextual recovery, undo/reset actions, project cards, configuration deep-links, and `/search` route fully preserved.
   - Public rental routes (`/rentals`, `/rentals/list-property`), rental enquiries, and rental admin workspaces remain 100% functional and isolated.
   - Zero modifications to backend services, databases, CSS styling, or admin portals.
+
+---
+
+## Phase 89: Unified Admin All Leads Read-Layer Projection
+- **Read-Layer Aggregation (`backend/src/services/lead.service.ts`)**:
+  - Implemented unified read-layer projection combining `Lead` (PROPERTY) and `RentalEnquiry` (RENTAL) records without changing database schema or copying data.
+  - Extended `GET /api/admin/leads` to support `type` parameter (`ALL`, `PROPERTY`, `RENTAL`) with fast single-source paths and bounded dual-fetch (`take = skip + limit`) + sort + slice for combined queries.
+  - Preserved RBAC boundaries: Founder sees all Property Leads and Rental Enquiries; Employee sees only owned Property Leads (`ownerId === employee.id`) + all shared Rental Enquiries.
+  - Single-record endpoints (`GET /:id`, `PATCH /:id`, `DELETE /:id`) continue strictly blocking unowned property leads with HTTP 403.
+- **Frontend All Leads Workspace (`frontend/src/pages/admin/LeadsPage.tsx`)**:
+  - Added Type Selector control (`All Leads`, `Property Leads`, `Rental Enquiries`) and dynamic status filters.
+  - Added restrained `PROPERTY` and `RENTAL` pill badges and contextual requirement columns.
+  - Configured contextual View link routing to `/admin/leads/:id` (Property) or `/admin/rentals/enquiries/:id` (Rental).
+  - Integrated type-aware deletion dispatching (`deleteLead` vs `deleteRentalEnquiry`) and WhatsApp greeting generators.
+- **Invariants Preserved**:
+  - Zero Prisma schema changes, zero database migrations, zero data duplication or synchronization between tables.
+  - Dedicated `/admin/rentals/enquiries` and `/admin/rentals/available` workspaces remain 100% intact and functional.

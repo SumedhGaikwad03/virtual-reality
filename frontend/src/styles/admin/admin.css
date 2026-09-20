@@ -967,6 +967,30 @@
   margin-top: 0.35rem;
 }
 
+.admin-lead-type-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  margin-right: 0.35rem;
+}
+
+.admin-lead-type-tag--property {
+  color: #18382E;
+  background-color: #EBF2EE;
+  border: 1px solid #C4D6CB;
+}
+
+.admin-lead-type-tag--rental {
+  color: #854D0E;
+  background-color: #FEF9C3;
+  border: 1px solid #FEF08A;
+}
+
 .admin-lead-creator-tag {
   display: inline-flex;
   align-items: center;

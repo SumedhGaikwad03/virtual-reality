@@ -475,10 +475,22 @@ export function validateListLeadsQuery(
   _res: Response,
   next: NextFunction,
 ) {
+  const validLeadTypes = new Set(["ALL", "PROPERTY", "RENTAL"]);
+  const allValidStatuses = new Set([
+    "NEW",
+    "IN_PROGRESS",
+    "DONE",
+    "CONTACTED",
+    "MATCHED",
+    "CLOSED",
+    "ARCHIVED",
+  ]);
+
   const {
     page,
     limit,
     status,
+    type,
     search,
     developerId,
     projectId,
@@ -486,6 +498,11 @@ export function validateListLeadsQuery(
     ownerId,
     createdById,
   } = req.query;
+
+  if (type !== undefined && (typeof type !== "string" || !validLeadTypes.has(type.toUpperCase()))) {
+    next(validationError("Invalid type query parameter. Expected ALL, PROPERTY, or RENTAL."));
+    return;
+  }
 
   if (page !== undefined) {
     const parsedPage = Number(page);
@@ -503,7 +520,7 @@ export function validateListLeadsQuery(
     }
   }
 
-  if (status !== undefined && (typeof status !== "string" || !leadStatuses.has(status))) {
+  if (status !== undefined && (typeof status !== "string" || !allValidStatuses.has(status))) {
     next(validationError("Invalid status query parameter"));
     return;
   }

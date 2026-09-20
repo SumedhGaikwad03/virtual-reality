@@ -20,6 +20,7 @@ import { configurationRepository } from "../repositories/configuration.repositor
 import { developerRepository } from "../repositories/developer.repository.js";
 import { leadRepository, type LeadFindManyOptions, type LeadUpdateData } from "../repositories/lead.repository.js";
 import { projectRepository } from "../repositories/project.repository.js";
+import { rentalRepository } from "../repositories/rental.repository.js";
 import { notifyNewLead } from "./notification.service.js";
 import { getTodayISTDateString, normalizeIndianPhone } from "../validators/lead.validator.js";
 
@@ -82,6 +83,39 @@ export class LeadServiceError extends Error {
   }
 }
 
+export type UnifiedLeadType = "PROPERTY" | "RENTAL";
+
+export type UnifiedAdminLead = {
+  id: string;
+  type: UnifiedLeadType;
+  name: string;
+  phone: string;
+  email: string | null;
+  developer: { id: string; name: string; slug: string } | null;
+  project: { id: string; name: string; slug: string } | null;
+  configuration: { id: string; name: string } | null;
+  createdById: string | null;
+  ownerId: string | null;
+  createdBy: { id: string; name: string | null; email: string; role: AdminRole } | null;
+  owner: { id: string; name: string | null; email: string; role: AdminRole } | null;
+  message: string | null;
+  visitDate: string | null;
+  visitTime: string | null;
+  status: string;
+  notes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  // Rental specific fields
+  rentalConfiguration?: string | null;
+  location?: string | null;
+  areaLocality?: string | null;
+  budget?: string | null;
+  furnishing?: string | null;
+  moveInTimeframe?: string | null;
+  whoIsFor?: string | null;
+  internalNotes?: string | null;
+};
+
 function toAdminLead(lead: {
   id: string;
   name: string;
@@ -101,9 +135,10 @@ function toAdminLead(lead: {
   notes: string | null;
   createdAt: Date;
   updatedAt: Date;
-}) {
+}): UnifiedAdminLead {
   return {
     id: lead.id,
+    type: "PROPERTY",
     name: lead.name,
     phone: lead.phone,
     email: lead.email,
@@ -121,6 +156,64 @@ function toAdminLead(lead: {
     notes: lead.notes,
     createdAt: lead.createdAt,
     updatedAt: lead.updatedAt,
+    rentalConfiguration: null,
+    location: null,
+    areaLocality: null,
+    budget: null,
+    furnishing: null,
+    moveInTimeframe: null,
+    whoIsFor: null,
+    internalNotes: null,
+  };
+}
+
+function toUnifiedRentalLead(enquiry: {
+  id: string;
+  name: string;
+  phone: string;
+  configuration: string;
+  location: string | null;
+  areaLocality: string | null;
+  budget: string | null;
+  furnishing: string | null;
+  moveInTimeframe: string | null;
+  whoIsFor: string | null;
+  notes: string | null;
+  status: string;
+  internalNotes: string | null;
+  createdById?: string | null;
+  createdBy?: { id: string; name: string | null; email: string; role: AdminRole } | null;
+  createdAt: Date;
+  updatedAt: Date;
+}): UnifiedAdminLead {
+  return {
+    id: enquiry.id,
+    type: "RENTAL",
+    name: enquiry.name,
+    phone: enquiry.phone,
+    email: null,
+    developer: null,
+    project: null,
+    configuration: null,
+    createdById: enquiry.createdById ?? null,
+    ownerId: null,
+    createdBy: enquiry.createdBy ?? null,
+    owner: null,
+    message: null,
+    visitDate: null,
+    visitTime: null,
+    status: enquiry.status,
+    notes: enquiry.notes,
+    createdAt: enquiry.createdAt,
+    updatedAt: enquiry.updatedAt,
+    rentalConfiguration: enquiry.configuration,
+    location: enquiry.location,
+    areaLocality: enquiry.areaLocality,
+    budget: enquiry.budget,
+    furnishing: enquiry.furnishing,
+    moveInTimeframe: enquiry.moveInTimeframe,
+    whoIsFor: enquiry.whoIsFor,
+    internalNotes: enquiry.internalNotes,
   };
 }
 
@@ -284,25 +377,139 @@ export async function createAdminLead(
   };
 }
 
+export type ListLeadsOptions = LeadFindManyOptions & {
+  type?: "ALL" | "PROPERTY" | "RENTAL";
+};
+
 export async function listLeads(
-  options?: LeadFindManyOptions,
+  options?: ListLeadsOptions,
   actorAdmin?: AuthenticatedAdmin,
 ) {
-  const queryOptions: LeadFindManyOptions = { ...options };
+  const page = Math.max(1, options?.page ?? 1);
+  const limit = Math.min(100, Math.max(1, options?.limit ?? 20));
+  const skip = (page - 1) * limit;
+  const targetType = options?.type || "ALL";
 
-  // RBAC: EMPLOYEE can only list leads where ownerId === authenticatedEmployee.id
-  if (actorAdmin?.role === "EMPLOYEE") {
-    queryOptions.ownerId = actorAdmin.id;
+  // 1. PROPERTY ONLY
+  if (targetType === "PROPERTY") {
+    const queryOptions: LeadFindManyOptions = { ...options };
+    if (actorAdmin?.role === "EMPLOYEE") {
+      queryOptions.ownerId = actorAdmin.id;
+    }
+    const result = await leadRepository.findMany(queryOptions);
+    return {
+      data: result.leads.map(toAdminLead),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+    };
   }
 
-  const result = await leadRepository.findMany(queryOptions);
+  // 2. RENTAL ONLY
+  if (targetType === "RENTAL") {
+    if (
+      options?.developerId ||
+      options?.projectId ||
+      options?.configurationId ||
+      options?.ownerId
+    ) {
+      return {
+        data: [],
+        pagination: { page, limit, total: 0, totalPages: 1 },
+      };
+    }
+    const rentalOptions = {
+      page: options?.page,
+      limit: options?.limit,
+      search: options?.search,
+      status: options?.status as any,
+    };
+    const result = await rentalRepository.findManyEnquiries(rentalOptions);
+    return {
+      data: result.enquiries.map(toUnifiedRentalLead),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+    };
+  }
+
+  // 3. ALL (Combined PROPERTY + RENTAL)
+  const hasPropertySpecificFilter = Boolean(
+    options?.developerId ||
+      options?.projectId ||
+      options?.configurationId ||
+      options?.ownerId,
+  );
+
+  if (hasPropertySpecificFilter) {
+    const queryOptions: LeadFindManyOptions = { ...options };
+    if (actorAdmin?.role === "EMPLOYEE") {
+      queryOptions.ownerId = actorAdmin.id;
+    }
+    const result = await leadRepository.findMany(queryOptions);
+    return {
+      data: result.leads.map(toAdminLead),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+    };
+  }
+
+  const takeCount = skip + limit;
+
+  const leadQueryOptions: LeadFindManyOptions = {
+    ...options,
+    page: 1,
+    limit: takeCount,
+  };
+  if (actorAdmin?.role === "EMPLOYEE") {
+    leadQueryOptions.ownerId = actorAdmin.id;
+  }
+
+  const rentalQueryOptions = {
+    page: 1,
+    limit: takeCount,
+    search: options?.search,
+    status: options?.status as any,
+  };
+
+  const [leadResult, rentalResult] = await Promise.all([
+    leadRepository.findMany(leadQueryOptions),
+    rentalRepository.findManyEnquiries(rentalQueryOptions),
+  ]);
+
+  const total = leadResult.total + rentalResult.total;
+  const totalPages = Math.ceil(total / limit) || 1;
+
+  const combined = [
+    ...leadResult.leads.map(toAdminLead),
+    ...rentalResult.enquiries.map(toUnifiedRentalLead),
+  ];
+
+  combined.sort((a, b) => {
+    const timeDiff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    if (timeDiff !== 0) return timeDiff;
+    return b.id.localeCompare(a.id);
+  });
+
+  const pagedSlice = combined.slice(skip, skip + limit);
+
   return {
-    data: result.leads.map(toAdminLead),
+    data: pagedSlice,
     pagination: {
-      page: result.page,
-      limit: result.limit,
-      total: result.total,
-      totalPages: result.totalPages,
+      page,
+      limit,
+      total,
+      totalPages,
     },
   };
 }

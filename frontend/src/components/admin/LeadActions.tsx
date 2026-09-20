@@ -16,12 +16,21 @@ function whatsappNumber(phone: string) {
 }
 
 export function LeadActions({ lead }: { lead: AdminLead }) {
-  const message = [
-    "Hello",
-    lead.name,
-    lead.project?.name ? `regarding ${lead.project.name}` : "regarding your enquiry",
-    lead.configuration?.name ? `(${lead.configuration.name})` : "",
-  ].filter(Boolean).join(" ");
+  const isRental = lead.type === "RENTAL";
+  const message = isRental
+    ? [
+        "Hello",
+        lead.name,
+        "regarding your rental enquiry for",
+        lead.rentalConfiguration || "a residential property",
+        lead.areaLocality || lead.location ? `in ${lead.areaLocality || lead.location}` : "",
+      ].filter(Boolean).join(" ")
+    : [
+        "Hello",
+        lead.name,
+        lead.project?.name ? `regarding ${lead.project.name}` : "regarding your enquiry",
+        lead.configuration?.name ? `(${lead.configuration.name})` : "",
+      ].filter(Boolean).join(" ");
   const whatsappUrl = `https://wa.me/${whatsappNumber(lead.phone)}?text=${encodeURIComponent(message)}`;
 
   return (

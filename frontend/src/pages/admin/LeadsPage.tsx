@@ -2,11 +2,12 @@ import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { AdminApiError } from "../../api/admin-client";
 import { deleteLead, getLeads } from "../../api/admin-leads";
+import { deleteRentalEnquiry } from "../../api/admin-rentals";
 import { AdminLayout } from "../../components/admin/AdminLayout";
 import { DeleteLeadModal } from "../../components/admin/DeleteLeadModal";
 import { LeadActions } from "../../components/admin/LeadActions";
 import { LeadNotificationControl } from "../../components/admin/LeadNotificationControl";
-import type { AdminLead, LeadStatus, PaginationMeta } from "../../types/admin-lead";
+import type { AdminLead, PaginationMeta, UnifiedLeadType } from "../../types/admin-lead";
 
 function errorMessage(error: unknown) {
   if (!(error instanceof AdminApiError)) return "Something went wrong. Please try again.";
@@ -19,8 +20,25 @@ function formatDate(value: string) {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
 
-function statusLabel(status: AdminLead["status"]) {
-  return status === "IN_PROGRESS" ? "Ongoing" : status;
+function statusLabel(status: string) {
+  switch (status) {
+    case "IN_PROGRESS":
+      return "Ongoing";
+    case "NEW":
+      return "New";
+    case "DONE":
+      return "Done";
+    case "CONTACTED":
+      return "Contacted";
+    case "MATCHED":
+      return "Matched";
+    case "CLOSED":
+      return "Closed";
+    case "ARCHIVED":
+      return "Archived";
+    default:
+      return status;
+  }
 }
 
 function creatorLabel(lead: AdminLead) {
@@ -39,7 +57,8 @@ export function LeadsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<LeadStatus | "ALL">("ALL");
+  const [typeFilter, setTypeFilter] = useState<UnifiedLeadType | "ALL">("ALL");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +86,7 @@ export function LeadsPage() {
         limit: 20,
         search: debouncedSearch.trim() || undefined,
         status: statusFilter === "ALL" ? undefined : statusFilter,
+        type: typeFilter === "ALL" ? undefined : typeFilter,
       });
 
       setLeads(response.data);
@@ -78,7 +98,7 @@ export function LeadsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, debouncedSearch, statusFilter]);
+  }, [page, debouncedSearch, statusFilter, typeFilter]);
 
   useEffect(() => {
     void fetchLeads();
@@ -90,7 +110,11 @@ export function LeadsPage() {
     setDeleteError(null);
 
     try {
-      await deleteLead(leadToDelete.id);
+      if (leadToDelete.type === "RENTAL") {
+        await deleteRentalEnquiry(leadToDelete.id);
+      } else {
+        await deleteLead(leadToDelete.id);
+      }
       setLeadToDelete(null);
       void fetchLeads();
     } catch (err) {
@@ -152,6 +176,29 @@ export function LeadsPage() {
           )}
         </div>
 
+        {/* Type Filter */}
+        <div className="admin-lead-filter-wrapper">
+          <label htmlFor="lead-type-filter" className="admin-lead-filter-label">
+            Type
+          </label>
+          <div className="admin-lead-select-wrapper">
+            <select
+              id="lead-type-filter"
+              className="admin-lead-filter-select"
+              value={typeFilter}
+              onChange={(e) => {
+                setTypeFilter(e.target.value as UnifiedLeadType | "ALL");
+                setPage(1);
+              }}
+            >
+              <option value="ALL">All Leads</option>
+              <option value="PROPERTY">Property Leads</option>
+              <option value="RENTAL">Rental Enquiries</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Status Filter */}
         <div className="admin-lead-filter-wrapper">
           <label htmlFor="lead-status-filter" className="admin-lead-filter-label">
             Status
@@ -162,14 +209,26 @@ export function LeadsPage() {
               className="admin-lead-filter-select"
               value={statusFilter}
               onChange={(e) => {
-                setStatusFilter(e.target.value as LeadStatus | "ALL");
+                setStatusFilter(e.target.value);
                 setPage(1);
               }}
             >
               <option value="ALL">All Statuses</option>
               <option value="NEW">New</option>
-              <option value="IN_PROGRESS">Ongoing</option>
-              <option value="DONE">Done</option>
+              {typeFilter !== "RENTAL" && (
+                <>
+                  <option value="IN_PROGRESS">Ongoing</option>
+                  <option value="DONE">Done</option>
+                </>
+              )}
+              {typeFilter !== "PROPERTY" && (
+                <>
+                  <option value="CONTACTED">Contacted</option>
+                  <option value="MATCHED">Matched</option>
+                  <option value="CLOSED">Closed</option>
+                  <option value="ARCHIVED">Archived</option>
+                </>
+              )}
             </select>
           </div>
         </div>
@@ -232,15 +291,30 @@ export function LeadsPage() {
                     )}
                   </h2>
                   <p>{lead.phone}{lead.email ? ` · ${lead.email}` : ""}</p>
-                  <div className="admin-lead-creator">
+                  <div className="admin-lead-creator" style={{ display: "flex", alignItems: "center", gap: "0.35rem", flexWrap: "wrap" }}>
+                    <span className={`admin-lead-type-tag ${lead.type === "RENTAL" ? "admin-lead-type-tag--rental" : "admin-lead-type-tag--property"}`}>
+                      {lead.type === "RENTAL" ? "Rental Enquiry" : "Property Lead"}
+                    </span>
                     <span className="admin-lead-creator-tag">
                       {creatorLabel(lead)}
                     </span>
                   </div>
                 </div>
-                <p>{lead.developer?.name ?? "—"}</p>
-                <p>{lead.project?.name ?? "General enquiry"}</p>
-                <p>{lead.configuration?.name ?? "—"}</p>
+
+                {lead.type === "RENTAL" ? (
+                  <>
+                    <p><strong>{lead.rentalConfiguration || "Rental Seeker"}</strong></p>
+                    <p>{lead.areaLocality || lead.location || "—"}</p>
+                    <p>{lead.budget ? `Budget: ${lead.budget}` : "—"}</p>
+                  </>
+                ) : (
+                  <>
+                    <p>{lead.developer?.name ?? "—"}</p>
+                    <p>{lead.project?.name ?? "General enquiry"}</p>
+                    <p>{lead.configuration?.name ?? "—"}</p>
+                  </>
+                )}
+
                 <p>
                   <span className={`admin-lead-status status-${lead.status.toLowerCase()}`}>
                     {statusLabel(lead.status)}
@@ -248,12 +322,17 @@ export function LeadsPage() {
                 </p>
                 <p>{formatDate(lead.createdAt)}</p>
                 <div className="admin-lead-row-actions">
-                  <Link className="admin-action admin-action--secondary" to={`/admin/leads/${lead.id}`}>
+                  <Link
+                    className="admin-action admin-action--secondary"
+                    to={lead.type === "RENTAL" ? `/admin/rentals/enquiries/${lead.id}` : `/admin/leads/${lead.id}`}
+                  >
                     View
                   </Link>
-                  <Link className="admin-action admin-action--secondary" to={`/admin/leads/${lead.id}/edit`}>
-                    Edit
-                  </Link>
+                  {lead.type !== "RENTAL" && (
+                    <Link className="admin-action admin-action--secondary" to={`/admin/leads/${lead.id}/edit`}>
+                      Edit
+                    </Link>
+                  )}
                   <button
                     type="button"
                     className="admin-action admin-action--danger"

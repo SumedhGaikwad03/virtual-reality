@@ -1,7 +1,9 @@
 export type LeadStatus = "NEW" | "IN_PROGRESS" | "DONE";
+export type UnifiedLeadType = "PROPERTY" | "RENTAL";
 
 export type AdminLead = {
   id: string;
+  type?: UnifiedLeadType;
   name: string;
   phone: string;
   email: string | null;
@@ -15,10 +17,20 @@ export type AdminLead = {
   message: string | null;
   visitDate: string | null;
   visitTime: string | null;
-  status: LeadStatus;
+  status: string;
   notes: string | null;
   createdAt: string;
   updatedAt: string;
+
+  // Rental-specific fields (when type === "RENTAL")
+  rentalConfiguration?: string | null;
+  location?: string | null;
+  areaLocality?: string | null;
+  budget?: string | null;
+  furnishing?: string | null;
+  moveInTimeframe?: string | null;
+  whoIsFor?: string | null;
+  internalNotes?: string | null;
 };
 
 export type AdminLeadCreateInput = {
@@ -60,7 +72,8 @@ export type AdminLeadQuery = {
   page?: number;
   limit?: number;
   search?: string;
-  status?: LeadStatus;
+  status?: string;
+  type?: "ALL" | "PROPERTY" | "RENTAL";
   developerId?: string;
   projectId?: string;
   configurationId?: string;
