@@ -47,7 +47,7 @@ router.get("/seo/home", async (_req: Request, res: Response, next: NextFunction)
     res
       .status(500)
       .setHeader("Content-Type", "text/html; charset=utf-8")
-      .send(generate404Html("An unexpected error occurred while loading this page."));
+      .send(await generate404Html("An unexpected error occurred while loading this page."));
   }
 });
 
@@ -65,7 +65,7 @@ router.get(
         res
           .status(404)
           .setHeader("Content-Type", "text/html; charset=utf-8")
-          .send(generate404Html("The requested developer was not found or is no longer published."));
+          .send(await generate404Html("The requested developer was not found or is no longer published."));
         return;
       }
 
@@ -75,7 +75,7 @@ router.get(
       res
         .status(500)
         .setHeader("Content-Type", "text/html; charset=utf-8")
-        .send(generate404Html("An unexpected error occurred while loading this page."));
+        .send(await generate404Html("An unexpected error occurred while loading this page."));
     }
   },
 );
@@ -106,7 +106,7 @@ router.get(
         res
           .status(404)
           .setHeader("Content-Type", "text/html; charset=utf-8")
-          .send(generate404Html("The requested property was not found or is no longer published."));
+          .send(await generate404Html("The requested property was not found or is no longer published."));
         return;
       }
 
@@ -116,7 +116,7 @@ router.get(
       res
         .status(500)
         .setHeader("Content-Type", "text/html; charset=utf-8")
-        .send(generate404Html("An unexpected error occurred while loading this page."));
+        .send(await generate404Html("An unexpected error occurred while loading this page."));
     }
   },
 );
@@ -135,7 +135,7 @@ router.get(
         res
           .status(404)
           .setHeader("Content-Type", "text/html; charset=utf-8")
-          .send(generate404Html("The requested location was not found or has no published projects."));
+          .send(await generate404Html("The requested location was not found or has no published projects."));
         return;
       }
 
@@ -145,7 +145,7 @@ router.get(
       res
         .status(500)
         .setHeader("Content-Type", "text/html; charset=utf-8")
-        .send(generate404Html("An unexpected error occurred while loading this page."));
+        .send(await generate404Html("An unexpected error occurred while loading this page."));
     }
   },
 );
@@ -162,7 +162,7 @@ router.get("/seo/city-hub", async (_req: Request, res: Response, next: NextFunct
     res
       .status(500)
       .setHeader("Content-Type", "text/html; charset=utf-8")
-      .send(generate404Html("An unexpected error occurred while loading this page."));
+      .send(await generate404Html("An unexpected error occurred while loading this page."));
   }
 });
 

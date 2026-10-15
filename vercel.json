@@ -72,6 +72,22 @@
       "destination": "/index.html"
     },
     {
+      "source": "/rentals",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/enquiry",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/firm",
+      "destination": "/index.html"
+    },
+    {
       "source": "/projects-in-pune",
       "destination": "https://virtual-reality-backend.onrender.com/seo/city-hub"
     },
@@ -92,7 +108,7 @@
       "destination": "https://virtual-reality-backend.onrender.com/seo/home"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }
   ]

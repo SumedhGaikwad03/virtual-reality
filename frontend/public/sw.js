@@ -1,4 +1,4 @@
-const STATIC_CACHE = "virtual-reality-admin-shell-v6";
+const STATIC_CACHE = "virtual-reality-admin-shell-v7";
 
 
 const PRECACHE_ASSETS = [
@@ -182,8 +182,11 @@ self.addEventListener("fetch", (event) => {
           .then((response) => {
             if (response && response.ok) {
               const contentType = response.headers.get("content-type") || "";
-              // Guard: Never cache SPA fallback HTML as a JavaScript module chunk
-              if (url.pathname.endsWith(".js") && contentType.includes("text/html")) {
+              // Guard: Never cache SPA fallback HTML as a static code, style, or media asset
+              const isStaticAsset =
+                url.pathname.startsWith("/assets/") ||
+                /\.(js|css|woff2?|png|jpe?g|svg|ico|webp)$/i.test(url.pathname);
+              if (isStaticAsset && contentType.includes("text/html")) {
                 return response;
               }
               const copy = response.clone();

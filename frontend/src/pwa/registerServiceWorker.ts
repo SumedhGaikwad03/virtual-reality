@@ -10,6 +10,35 @@
  * Ensure already-installed PWAs update automatically to new deployments without manual storage clearing.
  */
 
+/**
+ * Evaluates whether a service worker registration belongs to a legacy root-scoped
+ * deployment of /sw.js on the current origin, ensuring safe targeted cleanup.
+ */
+export function isLegacyRootWorkerRegistration(
+  reg: {
+    scope: string;
+    active?: { scriptURL: string } | null;
+    installing?: { scriptURL: string } | null;
+    waiting?: { scriptURL: string } | null;
+  },
+  currentOrigin: string,
+): boolean {
+  try {
+    const regUrl = new URL(reg.scope);
+    if (regUrl.origin !== currentOrigin || regUrl.pathname !== "/") {
+      return false;
+    }
+    const scriptUrl =
+      reg.active?.scriptURL ||
+      reg.installing?.scriptURL ||
+      reg.waiting?.scriptURL;
+    if (!scriptUrl) return false;
+    return new URL(scriptUrl).pathname === "/sw.js";
+  } catch {
+    return false;
+  }
+}
+
 export function registerServiceWorker() {
   if (import.meta.env.DEV || !("serviceWorker" in navigator)) return;
 
@@ -27,6 +56,24 @@ export function registerServiceWorker() {
   });
 
   window.addEventListener("load", () => {
+    // Narrow cleanup for historical root-scoped registrations from pre-scope-isolation deployments
+    if ("getRegistrations" in navigator.serviceWorker) {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) => {
+          for (const reg of registrations) {
+            try {
+              if (isLegacyRootWorkerRegistration(reg, window.location.origin)) {
+                void reg.unregister();
+              }
+            } catch {
+              // Non-blocking cleanup
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
     navigator.serviceWorker
       .register("/sw.js", { scope: "/admin" })
       .then((registration) => {

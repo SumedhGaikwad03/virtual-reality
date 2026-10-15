@@ -32,39 +32,83 @@ const DEFAULT_OG_IMAGE = `${CANONICAL_ORIGIN}/icons/icon-512x512.png`;
 import fs from "node:fs";
 import path from "node:path";
 
-// Production compiled bundle deterministic entrypoint paths
-const DEFAULT_BUNDLE_SCRIPT = "/assets/index.js";
-const DEFAULT_BUNDLE_STYLE = "/assets/index.css";
-
 // In-memory cache for dynamically detected assets
-let cachedAssets: { scriptSrc: string; styleHref: string } | null = null;
+type ProductionAssets = {
+  scriptSrc: string;
+  styleHref: string;
+};
+
+let cachedAssets: ProductionAssets | null = null;
+let lastAssetFetchTime = 0;
+const ASSET_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes cache TTL
+const ASSET_FETCH_TIMEOUT_MS = 3500; // 3.5 seconds network timeout
+
+// In-flight promise to deduplicate concurrent refresh requests (single-flight)
+let activeDiscoveryPromise: Promise<ProductionAssets | null> | null = null;
 
 /**
- * Dynamically resolves the current production client bundle paths.
- * Checks:
- * 1. Explicit environment variables (VITE_ASSET_SCRIPT, VITE_ASSET_STYLE)
- * 2. In-memory cached filesystem scan
- * 3. Filesystem inspection of frontend/dist/index.html or frontend/dist/assets
- * 4. Safe deterministic entrypoint defaults (/assets/index.js, /assets/index.css)
+ * Validates that an asset path matches expected static bundle formats
+ * and rejects unhashed legacy paths (/assets/index.js, /assets/index.css).
  */
-export function resolveProductionAssets(): { scriptSrc: string; styleHref: string } {
-  const envScript = process.env.VITE_ASSET_SCRIPT?.trim();
-  const envStyle = process.env.VITE_ASSET_STYLE?.trim();
+export function isValidAssetPath(src: string, ext: ".js" | ".css"): boolean {
+  if (!src || typeof src !== "string") return false;
+  const trimmed = src.trim();
+  if (!trimmed.endsWith(ext)) return false;
+  // Strictly reject the obsolete unhashed fallback paths
+  if (trimmed === `/assets/index${ext}`) return false;
+  // Must be an asset path or absolute URL
+  if (!trimmed.startsWith("/assets/") && !trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+    return false;
+  }
+  // Must not contain HTML/script injection characters or whitespace
+  if (/[<>"'\s]/.test(trimmed)) return false;
+  return true;
+}
 
-  // 1. Full environment variable override
-  if (envScript && envStyle) {
-    return { scriptSrc: envScript, styleHref: envStyle };
+/**
+ * Parses raw HTML (from filesystem index.html or upstream deployment) and
+ * extracts the active entry script and stylesheet paths.
+ */
+export function extractAssetsFromHtml(html: string): ProductionAssets | null {
+  if (!html || typeof html !== "string") return null;
+
+  const scriptMatch =
+    html.match(/<script[^>]+type=["']module["'][^>]+src=["']([^"']+\.js)["']/i) ||
+    html.match(/<script[^>]+src=["']([^"']+\.js)["'][^>]+type=["']module["']/i) ||
+    html.match(/<script[^>]+src=["']([^"']+\.js)["']/i);
+
+  const styleMatch =
+    html.match(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+\.css)["']/i) ||
+    html.match(/<link[^>]+href=["']([^"']+\.css)["'][^>]+rel=["']stylesheet["']/i);
+
+  const scriptSrc = scriptMatch?.[1]?.trim();
+  const styleHref = styleMatch?.[1]?.trim();
+
+  if (
+    scriptSrc &&
+    styleHref &&
+    isValidAssetPath(scriptSrc, ".js") &&
+    isValidAssetPath(styleHref, ".css")
+  ) {
+    return { scriptSrc, styleHref };
   }
 
-  // 2. Return cached filesystem scan if available
-  if (cachedAssets) {
-    return {
-      scriptSrc: envScript || cachedAssets.scriptSrc,
-      styleHref: envStyle || cachedAssets.styleHref,
-    };
-  }
+  return null;
+}
 
-  // 3. Dynamic filesystem detection
+let disableFilesystemScanForTesting = false;
+
+export function setDisableFilesystemScanForTesting(val: boolean): void {
+  disableFilesystemScanForTesting = val;
+}
+
+/**
+ * Scans local candidate filesystem build output paths (monorepo / local development).
+ */
+export function scanFilesystemAssets(): ProductionAssets | null {
+  if (disableFilesystemScanForTesting) {
+    return null;
+  }
   try {
     const candidatePaths = [
       path.resolve(process.cwd(), "../frontend/dist"),
@@ -77,48 +121,163 @@ export function resolveProductionAssets(): { scriptSrc: string; styleHref: strin
       const indexHtmlPath = path.join(distPath, "index.html");
       if (fs.existsSync(indexHtmlPath)) {
         const htmlContent = fs.readFileSync(indexHtmlPath, "utf-8");
-        const scriptMatch = htmlContent.match(/<script[^>]+src=["']([^"']+\.js)["']/i);
-        const styleMatch = htmlContent.match(/<link[^>]+href=["']([^"']+\.css)["']/i);
-
-        if (scriptMatch?.[1] && styleMatch?.[1]) {
-          cachedAssets = {
-            scriptSrc: scriptMatch[1],
-            styleHref: styleMatch[1],
-          };
-          return {
-            scriptSrc: envScript || cachedAssets.scriptSrc,
-            styleHref: envStyle || cachedAssets.styleHref,
-          };
+        const extracted = extractAssetsFromHtml(htmlContent);
+        if (extracted) {
+          return extracted;
         }
       }
 
       const assetsDir = path.join(distPath, "assets");
       if (fs.existsSync(assetsDir)) {
         const files = fs.readdirSync(assetsDir);
-        const scriptFile = files.find((f) => /^index(-.*)?\.js$/i.test(f));
-        const styleFile = files.find((f) => /^index(-.*)?\.css$/i.test(f));
+        const scriptFile = files.find((f) => /^index-[a-zA-Z0-9_-]+\.js$/i.test(f));
+        const styleFile = files.find((f) => /^index-[a-zA-Z0-9_-]+\.css$/i.test(f));
 
         if (scriptFile && styleFile) {
-          cachedAssets = {
+          const candidate: ProductionAssets = {
             scriptSrc: `/assets/${scriptFile}`,
             styleHref: `/assets/${styleFile}`,
           };
-          return {
-            scriptSrc: envScript || cachedAssets.scriptSrc,
-            styleHref: envStyle || cachedAssets.styleHref,
-          };
+          if (
+            isValidAssetPath(candidate.scriptSrc, ".js") &&
+            isValidAssetPath(candidate.styleHref, ".css")
+          ) {
+            return candidate;
+          }
         }
       }
     }
   } catch {
     // Non-blocking fallback if filesystem is inaccessible in sandbox
   }
+  return null;
+}
 
-  // 4. Safe deterministic entrypoint defaults
-  return {
-    scriptSrc: envScript || DEFAULT_BUNDLE_SCRIPT,
-    styleHref: envStyle || DEFAULT_BUNDLE_STYLE,
-  };
+/**
+ * Performs a bounded network fetch against the upstream frontend origin to
+ * inspect the currently deployed entry HTML and extract live bundle hashes.
+ */
+export async function fetchUpstreamAssets(): Promise<ProductionAssets | null> {
+  const origin = (process.env.FRONTEND_URL || CANONICAL_ORIGIN || "https://www.virtual2reality.in")
+    .trim()
+    .replace(/\/+$/, "");
+  const targetUrl = `${origin}/index.html`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), ASSET_FETCH_TIMEOUT_MS);
+
+  try {
+    const res = await fetch(targetUrl, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "VR-SEO-Asset-Discovery/1.0",
+        Accept: "text/html",
+      },
+    });
+
+    if (!res.ok) {
+      console.warn(`[SEO Asset Discovery] Upstream returned status ${res.status} from ${origin}`);
+      return null;
+    }
+
+    const html = await res.text();
+    const assets = extractAssetsFromHtml(html);
+    if (!assets) {
+      console.warn(`[SEO Asset Discovery] Unable to extract valid script and style tags from upstream HTML at ${origin}`);
+      return null;
+    }
+
+    return assets;
+  } catch (err) {
+    console.warn(
+      `[SEO Asset Discovery] Network request to ${origin} failed:`,
+      err instanceof Error ? err.message : String(err),
+    );
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+/**
+ * Resets the in-memory asset cache (used exclusively in unit tests).
+ */
+export function resetAssetCacheForTesting(): void {
+  cachedAssets = null;
+  lastAssetFetchTime = 0;
+  activeDiscoveryPromise = null;
+  disableFilesystemScanForTesting = false;
+}
+
+/**
+ * Dynamically resolves the current production client bundle paths.
+ * Checks:
+ * 1. Explicit environment variables (VITE_ASSET_SCRIPT, VITE_ASSET_STYLE)
+ * 2. In-memory cached asset record within TTL (10 minutes)
+ * 3. Local filesystem inspection of frontend/dist/index.html or assets
+ * 4. Bounded upstream asset discovery with concurrent request deduplication
+ * 5. Stale-on-error cache reuse if an upstream refresh fails
+ * 6. Deliberate failure (returns null without emitting broken unhashed paths)
+ */
+export async function resolveProductionAssets(): Promise<ProductionAssets | null> {
+  const envScript = (process.env.PRODUCTION_ASSET_SCRIPT || process.env.VITE_ASSET_SCRIPT)?.trim();
+  const envStyle = (process.env.PRODUCTION_ASSET_STYLE || process.env.VITE_ASSET_STYLE)?.trim();
+
+  // 1. Full environment variable override takes top priority if valid
+  if (
+    envScript &&
+    envStyle &&
+    isValidAssetPath(envScript, ".js") &&
+    isValidAssetPath(envStyle, ".css")
+  ) {
+    return { scriptSrc: envScript, styleHref: envStyle };
+  }
+
+  // 2. Return cached filesystem or upstream scan if within TTL
+  const now = Date.now();
+  if (cachedAssets && now - lastAssetFetchTime < ASSET_CACHE_TTL_MS) {
+    return cachedAssets;
+  }
+
+  // 3. Dynamic filesystem detection (monorepo / local dev)
+  const localAssets = scanFilesystemAssets();
+  if (localAssets) {
+    cachedAssets = localAssets;
+    lastAssetFetchTime = now;
+    return cachedAssets;
+  }
+
+  // 4. Bounded upstream asset discovery (deduplicated single-flight)
+  if (!activeDiscoveryPromise) {
+    activeDiscoveryPromise = fetchUpstreamAssets()
+      .then((discovered) => {
+        if (discovered) {
+          cachedAssets = discovered;
+          lastAssetFetchTime = Date.now();
+        }
+        return discovered;
+      })
+      .finally(() => {
+        activeDiscoveryPromise = null;
+      });
+  }
+
+  const discovered = await activeDiscoveryPromise;
+  if (discovered) {
+    return discovered;
+  }
+
+  // 5. Stale-on-error fallback: If upstream discovery failed but previous cached assets exist, reuse them
+  if (cachedAssets) {
+    console.warn("[SEO Asset Discovery] Reusing stale cached production assets.");
+    return cachedAssets;
+  }
+
+  // 6. Deliberate failure: Never return unhashed fixed /assets/index.js or /assets/index.css
+  console.error(
+    "[SEO Asset Discovery] Failed to resolve production frontend assets. No valid assets found on filesystem, upstream, or cache.",
+  );
+  return null;
 }
 
 /**
@@ -168,13 +327,19 @@ export function formatPriceFromPaise(
 
 /**
  * Resolves production client script and stylesheet asset tags.
+ * If asset resolution fails, deliberately returns an empty string
+ * rather than emitting invalid unhashed placeholder paths.
  */
-function getClientAssetTags(): string {
-  const { scriptSrc, styleHref } = resolveProductionAssets();
+async function getClientAssetTags(): Promise<string> {
+  const assets = await resolveProductionAssets();
+
+  if (!assets) {
+    return "";
+  }
 
   return `
-    <script type="module" crossorigin src="${escapeHtml(scriptSrc)}"></script>
-    <link rel="stylesheet" crossorigin href="${escapeHtml(styleHref)}">
+    <script type="module" crossorigin src="${escapeHtml(assets.scriptSrc)}"></script>
+    <link rel="stylesheet" crossorigin href="${escapeHtml(assets.styleHref)}">
   `.trim();
 }
 
@@ -192,7 +357,7 @@ type DocumentOptions = {
 /**
  * Assembles the full HTML shell for a given route.
  */
-function renderHtmlDocument(options: DocumentOptions): string {
+async function renderHtmlDocument(options: DocumentOptions): Promise<string> {
   const {
     title,
     description,
@@ -213,6 +378,7 @@ function renderHtmlDocument(options: DocumentOptions): string {
     : "";
 
   const resolvedImage = ogImage || DEFAULT_OG_IMAGE;
+  const clientAssetTags = await getClientAssetTags();
 
   return `<!doctype html>
 <html lang="en">
@@ -248,7 +414,7 @@ function renderHtmlDocument(options: DocumentOptions): string {
     <link rel="manifest" href="/manifest.webmanifest" />
 
     ${jsonLdScript}
-    ${getClientAssetTags()}
+    ${clientAssetTags}
   </head>
   <body>
     <div id="root">${semanticBodyHtml}</div>
@@ -430,7 +596,7 @@ export async function generateProjectHtml(
     </main>
   `.trim();
 
-  return renderHtmlDocument({
+  return await renderHtmlDocument({
     title,
     description,
     canonicalUrl,
@@ -543,7 +709,7 @@ export async function generateDeveloperHtml(
     </main>
   `.trim();
 
-  return renderHtmlDocument({
+  return await renderHtmlDocument({
     title,
     description,
     canonicalUrl,
@@ -655,7 +821,7 @@ export async function generateHomeHtml(): Promise<string> {
     </main>
   `.trim();
 
-  return renderHtmlDocument({
+  return await renderHtmlDocument({
     title,
     description,
     canonicalUrl,
@@ -887,7 +1053,7 @@ export async function generateLocationHtml(
     </main>
   `.trim();
 
-  return renderHtmlDocument({
+  return await renderHtmlDocument({
     title,
     description,
     canonicalUrl,
@@ -1095,7 +1261,7 @@ export async function generateCityHubHtml(): Promise<string> {
     </main>
   `.trim();
 
-  return renderHtmlDocument({
+  return await renderHtmlDocument({
     title,
     description,
     canonicalUrl,
@@ -1108,9 +1274,9 @@ export async function generateCityHubHtml(): Promise<string> {
 /**
  * 6. Generates a 404 Not Found SEO document for missing or unpublished entities.
  */
-export function generate404Html(
+export async function generate404Html(
   message = "The requested property or developer could not be found or is no longer available.",
-): string {
+): Promise<string> {
   const title = `Page Not Found | ${DEFAULT_SITE_NAME}`;
   const description = message;
   const canonicalUrl = CANONICAL_ORIGIN;
@@ -1125,7 +1291,7 @@ export function generate404Html(
     </main>
   `.trim();
 
-  return renderHtmlDocument({
+  return await renderHtmlDocument({
     title,
     description,
     canonicalUrl,
