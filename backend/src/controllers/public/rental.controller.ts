@@ -21,6 +21,7 @@ import type {
   PublicRentalEnquiryBody,
   PublicRentalPropertyBody,
 } from "../../validators/rental.validator.js";
+import { CACHE_POLICY_PRIVATE } from "../../constants/cache.js";
 
 export async function createRentalEnquiryController(
   req: Request<{}, unknown, PublicRentalEnquiryBody>,
@@ -42,7 +43,10 @@ export async function createRentalEnquiryController(
       notes: body.notes as string | undefined,
     } satisfies CreateRentalEnquiryInput);
 
-    res.status(201).json(result);
+    res
+      .setHeader("Cache-Control", CACHE_POLICY_PRIVATE)
+      .status(201)
+      .json(result);
   } catch (error) {
     next(error);
   }
@@ -66,7 +70,10 @@ export async function createRentalPropertyController(
       additionalDetails: body.additionalDetails as string | undefined,
     } satisfies CreateRentalPropertyInput);
 
-    res.status(201).json(result);
+    res
+      .setHeader("Cache-Control", CACHE_POLICY_PRIVATE)
+      .status(201)
+      .json(result);
   } catch (error) {
     next(error);
   }

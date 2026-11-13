@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import type { AdminRole } from "../../generated/prisma/enums.js";
 import { adminRepository } from "../repositories/admin.repository.js";
+import { CACHE_POLICY_PRIVATE } from "../constants/cache.js";
 
 export type AuthenticatedAdmin = {
   id: string;
@@ -37,6 +38,8 @@ export async function requireAdminAuthentication(
   res: Response,
   next: NextFunction,
 ) {
+  res.setHeader("Cache-Control", CACHE_POLICY_PRIVATE);
+
   const authorization = req.header("authorization");
   const [scheme, token] = authorization?.split(" ") ?? [];
   const secret = process.env.JWT_SECRET;
@@ -85,6 +88,8 @@ export async function requireFounderAuthentication(
   res: Response,
   next: NextFunction,
 ) {
+  res.setHeader("Cache-Control", CACHE_POLICY_PRIVATE);
+
   const authorization = req.header("authorization");
   const [scheme, token] = authorization?.split(" ") ?? [];
   const secret = process.env.JWT_SECRET;
@@ -138,6 +143,8 @@ export function requireFounder(
   res: Response,
   next: NextFunction,
 ) {
+  res.setHeader("Cache-Control", CACHE_POLICY_PRIVATE);
+
   const admin = res.locals.admin as AuthenticatedAdmin | undefined;
   if (!admin) {
     next(authenticationError());

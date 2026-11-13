@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useAdminLocationInitializer } from "../../hooks/useAdminLocationInitializer";
 import { LocationPermissionModal } from "./LocationPermissionModal";
+import "../../styles/admin/index.css";
 import type { ReactNode } from "react";
 
 type AdminLayoutProps = {

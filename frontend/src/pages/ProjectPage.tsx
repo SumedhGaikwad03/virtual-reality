@@ -26,6 +26,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
+import "../styles/project.css";
+import "../styles/configuration.css";
+import "../styles/media.css";
 import { AboutFooter } from "../components/home/AboutFooter";
 import { useSite } from "../components/home/hooks/useSite";
 import { ConfigurationMediaSection } from "../components/project/ConfigurationMediaSection";

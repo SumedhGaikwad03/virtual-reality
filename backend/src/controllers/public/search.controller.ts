@@ -13,6 +13,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { generatePropertySearchQuery } from "../../services/search/query-generator.service.js";
 import { searchProperties } from "../../services/search/search.service.js";
+import { CACHE_POLICY_SEARCH } from "../../constants/cache.js";
 
 export async function searchController(
   req: Request,
@@ -21,7 +22,11 @@ export async function searchController(
 ) {
   try {
     const query = generatePropertySearchQuery(req.query.q as string);
-    res.status(200).json(await searchProperties(query));
+    const results = await searchProperties(query);
+    res
+      .setHeader("Cache-Control", CACHE_POLICY_SEARCH)
+      .status(200)
+      .json(results);
   } catch (error) {
     next(error);
   }

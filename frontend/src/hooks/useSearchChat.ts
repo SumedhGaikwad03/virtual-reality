@@ -10,7 +10,7 @@
  * conversation message history, attribute removals, undo (goBack), and reset actions.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   clearSearchCatalogCache,
   loadSearchCatalog,
@@ -30,20 +30,34 @@ import {
 import type { SearchCatalogProject } from "../types/search-catalog";
 import type { SearchChatMessage } from "../types/search-chat";
 
-export function useSearchChat() {
+export type UseSearchChatOptions = {
+  autoInitialize?: boolean;
+};
+
+export function useSearchChat(options: UseSearchChatOptions = {}) {
+  const { autoInitialize = false } = options;
+
   const [catalog, setCatalog] = useState<SearchCatalogProject[]>([]);
   const [queryHistory, setQueryHistory] = useState<PropertySearchQuery[]>([]);
   const [query, setQuery] = useState<PropertySearchQuery>({});
   const [state, setState] = useState<QueryBuilderState | null>(null);
   const [messages, setMessages] = useState<SearchChatMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(autoInitialize);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  function initializeCatalog() {
+  // In-flight promise ref to deduplicate concurrent initialization triggers within hook instance
+  const initPromiseRef = useRef<Promise<void> | null>(null);
+
+  function initializeCatalog(): Promise<void> {
+    if (initPromiseRef.current) {
+      return initPromiseRef.current;
+    }
+
     setIsLoading(true);
     setError(null);
 
-    loadSearchCatalog()
+    const promise = loadSearchCatalog()
       .then((loadedCatalog) => {
         const initialState = getQueryBuilderState(loadedCatalog, {});
 
@@ -51,6 +65,7 @@ export function useSearchChat() {
         setState(initialState);
         setQuery({});
         setQueryHistory([]);
+        setIsInitialized(true);
 
         if (initialState.nextRule) {
           setMessages([
@@ -69,15 +84,29 @@ export function useSearchChat() {
       })
       .finally(() => {
         setIsLoading(false);
+        initPromiseRef.current = null;
       });
+
+    initPromiseRef.current = promise;
+    return promise;
+  }
+
+  function ensureInitialized(): Promise<void> {
+    if (isInitialized || catalog.length > 0) {
+      return Promise.resolve();
+    }
+    return initializeCatalog();
   }
 
   useEffect(() => {
-    initializeCatalog();
-  }, []);
+    if (autoInitialize) {
+      initializeCatalog();
+    }
+  }, [autoInitialize]);
 
   function retry() {
     clearSearchCatalogCache();
+    setIsInitialized(false);
     initializeCatalog();
   }
 
@@ -181,6 +210,8 @@ export function useSearchChat() {
     messages,
     isLoading,
     error,
+    isInitialized,
+    ensureInitialized,
     retry,
     selectOption,
     removeQueryAttribute,

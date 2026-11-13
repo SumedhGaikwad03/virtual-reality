@@ -11,6 +11,7 @@
 
 import type { NextFunction, Request, Response } from "express";
 import { getPublicProject } from "../../services/project.service.js";
+import { CACHE_POLICY_CATALOG } from "../../constants/cache.js";
 
 type ProjectRouteParams = {
   developerSlug: string;
@@ -31,7 +32,10 @@ export async function getPublicProjectController(
       projectSlug,
     );
 
-    res.status(200).json(response);
+    res
+      .setHeader("Cache-Control", CACHE_POLICY_CATALOG)
+      .status(200)
+      .json(response);
   } catch (error) {
     next(error);
   }

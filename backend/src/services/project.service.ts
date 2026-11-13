@@ -264,6 +264,66 @@ export class ProjectNotFoundError extends Error {
   }
 }
 
+export function formatPublicProject(
+  project: NonNullable<Awaited<ReturnType<typeof projectRepository.findPublicProject>>>,
+) {
+  const developerBannerMedia = selectDeveloperBannerMedia(
+    project.developer.media ?? [],
+  );
+
+  return {
+    id: project.id,
+    name: project.name,
+    slug: project.slug,
+    description: project.description,
+
+    location: {
+      name: project.locationName,
+      slug: project.locationSlug,
+      address: project.address,
+      mapsUrl: project.mapsUrl,
+    },
+
+    status: project.status,
+    featured: project.featured,
+
+    developer: {
+      id: project.developer.id,
+      name: project.developer.name,
+      slug: project.developer.slug,
+      description: project.developer.description ?? null,
+      logoUrl: project.developer.logoUrl,
+      bannerMedia: developerBannerMedia,
+    },
+
+    highlights: project.highlights.map((highlight) => ({
+      id: highlight.id,
+      text: highlight.text,
+      sortOrder: highlight.sortOrder,
+    })),
+
+    amenities: project.amenities.map((amenity) => ({
+      id: amenity.id,
+      name: amenity.name,
+      sortOrder: amenity.sortOrder,
+    })),
+
+    configurations: project.configurations.map((configuration) => ({
+      id: configuration.id,
+      name: configuration.name,
+      bhk: configuration.bhk,
+      carpetArea: configuration.carpetArea,
+      builtUpArea: configuration.builtUpArea,
+      superBuiltUpArea: configuration.superBuiltUpArea,
+      priceFrom: configuration.priceFrom.toString(),
+      availabilityStatus: configuration.availabilityStatus,
+      media: configuration.media.map(toPublicMedia),
+    })),
+
+    media: project.media.map(toPublicMedia),
+  };
+}
+
 export async function getPublicProject(
   developerSlug: string,
   locationSlug: string,
@@ -279,64 +339,8 @@ export async function getPublicProject(
     throw new ProjectNotFoundError();
   }
 
-  const developerBannerMedia = selectDeveloperBannerMedia(
-    project.developer.media ?? [],
-  );
-
   return {
-    data: {
-      id: project.id,
-      name: project.name,
-      slug: project.slug,
-      description: project.description,
-
-      location: {
-        name: project.locationName,
-        slug: project.locationSlug,
-        address: project.address,
-        mapsUrl: project.mapsUrl,
-      },
-
-      status: project.status,
-      featured: project.featured,
-
-      developer: {
-        id: project.developer.id,
-        name: project.developer.name,
-        slug: project.developer.slug,
-        description: project.developer.description ?? null,
-        logoUrl: project.developer.logoUrl,
-        bannerMedia: developerBannerMedia,
-      },
-
-      highlights: project.highlights.map((highlight) => ({
-        id: highlight.id,
-        text: highlight.text,
-        sortOrder: highlight.sortOrder,
-      })),
-
-      amenities: project.amenities.map((amenity) => ({
-        id: amenity.id,
-        name: amenity.name,
-        sortOrder: amenity.sortOrder,
-      })),
-
-      configurations: project.configurations.map(
-        (configuration) => ({
-          id: configuration.id,
-          name: configuration.name,
-          bhk: configuration.bhk,
-          carpetArea: configuration.carpetArea,
-          builtUpArea: configuration.builtUpArea,
-          superBuiltUpArea: configuration.superBuiltUpArea,
-          priceFrom: configuration.priceFrom.toString(),
-          availabilityStatus: configuration.availabilityStatus,
-          media: configuration.media.map(toPublicMedia),
-        }),
-      ),
-
-      media: project.media.map(toPublicMedia),
-    },
+    data: formatPublicProject(project),
   };
 }
 

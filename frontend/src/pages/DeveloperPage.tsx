@@ -17,6 +17,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import "../styles/developer.css";
+import "../styles/media.css";
 import { AboutFooter } from "../components/home/AboutFooter";
 import { useSite } from "../components/home/hooks/useSite";
 import { DeveloperHero } from "../components/developer/DeveloperHero";

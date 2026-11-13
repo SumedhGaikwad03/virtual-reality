@@ -1,0 +1,18 @@
+/*
+ * PURPOSE:
+ * Central entry point for administrative CRM and management stylesheets.
+ *
+ * FLOW:
+ * AdminLayout / AdminLoginPage -> admin/index.css -> domain admin stylesheets.
+ *
+ * RESPONSIBILITY:
+ * Encapsulates all administrative styling, preventing CRM rules from inflating the public bundle.
+ */
+
+@import "./admin.css";
+@import "./dashboard.css";
+@import "./developers.css";
+@import "./projects.css";
+@import "./project-workspace.css";
+@import "./configurations.css";
+@import "./media.css";
