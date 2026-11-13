@@ -15,16 +15,3 @@
 @import "./styles/components.css";
 
 @import "./styles/home.css";
-@import "./styles/developer.css";
-@import "./styles/project.css";
-@import "./styles/configuration.css";
-@import "./styles/media.css";
-@import "./styles/search.css";
-
-@import "./styles/admin/admin.css";
-@import "./styles/admin/dashboard.css";
-@import "./styles/admin/developers.css";
-@import "./styles/admin/projects.css";
-@import "./styles/admin/project-workspace.css";
-@import "./styles/admin/configurations.css";
-@import "./styles/admin/media.css";

@@ -13,6 +13,7 @@
  * 4. FloatingSearchControl (Persistent assistant access)
  */
 
+import "../styles/search.css";
 import { AboutFooter } from "../components/home/AboutFooter";
 import { FloatingSearchControl } from "../components/home/FloatingSearchControl";
 import { useSite } from "../components/home/hooks/useSite";
@@ -36,7 +37,7 @@ const defaultSiteFallback = {
 };
 
 export function SearchPage() {
-  const searchChat = useSearchChat();
+  const searchChat = useSearchChat({ autoInitialize: true });
   const { site } = useSite();
 
   const matches = searchChat.state ? searchChat.state.matches : [];

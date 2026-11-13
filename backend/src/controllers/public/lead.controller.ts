@@ -12,7 +12,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { createLead, type CreateLeadInput } from "../../services/lead.service.js";
 import type { PublicLeadBody } from "../../validators/lead.validator.js";
-
+import { CACHE_POLICY_PRIVATE } from "../../constants/cache.js";
 
 export async function createLeadController(
   req: Request<{}, unknown, PublicLeadBody>,
@@ -21,19 +21,22 @@ export async function createLeadController(
 ) {
   try {
     const body = req.body;
-    res.status(201).json(
-      await createLead({
-        name: body.name as string,
-        phone: body.phone as string,
-        email: body.email as string | undefined,
-        developerId: body.developerId as string | undefined,
-        projectId: body.projectId as string | undefined,
-        configurationId: body.configurationId as string | undefined,
-        message: body.message as string | undefined,
-        visitDate: body.visitDate as string | undefined,
-        visitTime: body.visitTime as string | undefined,
-      } satisfies CreateLeadInput),
-    );
+    const result = await createLead({
+      name: body.name as string,
+      phone: body.phone as string,
+      email: body.email as string | undefined,
+      developerId: body.developerId as string | undefined,
+      projectId: body.projectId as string | undefined,
+      configurationId: body.configurationId as string | undefined,
+      message: body.message as string | undefined,
+      visitDate: body.visitDate as string | undefined,
+      visitTime: body.visitTime as string | undefined,
+    } satisfies CreateLeadInput);
+
+    res
+      .setHeader("Cache-Control", CACHE_POLICY_PRIVATE)
+      .status(201)
+      .json(result);
   } catch (error) {
     next(error);
   }

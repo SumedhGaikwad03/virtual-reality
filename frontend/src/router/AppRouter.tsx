@@ -2,15 +2,31 @@ import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { FounderRoute, ProtectedRoute } from "../auth/ProtectedRoute";
 
-import { DeveloperPage } from "../pages/DeveloperPage";
-import { EnquiryPage } from "../pages/EnquiryPage";
 import { HomePage } from "../pages/HomePage";
-import { ListPropertyPage } from "../pages/ListPropertyPage";
-import { PrivacyPolicyPage } from "../pages/PrivacyPolicyPage";
-import { ProjectPage } from "../pages/ProjectPage";
-import { RentalsPage } from "../pages/RentalsPage";
-import { SearchPage } from "../pages/SearchPage";
 import { PublicShell } from "../components/shell/PublicShell";
+
+// Lazy-loaded secondary public pages
+const DeveloperPage = lazy(() =>
+  import("../pages/DeveloperPage").then((m) => ({ default: m.DeveloperPage })),
+);
+const EnquiryPage = lazy(() =>
+  import("../pages/EnquiryPage").then((m) => ({ default: m.EnquiryPage })),
+);
+const ListPropertyPage = lazy(() =>
+  import("../pages/ListPropertyPage").then((m) => ({ default: m.ListPropertyPage })),
+);
+const PrivacyPolicyPage = lazy(() =>
+  import("../pages/PrivacyPolicyPage").then((m) => ({ default: m.PrivacyPolicyPage })),
+);
+const ProjectPage = lazy(() =>
+  import("../pages/ProjectPage").then((m) => ({ default: m.ProjectPage })),
+);
+const RentalsPage = lazy(() =>
+  import("../pages/RentalsPage").then((m) => ({ default: m.RentalsPage })),
+);
+const SearchPage = lazy(() =>
+  import("../pages/SearchPage").then((m) => ({ default: m.SearchPage })),
+);
 
 // Lazy-loaded administrative pages (downloaded on demand only when accessing /admin)
 const AdminLoginPage = lazy(() =>
@@ -92,6 +108,14 @@ const AdminLocationsPage = lazy(() =>
 function AdminSuspenseFallback() {
   return (
     <div className="admin-page-loading" role="status" aria-live="polite">
+      <p>Loading...</p>
+    </div>
+  );
+}
+
+function PublicSuspenseFallback() {
+  return (
+    <div className="home-loading-state" role="status" aria-live="polite">
       <p>Loading...</p>
     </div>
   );
@@ -436,19 +460,65 @@ export function AppRouter() {
       <Route element={<PublicShell />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/firm" element={<HomePage />} />
-        <Route path="/rentals" element={<RentalsPage />} />
-        <Route path="/rentals/list-property" element={<ListPropertyPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-        <Route path="/search" element={<SearchPage />} />
+        <Route
+          path="/rentals"
+          element={
+            <Suspense fallback={<PublicSuspenseFallback />}>
+              <RentalsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/rentals/list-property"
+          element={
+            <Suspense fallback={<PublicSuspenseFallback />}>
+              <ListPropertyPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/privacy-policy"
+          element={
+            <Suspense fallback={<PublicSuspenseFallback />}>
+              <PrivacyPolicyPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <Suspense fallback={<PublicSuspenseFallback />}>
+              <SearchPage />
+            </Suspense>
+          }
+        />
         <Route
           path="/:developerSlug/:locationSlug/:projectSlug"
-          element={<ProjectPage />}
+          element={
+            <Suspense fallback={<PublicSuspenseFallback />}>
+              <ProjectPage />
+            </Suspense>
+          }
         />
-        <Route path="/:developerSlug" element={<DeveloperPage />} />
+        <Route
+          path="/:developerSlug"
+          element={
+            <Suspense fallback={<PublicSuspenseFallback />}>
+              <DeveloperPage />
+            </Suspense>
+          }
+        />
       </Route>
 
       {/* Standalone customer property brief route (no header/footer/Tara/advisory popups) */}
-      <Route path="/enquiry" element={<EnquiryPage />} />
+      <Route
+        path="/enquiry"
+        element={
+          <Suspense fallback={<PublicSuspenseFallback />}>
+            <EnquiryPage />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 }

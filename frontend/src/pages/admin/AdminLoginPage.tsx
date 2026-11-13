@@ -18,6 +18,7 @@ import {
   isInvalidCredentialsError,
   useAuth,
 } from "../../auth/AuthContext";
+import "../../styles/admin/index.css";
 
 type LoginLocationState = {
   from?: {

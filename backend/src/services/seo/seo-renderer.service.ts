@@ -21,6 +21,7 @@ import { prisma } from "../../lib/prisma.js";
 import { projectRepository } from "../../repositories/project.repository.js";
 import { developerRepository } from "../../repositories/developer.repository.js";
 import { getSite } from "../site.service.js";
+import { formatPublicProject } from "../project.service.js";
 
 const CANONICAL_ORIGIN = "https://www.virtual2reality.in";
 const DEFAULT_SITE_NAME = "Virtual Reality";
@@ -351,8 +352,19 @@ type DocumentOptions = {
   ogType?: "website" | "article" | "place";
   jsonLd?: object | object[] | null;
   semanticBodyHtml: string;
+  initialDataScript?: string;
   isNoIndex?: boolean;
 };
+
+/**
+ * Escapes serialized JSON safely to prevent script element breakout (XSS) in HTML documents.
+ */
+export function serializeInitialData(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
+}
 
 /**
  * Assembles the full HTML shell for a given route.
@@ -366,6 +378,7 @@ async function renderHtmlDocument(options: DocumentOptions): Promise<string> {
     ogType = "website",
     jsonLd,
     semanticBodyHtml,
+    initialDataScript,
     isNoIndex = false,
   } = options;
 
@@ -414,6 +427,7 @@ async function renderHtmlDocument(options: DocumentOptions): Promise<string> {
     <link rel="manifest" href="/manifest.webmanifest" />
 
     ${jsonLdScript}
+    ${initialDataScript ? initialDataScript : ""}
     ${clientAssetTags}
   </head>
   <body>
@@ -596,6 +610,13 @@ export async function generateProjectHtml(
     </main>
   `.trim();
 
+  const publicProjectDto = formatPublicProject(project);
+  const initialDataScript = `<script id="__INITIAL_DATA__" type="application/json">${serializeInitialData({
+    type: "PROJECT",
+    key: `${developerSlug}/${locationSlug}/${projectSlug}`,
+    data: publicProjectDto,
+  })}</script>`;
+
   return await renderHtmlDocument({
     title,
     description,
@@ -604,6 +625,7 @@ export async function generateProjectHtml(
     ogType: "place",
     jsonLd,
     semanticBodyHtml,
+    initialDataScript,
   });
 }
 

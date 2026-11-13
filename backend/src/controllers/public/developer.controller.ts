@@ -12,6 +12,7 @@
 
 import type { NextFunction, Request, Response } from "express";
 import { getPublicDeveloper } from "../../services/developer.service.js";
+import { CACHE_POLICY_CATALOG } from "../../constants/cache.js";
 
 type DeveloperRouteParams = {
   developerSlug: string;
@@ -24,7 +25,10 @@ export async function getPublicDeveloperController(
 ) {
   try {
     const response = await getPublicDeveloper(req.params.developerSlug);
-    res.status(200).json(response);
+    res
+      .setHeader("Cache-Control", CACHE_POLICY_CATALOG)
+      .status(200)
+      .json(response);
   } catch (error) {
     next(error);
   }

@@ -7,6 +7,7 @@ import {
   resolveProductionAssets,
   resetAssetCacheForTesting,
   setDisableFilesystemScanForTesting,
+  serializeInitialData,
 } from "./seo-renderer.service.js";
 
 // Ensure DATABASE_URL is defined so prisma module initialization doesn't throw during tests
@@ -304,4 +305,33 @@ test("generate404Html integrates with resolveProductionAssets end-to-end", async
     if (originalStyle) process.env.PRODUCTION_ASSET_STYLE = originalStyle;
     resetAssetCacheForTesting();
   }
+});
+
+test("serializeInitialData safely escapes script breakout and XSS characters", () => {
+  const dangerousPayload = {
+    type: "PROJECT",
+    key: "dev/loc/proj",
+    data: {
+      description: "</script><script>alert('xss')</script>",
+      tagline: "Price > 50L & Area < 1000sqft",
+    },
+  };
+
+  const serialized = serializeInitialData(dangerousPayload);
+
+  // Must not contain raw '<', '>', or '&'
+  assert.equal(serialized.includes("</script>"), false);
+  assert.equal(serialized.includes("<script>"), false);
+  assert.equal(serialized.includes("<"), false);
+  assert.equal(serialized.includes(">"), false);
+  assert.equal(serialized.includes("&"), false);
+
+  // Must contain unicode escape sequences
+  assert.ok(serialized.includes("\\u003c"));
+  assert.ok(serialized.includes("\\u003e"));
+  assert.ok(serialized.includes("\\u0026"));
+
+  // Standard JSON.parse must reconstruct original data without corruption
+  const parsed = JSON.parse(serialized);
+  assert.deepEqual(parsed, dangerousPayload);
 });

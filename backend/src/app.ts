@@ -43,6 +43,11 @@ import siteRoutes from "./routes/public/site.routes.js";
 import leadRoutes from "./routes/public/lead.routes.js";
 import rentalRoutes from "./routes/public/rental.routes.js";
 import seoRoutes from "./routes/public/seo.routes.js";
+import {
+  CACHE_POLICY_PRIVATE,
+  CACHE_POLICY_NOT_FOUND,
+  CACHE_POLICY_ERROR,
+} from "./constants/cache.js";
 
 const app = express();
 
@@ -154,6 +159,7 @@ app.use(
  * Unauthenticated lightweight health check endpoint for cloud orchestrators, liveness, and readiness probes.
  */
 app.get(["/health", "/api/health"], (_req: express.Request, res: express.Response) => {
+  res.setHeader("Cache-Control", CACHE_POLICY_ERROR);
   res.status(200).json({
     status: "healthy",
     timestamp: new Date().toISOString(),
@@ -167,6 +173,13 @@ app.use("/api/search", searchRoutes);
 app.use("/api/site", siteRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/rentals", rentalRoutes);
+
+// Enforce private, non-cacheable headers across all administrative routes
+app.use("/api/admin", (_req: express.Request, res: express.Response, next: express.NextFunction) => {
+  res.setHeader("Cache-Control", CACHE_POLICY_PRIVATE);
+  next();
+});
+
 app.use("/api/admin/auth", authRoutes);
 app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/admin/developers", adminDeveloperRoutes);
@@ -189,7 +202,27 @@ app.use("/api/admin/firm-profile", adminFirmProfileRoutes);
 // Public SEO and search engine directives router (registered after all /api/* routes)
 app.use(seoRoutes);
 
-app.use((error: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((error: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const isAdmin = Boolean(
+    req.originalUrl?.startsWith("/api/admin") ||
+    req.baseUrl?.startsWith("/api/admin")
+  );
+
+  if (isAdmin) {
+    // Admin route errors must remain private and un-cacheable
+    res.setHeader("Cache-Control", CACHE_POLICY_PRIVATE);
+  } else if (
+    req.method === "GET" &&
+    (error?.code === "PROJECT_NOT_FOUND" || error?.code === "DEVELOPER_NOT_FOUND") &&
+    (req.originalUrl?.startsWith("/api/developers") || req.baseUrl?.startsWith("/api/developers"))
+  ) {
+    // Explicitly handled public entity 404s on GET get the short 60s edge cache policy
+    res.setHeader("Cache-Control", CACHE_POLICY_NOT_FOUND);
+  } else {
+    // All other error responses (400, generic 404, 500, write failures) must never be cached
+    res.setHeader("Cache-Control", CACHE_POLICY_ERROR);
+  }
+
   if (error?.code === "PROJECT_NOT_FOUND") {
     res.status(404).json({
       error: {

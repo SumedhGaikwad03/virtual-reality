@@ -31,9 +31,11 @@ export function AtmosphericHero({
   const primaryHero = heroItems.find((item) => item.isPrimary) || heroItems[0];
 
   const desktopImageUrl = primaryHero?.url ? getOptimizedImageUrl(primaryHero.url) : null;
-  // If a slot or dedicated mobile asset is configured, use it; otherwise fallback to primary URL
+  // If a slot or dedicated mobile asset is configured, use it; otherwise fallback to primary URL with responsive width
   const mobileHero = heroItems.find((item) => item.slot === "mobile") || primaryHero;
-  const mobileImageUrl = mobileHero?.url ? getOptimizedImageUrl(mobileHero.url) : desktopImageUrl;
+  const mobileImageUrl = mobileHero?.url
+    ? getOptimizedImageUrl(mobileHero.url, { width: 768 })
+    : desktopImageUrl;
 
   const eyebrowText = tagline || "CURATED RESIDENTIAL DEVELOPMENTS";
   const headlineText = name || "Explore Your Next Address";
@@ -46,7 +48,7 @@ export function AtmosphericHero({
       <div className="hero-media-wrapper">
         {desktopImageUrl ? (
           <picture>
-            {mobileImageUrl && mobileImageUrl !== desktopImageUrl && (
+            {mobileImageUrl && (
               <source media="(max-width: 768px)" srcSet={mobileImageUrl} />
             )}
             <img
@@ -54,6 +56,7 @@ export function AtmosphericHero({
               alt={primaryHero?.altText || primaryHero?.title || "Virtual Reality platform hero"}
               className="hero-image"
               loading="eager"
+              fetchPriority="high"
               decoding="async"
             />
           </picture>

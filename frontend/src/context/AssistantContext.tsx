@@ -26,24 +26,39 @@ const AssistantContext = createContext<AssistantContextType | undefined>(undefin
 
 export function AssistantProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const searchChat = useSearchChat();
+  const searchChat = useSearchChat({ autoInitialize: false });
 
   const openAssistant = () => {
-    searchChat.reset();
+    searchChat.ensureInitialized();
+    if (searchChat.catalog.length > 0) {
+      searchChat.reset();
+    }
     setIsOpen(true);
   };
   const closeAssistant = (options: { reset?: boolean } = { reset: true }) => {
     setIsOpen(false);
-    if (options.reset !== false) {
+    if (options.reset !== false && searchChat.catalog.length > 0) {
       searchChat.reset();
     }
   };
   const toggleAssistant = () => {
     setIsOpen((prev) => {
-      searchChat.reset();
+      if (!prev) {
+        searchChat.ensureInitialized();
+        if (searchChat.catalog.length > 0) {
+          searchChat.reset();
+        }
+      }
       return !prev;
     });
   };
+
+  // Ensure catalog initializes if assistant is opened via external triggers
+  useEffect(() => {
+    if (isOpen) {
+      searchChat.ensureInitialized();
+    }
+  }, [isOpen, searchChat]);
 
   // Close assistant and reset session on Escape key press
   useEffect(() => {

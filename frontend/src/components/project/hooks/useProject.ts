@@ -24,6 +24,51 @@ export function invalidateProjectCache(cacheKey?: string) {
   }
 }
 
+/**
+ * Safely parses and validates server-provided initial project data from <script id="__INITIAL_DATA__">.
+ * Ensures the payload matches the expected project cacheKey, prevents reuse of stale data,
+ * and removes the DOM attribute after consumption.
+ */
+function getInitialProjectData(targetCacheKey: string): Project | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  const scriptEl = document.getElementById("__INITIAL_DATA__");
+  if (!scriptEl || !scriptEl.textContent) {
+    return null;
+  }
+
+  try {
+    const raw = JSON.parse(scriptEl.textContent);
+    // Remove element id once read so it is consumed only once during initial bootstrap
+    scriptEl.removeAttribute("id");
+
+    if (
+      typeof raw === "object" &&
+      raw !== null &&
+      "type" in raw &&
+      raw.type === "PROJECT" &&
+      "key" in raw &&
+      raw.key === targetCacheKey &&
+      "data" in raw &&
+      typeof raw.data === "object" &&
+      raw.data !== null &&
+      "id" in raw.data &&
+      "name" in raw.data &&
+      "slug" in raw.data &&
+      "developer" in raw.data &&
+      "location" in raw.data
+    ) {
+      return raw.data as Project;
+    }
+  } catch {
+    // Malformed JSON: safely ignore and fall back to API
+  }
+
+  return null;
+}
+
 export function useProject(
   developerSlug: string | undefined,
   locationSlug: string | undefined,
@@ -33,6 +78,14 @@ export function useProject(
     developerSlug && locationSlug && projectSlug
       ? `${developerSlug}/${locationSlug}/${projectSlug}`
       : null;
+
+  // Hydrate cache synchronously from initial data bootstrap on first load if matching
+  if (cacheKey && !projectCache.has(cacheKey)) {
+    const initialData = getInitialProjectData(cacheKey);
+    if (initialData) {
+      projectCache.set(cacheKey, initialData);
+    }
+  }
 
   const [project, setProject] = useState<Project | null>(() =>
     cacheKey ? projectCache.get(cacheKey) ?? null : null,

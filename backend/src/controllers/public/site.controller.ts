@@ -12,6 +12,7 @@
 
 import type { NextFunction, Request, Response } from "express";
 import { getSite } from "../../services/site.service.js";
+import { CACHE_POLICY_CATALOG } from "../../constants/cache.js";
 
 export async function getSiteController(
   _req: Request,
@@ -19,7 +20,11 @@ export async function getSiteController(
   next: NextFunction,
 ) {
   try {
-    res.status(200).json(await getSite());
+    const siteData = await getSite();
+    res
+      .setHeader("Cache-Control", CACHE_POLICY_CATALOG)
+      .status(200)
+      .json(siteData);
   } catch (error) {
     next(error);
   }
